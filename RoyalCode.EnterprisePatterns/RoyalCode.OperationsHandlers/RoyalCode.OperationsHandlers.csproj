@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\base.targets" />
   
@@ -12,13 +12,9 @@
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
     <Description>
-      Abstract components for the Repository Pattern.
+      Implementation of components for the CRUD handlers for commons commands of the CQS Pattern.
     </Description>
-    <PackageTags>RoyalCode Enterprise-Patterns Repository Repository-Pattern</PackageTags>
+    <PackageTags>RoyalCode Enterprise-Patterns CQS CRUD Command-Handler-Pattern</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\RoyalCode.Entities\RoyalCode.Entities.csproj" />
-  </ItemGroup>
-  
 </Project>
