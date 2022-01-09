@@ -27,5 +27,5 @@ public abstract class Entity<TId, TCode> : Entity<TId>, IHasCode<TCode>
     /// <summary>
     /// The entity Code.
     /// </summary>
-    public TCode Codigo { get; protected set; }
+    public TCode Code { get; protected set; }
 }

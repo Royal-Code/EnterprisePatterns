@@ -17,4 +17,8 @@
     <PackageTags>RoyalCode Enterprise-Patterns Domain-Event Domain-Event-Pattern</PackageTags>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RoyalCode.Entities\RoyalCode.Entities.csproj" />
+  </ItemGroup>
+  
 </Project>
