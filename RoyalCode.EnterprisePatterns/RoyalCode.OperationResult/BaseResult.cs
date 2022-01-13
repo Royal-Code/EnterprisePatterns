@@ -1,0 +1,52 @@
+﻿
+namespace RoyalCode.OperationResult;
+
+/// <summary>
+/// The default implementation of <see cref="IOperationResult"/>.
+/// </summary>
+public class BaseResult : IOperationResult
+{
+    /// <summary>
+    /// Private list to store the messages.
+    /// </summary>
+    private readonly List<IResultMessage> _messages = new();
+
+    /// <summary>
+    /// The result messages.
+    /// </summary>
+    public IEnumerable<IResultMessage> Messages => _messages.AsReadOnly();
+
+    /// <summary>
+    /// Determines whether the result of the operation was success or failure.
+    /// </summary>
+    public bool Success { get; private set; }
+
+    /// <summary>
+    /// Default constructor, with success result, until some error message is added.
+    /// </summary>
+    public BaseResult()
+    {
+        Success = true;
+    }
+
+    /// <summary>
+    /// Private constructor for static methods factory.
+    /// </summary>
+    /// <param name="message">The message.</param>
+    private BaseResult(IResultMessage message)
+    {
+        Success = message.Type != ResultMessageType.Error;
+        _messages.Add(message);
+    }
+
+    /// <summary>
+    /// Adds a message, and changes the result to failure if its type is error.
+    /// </summary>
+    /// <param name="message">The message to be added.</param>
+    public void AddMessage(IResultMessage message)
+    {
+        Success = Success && message.Type != ResultMessageType.Error;
+        _messages.Add(message);
+    }
+}
+
