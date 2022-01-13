@@ -30,17 +30,28 @@ public class BaseResult : IOperationResult
     }
 
     /// <summary>
-    /// Private constructor for static methods factory.
+    /// Internal constructor for static methods factory.
     /// </summary>
     /// <param name="message">The message.</param>
-    private BaseResult(IResultMessage message)
+    internal protected BaseResult(IResultMessage message)
     {
         Success = message.Type != ResultMessageType.Error;
         _messages.Add(message);
     }
 
     /// <summary>
-    /// Adds a message, and changes the result to failure if its type is error.
+    /// Internal, for <see cref="ValueResult{TValue}"/>.
+    /// </summary>
+    /// <param name="other">Other result.</param>
+    /// <param name="success">Value of property <see cref="Success"/>.</param>
+    internal protected BaseResult(IResult other, bool success)
+    {
+        Success = success;
+        _messages.AddRange(other.Messages);
+    }
+
+    /// <summary>
+    /// Adds a message, and changes the result to failure if the message type is error.
     /// </summary>
     /// <param name="message">The message to be added.</param>
     public void AddMessage(IResultMessage message)
@@ -49,4 +60,3 @@ public class BaseResult : IOperationResult
         _messages.Add(message);
     }
 }
-
