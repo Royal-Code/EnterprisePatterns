@@ -79,6 +79,27 @@ public class ResultMessage : IResultMessage
     {
         return new ResultMessage(ResultMessageType.Error, text, property, code, ex);
     }
+   
+    /// <summary>
+    /// <para>
+    ///     Creates a new message of error.
+    /// </para>
+    /// </summary>
+    /// <param name="ex">The exception that generate the message.</param>
+    /// <param name="property">The related property, optional.</param>
+    /// <param name="code">The message code, optional.</param>
+    /// <returns>
+    /// <para>
+    ///     New instance of message.
+    /// </para>
+    /// </returns>
+    public static ResultMessage Error(Exception ex, string? property = null, string? code = null)
+    {
+        if (ex is null)
+            throw new ArgumentNullException(nameof(ex));
+            
+        return new ResultMessage(ResultMessageType.Error, ex.Message, property, code, ex);
+    }
 
     /// <summary>
     /// <para>
@@ -192,7 +213,7 @@ public class ResultMessage : IResultMessage
         Exception = exception;
     }
 
-    private ResultMessage(
+    internal ResultMessage(
         ResultMessageType type,
         string text,
         string? property,
