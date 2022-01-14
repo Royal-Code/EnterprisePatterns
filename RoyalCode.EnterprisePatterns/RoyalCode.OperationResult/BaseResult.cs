@@ -29,7 +29,7 @@ public class BaseResult : IOperationResult
     /// <summary>
     /// Determines whether the result of the operation was success or failure.
     /// </summary>
-    public bool Success { get; private set; }
+    public bool Success { get; internal protected set; }
 
     #region factory methods
 
@@ -76,6 +76,17 @@ public class BaseResult : IOperationResult
     public static BaseResult NotFound(string text)
     {
         return new BaseResult(ResultMessage.NotFound(text));
+    }
+
+    /// <summary>
+    /// Creates a new operation result with a failure message of type forbidden
+    /// and with the message code <see cref="ResultErrorCodes.Forbidden"/>.
+    /// </summary>
+    /// <param name="text">The error text that will be used in the message.</param>
+    /// <returns>New instance.</returns>
+    public static BaseResult Forbidden(string text)
+    {
+        return new BaseResult(ResultMessage.Forbidden(text));
     }
 
     /// <summary>

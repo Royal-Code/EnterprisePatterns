@@ -12,7 +12,7 @@ public static class ValueResult
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="value">The value of the operation.</param>
     /// <returns>New instance.</returns>
-    public static ValueResult<TValue> CreateSuccess<TValue>(TValue value) => new ValueResult<TValue>(value);
+    public static ValueResult<TValue> CreateSuccess<TValue>(TValue value) => new(value);
 
     /// <summary>
     /// Creates a new failure operation result with the value of the operation and the error message.
@@ -26,7 +26,99 @@ public static class ValueResult
     /// <returns>Nova instância.</returns>
     public static ValueResult<TValue> CreateFailure<TValue>(TValue value, string text,
         string? property = null, string? code = null, Exception? ex = null)
-        => new ValueResult<TValue>(value, ResultMessage.Error(text));
+        => new(value, ResultMessage.Error(text, property, code, ex));
+
+    /// <summary>
+    /// Creates a new failure operation result with the value of the operation and the error message.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="text">The error text that will be used in the message.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <param name="code">The message code, optional.</param>
+    /// <param name="ex">The exception, optional.</param>
+    /// <returns>Nova instância.</returns>
+    public static ValueResult<TValue> CreateFailure<TValue>(string text,
+        string? property = null, string? code = null, Exception? ex = null)
+        => new(default, ResultMessage.Error(text, property, code, ex));
+
+    /// <summary>
+    /// Creates a new failure operation result with the value of the operation and the error message.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="value">The value of the operation.</param>
+    /// <param name="ex">The exception.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <param name="code">The message code, optional.</param>
+    /// <returns>Nova instância.</returns>
+    public static ValueResult<TValue> CreateFailure<TValue>(TValue value, 
+        Exception ex, string? property = null, string? code = null)
+        => new(value, ResultMessage.Error(ex, property, code));
+
+    /// <summary>
+    /// Creates a new failure operation result with the value of the operation and the error message.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="ex">The exception.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <param name="code">The message code, optional.</param>
+    /// <returns>Nova instância.</returns>
+    public static ValueResult<TValue> CreateFailure<TValue>(
+        Exception ex, string? property = null, string? code = null)
+        => new(default, ResultMessage.Error(ex, property, code));
+
+    /// <summary>
+    /// Creates a new operation result with the value of the operation and with a failure message of type not found
+    /// and with the message code <see cref="ResultErrorCodes.NotFound"/>.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="text">The error text that will be used in the message.</param>
+    /// <returns>New instance.</returns>
+    public static ValueResult<TValue> NotFound<TValue>(string text) 
+        => new(default, ResultMessage.NotFound(text));
+
+    /// <summary>
+    /// Creates a new operation result with the value of the operation and with a failure message of type forbidden
+    /// and with the message code <see cref="ResultErrorCodes.Forbidden"/>.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="text">The error text that will be used in the message.</param>
+    /// <returns>New instance.</returns>
+    public static ValueResult<TValue> Forbidden<TValue>(string text)
+        => new(default, ResultMessage.Forbidden(text));
+
+    /// <summary>
+    /// Creates a new operation result with the value of the operation and with a failure message of type invalid parameters
+    /// and with the message code <see cref="ResultErrorCodes.InvalidParameters"/>.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="text">The error text that will be used in the message.</param>
+    /// <param name="property">The related property, optional.</param>
+    /// <returns>New instance.</returns>
+    public static ValueResult<TValue> InvalidParameters<TValue>(string text, string property)
+        => new(default, ResultMessage.InvalidParameters(text, property));
+
+    /// <summary>
+    /// Creates a new operation result with the value of the operation and with a failure message of type validation errors
+    /// and with the message code <see cref="ResultErrorCodes.Validation"/>.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="text">The error text that will be used in the message.</param>
+    /// <param name="property">The related property, optional.</param>
+    /// <param name="ex">The exception, optional.</param>
+    /// <returns>New instance.</returns>
+    public static ValueResult<TValue> ValidationError<TValue>(string text, string? property = null, Exception? ex = null)
+        => new(default, ResultMessage.ValidationError(text, property, ex));
+
+    /// <summary>
+    /// Creates a new operation result with the value of the operation and with a failure message of type application error
+    /// and with the message code <see cref="ResultErrorCodes.ApplicationError"/>.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="ex">The exception that generate the message.</param>
+    /// <param name="text">The message text, optional, when not informed the exception message will be used.</param>
+    /// <returns>New instance.</returns>
+    public static ValueResult<TValue> ApplicationError<TValue>(Exception ex, string? text = null)
+        => new(default, ResultMessage.ApplicationError(ex, text));
 }
 
 /// <summary>
@@ -37,7 +129,7 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     /// <summary>
     /// The value returned by the operation.
     /// </summary>
-    public TValue? Value { get; private set; }
+    public TValue? Value { get; }
 
     #region factory methods
 
@@ -50,6 +142,7 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     public ValueResult(TValue? value)
     {
         Value = value;
+        Success = value is not null;
     }
 
     /// <summary>
@@ -60,6 +153,8 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     internal ValueResult(TValue? value, IResultMessage message) : base(message)
     {
         Value = value;
+        if (value is null)
+            Success = false;
     }
 
     /// <summary>
@@ -85,6 +180,9 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     /// <param name="other">Other result.</param>
     public ValueResult(TValue value, IOperationResult other) : base(other)
     {
+        if (value is null) 
+            throw new ArgumentNullException(nameof(value));
+
         Value = value;
     }
 
