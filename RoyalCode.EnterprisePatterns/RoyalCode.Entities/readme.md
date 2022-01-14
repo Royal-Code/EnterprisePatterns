@@ -55,6 +55,8 @@ need to tie the database to the in-memory object system.
 In essence, Identity Field is mind-numbingly simple. 
 All you do is store the primary key of the relational database table in the object's fields.
 
+---
+
 **Portuguese**
 
 Uma entidade deve ter duas características:
