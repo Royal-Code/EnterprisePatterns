@@ -12,9 +12,9 @@
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
     <Description>
-      Abstract components for the Repository Pattern.
+      Abstract components for the Domain Event Pattern.
     </Description>
-    <PackageTags>RoyalCode Enterprise-Patterns Repository Repository-Pattern</PackageTags>
+    <PackageTags>RoyalCode Enterprise-Patterns Domain-Event Domain-Event-Pattern</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
