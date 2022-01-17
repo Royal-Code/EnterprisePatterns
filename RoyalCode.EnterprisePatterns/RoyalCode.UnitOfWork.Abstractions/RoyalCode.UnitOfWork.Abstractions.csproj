@@ -18,4 +18,8 @@
     <PackageTags>RoyalCode Enterprise-Patterns UoW Unit-Of-Work Unit-Of-Work-Pattern</PackageTags>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
+  </ItemGroup>
+
 </Project>
