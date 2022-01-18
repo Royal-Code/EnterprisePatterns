@@ -33,4 +33,9 @@
 		</PackageReference>
 	</ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj" />
+		<ProjectReference Include="..\RoyalCode.UnitOfWork.Abstractions\RoyalCode.UnitOfWork.Abstractions.csproj" />
+    </ItemGroup>
+
 </Project>
