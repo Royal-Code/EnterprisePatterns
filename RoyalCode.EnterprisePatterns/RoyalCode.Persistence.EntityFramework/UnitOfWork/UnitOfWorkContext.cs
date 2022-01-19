@@ -1,17 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
+using RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics;
 using RoyalCode.UnitOfWork.Abstractions;
 
 namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 
 /// <summary>
 /// <para>
-///     Implementação da unidade de trabalho utilizando EntityFrameworkCore.
+///     Implementation of the work unit using EntityFrameworkCore.
 /// </para> 
 /// </summary>
 /// <typeparam name="TDbContext">
 /// <para>
-///     Tipo do <see cref="DbContext"/> que contém as entidades mapeadas referentes ao contexto da unidade de trabalho.
+///     Type of the <see cref="DbContext"/> that contains the mapped entities referring to the work unit context.
 /// </para>
 /// </typeparam>
 public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
@@ -20,16 +22,20 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
     private IDbContextTransaction? dbContextTransaction;
 
     /// <summary>
-    /// Construtor com a sessão para configurar o contexto de persistência e fornecer os serviços.
+    /// Constructor with the <see cref="DbContext"/> used in the unit of work.
     /// </summary>
-    /// <param name="db">Instância de <see cref="DbContext"/> para realizar as operações.</param>
+    /// <param name="db">The <see cref="DbContext"/> used in the unit of work.</param>
     public UnitOfWorkContext(TDbContext db)
     {
         Db = db ?? throw new ArgumentNullException(nameof(db));
+
+        ((IDbContextDependencies) db).UpdateLogger.Interceptors
+            ?.Aggregate<IUnitOfWorkInitializeInterceptor>()
+            ?.Initializing(db);
     }
 
     /// <summary>
-    /// Contexto de EF.
+    /// The EF Context.
     /// </summary>
     public TDbContext Db { get; }
 
