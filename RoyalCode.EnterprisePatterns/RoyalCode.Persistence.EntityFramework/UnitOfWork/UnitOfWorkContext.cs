@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Storage;
 using RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics;
+using RoyalCode.Persistence.EntityFramework.UnitOfWork.Exceptions;
 using RoyalCode.UnitOfWork.Abstractions;
 
 namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
@@ -19,7 +19,9 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
     where TDbContext : DbContext
 {
-    private IDbContextTransaction? dbContextTransaction;
+    private readonly TransactionManager transactionManager;
+    private readonly UnitOfWorkItems items;
+    private readonly IUnitOfWorkInterceptor interceptor;
 
     /// <summary>
     /// Constructor with the <see cref="DbContext"/> used in the unit of work.
@@ -29,9 +31,14 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
     {
         Db = db ?? throw new ArgumentNullException(nameof(db));
 
-        ((IDbContextDependencies) db).UpdateLogger.Interceptors
-            ?.Aggregate<IUnitOfWorkInitializeInterceptor>()
-            ?.Initializing(db);
+        transactionManager = new TransactionManager(db);
+        items = new UnitOfWorkItems(db, transactionManager);
+
+        interceptor = ((IDbContextDependencies) db).UpdateLogger.Interceptors
+            ?.Aggregate<IUnitOfWorkInterceptor>()
+            ?? throw new UnitOfWorkInitializationException();
+
+        interceptor.Initializing(items);
     }
 
     /// <summary>
@@ -42,47 +49,69 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
     /// <inheritdoc/>
     public ITransaction BeginTransaction()
     {
-        dbContextTransaction ??= Db.Database.BeginTransaction();
+        if (transactionManager.HasApplicationTransactionOpened)
+            return this;
+
+        Db.Database.BeginTransaction();
+        transactionManager.HasApplicationTransactionOpened = true;
+
         return this;
     }
 
     /// <inheritdoc/>
     public async Task<ITransaction> BeginTransactionAsync(CancellationToken token = default)
     {
-        dbContextTransaction ??= await Db.Database.BeginTransactionAsync(token);
-        return this;
-    }
+        if (transactionManager.HasApplicationTransactionOpened)
+            return this;
 
-    /// <inheritdoc/>
-    public void CleanUp(bool force = true)
-    {
-        var entries = Db.ChangeTracker.Entries().Where(e => e.Entity != null);
-        if (!force)
-            entries = entries.Where(e => e.State == EntityState.Unchanged);
-        foreach (var entry in entries)
-            entry.State = EntityState.Detached;
+        await Db.Database.BeginTransactionAsync(token);
+        transactionManager.HasApplicationTransactionOpened = true;
+
+        return this;
     }
 
     /// <inheritdoc/>
     public void Commit()
     {
-        if (dbContextTransaction is null)
+        if (transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
             throw new InvalidOperationException("The transaction is not created");
 
-        dbContextTransaction.Commit();
+        Db.Database.CommitTransaction();
 
-        dbContextTransaction = null;
+        transactionManager.HasApplicationTransactionOpened = false;
     }
 
     /// <inheritdoc/>
     public void Rollback()
     {
-        if (dbContextTransaction is null)
+        if (transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
             throw new InvalidOperationException("The transaction is not created");
 
-        dbContextTransaction.Rollback();
+        Db.Database.RollbackTransaction();
 
-        dbContextTransaction = null;
+        transactionManager.HasApplicationTransactionOpened = false;
+    }
+
+    /// <inheritdoc/>
+    public async Task CommitAsync()
+    {
+        if (transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
+            throw new InvalidOperationException("The transaction is not created");
+
+        await Db.Database.CommitTransactionAsync();
+
+        transactionManager.HasApplicationTransactionOpened = false;
+    }
+
+    /// <inheritdoc/>
+    public async Task RollbackAsync()
+    {
+        if (transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
+            throw new InvalidOperationException("The transaction is not created");
+
+        await Db.Database.RollbackTransactionAsync();
+
+        transactionManager.HasApplicationTransactionOpened = false;
     }
 
     /// <inheritdoc/>
@@ -90,7 +119,21 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
     {
         try
         {
+            interceptor.Saving(items);
+
             var changes = Db.SaveChanges();
+
+            if (transactionManager.WillSaveChangesInTwoStages)
+            {
+                interceptor.Staged(items);
+
+                changes += Db.SaveChanges();
+                
+                transactionManager.StagesCompleted();
+            }
+
+            interceptor.Saved(items, changes);
+
             var result = new SaveResult(changes);
 
             return result;
@@ -112,7 +155,21 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
     {
         try
         {
+            await interceptor.SavingAsync(items, token);
+            
             var changes = await Db.SaveChangesAsync(token);
+            
+            if (transactionManager.WillSaveChangesInTwoStages)
+            {
+                await interceptor.StagedAsync(items, token);
+
+                changes += await Db.SaveChangesAsync(token);
+                
+                await transactionManager.StagesCompletedAsync(token);
+            }
+
+            await interceptor.Savedasync(items, changes, token);
+            
             var result = new SaveResult(changes);
 
             return result;
@@ -127,5 +184,15 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
         {
             return new SaveResult(ex);
         }
+    }
+
+    /// <inheritdoc/>
+    public void CleanUp(bool force = true)
+    {
+        var entries = Db.ChangeTracker.Entries().Where(e => e.Entity != null);
+        if (!force)
+            entries = entries.Where(e => e.State == EntityState.Unchanged);
+        foreach (var entry in entries)
+            entry.State = EntityState.Detached;
     }
 }
