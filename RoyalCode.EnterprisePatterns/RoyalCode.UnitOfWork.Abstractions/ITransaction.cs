@@ -25,4 +25,18 @@ public interface ITransaction
     /// </para>
     /// </summary>
     void Rollback();
+    
+    /// <summary>
+    /// <para>
+    ///     Commits all changes made to the database in the current transaction.
+    /// </para>
+    /// </summary>
+    Task CommitAsync();
+
+    /// <summary>
+    /// <para>
+    ///     Discards all changes made to the database in the current transaction.
+    /// </para>
+    /// </summary>
+    Task RollbackAsync();
 }

@@ -19,8 +19,7 @@ public class UnitOfWorkContextTests
             .ConfigureDbContext(builder =>
             {
                 builder.UseInMemoryDatabase(nameof(InitializerInterceptor_From_DI));
-                builder.AddInterceptors((IUnitOfWorkInitializeInterceptor)new InitializerInterceptorFromDIInitializerInterceptor());
-                builder.UseUnitOfWork();
+                builder.AddInterceptors(new InitializerInterceptorFromDIInitializerInterceptor());
             });
 
         var sp = services.BuildServiceProvider();
@@ -31,6 +30,7 @@ public class UnitOfWorkContextTests
         Assert.True(InitializerInterceptorFromDIInitializerInterceptor.ServiceFounded);
     }
 }
+
 
 #region InitializerInterceptor_From_DI classes 
 
@@ -44,7 +44,7 @@ public interface IInitializerInterceptorFromDIService { }
 
 public class InitializerInterceptorFromDiService : IInitializerInterceptorFromDIService { }
 
-public class InitializerInterceptorFromDIInitializerInterceptor : IUnitOfWorkInitializeInterceptor
+public class InitializerInterceptorFromDIInitializerInterceptor : UnitOfWorkInterceptor
 {
     public static bool Intercepted = false;
     public static bool ServiceFounded = false;
@@ -56,6 +56,11 @@ public class InitializerInterceptorFromDIInitializerInterceptor : IUnitOfWorkIni
         Intercepted = true;
         ServiceFounded = service != null;
     }
+
+    public void Saving(DbContext context) { }
+
+    public int Saved(DbContext context, int changes) => changes;
 }
 
 #endregion
+

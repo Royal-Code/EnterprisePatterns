@@ -18,10 +18,7 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="DomainEventServiceNotFound" xml:space="preserve">
-        <value>The service required for domain event handling was not found from DbContext as IServiceProvider.</value>
-    </data>
-    <data name="FireEventsAtSameScopeException" xml:space="preserve">
-        <value>An error occurred while firing events at same scope, see the inner exception for more details.</value>
+    <data name="InvalidaInitialization" xml:space="preserve">
+        <value>The DbContext used for the unit of work is not configured correctly. It is necessary to add the method call 'UseUnitOfWork' to the DbContextOptionsBuilder of the DbContext used by the unit of work.</value>
     </data>
 </root>

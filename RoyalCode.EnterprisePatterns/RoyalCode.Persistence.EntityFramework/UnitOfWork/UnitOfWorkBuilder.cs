@@ -31,28 +31,44 @@ internal class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbContext>
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<DbContextOptionsBuilder> configurer)
     {
-        services.AddDbContextPool<TDbContext>(configurer);
+        services.AddDbContextPool<TDbContext>(builder =>
+        {
+            builder.UseUnitOfWork();
+            configurer(builder);
+        });
         return this;
     }
     
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<IServiceProvider, DbContextOptionsBuilder> configurer)
     {
-        services.AddDbContextPool<TDbContext>(configurer);
+        services.AddDbContextPool<TDbContext>((sp, builder) =>
+        {
+            builder.UseUnitOfWork();
+            configurer(sp, builder);
+        });
         return this;
     }
     
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<DbContextOptionsBuilder> configurer)
     {
-        services.AddDbContext<TDbContext>(configurer, lifetime);
+        services.AddDbContext<TDbContext>(builder =>
+        {
+            builder.UseUnitOfWork();
+            configurer(builder);
+        }, lifetime);
         return this;
     }
     
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<IServiceProvider, DbContextOptionsBuilder> configurer)
     {
-        services.AddDbContext<TDbContext>(configurer, lifetime);
+        services.AddDbContext<TDbContext>((sp, builder) =>
+        {
+            builder.UseUnitOfWork();
+            configurer(sp, builder);
+        }, lifetime);
         return this;
     }
 

@@ -13,9 +13,9 @@ public class UnitOfWorkInitializeInterceptorAggregator : IInterceptorAggregator
     /// <inheritdoc />
     public IInterceptor AggregateInterceptors(IReadOnlyList<IInterceptor> interceptors)
     {
-        return new UnitOfWorkInitializeInterceptorAggregatorExecutor(interceptors);
+        return new UnitOfWorkInterceptorAggregatorExecutor(interceptors);
     }
 
     /// <inheritdoc />
-    public Type InterceptorType => typeof(IUnitOfWorkInitializeInterceptor);
+    public Type InterceptorType => typeof(IUnitOfWorkInterceptor);
 }

@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using RoyalCode.Persistence.EntityFramework.Events;
 using RoyalCode.Persistence.EntityFramework.UnitOfWork;
 using RoyalCode.UnitOfWork.Abstractions;
 
@@ -25,6 +26,8 @@ public static class PersistenceServiceCollectionExtensions
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TDbContext : DbContext
     {
+        services.TryAddTransient<DomainEventHandlerFactory>();
+        
         services.TryAdd(ServiceDescriptor.Describe(
             typeof(IUnitOfWorkContext), 
             typeof(UnitOfWorkContext<>).MakeGenericType(typeof(TDbContext)),
