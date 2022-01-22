@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RoyalCode.Persistence.EntityFramework.Events;
+using RoyalCode.Persistence.EntityFramework.Events.Entity;
+using RoyalCode.Persistence.EntityFramework.Events.Services;
 using RoyalCode.Persistence.EntityFramework.UnitOfWork;
 using RoyalCode.UnitOfWork.Abstractions;
 
@@ -27,6 +29,7 @@ public static class PersistenceServiceCollectionExtensions
         where TDbContext : DbContext
     {
         services.TryAddTransient<DomainEventHandlerFactory>();
+        services.TryAddTransient<IDomainEventProcessorAggregate, DomainEventProcessorAggregate>();
         
         services.TryAdd(ServiceDescriptor.Describe(
             typeof(IUnitOfWorkContext), 
@@ -34,5 +37,44 @@ public static class PersistenceServiceCollectionExtensions
             lifetime));
 
         return new UnitOfWorkBuilder<TDbContext>(services, lifetime);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds the service for store the domain events handled by the unit of work as 
+    ///     <see cref="DomainEventDetails"/>.
+    /// </para>
+    /// <para>
+    ///     It is required that <see cref="DomainEventDetails"/> be an entity configured in the <see cref="DbContext"/>
+    ///     used by the unit of work.
+    /// </para>
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <returns>Same instance of <paramref name="services"/>.</returns>
+    public static IServiceCollection AddStoreDomainEventAsDetailsService(this IServiceCollection services)
+    {
+        services.TryAddTransient<IDomainEventProcessor, StoreDomainEventAsDetails>();
+        return services;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds the service for store the domain events handled by the unit of work as 
+    ///     <see cref="DomainEventDetails"/>.
+    /// </para>
+    /// <para>
+    ///     It is required that <see cref="DomainEventDetails"/> be an entity configured in the <see cref="DbContext"/>
+    ///     used by the unit of work.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TDbContext">The <see cref="DbContext"/> type.</typeparam>
+    /// <param name="builder">The unit of work builder.</param>
+    /// <returns>The same instance of <paramref name="builder"/>.</returns>
+    public static IUnitOfWorkBuilder<TDbContext> AddStoreDomainEventAsDetailsService<TDbContext>(
+        this IUnitOfWorkBuilder<TDbContext> builder)
+        where TDbContext : DbContext
+    {
+        builder.Services.TryAddTransient<IDomainEventProcessor, StoreDomainEventAsDetails>();
+        return builder;
     }
 }

@@ -168,7 +168,7 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
                 await transactionManager.StagesCompletedAsync(token);
             }
 
-            await interceptor.Savedasync(items, changes, token);
+            await interceptor.SavedAsync(items, changes, token);
             
             var result = new SaveResult(changes);
 

@@ -87,5 +87,5 @@ public interface IUnitOfWorkInterceptor : IInterceptor
     /// <param name="items">The shared items used by the unit of work.</param>
     /// <param name="changes">The number of state entries written to the database.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    Task Savedasync(UnitOfWorkItems items, int changes, CancellationToken cancellationToken);
+    Task SavedAsync(UnitOfWorkItems items, int changes, CancellationToken cancellationToken);
 }

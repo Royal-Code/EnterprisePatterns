@@ -26,5 +26,5 @@ public abstract class UnitOfWorkInterceptor : IUnitOfWorkInterceptor
     public virtual void Saved(UnitOfWorkItems items, int changes) { }
 
     /// <inheritdoc />
-    public virtual Task Savedasync(UnitOfWorkItems items, int changes, CancellationToken cancellationToken) => Task.CompletedTask;
+    public virtual Task SavedAsync(UnitOfWorkItems items, int changes, CancellationToken cancellationToken) => Task.CompletedTask;
 }

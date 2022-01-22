@@ -88,7 +88,7 @@ public class DomainEventUnitOfWorkInterceptor : IUnitOfWorkInterceptor
     /// <param name="items"><inheritdoc /></param>
     /// <param name="changes"><inheritdoc /></param>
     /// <param name="cancellationToken"><inheritdoc /></param>
-    public async Task Savedasync(UnitOfWorkItems items, int changes, CancellationToken cancellationToken)
+    public async Task SavedAsync(UnitOfWorkItems items, int changes, CancellationToken cancellationToken)
     {
         var handler = items.GetItem<DomainEventHandler>();
         await handler!.SavedAsync(cancellationToken);

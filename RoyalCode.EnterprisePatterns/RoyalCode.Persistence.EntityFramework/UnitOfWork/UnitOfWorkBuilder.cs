@@ -16,7 +16,7 @@ internal class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbContext>
 {
     private readonly IServiceCollection services;
     private readonly ServiceLifetime lifetime;
-    
+
     /// <summary>
     /// Creates a new builder.
     /// </summary>
@@ -27,6 +27,9 @@ internal class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbContext>
         this.services = services;
         this.lifetime = lifetime;
     }
+
+    /// <inheritdoc />
+    public IServiceCollection Services => services;
 
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<DbContextOptionsBuilder> configurer)
