@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Aggregates", "Roy
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain Layer Patterns", "Domain Layer Patterns", "{3EED25DE-FBB1-4451-8F44-D072B43A2D66}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Appliation Layer Patterns", "Appliation Layer Patterns", "{4847AB47-2B45-4A3A-BF3B-7F010F21ED86}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application Layer Patterns", "Application Layer Patterns", "{4847AB47-2B45-4A3A-BF3B-7F010F21ED86}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.UnitOfWork.Abstractions", "RoyalCode.UnitOfWork.Abstractions\RoyalCode.UnitOfWork.Abstractions.csproj", "{0F585941-ACDB-46FA-B909-EA1FE71C7509}"
 EndProject

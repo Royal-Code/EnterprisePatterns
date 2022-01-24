@@ -24,7 +24,7 @@ namespace RoyalCode.Persistence.EntityFramework.Events.Entity
             Id = domainEvent.Id;
             Occurred = domainEvent.Occurred;
             TypeFullName = domainEvent.GetType().FullNameWithAssembly();
-            Json = JsonSerializer.Serialize(domainEvent);
+            Json = JsonSerializer.Serialize(domainEvent, domainEvent.GetType());
         }
 
 #pragma warning disable CS8618
