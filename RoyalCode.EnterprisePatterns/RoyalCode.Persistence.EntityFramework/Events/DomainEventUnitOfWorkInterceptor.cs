@@ -79,7 +79,7 @@ public class DomainEventUnitOfWorkInterceptor : IUnitOfWorkInterceptor
     public void Saved(UnitOfWorkItems items, int changes)
     {
         var handler = items.GetItem<DomainEventHandler>();
-        handler.Saved();
+        handler!.Saved();
     }
 
     /// <summary>
