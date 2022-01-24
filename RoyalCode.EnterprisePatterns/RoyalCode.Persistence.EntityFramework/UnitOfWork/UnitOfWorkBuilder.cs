@@ -87,7 +87,7 @@ internal class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbContext>
 
         foreach (var dataService in repoType.GetInterfaces())
         {
-            services.Add(ServiceDescriptor.Describe(dataService, sp => sp.GetService(repoType), lifetime));
+            services.Add(ServiceDescriptor.Describe(dataService, sp => sp.GetService(repoType)!, lifetime));
         }
         
         return this;

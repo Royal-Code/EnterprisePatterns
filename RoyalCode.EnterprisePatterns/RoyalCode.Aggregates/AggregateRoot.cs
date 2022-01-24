@@ -40,8 +40,12 @@ public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateRoot<TId>
 /// <typeparam name="TCode">The entity Code type.</typeparam>
 public abstract class AggregateRoot<TId, TCode> : AggregateRoot<TId>, IHasCode<TCode>
 {
+#pragma warning disable CS8618
+
     /// <summary>
     /// The code of the entity.
     /// </summary>
     public TCode Code { get; protected set; }
+
+#pragma warning restore CS8618
 }

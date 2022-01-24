@@ -12,14 +12,17 @@ namespace RoyalCode.Persistence.EntityFramework.Events;
 public class DomainEventHandlerFactory
 {
     private readonly IEventDispatcher dispatcher;
+    private readonly IDomainEventProcessorAggregate processorAggregate;
 
     /// <summary>
     /// Creates a new factory.
     /// </summary>
     /// <param name="dispatcher">The event dispathcer.</param>
-    public DomainEventHandlerFactory(IEventDispatcher dispatcher)
+    /// <param name="processorAggregate">The processo aggregate for domain events.</param>
+    public DomainEventHandlerFactory(IEventDispatcher dispatcher, IDomainEventProcessorAggregate processorAggregate)
     {
         this.dispatcher = dispatcher;
+        this.processorAggregate = processorAggregate;
     }
 
     /// <summary>
@@ -30,7 +33,7 @@ public class DomainEventHandlerFactory
     /// <returns>A new instance of <see cref="DomainEventHandler"/>.</returns>
     public DomainEventHandler Create(DbContext dbContext, ITransactionManager transactionManager)
     {
-        var listener = new DomainEventHandler(dispatcher, transactionManager);
+        var listener = new DomainEventHandler(dispatcher, transactionManager, processorAggregate);
         dbContext.ChangeTracker.Tracked += listener.EntityTracked;
 
         return listener;

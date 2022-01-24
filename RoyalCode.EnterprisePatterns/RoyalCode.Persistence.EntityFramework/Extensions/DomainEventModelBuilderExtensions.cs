@@ -16,7 +16,7 @@ public static class DomainEventModelBuilderExtensions
     /// </para>
     /// </summary>
     /// <param name="modelBuilder">EF model builder.</param>
-    /// <returns>The same instance of <param name="modelBuilder"></param>.</returns>
+    /// <returns>The same instance of <paramref name="modelBuilder"/>.</returns>
     public static ModelBuilder IgnoreDomainEventCollection(this ModelBuilder modelBuilder)
     {
         var propertyNames = typeof(IHasEvents).GetProperties()
