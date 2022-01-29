@@ -68,10 +68,14 @@ public class DispatchDomainEventsTests
 
 public class DispatchDomainEventsDbContext : DbContext
 {
+#pragma warning disable CS8618
+    
     public DispatchDomainEventsDbContext(DbContextOptions<DispatchDomainEventsDbContext> options)
+
         : base(options)
-    {
-    }
+    { }
+
+#pragma warning restore CS8618
 
     public DbSet<DispatchDomainEventsEntity> Entity { get; set; }
 

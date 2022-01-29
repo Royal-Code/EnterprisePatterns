@@ -37,8 +37,8 @@ public class Repository<TDbContext, TEntity> : IRepository<TEntity>
     public TEntity? Find(object id) => db.Set<TEntity>().Find(id);
     
     /// <inheritdoc/>
-    public ValueTask<TEntity?> FindAsync(object id, CancellationToken token = default)
-        => db.Set<TEntity>().FindAsync(new object[] { id }, token);
+    public async ValueTask<TEntity?> FindAsync(object id, CancellationToken token = default)
+        => await db.Set<TEntity>().FindAsync(new object[] { id }, token);
     
     /// <inheritdoc/>
     public void Add(TEntity entity) 
