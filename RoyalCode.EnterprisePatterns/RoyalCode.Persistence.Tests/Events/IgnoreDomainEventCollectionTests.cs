@@ -56,7 +56,7 @@ public class IgnoreDomainEventCollectionTests
             var entity = repository.Find(id);
             Assert.NotNull(entity);
 
-            var evt = entity.DomainEvents?.FirstOrDefault();
+            var evt = entity!.DomainEvents?.FirstOrDefault();
             Assert.Null(evt);
         }
     }
@@ -64,9 +64,14 @@ public class IgnoreDomainEventCollectionTests
 
 public class IgnoreDomainEventCollectionDbContext : DbContext
 {
-    public IgnoreDomainEventCollectionDbContext(DbContextOptions<IgnoreDomainEventCollectionDbContext> options) 
+#pragma warning disable CS8618
+
+    public IgnoreDomainEventCollectionDbContext(DbContextOptions<IgnoreDomainEventCollectionDbContext> options)
+
         : base(options)
     { }
+
+#pragma warning restore CS8618
 
     public DbSet<IgnoreDomainEventCollectionEntity> Entity { get; set; }
 
@@ -86,9 +91,13 @@ public class IgnoreDomainEventCollectionEntity : AggregateRoot<Guid>
         Description = description;
         AddEvent(new IgnoreDomainEventCollectionEntityCreated(Id));
     }
+
+#pragma warning disable CS8618
     
     protected IgnoreDomainEventCollectionEntity() { }
-    
+
+#pragma warning restore CS8618 
+
     public string Description { get; }
 }
 

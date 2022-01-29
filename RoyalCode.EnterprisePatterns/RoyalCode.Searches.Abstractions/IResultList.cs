@@ -64,5 +64,5 @@ public interface IResultList<TModel> : IResultList
     /// <param name="name">Nome da projeção.</param>
     /// <param name="defaultValue">Valor padrão.</param>
     /// <returns>O valor da projeção, ou valor padrão.</returns>
-    T GetProjection<T>(string name, T defaultValue = default);
+    T GetProjection<T>(string name, T? defaultValue = default);
 }

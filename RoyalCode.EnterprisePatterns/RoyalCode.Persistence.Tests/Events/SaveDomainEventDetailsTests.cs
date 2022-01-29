@@ -50,7 +50,7 @@ public class SaveDomainEventDetailsTests
             
             var @event = (SaveDomainEventDetailsCreated?) entity.DomainEvents?.FirstOrDefault();
             Assert.NotNull(@event);
-            Assert.Equal(entity.Id, @event.EntityId);
+            Assert.Equal(entity.Id, @event?.EntityId);
 
             id = entity.Id;
         }
@@ -62,18 +62,22 @@ public class SaveDomainEventDetailsTests
             var evtDetail = db.Events.FirstOrDefault();
             Assert.NotNull(evtDetail);
 
-            var evt = evtDetail.Deserialize<SaveDomainEventDetailsCreated>();
+            var evt = evtDetail!.Deserialize<SaveDomainEventDetailsCreated>();
             Assert.NotNull(evt);
-            Assert.Equal(id, evt.EntityId);
+            Assert.Equal(id, evt?.EntityId);
         }
     }
 }
 
 public class SaveDomainEventDetailsDbContext : DbContext
 {
+#pragma warning disable CS8618 
+
     public SaveDomainEventDetailsDbContext(DbContextOptions<SaveDomainEventDetailsDbContext> options)
         : base (options)
     { }
+
+#pragma warning restore CS8618
 
     public DbSet<SaveDomainEventDetailsEntity> Entity { get; set; }
     
@@ -105,7 +109,7 @@ public class SaveDomainEventDetailsEntity : AggregateRoot<int>
 
 public class SaveDomainEventDetailsCreated : DomainEventBase, ICreationEvent
 {
-    private readonly SaveDomainEventDetailsEntity entity;
+    private readonly SaveDomainEventDetailsEntity? entity;
 
     public SaveDomainEventDetailsCreated(SaveDomainEventDetailsEntity entity)
     {
@@ -122,6 +126,6 @@ public class SaveDomainEventDetailsCreated : DomainEventBase, ICreationEvent
     
     public void Saved()
     {
-        EntityId = entity.Id;
+        EntityId = entity!.Id;
     }
 }
