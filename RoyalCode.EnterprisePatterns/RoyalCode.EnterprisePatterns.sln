@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Persistence.Entit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Persistence.Tests", "RoyalCode.Persistence.Tests\RoyalCode.Persistence.Tests.csproj", "{2636C6E2-AA9F-4948-BF46-D0772F73D265}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Persistence.Searches.Abstractions", "RoyalCode.Persistence.Searches.Abstractions\RoyalCode.Persistence.Searches.Abstractions.csproj", "{1A528A8D-A794-41F4-A299-D00732B5D094}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,6 +86,10 @@ Global
 		{2636C6E2-AA9F-4948-BF46-D0772F73D265}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2636C6E2-AA9F-4948-BF46-D0772F73D265}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2636C6E2-AA9F-4948-BF46-D0772F73D265}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A528A8D-A794-41F4-A299-D00732B5D094}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A528A8D-A794-41F4-A299-D00732B5D094}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A528A8D-A794-41F4-A299-D00732B5D094}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A528A8D-A794-41F4-A299-D00732B5D094}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +108,7 @@ Global
 		{BC2C235F-E382-4286-8BB3-8C8E590D81F2} = {A54A32AB-DA08-4825-A246-DE5A8C69D588}
 		{C5CE5015-1A0B-44AB-AC65-BFFFD53362F5} = {BC2C235F-E382-4286-8BB3-8C8E590D81F2}
 		{2636C6E2-AA9F-4948-BF46-D0772F73D265} = {D91CABB8-AE3F-4FE8-B8E3-DEDBD6C2EDB6}
+		{1A528A8D-A794-41F4-A299-D00732B5D094} = {BC2C235F-E382-4286-8BB3-8C8E590D81F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FAC6C2E-62DE-4665-BB16-4E7D445FAB26}

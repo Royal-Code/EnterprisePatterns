@@ -1,68 +1,66 @@
 ﻿
-using System.ComponentModel;
-
 namespace RoyalCode.Searches.Abstractions;
 
 /// <summary>
 /// <para>
-///     Interface de componentes para listagem do resultado de uma pesquisa.
+///     Component interface for listing the result of a search.
 /// </para>
 /// <para>
-///     Esta interface é uma abstração para o componente que contém os itens retornados da pesquisa:
+///     This interface is an abstraction for the component that contains the returned search items:
 ///     <see cref="IResultList{TModel}"/>.
 /// </para>
 /// </summary>
 public interface IResultList
 {
     /// <summary>
-    /// Número da página exibida.
+    /// Number of the page displayed.
     /// </summary>
     int Page { get; }
 
     /// <summary>
-    /// Quantidade total de registros.
+    /// Total number of records.
     /// </summary>
     int Count { get; }
 
     /// <summary>
-    /// Quantidade de itens exibido por página.
+    /// Number of items displayed per page.
     /// </summary>
     int ItemsPerPage { get; }
 
     /// <summary>
-    /// Quantidade de páginas.
+    /// Number of pages.
     /// </summary>
     int Pages { get; }
 
     /// <summary>
-    /// The objects of ordination applied to search.
+    /// The sort objects applied to the search.
     /// </summary>
     IEnumerable<ISorting> Sortings { get; }
 
     /// <summary>
-    /// Projeções executadas durante a pesquisa.
+    /// Projections carried out during the research.
     /// </summary>
     Dictionary<string, object> Projections { get; }
 }
 
 /// <summary>
-/// Interface de componentes para listagem do resultado de uma pesquisa.
+/// Component interface for listing the result of a search.
 /// </summary>
-/// <typeparam name="TModel">Tipo de dado listado pelo resultado</typeparam>
+/// <typeparam name="TModel">Type of data listed by the result.</typeparam>
 public interface IResultList<TModel> : IResultList
 {
     /// <summary>
-    /// Lista dos dados da pesquisa.
+    /// Collection of the searched models.
     /// </summary>
     ICollection<TModel> Items { get; }
 
     /// <summary>
-    /// Obtém um valor da projeção, caso ela exista e seja do tipo informado, 
-    /// ou retorna o valor padrão, caso o valor não exista ou o tipo seja diferente.
+    /// Gets a value from the projection if it exists and is of the type entered,
+    /// or returns the default value if the value does not exist or the type is different.
     /// </summary>
-    /// <typeparam name="T">Tipo do valor da projeção.</typeparam>
-    /// <param name="name">Nome da projeção.</param>
-    /// <param name="defaultValue">Valor padrão.</param>
-    /// <returns>O valor da projeção, ou valor padrão.</returns>
+    /// <typeparam name="T">Projection value type.</typeparam>
+    /// <param name="name">Projection name.</param>
+    /// <param name="defaultValue">Default value.</param>
+    /// <returns>The projection value, or default value.</returns>
     T GetProjection<T>(string name, T? defaultValue = default);
 }

@@ -62,6 +62,24 @@ public interface ISearch<TEntity> : ISearchOptions<ISearch<TEntity>>
     /// <returns>new instance of <see cref="ISearch{TEntity, TDto}"/> with the same filters.</returns>
     ISearch<TEntity, TDto> Select<TDto>(Expression<Func<TEntity, TDto>> selectExpression)
         where TDto : class;
+
+    /// <summary>
+    /// It searches for the entities and returns them in a list of results.
+    /// </summary>
+    /// <returns>The result list.</returns>
+    IResultList<TEntity> ToList();
+
+    /// <summary>
+    /// It async searches for the entities and returns them in a list of results.
+    /// </summary>
+    /// <returns>A task to wait for the list of results.</returns>
+    Task<IResultList<TEntity>> ToListAsync();
+
+    /// <summary>
+    /// Creates a result list that will return the searched entities asynchronously.
+    /// </summary>
+    /// <returns>A task to wait for the async list of results.</returns>
+    Task<IAsyncResultList<TEntity>> ToAsyncListAsync();
 }
 
 /// <summary>
@@ -79,5 +97,38 @@ public interface ISearch<TEntity, TDto> : ISearchOptions<ISearch<TEntity, TDto>>
     where TEntity : class
     where TDto : class
 {
+    /// <summary>
+    /// <para>
+    ///     Adds a filter object to the search.
+    /// </para>
+    /// <para>
+    ///     The search engine must be able to apply this filter, otherwise an exception will be throwed.
+    /// </para>
+    /// <para>
+    ///     This filter will be applied against the <typeparamref name="TDto"/> query type.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TFilter">The filter type.</typeparam>
+    /// <param name="filter">The filter object.</param>
+    /// <returns>The same instance for chaining calls.</returns>
+    ISearch<TEntity, TDto> FilterBy<TFilter>(TFilter filter)
+        where TFilter : class;
+    
+    /// <summary>
+    /// It searches for the entities and returns them in a list of results.
+    /// </summary>
+    /// <returns>The result list.</returns>
+    IResultList<TDto> ToList();
 
+    /// <summary>
+    /// It async searches for the entities and returns them in a list of results.
+    /// </summary>
+    /// <returns>A task to wait for the list of results.</returns>
+    Task<IResultList<TDto>> ToListAsync();
+
+    /// <summary>
+    /// Creates a result list that will return the searched entities asynchronously.
+    /// </summary>
+    /// <returns>A task to wait for the async list of results.</returns>
+    Task<IAsyncResultList<TDto>> ToAsyncListAsync();
 }
