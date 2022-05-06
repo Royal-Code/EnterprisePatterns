@@ -47,12 +47,12 @@ public interface IResultList
 /// Component interface for listing the result of a search.
 /// </summary>
 /// <typeparam name="TModel">Type of data listed by the result.</typeparam>
-public interface IResultList<TModel> : IResultList
+public interface IResultList<out TModel> : IResultList
 {
     /// <summary>
     /// Collection of the searched models.
     /// </summary>
-    ICollection<TModel> Items { get; }
+    IEnumerable<TModel> Items { get; }
 
     /// <summary>
     /// Gets a value from the projection if it exists and is of the type entered,

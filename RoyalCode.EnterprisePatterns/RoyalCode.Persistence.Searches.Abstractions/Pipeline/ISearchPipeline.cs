@@ -21,18 +21,20 @@ public interface ISearchPipeline<TModel>
     /// <param name="criteria">The criteria for the search.</param>
     /// <returns>A list of results.</returns>
     IResultList<TModel> Execute(SearchCriteria criteria);
-    
-    /// <summary>
-    /// Async execute the search and it returns a list of results.
-    /// </summary>
-    /// <param name="criteria">The criteria for the search.</param>
-    /// <returns>A task of a list of results.</returns>
-    Task<IResultList<TModel>> ExecuteAsync(SearchCriteria criteria);
 
     /// <summary>
     /// Async execute the search and it returns a list of results.
     /// </summary>
     /// <param name="criteria">The criteria for the search.</param>
+    /// <param name="token">The task cancellation token.</param>
+    /// <returns>A task of a list of results.</returns>
+    Task<IResultList<TModel>> ExecuteAsync(SearchCriteria criteria, CancellationToken token);
+
+    /// <summary>
+    /// Async execute the search and it returns a list of results.
+    /// </summary>
+    /// <param name="criteria">The criteria for the search.</param>
+    /// <param name="token">The task cancellation token.</param>
     /// <returns>A task of an async list of results.</returns>
-    Task<IAsyncResultList<TModel>> AsyncExecuteAsync(SearchCriteria criteria);
+    Task<IAsyncResultList<TModel>> AsyncExecuteAsync(SearchCriteria criteria, CancellationToken token);
 }

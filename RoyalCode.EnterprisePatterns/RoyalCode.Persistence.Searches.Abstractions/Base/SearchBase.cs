@@ -64,10 +64,10 @@ public abstract class SearchBase<TEntity> : ISearch<TEntity>
     public abstract IResultList<TEntity> ToList();
 
     /// <inheritdoc />
-    public abstract Task<IResultList<TEntity>> ToListAsync();
+    public abstract Task<IResultList<TEntity>> ToListAsync(CancellationToken token);
 
     /// <inheritdoc />
-    public abstract Task<IAsyncResultList<TEntity>> ToAsyncListAsync();
+    public abstract Task<IAsyncResultList<TEntity>> ToAsyncListAsync(CancellationToken token);
 }
 
 /// <inheritdoc />
@@ -126,8 +126,8 @@ public abstract class SearchBase<TEntity, TDto> : ISearch<TEntity, TDto>
     public abstract IResultList<TDto> ToList();
 
     /// <inheritdoc />
-    public abstract Task<IResultList<TDto>> ToListAsync();
+    public abstract Task<IResultList<TDto>> ToListAsync(CancellationToken token);
 
     /// <inheritdoc />
-    public abstract Task<IAsyncResultList<TDto>> ToAsyncListAsync();
+    public abstract Task<IAsyncResultList<TDto>> ToAsyncListAsync(CancellationToken token);
 }

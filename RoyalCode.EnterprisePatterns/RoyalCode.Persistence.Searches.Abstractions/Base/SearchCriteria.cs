@@ -96,7 +96,30 @@ public class SearchCriteria
         Select = new SearchSelect(typeof(TEntity), typeof(TDto), selectExpression);
     }
 
+    /// <summary>
+    /// Whether the query should be paginated.
+    /// </summary>
+    public bool Paginate => ItemsPerPage > 0;
+    
+    /// <summary>
+    /// The number of the page that should be listed.
+    /// </summary>
+    /// <returns>The number of the page.</returns>
     public int GetPageNumber() => Page > 0 ? Page : 1;
+
+    /// <summary>
+    /// <para>
+    ///     The number of records that must be skipped in the query because of pagination.
+    /// </para>
+    /// <para>
+    ///     This calculation is performed using the page number and the quantity of items per page. 
+    /// </para>
+    /// <para>
+    ///     When the query should not be paged, this value will always be zero.
+    /// </para>
+    /// </summary>
+    /// <returns>The number of records that must be skipped.</returns>
+    public int GetSkipCount() => Paginate ? ItemsPerPage * (GetPageNumber() - 1) : 0;
     
     /// <summary>
     /// Default values for each new <see cref="SearchCriteria"/> created.

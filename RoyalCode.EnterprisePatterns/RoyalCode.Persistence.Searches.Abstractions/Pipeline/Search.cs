@@ -40,17 +40,17 @@ public class Search<TEntity> : SearchBase<TEntity>
     }
 
     /// <inheritdoc />
-    public override Task<IResultList<TEntity>> ToListAsync()
+    public override Task<IResultList<TEntity>> ToListAsync(CancellationToken token)
     {
         var pipeline = factory.Create<TEntity>();
-        return pipeline.ExecuteAsync(criteria);
+        return pipeline.ExecuteAsync(criteria, token);
     }
 
     /// <inheritdoc />
-    public override Task<IAsyncResultList<TEntity>> ToAsyncListAsync()
+    public override Task<IAsyncResultList<TEntity>> ToAsyncListAsync(CancellationToken token)
     {
         var pipeline = factory.Create<TEntity>();
-        return pipeline.AsyncExecuteAsync(criteria);
+        return pipeline.AsyncExecuteAsync(criteria, token);
     }
 }
 
@@ -79,16 +79,16 @@ public class Search<TEntity, TDto> : SearchBase<TEntity, TDto>
     }
 
     /// <inheritdoc />
-    public override Task<IResultList<TDto>> ToListAsync()
+    public override Task<IResultList<TDto>> ToListAsync(CancellationToken token)
     {
         var pipeline = factory.Create<TEntity, TDto>();
-        return pipeline.ExecuteAsync(criteria);
+        return pipeline.ExecuteAsync(criteria, token);
     }
 
     /// <inheritdoc />
-    public override Task<IAsyncResultList<TDto>> ToAsyncListAsync()
+    public override Task<IAsyncResultList<TDto>> ToAsyncListAsync(CancellationToken token)
     {
         var pipeline = factory.Create<TEntity, TDto>();
-        return pipeline.AsyncExecuteAsync(criteria);
+        return pipeline.AsyncExecuteAsync(criteria, token);
     }
 }
