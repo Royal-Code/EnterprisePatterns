@@ -63,12 +63,12 @@ public class SearchCriteria
     /// Adds a new filter to specify the search.
     /// </summary>
     /// <param name="modelType">The query model type.</param>
-    /// <param name="filterType">The filter type.</param>
     /// <param name="filter">The filter instance.</param>
-    public void AddFilter(Type modelType, Type filterType, object filter)
+    public void AddFilter<TFilter>(Type modelType, TFilter filter)
+        where TFilter : class
     {
         filters ??= new List<SearchFilter>();
-        filters.Add(new SearchFilter(modelType, filterType, filter));
+        filters.Add(new SearchFilter<TFilter>(modelType, filter));
     }
 
     /// <summary>
@@ -95,6 +95,8 @@ public class SearchCriteria
 
         Select = new SearchSelect(typeof(TEntity), typeof(TDto), selectExpression);
     }
+
+    public int GetPageNumber() => Page > 0 ? Page : 1;
     
     /// <summary>
     /// Default values for each new <see cref="SearchCriteria"/> created.

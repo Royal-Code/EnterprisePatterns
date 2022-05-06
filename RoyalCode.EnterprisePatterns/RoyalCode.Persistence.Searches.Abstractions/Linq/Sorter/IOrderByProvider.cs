@@ -22,4 +22,6 @@ public interface IOrderByProvider<TModel>
     /// <returns>An ordering handler or null if not exists.</returns>
     /// <exception cref="Exception">Optional, if no handler is configured for the order by identification.</exception>
     IOrderByHandler<TModel>? GetHandler(string orderBy);
+    
+    IOrderByHandler<TModel> GetDefaultHandler();
 }

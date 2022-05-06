@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using RoyalCode.Searches.Abstractions;
 
 namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
@@ -51,6 +52,17 @@ public class DefaultSorter<TModel> : ISorter<TModel>
             handler.Handle(builder);
         }
 
+        return builder.OrderedQueryable;
+    }
+
+    public IQueryable<TModel> DefaultOrderBy(IQueryable<TModel> query)
+    {
+        var handler = provider.GetDefaultHandler();
+        var builder = new OrderByBuilder<TModel>(query)
+        {
+            CurrentDirection = ListSortDirection.Ascending
+        };
+        handler.Handle(builder);
         return builder.OrderedQueryable;
     }
 }

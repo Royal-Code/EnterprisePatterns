@@ -26,4 +26,6 @@ public interface ISorter<TModel>
     /// <param name="sortings">The soring definitions.</param>
     /// <returns>A ordered query.</returns>
     IQueryable<TModel> OrderBy(IQueryable<TModel> query, IEnumerable<ISorting> sortings);
+
+    IQueryable<TModel> DefaultOrderBy(IQueryable<TModel> query);
 }
