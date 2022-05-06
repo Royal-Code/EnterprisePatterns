@@ -34,6 +34,7 @@
 	</ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\RoyalCode.Persistence.Searches.Abstractions\RoyalCode.Persistence.Searches.Abstractions.csproj" />
         <ProjectReference Include="..\RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj" />
 		<ProjectReference Include="..\RoyalCode.UnitOfWork.Abstractions\RoyalCode.UnitOfWork.Abstractions.csproj" />
 		<ProjectReference Include="..\RoyalCode.Aggregates\RoyalCode.Aggregates.csproj" />

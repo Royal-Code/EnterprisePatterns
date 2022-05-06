@@ -22,20 +22,26 @@ public interface ISearchOptions<TSearch>
     TSearch UsePages(int itemsPerPage = 10);
 
     /// <summary>
-    /// Número da página a ser pesquisada.
+    /// The number of the page to be searched.
     /// </summary>
+    /// <returns>The same instance of the search for chaining calls.</returns>
     TSearch FetchPage(int pageNumber);
 
     /// <summary>
-    /// Atualiza a última contagem de registros.
-    /// Utilizado para não realizar novamente o count dos registros.
+    /// <para>
+    ///     Updates the last record count.
+    /// </para>
+    /// <para>
+    ///     Used to not count the records again.
+    /// </para>
     /// </summary>
+    /// <returns>The same instance of the search for chaining calls.</returns>
     TSearch UseLastCount(int lastCount);
 
     /// <summary>
-    /// Se deve aplicar a contagem de registros.
+    /// Whether to apply record counting.
     /// </summary>
-    /// <param name="useCount"></param>
-    /// <returns></returns>
+    /// <param name="useCount">Whether to apply record counting.</param>
+    /// <returns>The same instance of the search for chaining calls.</returns>
     TSearch UseCount(bool useCount = true);
 }
