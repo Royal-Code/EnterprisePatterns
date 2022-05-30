@@ -11,7 +11,7 @@ In the **RoyalCode.Examples** directory you will find several implementations fo
 
 ## Patterns
 
-You will find an implementation for the following standards:
+You will find an implementation for the following patterns:
 
 - Entities
 - Aggregates
