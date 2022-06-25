@@ -154,7 +154,6 @@ public class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>, ISearc
 {
     private readonly ISelector<TEntity, TDto>? selector;
 
-
     /// <inheritdoc />
     public SearchPipeline(
         IQueryableProvider<TEntity> queryableProvider,

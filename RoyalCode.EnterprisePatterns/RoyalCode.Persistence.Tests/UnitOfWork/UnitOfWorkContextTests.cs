@@ -5,7 +5,7 @@ using RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics;
 using RoyalCode.UnitOfWork.Abstractions;
 using Xunit;
 
-namespace RoyalCode.Persistence.Tests;
+namespace RoyalCode.Persistence.Tests.UnitOfWork;
 
 public class UnitOfWorkContextTests
 {
