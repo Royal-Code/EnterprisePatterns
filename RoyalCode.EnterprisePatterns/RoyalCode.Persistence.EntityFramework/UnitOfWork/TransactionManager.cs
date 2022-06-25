@@ -8,7 +8,7 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 /// </summary>
 internal class TransactionManager : ITransactionManager
 {
-    private DbContext db;
+    private readonly DbContext db;
 
     /// <summary>
     /// Creates new unit of work transaction manager.

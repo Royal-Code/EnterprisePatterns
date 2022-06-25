@@ -15,7 +15,7 @@ namespace RoyalCode.Repositories.Abstractions;
 /// </para>
 /// </remarks>
 /// <typeparam name="TEntity">The entity type.</typeparam>
-public interface IAdder<TEntity>
+public interface IAdder<in TEntity>
 {
     /// <summary>
     /// <para>
@@ -128,7 +128,7 @@ public interface IFinderByGuid<TEntity>
 /// </remarks>
 /// <typeparam name="TEntity">The entity type.</typeparam>
 /// <typeparam name="TCode">The code type.</typeparam>
-public interface IFinderByCode<TEntity, TCode>
+public interface IFinderByCode<TEntity, in TCode>
     where TEntity : IHasCode<TCode>
 {
     /// <summary>

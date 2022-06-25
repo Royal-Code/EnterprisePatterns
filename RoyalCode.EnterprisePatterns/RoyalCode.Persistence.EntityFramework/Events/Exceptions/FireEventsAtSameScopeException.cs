@@ -1,7 +1,7 @@
 namespace RoyalCode.Persistence.EntityFramework.Events.Exceptions;
 
 /// <summary>
-/// Exception of the dispatch of events during the finalisation of the unit of work.
+/// Exception of the dispatch of events during the finalization of the unit of work.
 /// </summary>
 public class FireEventsAtSameScopeException : Exception
 {

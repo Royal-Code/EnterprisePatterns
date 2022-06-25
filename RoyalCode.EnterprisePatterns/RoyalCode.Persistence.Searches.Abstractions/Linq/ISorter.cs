@@ -27,5 +27,15 @@ public interface ISorter<TModel>
     /// <returns>A ordered query.</returns>
     IQueryable<TModel> OrderBy(IQueryable<TModel> query, IEnumerable<ISorting> sortings);
 
+    /// <summary>
+    /// <para>
+    ///     Applies a default sort to the query so that it can be possible to execute the paged query.
+    /// </para>
+    /// <para>
+    ///     Normally this default sorting is done on top of the Id.
+    /// </para>
+    /// </summary>
+    /// <param name="query">The query to sort.</param>
+    /// <returns>A ordered query.</returns>
     IQueryable<TModel> DefaultOrderBy(IQueryable<TModel> query);
 }

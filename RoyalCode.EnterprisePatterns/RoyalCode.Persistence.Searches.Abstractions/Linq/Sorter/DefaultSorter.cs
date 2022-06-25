@@ -55,6 +55,7 @@ public class DefaultSorter<TModel> : ISorter<TModel>
         return builder.OrderedQueryable;
     }
 
+    /// <inheritdoc />
     public IQueryable<TModel> DefaultOrderBy(IQueryable<TModel> query)
     {
         var handler = provider.GetDefaultHandler();
