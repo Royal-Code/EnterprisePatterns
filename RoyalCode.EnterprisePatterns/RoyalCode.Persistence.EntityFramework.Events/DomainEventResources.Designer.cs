@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RoyalCode.Persistence.EntityFramework.UnitOfWork {
+namespace RoyalCode.Persistence.EntityFramework.Events {
     using System;
     
     
@@ -19,17 +19,17 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class UnitOfWorkResources {
+    internal class DomainEventResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal UnitOfWorkResources() {
+        internal DomainEventResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RoyalCode.Persistence.EntityFramework.UnitOfWork.UnitOfWorkResources", typeof(UnitOfWorkResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RoyalCode.Persistence.EntityFramework.Events.DomainEventResources", typeof(DomainEventResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,20 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The DbContext used for the unit of work is not configured correctly. It is necessary to add the method call &apos;UseUnitOfWork&apos; to the DbContextOptionsBuilder of the DbContext used by the unit of work..
+        ///   Looks up a localized string similar to The service required for domain event handling was not found from DbContext as IServiceProvider..
         /// </summary>
-        internal static string InvalidaInitialization {
+        internal static string DomainEventServiceNotFound {
             get {
-                return ResourceManager.GetString("InvalidaInitialization", resourceCulture);
+                return ResourceManager.GetString("DomainEventServiceNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while firing events at same scope, see the inner exception for more details..
+        /// </summary>
+        internal static string FireEventsAtSameScopeException {
+            get {
+                return ResourceManager.GetString("FireEventsAtSameScopeException", resourceCulture);
             }
         }
     }

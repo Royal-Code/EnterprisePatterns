@@ -40,34 +40,4 @@
 		<ProjectReference Include="..\RoyalCode.Aggregates\RoyalCode.Aggregates.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="RoyalCode.EventDispatcher">
-        <Version>1.0.0-rc1</Version>
-      </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Update="Events\DomainEventResources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>DomainEventResources.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="UnitOfWork\UnitOfWorkResources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>UnitOfWorkResources.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Events\DomainEventResources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>DomainEventResources.resx</DependentUpon>
-      </Compile>
-      <Compile Update="UnitOfWork\UnitOfWorkResources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>UnitOfWorkResources.resx</DependentUpon>
-      </Compile>
-    </ItemGroup>
-
 </Project>

@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.Persistence.EntityFramework.Repositories;
-using RoyalCode.Repositories.Abstractions;
 
 namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 
@@ -30,6 +28,9 @@ internal class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbContext>
 
     /// <inheritdoc />
     public IServiceCollection Services => services;
+
+    /// <inheritdoc />
+    public ServiceLifetime Lifetime => lifetime;
 
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<DbContextOptionsBuilder> configurer)
@@ -72,24 +73,6 @@ internal class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbContext>
             builder.UseUnitOfWork();
             configurer(sp, builder);
         }, lifetime);
-        return this;
-    }
-
-    /// <inheritdoc />
-    public IUnitOfWorkBuilder<TDbContext> AddRepository<TEntity>() where TEntity : class
-    {
-        var repoType = typeof(IRepository<>).MakeGenericType(typeof(TEntity));
-        
-        services.Add(ServiceDescriptor.Describe(
-            typeof(IRepository<>).MakeGenericType(typeof(TEntity)),
-            typeof(Repository<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity)),
-            lifetime));
-
-        foreach (var dataService in repoType.GetInterfaces())
-        {
-            services.Add(ServiceDescriptor.Describe(dataService, sp => sp.GetService(repoType)!, lifetime));
-        }
-        
         return this;
     }
 }
