@@ -1,5 +1,4 @@
-﻿
-namespace RoyalCode.Persistence.EntityFramework.Extensions;
+﻿namespace RoyalCode.Persistence.EntityFramework.Events.Extensions;
 
 /// <summary>
 /// <para>

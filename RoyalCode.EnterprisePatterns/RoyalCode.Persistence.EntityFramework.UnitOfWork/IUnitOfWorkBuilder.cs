@@ -12,13 +12,18 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 /// </para>
 /// </summary>
 /// <typeparam name="TDbContext">The type of DbContext for the unit of work.</typeparam>
-public interface IUnitOfWorkBuilder<TDbContext>
+public interface IUnitOfWorkBuilder<out TDbContext>
     where TDbContext : DbContext
 {
     /// <summary>
     /// The service collection.
     /// </summary>
     IServiceCollection Services { get; }
+
+    /// <summary>
+    /// The <see cref="ServiceLifetime"/> used for register the services and the <see cref="DbContext"/>.
+    /// </summary>
+    ServiceLifetime Lifetime { get; }
 
     /// <summary>
     /// Configure the <see cref="DbContext"/> for the unit of work as pooled.
@@ -47,12 +52,4 @@ public interface IUnitOfWorkBuilder<TDbContext>
     /// <param name="configurer">Action to configure.</param>
     /// <returns>The same instance.</returns>
     IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<IServiceProvider, DbContextOptionsBuilder> configurer);
-
-    /// <summary>
-    /// Add a repository for an entity as a service, related to <see cref="DbContext"/> used by the unit of work.
-    /// </summary>
-    /// <typeparam name="TEntity">The entity type.</typeparam>
-    /// <returns>The same instance.</returns>
-    IUnitOfWorkBuilder<TDbContext> AddRepository<TEntity>()
-        where TEntity : class;
 }

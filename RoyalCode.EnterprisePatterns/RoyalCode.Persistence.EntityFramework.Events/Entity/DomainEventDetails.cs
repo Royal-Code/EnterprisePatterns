@@ -1,6 +1,6 @@
 ﻿using RoyalCode.DomainEvents;
 using RoyalCode.Entities;
-using RoyalCode.Persistence.EntityFramework.Extensions;
+using RoyalCode.Persistence.EntityFramework.Events.Extensions;
 using System.Text.Json;
 
 namespace RoyalCode.Persistence.EntityFramework.Events.Entity
