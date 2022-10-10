@@ -16,7 +16,7 @@
 			including the handling of unit of works.
 		</Description>
 		<PackageTags>
-			RoyalCode Enterprise-Patterns Persistence Unit-Of-Work
+			RoyalCode Enterprise-Patterns Persistence UoW Unit-Of-Work Unit-Of-Work-Pattern
 		</PackageTags>
 	</PropertyGroup>
 

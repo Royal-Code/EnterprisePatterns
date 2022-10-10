@@ -25,7 +25,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\RoyalCode.Entities\RoyalCode.Entities.csproj" />
-      <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework\RoyalCode.Persistence.EntityFramework.csproj" />
     </ItemGroup>
 
 </Project>

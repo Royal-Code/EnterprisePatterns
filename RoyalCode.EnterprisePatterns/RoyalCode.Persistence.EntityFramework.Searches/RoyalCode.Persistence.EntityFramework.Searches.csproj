@@ -13,16 +13,17 @@
 		<FileVersion>1.0.0</FileVersion>
 		<Description>
 			Persistence components implementation with EntityFrameworkCore,
-			including the handling of repositories.
+			including the handling of Searchable, Filters and Specifiers.
 		</Description>
 		<PackageTags>
-			RoyalCode Enterprise-Patterns Persistence Repository Repository-Pattern
+			RoyalCode Enterprise-Patterns Persistence Searchable Search Filter-Specifier-Pattern
 		</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.UnitOfWork\RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj" />
-	  <ProjectReference Include="..\RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj" />
+	  <ProjectReference Include="..\RoyalCode.Persistence.Searches.Abstractions\RoyalCode.Persistence.Searches.Abstractions.csproj" />
+	  <ProjectReference Include="..\RoyalCode.Searches.Abstractions\RoyalCode.Searches.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>
