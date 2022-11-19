@@ -1,24 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\base.targets" />
-  
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;net5;net6</TargetFrameworks>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<Import Project="..\base.targets" />
 
-  <PropertyGroup>
-    <Version>1.0.0-preview1</Version>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <FileVersion>1.0.0</FileVersion>
-    <Description>
-      Abstract components for the Domain Event Pattern.
-    </Description>
-    <PackageTags>RoyalCode Enterprise-Patterns Domain-Event Domain-Event-Pattern</PackageTags>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>$(LibraryTargetVersion)</TargetFrameworks>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\RoyalCode.Entities\RoyalCode.Entities.csproj" />
-  </ItemGroup>
-  
+	<PropertyGroup>
+		<Version>1.0.0-preview1</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
+		<Description>
+			Abstract components for the Domain Event Pattern.
+		</Description>
+		<PackageTags>RoyalCode Enterprise-Patterns Domain-Event Domain-Event-Pattern</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\RoyalCode.Entities\RoyalCode.Entities.csproj" />
+	</ItemGroup>
+
 </Project>

@@ -1,25 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\base.targets" />
+	<Import Project="..\base.targets" />
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;net5;net6</TargetFrameworks>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>$(LibraryTargetVersion)</TargetFrameworks>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <Version>1.0.0-preview1</Version>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <FileVersion>1.0.0</FileVersion>
-    <Description>
-      Abstract components for the Aggregate Pattern from Domain-Driven Design.
-    </Description>
-    <PackageTags>RoyalCode Enterprise-Patterns Aggregate Aggregate-Pattern</PackageTags>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Version>1.0.0-preview1</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
+		<Description>
+			Abstract components for the Aggregate Pattern from Domain-Driven Design.
+		</Description>
+		<PackageTags>RoyalCode Enterprise-Patterns Aggregate Aggregate-Pattern</PackageTags>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\RoyalCode.DomainEvents\RoyalCode.DomainEvents.csproj" />
-    <ProjectReference Include="..\RoyalCode.Entities\RoyalCode.Entities.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\RoyalCode.DomainEvents\RoyalCode.DomainEvents.csproj" />
+		<ProjectReference Include="..\RoyalCode.Entities\RoyalCode.Entities.csproj" />
+	</ItemGroup>
 
 </Project>

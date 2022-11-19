@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Persistence.EntityFramework.UnitOfWork;
 using RoyalCode.Repositories.Abstractions;
@@ -11,9 +10,21 @@ namespace RoyalCode.Persistence.EntityFramework.Repositories.Extensions;
 /// </summary>
 public static class UnitOfWorkBuilderExtensions
 {
-    public static IUnitOfWorkBuilder<TDbContext> AddRepositories<TDbContext>(
-        this IUnitOfWorkBuilder<TDbContext> builder, 
-        Action<IRepositoryConfigurer<TDbContext>> configure)
+    /// <summary>
+    ///     Configure repositories for the unit of work.
+    /// </summary>
+    /// <typeparam name="TUoW">The type of the unit of work.</typeparam>
+    /// <typeparam name="TDbContext">The type of the database context.</typeparam>
+    /// <param name="builder">The unit of work builder.</param>
+    /// <param name="configure">The configuration action.</param>
+    /// <returns>The same unit of work builder.</returns>
+    /// <exception cref="ArgumentNullException">
+    ///     if <paramref name="builder"/> is <see langword="null"/>.
+    ///     or if <paramref name="configure"/> is <see langword="null"/>.
+    /// </exception>
+    public static TUoW AddRepositories<TUoW, TDbContext>(
+            this TUoW builder, Action<IRepositoryConfigurer<TDbContext>> configure)
+        where TUoW : IUnitOfWorkBuilder<TDbContext>
         where TDbContext : DbContext
     {
         if (builder is null)

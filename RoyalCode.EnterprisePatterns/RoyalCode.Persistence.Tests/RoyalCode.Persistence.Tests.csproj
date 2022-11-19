@@ -1,9 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
-
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
@@ -24,7 +23,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RoyalCode.Entities\RoyalCode.Entities.csproj" />
+      <ProjectReference Include="..\RoyalCode.Aggregates\RoyalCode.Aggregates.csproj" />
+      <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Events\RoyalCode.Persistence.EntityFramework.Events.csproj" />
+      <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Repositories\RoyalCode.Persistence.EntityFramework.Repositories.csproj" />
+      <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Searches\RoyalCode.Persistence.EntityFramework.Searches.csproj" />
+      <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.UnitOfWork\RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj" />
     </ItemGroup>
 
 </Project>

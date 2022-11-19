@@ -3,10 +3,11 @@
 	<Import Project="..\base.targets" />
 
 	<PropertyGroup>
-		<TargetFrameworks>net5;net6</TargetFrameworks>
-		<Nullable>enable</Nullable>
+		<TargetFrameworks>$(AspNetCoreTargetVersion)</TargetFrameworks>
 	</PropertyGroup>
 
+	<Import Project="..\versions.targets" />
+	
 	<PropertyGroup>
 		<Version>1.0.0-preview1</Version>
 		<AssemblyVersion>1.0.0</AssemblyVersion>
@@ -20,16 +21,8 @@
 		</PackageTags>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6'">
-		<PackageReference Include="Microsoft.EntityFrameworkCore">
-			<Version>6.0.0</Version>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net5'">
-		<PackageReference Include="Microsoft.EntityFrameworkCore">
-			<Version>5.0.0</Version>
-		</PackageReference>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>

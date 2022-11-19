@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.Persistence.EntityFramework.UnitOfWork;
 using RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics;
 using RoyalCode.UnitOfWork.Abstractions;
 using Xunit;
@@ -48,18 +49,14 @@ public class InitializerInterceptorFromDIInitializerInterceptor : UnitOfWorkInte
 {
     public static bool Intercepted = false;
     public static bool ServiceFounded = false;
-    
-    public void Initializing(DbContext context)
+
+    public override void Initializing(UnitOfWorkItems items)
     {
-        var service = context.GetService<IInitializerInterceptorFromDIService>();
-        
+        var service = items.Db.GetService<IInitializerInterceptorFromDIService>();
+
         Intercepted = true;
         ServiceFounded = service != null;
     }
-
-    public void Saving(DbContext context) { }
-
-    public int Saved(DbContext context, int changes) => changes;
 }
 
 #endregion

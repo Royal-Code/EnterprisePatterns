@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\base.targets" />
+
+	<PropertyGroup>
+		<TargetFrameworks>$(AspNetCoreTargetVersion)</TargetFrameworks>
+	</PropertyGroup>
+
+</Project>

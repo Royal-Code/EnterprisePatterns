@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\base.targets" />
+
+	<PropertyGroup>
+		<TargetFrameworks>$(AspNetCoreTargetVersion)</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="..\versions.targets" />
+	
+	<PropertyGroup>
+		<Version>1.0.0-preview1</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
+		<Description>
+			Entity Framework Core extension for save change in multiples stages.
+		</Description>
+		<PackageTags>
+			RoyalCode Persistence EntityFrameWorkCore Transaction SaveChanges StagedSaveChanges
+		</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
+	</ItemGroup>
+	
+</Project>
