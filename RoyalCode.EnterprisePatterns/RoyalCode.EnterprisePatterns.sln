@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{B6D9A130-5359-4A71-A97B-703364D34B97}"
 	ProjectSection(SolutionItems) = preProject
 		base.targets = base.targets
+		versions.targets = versions.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Entities", "RoyalCode.Entities\RoyalCode.Entities.csproj", "{E6E2DDCC-0629-4BBF-98E8-EECA1CA7A8A1}"
@@ -38,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Persistence.Searc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.WorkContext.Abstractions", "RoyalCode.WorkContext.Abstractions\RoyalCode.WorkContext.Abstractions.csproj", "{D067CEAD-BE9E-4121-9288-A876A0EAE098}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Persistence.EntityFramework.Events", "RoyalCode.Persistence.EntityFramework.Events\RoyalCode.Persistence.EntityFramework.Events.csproj", "{28045EAE-D89A-43D5-957E-EAD89D506926}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Persistence.EntityFramework.Events", "RoyalCode.Persistence.EntityFramework.Events\RoyalCode.Persistence.EntityFramework.Events.csproj", "{28045EAE-D89A-43D5-957E-EAD89D506926}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{25C85B1A-CE30-4D3B-AFDD-F1C05AB9DF4C}"
 EndProject
@@ -46,11 +47,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abstactions", "Abstactions"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EntityFramework", "EntityFramework", "{8E196618-6DB1-4DB6-AE55-49F003088484}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Persistence.EntityFramework.UnitOfWork", "RoyalCode.Persistence.EntityFramework.UnitOfWork\RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj", "{61A13F69-7346-4115-B517-976BADE0B926}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Persistence.EntityFramework.UnitOfWork", "RoyalCode.Persistence.EntityFramework.UnitOfWork\RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj", "{61A13F69-7346-4115-B517-976BADE0B926}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Persistence.EntityFramework.Repositories", "RoyalCode.Persistence.EntityFramework.Repositories\RoyalCode.Persistence.EntityFramework.Repositories.csproj", "{9B833B9C-92BB-43AB-A068-5C1317F08F82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Persistence.EntityFramework.Repositories", "RoyalCode.Persistence.EntityFramework.Repositories\RoyalCode.Persistence.EntityFramework.Repositories.csproj", "{9B833B9C-92BB-43AB-A068-5C1317F08F82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Persistence.EntityFramework.Searches", "RoyalCode.Persistence.EntityFramework.Searches\RoyalCode.Persistence.EntityFramework.Searches.csproj", "{176C0178-D576-4A66-AD4E-FD44CA75D765}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Persistence.EntityFramework.Searches", "RoyalCode.Persistence.EntityFramework.Searches\RoyalCode.Persistence.EntityFramework.Searches.csproj", "{176C0178-D576-4A66-AD4E-FD44CA75D765}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Persistence.EntityFramework.WorkContext", "RoyalCode.Persistence.EntityFramework.WorkContext\RoyalCode.Persistence.EntityFramework.WorkContext.csproj", "{95E28BC1-E43B-4BB0-8136-B27119509A24}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.EntityFramework.StagedSaveChanges", "RoyalCode.EntityFramework.StagedSaveChanges\RoyalCode.EntityFramework.StagedSaveChanges.csproj", "{A851D07A-3480-4505-AEB4-83A5B61092E4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{F63F6673-DA10-41A4-9E01-02AC5125A0C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,6 +121,14 @@ Global
 		{176C0178-D576-4A66-AD4E-FD44CA75D765}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{176C0178-D576-4A66-AD4E-FD44CA75D765}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{176C0178-D576-4A66-AD4E-FD44CA75D765}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95E28BC1-E43B-4BB0-8136-B27119509A24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E28BC1-E43B-4BB0-8136-B27119509A24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95E28BC1-E43B-4BB0-8136-B27119509A24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95E28BC1-E43B-4BB0-8136-B27119509A24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A851D07A-3480-4505-AEB4-83A5B61092E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A851D07A-3480-4505-AEB4-83A5B61092E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A851D07A-3480-4505-AEB4-83A5B61092E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A851D07A-3480-4505-AEB4-83A5B61092E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -139,6 +154,9 @@ Global
 		{61A13F69-7346-4115-B517-976BADE0B926} = {8E196618-6DB1-4DB6-AE55-49F003088484}
 		{9B833B9C-92BB-43AB-A068-5C1317F08F82} = {8E196618-6DB1-4DB6-AE55-49F003088484}
 		{176C0178-D576-4A66-AD4E-FD44CA75D765} = {8E196618-6DB1-4DB6-AE55-49F003088484}
+		{95E28BC1-E43B-4BB0-8136-B27119509A24} = {8E196618-6DB1-4DB6-AE55-49F003088484}
+		{A851D07A-3480-4505-AEB4-83A5B61092E4} = {F63F6673-DA10-41A4-9E01-02AC5125A0C9}
+		{F63F6673-DA10-41A4-9E01-02AC5125A0C9} = {BC2C235F-E382-4286-8BB3-8C8E590D81F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FAC6C2E-62DE-4665-BB16-4E7D445FAB26}

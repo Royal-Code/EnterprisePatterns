@@ -9,6 +9,7 @@ using RoyalCode.Aggregates;
 using RoyalCode.DomainEvents;
 using RoyalCode.EventDispatcher;
 using RoyalCode.Persistence.EntityFramework.Events.Entity;
+using RoyalCode.Persistence.EntityFramework.Repositories.Extensions;
 using RoyalCode.Repositories.Abstractions;
 using RoyalCode.UnitOfWork.Abstractions;
 using Xunit;
@@ -31,7 +32,7 @@ public class SaveDomainEventDetailsTests
                 builder.UseDomainEventHandler();
                 builder.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
             })
-            .AddRepository<SaveDomainEventDetailsEntity>()
+            .AddRepositories(c => c.AddRepository<SaveDomainEventDetailsEntity>())
             .AddStoreDomainEventAsDetailsService();
 
         var sp = services.BuildServiceProvider();

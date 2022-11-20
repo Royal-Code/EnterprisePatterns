@@ -1,24 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\base.targets" />
+	<Import Project="..\base.targets" />
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;net5;net6</TargetFrameworks>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>$(LibraryTargetVersion)</TargetFrameworks>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <Version>1.0.0-preview1</Version>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <FileVersion>1.0.0</FileVersion>
-    <Description>
-      Abstract components for the Unit Of Work Pattern.
-      This pattern is designed to work together with the Repository Pattern.
-    </Description>
-    <PackageTags>RoyalCode Enterprise-Patterns UoW Unit-Of-Work Unit-Of-Work-Pattern</PackageTags>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Version>1.0.0-preview1</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
+		<Description>
+			Abstract components for the Unit Of Work Pattern.
+			This pattern is designed to work together with the Repository Pattern.
+		</Description>
+		<PackageTags>RoyalCode Enterprise-Patterns UoW Unit-Of-Work Unit-Of-Work-Pattern</PackageTags>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
+	</ItemGroup>
 
 </Project>

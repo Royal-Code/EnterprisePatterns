@@ -3,8 +3,7 @@
 	<Import Project="..\base.targets" />
 
 	<PropertyGroup>
-		<TargetFrameworks>net5;net6</TargetFrameworks>
-		<Nullable>enable</Nullable>
+		<TargetFrameworks>$(AspNetCoreTargetVersion)</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>

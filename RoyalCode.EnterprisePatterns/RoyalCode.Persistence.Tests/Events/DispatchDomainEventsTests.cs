@@ -5,6 +5,7 @@ using Moq;
 using RoyalCode.Aggregates;
 using RoyalCode.DomainEvents;
 using RoyalCode.EventDispatcher;
+using RoyalCode.Persistence.EntityFramework.Repositories.Extensions;
 using RoyalCode.Repositories.Abstractions;
 using RoyalCode.UnitOfWork.Abstractions;
 using Xunit;
@@ -27,7 +28,7 @@ public class DispatchDomainEventsTests
                 builder.UseInMemoryDatabase(nameof(MustDispatchDomainEvents));
                 builder.UseDomainEventHandler();
             })
-            .AddRepository<DispatchDomainEventsEntity>();
+            .AddRepositories(c => c.AddRepository<DispatchDomainEventsEntity>());
 
         var sp = services.BuildServiceProvider();
 
