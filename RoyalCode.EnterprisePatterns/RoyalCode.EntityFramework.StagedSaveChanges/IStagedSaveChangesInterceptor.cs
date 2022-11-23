@@ -12,78 +12,91 @@ namespace RoyalCode.EntityFramework.StagedSaveChanges;
 ///     by the <see cref="DbContextOptionsBuilder.AddInterceptors(IEnumerable{IInterceptor})"/> method.
 /// </para>
 /// </summary>
-public interface IUnitOfWorkInterceptor : IInterceptor
+public interface IStagedSaveChangesInterceptor : IInterceptor
 {
     /// <summary>
-    /// Invoked during the initialisation of the work unit.
-    /// </summary>
-    /// <param name="items">The shared items used by the unit of work.</param>
-    void Initializing(UnitOfWorkItems items);
-
-    /// <summary>
-    /// Invoked during the save operation of the work unit.
+    /// Invoked during the save operation of the DbContext.
     /// Its is before call the SaveChanges of the DbContext. 
     /// </summary>
-    /// <param name="items">The shared items used by the unit of work.</param>
-    void Saving(UnitOfWorkItems items);
+    /// <param name="context">The shared context used by the transaction manager.</param>
+    void Saving(StagedContext context);
 
     /// <summary>
-    /// Invoked during the save operation of the work unit.
+    /// Invoked during the save operation of the DbContext.
     /// Its is before call the SaveChanges of the DbContext. 
     /// </summary>
-    /// <param name="items">The shared items used by the unit of work.</param>
+    /// <param name="context">The shared context used by the transaction manager.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    Task SavingAsync(UnitOfWorkItems items, CancellationToken cancellationToken);
+    Task SavingAsync(StagedContext context, CancellationToken cancellationToken);
 
     /// <summary>
     /// <para>
-    ///     Invoked during the save operation of the work unit.
+    ///     Invoked during the save operation of the DbContext.
     /// </para>
     /// <para>
     ///     Is is called only when the save changes requires two stages,
     ///     and its is after the first call to the SaveChanges of the DbContext.
     /// </para> 
     /// </summary>
-    /// <param name="items">The shared items used by the unit of work.</param>
-    void Staged(UnitOfWorkItems items);
+    /// <param name="context">The shared context used by the transaction manager.</param>
+    void Staged(StagedContext context);
 
     /// <summary>
     /// <para>
-    ///     Invoked during the save operation of the work unit.
+    ///     Invoked during the save operation of the DbContext.
     /// </para>
     /// <para>
     ///     Is is called only when the save changes requires two stages,
     ///     and its is after the first call to the SaveChanges of the DbContext.
     /// </para> 
     /// </summary>
-    /// <param name="items">The shared items used by the unit of work.</param>
+    /// <param name="context">The shared context used by the transaction manager.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    Task StagedAsync(UnitOfWorkItems items, CancellationToken cancellationToken);
+    Task StagedAsync(StagedContext context, CancellationToken cancellationToken);
 
     /// <summary>
     /// <para>
-    ///     Invoked during the save operation of the work unit.
+    ///     Invoked during the save operation of the DbContext.
     ///     Its is after call the SaveChanges of the DbContext.
     /// </para>
     /// <para>
     ///     When the save changes requires two stages, its called after the second SaveChanges.
     /// </para>
     /// </summary>
-    /// <param name="items">The shared items used by the unit of work.</param>
+    /// <param name="context">The shared context used by the transaction manager.</param>
     /// <param name="changes">The number of state entries written to the database.</param>
-    void Saved(UnitOfWorkItems items, int changes);
+    void Saved(StagedContext context, int changes);
 
     /// <summary>
     /// <para>
-    ///     Invoked during the save operation of the work unit.
+    ///     Invoked during the save operation of the DbContext.
     ///     Its is after call the SaveChanges of the DbContext.
     /// </para>
     /// <para>
     ///     When the save changes requires two stages, its called after the second SaveChanges.
     /// </para>
     /// </summary>
-    /// <param name="items">The shared items used by the unit of work.</param>
+    /// <param name="context">The shared context used by the transaction manager.</param>
     /// <param name="changes">The number of state entries written to the database.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    Task SavedAsync(UnitOfWorkItems items, int changes, CancellationToken cancellationToken);
+    Task SavedAsync(StagedContext context, int changes, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// <para>
+    ///     Invoke during the save operation of the DbContext,
+    ///     when the operation fail.
+    /// </para>
+    /// </summary>
+    /// <param name="context">The shared context used by the transaction manager.</param>
+    void Failed(StagedContext context);
+
+    /// <summary>
+    /// <para>
+    ///     Invoke during the save operation of the DbContext,
+    ///     when the operation fail.
+    /// </para>
+    /// </summary>
+    /// <param name="context">The shared context used by the transaction manager.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    Task FailedAsync(StagedContext context, CancellationToken cancellationToken = default);
 }
