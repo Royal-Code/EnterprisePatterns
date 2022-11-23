@@ -28,11 +28,11 @@ internal class StagedSaveChangesInterceptor : ISaveChangesInterceptor
 
         if (transactionManager.Stage == TransactionStage.None)
         {
-            transactionManager.Saving(context);
+            transactionManager.Saving();
         }
         else if (transactionManager.Stage == TransactionStage.FirstStage)
         {
-            transactionManager.Staged(context);
+            transactionManager.Staged();
         }
 
         return result;
@@ -52,11 +52,11 @@ internal class StagedSaveChangesInterceptor : ISaveChangesInterceptor
             // second stage of save changes.
             result += context.SaveChanges();
         }
-        else if (transactionManager.Stage == TransactionStage.SecondStage)
+        else
         {
-            transactionManager.Saved(context, result);
+            transactionManager.Saved(result);
         }
-
+        
         return result;
     }
 
@@ -68,7 +68,7 @@ internal class StagedSaveChangesInterceptor : ISaveChangesInterceptor
 
         var transactionManager = context.GetService<ITransactionManager>();
 
-        transactionManager.Failed(context);
+        transactionManager.Failed();
     }
 
     public async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
@@ -83,11 +83,11 @@ internal class StagedSaveChangesInterceptor : ISaveChangesInterceptor
 
         if (transactionManager.Stage == TransactionStage.None)
         {
-            await transactionManager.SavingAsync(context, cancellationToken);
+            await transactionManager.SavingAsync(cancellationToken);
         }
         else if (transactionManager.Stage == TransactionStage.FirstStage)
         {
-            await transactionManager.StagedAsync(context, cancellationToken);
+            await transactionManager.StagedAsync(cancellationToken);
         }
 
         return result;
@@ -109,11 +109,11 @@ internal class StagedSaveChangesInterceptor : ISaveChangesInterceptor
             // second stage of save changes.
             result += await context.SaveChangesAsync(cancellationToken);
         }
-        else if (transactionManager.Stage == TransactionStage.SecondStage)
+        else
         {
-           await transactionManager.SavedAsync(context, result, cancellationToken);
+            await transactionManager.SavedAsync(result, cancellationToken);
         }
-
+        
         return result;
     }
 
@@ -126,6 +126,6 @@ internal class StagedSaveChangesInterceptor : ISaveChangesInterceptor
 
         var transactionManager = context.GetService<ITransactionManager>();
 
-        await transactionManager.FailedAsync(context, cancellationToken);
+        await transactionManager.FailedAsync(cancellationToken);
     }
 }

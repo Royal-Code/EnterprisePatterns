@@ -1,14 +1,25 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RoyalCode.EntityFramework.StagedSaveChanges.Infrastructure;
 
 /// <summary>
-/// Internal component to handle transaction of <see cref="DbContext"/> for the unit of work.
+/// <para>
+///     Internal component to manage two stage transaction of <see cref="DbContext"/>.
+/// </para>
+/// <para>
+///     This class is designed to be a service, with the same lifetime of the <see cref="DbContext"/>.
+/// </para>
 /// </summary>
-internal class TransactionManager : ITransactionManager
+internal class TransactionManager : ITransactionManager, IResettableService
 {
     private readonly DbContext db;
+    private readonly IStagedSaveChangesInterceptor interceptor;
+
+    private StagedContext stagedContext;
 
     /// <summary>
     /// Creates new unit of work transaction manager.
@@ -17,6 +28,18 @@ internal class TransactionManager : ITransactionManager
     public TransactionManager(DbContext db)
     {
         this.db = db;
+        Init();
+        
+        interceptor = ((IDbContextDependencies)db).UpdateLogger.Interceptors
+            ?.Aggregate<IStagedSaveChangesInterceptor>()
+            ?? throw new InvalidOperationException();
+    }
+
+    [MemberNotNull(nameof(stagedContext))]
+    private void Init()
+    {
+        stagedContext = new StagedContext(db, this);
+        Stage = TransactionStage.None;
     }
 
     /// <inheritdoc />
@@ -29,7 +52,10 @@ internal class TransactionManager : ITransactionManager
     public bool WillSaveChangesInTwoStages { get; private set; }
 
     /// <inheritdoc />
-    public bool HasApplicationTransactionOpened { get; internal set; }
+    public bool HasApplicationTransactionOpened { get; private set; }
+
+    /// <inheritdoc />
+    public TransactionStage Stage { get; private set; }
 
     /// <inheritdoc />
     public void RequireSaveChangesInTwoStages()
@@ -43,29 +69,108 @@ internal class TransactionManager : ITransactionManager
             return;
 
         if (Transaction is not null)
+        {
+            HasApplicationTransactionOpened = true;
             return;
+        }
 
+        WillSaveChangesInTwoStages = false;
         db.Database.BeginTransaction();
     }
 
-    internal void StagesCompleted()
+    /// <inheritdoc />
+    public async Task RequireSaveChangesInTwoStagesAsync(CancellationToken cancellationToken = default)
     {
+        if (WillSaveChangesInTwoStages)
+            return;
+
+        WillSaveChangesInTwoStages = true;
+
+        if (!IsTransactionSupported)
+            return;
+
+        if (Transaction is not null)
+        {
+            HasApplicationTransactionOpened = true;
+            return;
+        }
+
+        WillSaveChangesInTwoStages = false;
+        await db.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public void Saving()
+    {
+        Stage = TransactionStage.FirstStage;
+        interceptor.Saving(stagedContext);
+    }
+
+    public Task SavingAsync(CancellationToken cancellationToken = default)
+    {
+        Stage = TransactionStage.FirstStage;
+        return interceptor.SavingAsync(stagedContext, cancellationToken);
+    }
+
+    public void Staged()
+    {
+        Stage = TransactionStage.SecondStage;
+        interceptor.Staged(stagedContext);
+    }
+
+    public Task StagedAsync(CancellationToken cancellationToken = default)
+    {
+        Stage = TransactionStage.SecondStage;
+        return interceptor.StagedAsync(stagedContext, cancellationToken);
+    }
+    
+    public void Saved(int changes)
+    {
+        interceptor.Saved(stagedContext, changes);
+
         if (HasApplicationTransactionOpened || !WillSaveChangesInTwoStages)
             return;
 
         db.Database.CommitTransaction();
     }
 
-    /// <summary>
-    /// <para>
-    ///     Called by the unit of work after the save changes
-    /// </para>
-    /// </summary>
-    internal async Task StagesCompletedAsync(CancellationToken token)
+    public async Task SavedAsync(int changes, CancellationToken cancellationToken = default)
     {
+        await interceptor.SavedAsync(stagedContext, changes, cancellationToken);
+
         if (HasApplicationTransactionOpened || !WillSaveChangesInTwoStages)
             return;
 
-        await db.Database.CommitTransactionAsync(token);
+        await db.Database.CommitTransactionAsync(cancellationToken);
+    }
+
+    public void Failed()
+    {
+        interceptor.Failed(stagedContext);
+
+        if (HasApplicationTransactionOpened || Stage != TransactionStage.SecondStage)
+            return;
+
+        db.Database.RollbackTransaction();
+    }
+    
+    public async Task FailedAsync(CancellationToken cancellationToken = default)
+    {
+        await interceptor.FailedAsync(stagedContext, cancellationToken);
+
+        if (HasApplicationTransactionOpened || Stage != TransactionStage.SecondStage)
+            return;
+
+        await db.Database.RollbackTransactionAsync(cancellationToken);
+    }
+
+    public void ResetState()
+    {
+        Init();
+    }
+
+    public Task ResetStateAsync(CancellationToken cancellationToken = default)
+    {
+        Init();
+        return Task.CompletedTask;
     }
 }

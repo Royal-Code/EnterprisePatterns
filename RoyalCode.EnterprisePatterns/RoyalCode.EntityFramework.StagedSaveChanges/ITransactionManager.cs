@@ -60,71 +60,75 @@ public interface ITransactionManager
 
     /// <summary>
     /// <para>
-    ///     It informs that the first stage of save changes has been started.
+    ///     It informs that save changes will need to be carried out in two stages.
     /// </para>
-    /// </summary>
-    /// <param name="db">The current DbContext.</param>
-    void Saving(DbContext db);
-
-    /// <summary>
     /// <para>
-    ///     It informs that the second stage of save changes has been started.
+    ///     If transactions are supported, a transaction will be initiated
+    ///     if there is not already a transaction initiated by the application.
     /// </para>
     /// </summary>
-    /// <param name="db">The current DbContext.</param>
-    void Staged(DbContext db);
-
-    /// <summary>
-    /// <para>
-    ///     It informs that the save changes has been completed.
-    /// </para>
-    /// </summary>
-    /// <param name="context">The current DbContext.</param>
-    /// <param name="changes">The number of changes.</param>
-    void Saved(DbContext context, int changes);
-
-    /// <summary>
-    /// <para>
-    ///     It informs that the operation has been failed.
-    /// </para>
-    /// </summary>
-    /// <param name="context">The current DbContext.</param>
-    void Failed(DbContext context);
+    /// <param name="cancellationToken">The cancellation token.</param>
+    Task RequireSaveChangesInTwoStagesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <para>
     ///     It informs that the first stage of save changes has been started.
     /// </para>
     /// </summary>
-    /// <param name="context">The current DbContext.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    Task SavingAsync(DbContext context, CancellationToken cancellationToken = default);
+    void Saving();
 
     /// <summary>
     /// <para>
     ///     It informs that the second stage of save changes has been started.
     /// </para>
     /// </summary>
-    /// <param name="context">The current DbContext.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    Task StagedAsync(DbContext context, CancellationToken cancellationToken = default);
+    void Staged();
 
     /// <summary>
     /// <para>
     ///     It informs that the save changes has been completed.
     /// </para>
     /// </summary>
-    /// <param name="context">The current DbContext.</param>
     /// <param name="changes">The number of changes.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    Task SavedAsync(DbContext context, int changes, CancellationToken cancellationToken = default);
+    void Saved(int changes);
 
     /// <summary>
     /// <para>
     ///     It informs that the operation has been failed.
     /// </para>
     /// </summary>
-    /// <param name="context">The current DbContext.</param>
+    void Failed();
+
+    /// <summary>
+    /// <para>
+    ///     It informs that the first stage of save changes has been started.
+    /// </para>
+    /// </summary>
     /// <param name="cancellationToken">Cancellation token.</param>
-    Task FailedAsync(DbContext context, CancellationToken cancellationToken = default);
+    Task SavingAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// <para>
+    ///     It informs that the second stage of save changes has been started.
+    /// </para>
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    Task StagedAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// <para>
+    ///     It informs that the save changes has been completed.
+    /// </para>
+    /// </summary>
+    /// <param name="changes">The number of changes.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    Task SavedAsync(int changes, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// <para>
+    ///     It informs that the operation has been failed.
+    /// </para>
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    Task FailedAsync(CancellationToken cancellationToken = default);
 }
