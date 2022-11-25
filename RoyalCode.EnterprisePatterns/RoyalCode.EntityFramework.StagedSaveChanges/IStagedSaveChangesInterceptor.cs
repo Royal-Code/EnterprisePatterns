@@ -16,7 +16,7 @@ public interface IStagedSaveChangesInterceptor : IInterceptor
 {
     /// <summary>
     /// Invoked during the save operation of the DbContext.
-    /// Its is before call the SaveChanges of the DbContext. 
+    /// Its is before call the SaveChanges of the DbContext.
     /// </summary>
     /// <param name="context">The shared context used by the transaction manager.</param>
     void Saving(StagedContext context);
