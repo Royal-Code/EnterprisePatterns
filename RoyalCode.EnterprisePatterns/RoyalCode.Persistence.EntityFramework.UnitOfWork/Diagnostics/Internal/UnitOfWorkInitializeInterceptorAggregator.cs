@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using RoyalCode.Persistence.EntityFramework.UnitOfWork.Interceptors;
 
 namespace RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics.Internal;
 

@@ -20,7 +20,7 @@ namespace RoyalCode.UnitOfWork.Abstractions;
 ///     For databases that support transactions, you can manage them by the context of the unit of work.
 /// </para>
 /// </summary>
-public interface IUnitOfWorkContext
+public interface IUnitOfWork
 {
     /// <summary>
     /// <para>
@@ -139,3 +139,4 @@ public interface IUnitOfWorkContext
     /// </param>
     void CleanUp(bool force = true);
 }
+

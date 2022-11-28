@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using RoyalCode.UnitOfWork.Abstractions;
 
-namespace RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics;
+namespace RoyalCode.Persistence.EntityFramework.UnitOfWork.Interceptors;
 
 /// <summary>
 /// <para>
@@ -10,7 +10,7 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics;
 /// </para>
 /// <para>
 ///     In order for interceptors to work, they must be registered in the <see cref="DbContextOptionsBuilder"/>,
-///     by the <see cref="DbContextOptionsBuilder.AddInterceptors(System.Collections.Generic.IEnumerable{Microsoft.EntityFrameworkCore.Diagnostics.IInterceptor})"/> method,
+///     by the <see cref="DbContextOptionsBuilder.AddInterceptors(IEnumerable{IInterceptor})"/> method,
 ///     and the <see cref="UnitOfWorkDbContextOptionsBuilderExtensions.UseUnitOfWork"/> call included.
 /// </para>
 /// </summary>
@@ -21,14 +21,14 @@ public interface IUnitOfWorkInterceptor : IInterceptor
     /// </summary>
     /// <param name="items">The shared items used by the unit of work.</param>
     void Initializing(UnitOfWorkItems items);
-    
+
     /// <summary>
     /// Invoked during the save operation of the work unit.
     /// Its is before call the SaveChanges of the DbContext. 
     /// </summary>
     /// <param name="items">The shared items used by the unit of work.</param>
     void Saving(UnitOfWorkItems items);
-    
+
     /// <summary>
     /// Invoked during the save operation of the work unit.
     /// Its is before call the SaveChanges of the DbContext. 
@@ -48,7 +48,7 @@ public interface IUnitOfWorkInterceptor : IInterceptor
     /// </summary>
     /// <param name="items">The shared items used by the unit of work.</param>
     void Staged(UnitOfWorkItems items);
-    
+
     /// <summary>
     /// <para>
     ///     Invoked during the save operation of the work unit.
@@ -61,7 +61,7 @@ public interface IUnitOfWorkInterceptor : IInterceptor
     /// <param name="items">The shared items used by the unit of work.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     Task StagedAsync(UnitOfWorkItems items, CancellationToken cancellationToken);
-    
+
     /// <summary>
     /// <para>
     ///     Invoked during the save operation of the work unit.

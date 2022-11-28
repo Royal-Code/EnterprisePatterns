@@ -1,4 +1,4 @@
-namespace RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics;
+namespace RoyalCode.Persistence.EntityFramework.UnitOfWork.Interceptors;
 
 /// <summary>
 /// <para>

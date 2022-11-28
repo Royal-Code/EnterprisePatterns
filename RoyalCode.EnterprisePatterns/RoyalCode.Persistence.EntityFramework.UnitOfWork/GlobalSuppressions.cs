@@ -8,4 +8,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", 
     Justification = "Using EF interceptors.", 
     Scope = "member", 
-    Target = "~M:RoyalCode.Persistence.EntityFramework.UnitOfWork.UnitOfWorkContext`1.#ctor(`0)")]
+    Target = "~M:RoyalCode.Persistence.EntityFramework.UnitOfWork.UnitOfWork`1.#ctor(`0)")]

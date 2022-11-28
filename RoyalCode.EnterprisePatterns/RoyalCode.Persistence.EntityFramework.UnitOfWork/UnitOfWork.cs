@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics;
-using RoyalCode.Persistence.EntityFramework.UnitOfWork.Exceptions;
+using RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics.Internal;
+using RoyalCode.Persistence.EntityFramework.UnitOfWork.Interceptors;
 using RoyalCode.UnitOfWork.Abstractions;
 
 namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
@@ -16,7 +15,7 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 ///     Type of the <see cref="DbContext"/> that contains the mapped entities referring to the work unit context.
 /// </para>
 /// </typeparam>
-public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
+public class UnitOfWork<TDbContext> : IUnitOfWork, ITransaction
     where TDbContext : DbContext
 {
     private readonly TransactionManager transactionManager;
@@ -27,16 +26,14 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
     /// Constructor with the <see cref="DbContext"/> used in the unit of work.
     /// </summary>
     /// <param name="db">The <see cref="DbContext"/> used in the unit of work.</param>
-    public UnitOfWorkContext(TDbContext db)
+    public UnitOfWork(TDbContext db)
     {
         Db = db ?? throw new ArgumentNullException(nameof(db));
 
         transactionManager = new TransactionManager(db);
         items = new UnitOfWorkItems(db, transactionManager);
 
-        interceptor = ((IDbContextDependencies) db).UpdateLogger.Interceptors
-            ?.Aggregate<IUnitOfWorkInterceptor>()
-            ?? throw new UnitOfWorkInitializationException();
+        interceptor = Interceptors<TDbContext>.GetUnitOfWorkInterceptor(db);
 
         interceptor.Initializing(items);
     }
@@ -73,7 +70,7 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
     /// <inheritdoc/>
     public void Commit()
     {
-        if (transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
+        if (!transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
             throw new InvalidOperationException("The transaction is not created");
 
         Db.Database.CommitTransaction();
@@ -84,7 +81,7 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
     /// <inheritdoc/>
     public void Rollback()
     {
-        if (transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
+        if (!transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
             throw new InvalidOperationException("The transaction is not created");
 
         Db.Database.RollbackTransaction();
@@ -95,7 +92,7 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
     /// <inheritdoc/>
     public async Task CommitAsync()
     {
-        if (transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
+        if (!transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
             throw new InvalidOperationException("The transaction is not created");
 
         await Db.Database.CommitTransactionAsync();
@@ -106,7 +103,7 @@ public class UnitOfWorkContext<TDbContext> : IUnitOfWorkContext, ITransaction
     /// <inheritdoc/>
     public async Task RollbackAsync()
     {
-        if (transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
+        if (!transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
             throw new InvalidOperationException("The transaction is not created");
 
         await Db.Database.RollbackTransactionAsync();

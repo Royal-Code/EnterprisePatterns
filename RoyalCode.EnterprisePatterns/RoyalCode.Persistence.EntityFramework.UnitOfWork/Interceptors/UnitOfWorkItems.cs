@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
+namespace RoyalCode.Persistence.EntityFramework.UnitOfWork.Interceptors;
 
 /// <summary>
 /// Items used and shared during a unit of work.
@@ -19,12 +19,12 @@ public class UnitOfWorkItems
         Db = db;
         TransactionManager = transactionManager;
     }
-    
+
     /// <summary>
     /// The unit of work DbContext.
     /// </summary>
     public DbContext Db { get; }
-    
+
     /// <summary>
     /// The unit of work transaction manager.
     /// </summary>
@@ -39,7 +39,7 @@ public class UnitOfWorkItems
         where TItem : class
     {
         sharedItems ??= new List<object>();
-        
+
         sharedItems.Add(item);
     }
 
