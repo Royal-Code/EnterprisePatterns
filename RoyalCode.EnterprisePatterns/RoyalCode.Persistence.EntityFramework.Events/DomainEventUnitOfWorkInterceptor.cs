@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using RoyalCode.Persistence.EntityFramework.UnitOfWork;
-using RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics;
+using RoyalCode.Persistence.EntityFramework.UnitOfWork.Interceptors;
 
 namespace RoyalCode.Persistence.EntityFramework.Events;
 
