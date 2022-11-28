@@ -1,3 +1,5 @@
+Project in progress - Development in small steps, speed: super-slow.
+
 # Enterprise Patterns
 Enterprise patterns implementations
 
