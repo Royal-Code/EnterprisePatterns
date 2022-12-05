@@ -31,6 +31,46 @@ public class BaseResult : IOperationResult
     /// </summary>
     public bool Success { get; internal protected set; }
 
+
+    /// <summary>
+    /// Default constructor, with success result, until some error message is added.
+    /// </summary>
+    public BaseResult()
+    {
+        Success = true;
+    }
+
+    /// <summary>
+    /// Internal constructor for static methods factory.
+    /// </summary>
+    /// <param name="message">The message.</param>
+    internal protected BaseResult(IResultMessage message)
+    {
+        Success = message.Type != ResultMessageType.Error;
+        _messages.Add(message);
+    }
+
+    /// <summary>
+    /// Internal, for <see cref="ValueResult{TValue}"/>.
+    /// </summary>
+    /// <param name="other">Other result.</param>
+    /// <param name="success">Value of property <see cref="Success"/>.</param>
+    internal protected BaseResult(IOperationResult other, bool success)
+    {
+        Success = success;
+        _messages.AddRange(other.Messages);
+    }
+
+    /// <summary>
+    /// Internal, for <see cref="ValueResult{TValue}"/>.
+    /// </summary>
+    /// <param name="other">Other result.</param>
+    internal protected BaseResult(IOperationResult other)
+    {
+        Success = other.Success;
+        _messages.AddRange(other.Messages);
+    }
+    
     #region factory methods
 
     /// <summary>
@@ -64,7 +104,7 @@ public class BaseResult : IOperationResult
     /// <returns>New instance.</returns>
     public static BaseResult CreateFailure(Exception ex, string? property = null, string? code = null)
     {
-        return new BaseResult(ResultMessage.Error(ex));
+        return new BaseResult(ResultMessage.Error(ex, property, code));
     }
 
     /// <summary>
@@ -127,45 +167,6 @@ public class BaseResult : IOperationResult
     }
 
     #endregion
-
-    /// <summary>
-    /// Default constructor, with success result, until some error message is added.
-    /// </summary>
-    public BaseResult()
-    {
-        Success = true;
-    }
-
-    /// <summary>
-    /// Internal constructor for static methods factory.
-    /// </summary>
-    /// <param name="message">The message.</param>
-    internal protected BaseResult(IResultMessage message)
-    {
-        Success = message.Type != ResultMessageType.Error;
-        _messages.Add(message);
-    }
-
-    /// <summary>
-    /// Internal, for <see cref="ValueResult{TValue}"/>.
-    /// </summary>
-    /// <param name="other">Other result.</param>
-    /// <param name="success">Value of property <see cref="Success"/>.</param>
-    internal protected BaseResult(IOperationResult other, bool success)
-    {
-        Success = success;
-        _messages.AddRange(other.Messages);
-    }
-
-    /// <summary>
-    /// Internal, for <see cref="ValueResult{TValue}"/>.
-    /// </summary>
-    /// <param name="other">Other result.</param>
-    internal protected BaseResult(IOperationResult other)
-    {
-        Success = other.Success;
-        _messages.AddRange(other.Messages);
-    }
 
     /// <summary>
     /// Adds a message, and changes the result to failure if the message type is error.

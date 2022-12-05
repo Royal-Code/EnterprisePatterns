@@ -6,7 +6,7 @@ namespace RoyalCode.OperationResult;
 /// <summary>
 /// Extension methods for results and messages.
 /// </summary>
-public static class MessageExtensions
+public static class ResultMessageExtensions
 {
     /// <summary>
     /// <para>
@@ -64,12 +64,12 @@ public static class MessageExtensions
         return messageException.InnerException is not null
             ? new InvalidOperationInnerException(
                 messageException.Message,
-                messageException.StackTrace!,
+                messageException.StackTrace,
                 messageException.FullNameOfExceptionType,
                 messageException.InnerException.ToInvalidOperationInnerException())
             : new InvalidOperationInnerException(
                 messageException.Message,
-                messageException.StackTrace!,
+                messageException.StackTrace,
                 messageException.FullNameOfExceptionType);
     }
 

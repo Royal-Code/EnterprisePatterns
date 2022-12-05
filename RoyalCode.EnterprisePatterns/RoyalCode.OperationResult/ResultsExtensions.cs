@@ -19,15 +19,7 @@ public static class ResultExtensions
         if (result.Success)
             return result;
 
-        var exceptions = result.Messages.Where(m => m.Type == ResultMessageType.Error)
-            .Select(m => m.ToInvalidOperationException())
-            .ToList();
-
-        Exception exception = exceptions.Count == 1
-            ? exceptions.First()
-            : new AggregateException("Multiple exceptions have occurred, check the internal exceptions to see the details.", exceptions);
-
-        throw exception;
+        throw result.Messages.CreateException();
     }
 
     /// <summary>
@@ -44,7 +36,20 @@ public static class ResultExtensions
         if (result.Success)
             return result;
 
-        throw new InvalidOperationException(result.Messages.JoinMessages(" - "));
+        throw result.Messages.CreateException();
+    }
+
+    private static Exception CreateException(this IEnumerable<IResultMessage> messages)
+    {
+        var exceptions = messages.Where(m => m.Type == ResultMessageType.Error)
+            .Select(m => m.ToException())
+            .ToList();
+
+        Exception exception = exceptions.Count == 1
+            ? exceptions.First()
+            : new AggregateException("Multiple exceptions have occurred, check the internal exceptions to see the details.", exceptions);
+
+        return exception;
     }
 
     /// <summary>
@@ -101,6 +106,8 @@ public static class ResultExtensions
         var newResult = new ValueResult<TAdaptedValue>(newModel);
         return newResult.Join(result);
     }
+
+    #region Add Messages
 
     /// <summary>
     /// Adds a new message with its properties to the operation result.
@@ -252,6 +259,10 @@ public static class ResultExtensions
 
         result.AddMessage(ResultMessage.ApplicationError(ex, text));
     }
+
+    #endregion
+
+    #region With Messages
 
     /// <summary>
     /// <para>
@@ -457,4 +468,6 @@ public static class ResultExtensions
         result.AddMessage(ResultMessage.ApplicationError(ex, text));
         return result;
     }
+
+    #endregion
 }

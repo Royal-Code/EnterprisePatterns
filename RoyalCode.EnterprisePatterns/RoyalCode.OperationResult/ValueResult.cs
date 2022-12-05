@@ -131,10 +131,6 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     /// </summary>
     public TValue? Value { get; }
 
-    #region factory methods
-
-    #endregion
-
     /// <summary>
     /// Default constructor for success, with the value returned by the operation.
     /// </summary>

@@ -18,7 +18,7 @@ public class InvalidOperationInnerException : Exception
     /// <param name="fullNameOfOriginalExceptionType"></param>
     public InvalidOperationInnerException(
         string message,
-        string originalStackTrace,
+        string? originalStackTrace,
         string fullNameOfOriginalExceptionType) : base(message)
     {
         OriginalStackTrace = originalStackTrace;
@@ -34,7 +34,7 @@ public class InvalidOperationInnerException : Exception
     /// <param name="fullNameOfOriginalExceptionType"></param>
     public InvalidOperationInnerException(
         string message,
-        string originalStackTrace,
+        string? originalStackTrace,
         string fullNameOfOriginalExceptionType,
         Exception innerException) : base(message, innerException)
     {
@@ -45,7 +45,7 @@ public class InvalidOperationInnerException : Exception
     /// <summary>
     /// Gets a string representation of the immediate frames on the call stack.
     /// </summary>
-    public virtual string OriginalStackTrace { get; private set; }
+    public virtual string? OriginalStackTrace { get; private set; }
 
     /// <summary>
     /// The FullName of the exception type.
