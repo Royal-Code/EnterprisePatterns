@@ -4,7 +4,7 @@ namespace RoyalCode.OperationResult;
 /// <summary>
 /// Extension methods for results and messages.
 /// </summary>
-public static class ResultExtensions
+public static class ResultsExtensions
 {
     /// <summary>
     /// It ensures that the result is success, otherwise it fires a <see cref="InvalidOperationException"/>.
@@ -467,6 +467,89 @@ public static class ResultExtensions
 
         result.AddMessage(ResultMessage.ApplicationError(ex, text));
         return result;
+    }
+
+    #endregion
+
+    #region Has Error Code
+
+    /// <summary>
+    /// <para>
+    ///     Checks if the result has a message with the specified error code.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="code">The error code to check.</param>
+    /// <returns><see langword="true"/> if the result has a message with the specified error code, otherwise <see langword="false"/>.</returns>
+    public static bool HasErrorCode(this IOperationResult result, string code)
+    {
+        if (result is null)
+            throw new ArgumentNullException(nameof(result));
+
+        if (string.IsNullOrWhiteSpace(code))
+            throw new ArgumentNullException(nameof(code));
+
+        return result.Messages.Any(m => m.Code == code);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Checks if the result has a message with the InvalidParameters error code.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <returns><see langword="true"/> if the result has a message with the InvalidParameters error code, otherwise <see langword="false"/>.</returns>
+    public static bool HasInvalidParameters(this IOperationResult result)
+    {
+        return result.HasErrorCode(ResultErrorCodes.InvalidParameters);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Checks if the result has a message with the Validation error code.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <returns><see langword="true"/> if the result has a message with the Validation error code, otherwise <see langword="false"/>.</returns>
+    public static bool HasValidation(this IOperationResult result)
+    {
+        return result.HasErrorCode(ResultErrorCodes.Validation);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Checks if the result has a message with the Forbidden error code.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <returns><see langword="true"/> if the result has a message with the Forbidden error code, otherwise <see langword="false"/>.</returns>
+    public static bool HasForbidden(this IOperationResult result)
+    {
+        return result.HasErrorCode(ResultErrorCodes.Forbidden);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Checks if the result has a message with the NotFound error code.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <returns><see langword="true"/> if the result has a message with the NotFound error code, otherwise <see langword="false"/>.</returns>
+    public static bool HasNotFound(this IOperationResult result)
+    {
+        return result.HasErrorCode(ResultErrorCodes.NotFound);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Checks if the result has a message with the ApplicationError error code.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <returns><see langword="true"/> if the result has a message with the ApplicationError error code, otherwise <see langword="false"/>.</returns>
+    public static bool HasApplicationError(this IOperationResult result)
+    {
+        return result.HasErrorCode(ResultErrorCodes.ApplicationError);
     }
 
     #endregion
