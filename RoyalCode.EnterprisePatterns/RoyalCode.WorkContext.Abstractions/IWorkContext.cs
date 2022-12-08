@@ -6,12 +6,12 @@ namespace RoyalCode.WorkContext.Abstractions;
 
 /// <summary>
 /// <para>
-///     A <see cref="IWorkContext"/> is an extension of the <see cref="IUnitOfWorkContext"/> 
+///     A <see cref="IWorkContext"/> is an extension of the <see cref="IUnitOfWork"/> 
 ///     that enables the access to data access components related to a context,
 ///     or one could say, related to a persistence unit.
 /// </para>
 /// </summary>
-public interface IWorkContext : IUnitOfWorkContext
+public interface IWorkContext : IUnitOfWork
 {
     /// <summary>
     /// <para>

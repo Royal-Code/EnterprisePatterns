@@ -41,7 +41,7 @@ public class SaveDomainEventDetailsTests
         using (var scope = sp.CreateScope())
         {
             var repository = scope.ServiceProvider.GetService<IRepository<SaveDomainEventDetailsEntity>>()!;
-            var uow = scope.ServiceProvider.GetService<IUnitOfWorkContext>()!;
+            var uow = scope.ServiceProvider.GetService<IUnitOfWork>()!;
 
             var entity = new SaveDomainEventDetailsEntity();
             repository.Add(entity);

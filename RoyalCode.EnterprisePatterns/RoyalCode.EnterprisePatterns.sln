@@ -8,7 +8,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{B6D9A130-5359-4A71-A97B-703364D34B97}"
 	ProjectSection(SolutionItems) = preProject
 		base.targets = base.targets
-		versions.targets = versions.targets
+		aspnet-versions.targets = aspnet-versions.targets
+		lib-versions.targets = lib-versions.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Entities", "RoyalCode.Entities\RoyalCode.Entities.csproj", "{E6E2DDCC-0629-4BBF-98E8-EECA1CA7A8A1}"
@@ -58,6 +59,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.EntityFramework.StagedSaveChanges", "RoyalCode.EntityFramework.StagedSaveChanges\RoyalCode.EntityFramework.StagedSaveChanges.csproj", "{A851D07A-3480-4505-AEB4-83A5B61092E4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{F63F6673-DA10-41A4-9E01-02AC5125A0C9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.DomainEvents.SourceGenerator", "RoyalCode.DomainEvents.SourceGenerator\RoyalCode.DomainEvents.SourceGenerator.csproj", "{A2913660-0A1F-4B28-AA0A-8D103D19AC45}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.DESGenerator.Tests", "RoyalCode.DESGenerator.Tests\RoyalCode.DESGenerator.Tests.csproj", "{ACDF0F9F-8511-4955-8232-85DDA73BBE2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -129,6 +134,14 @@ Global
 		{A851D07A-3480-4505-AEB4-83A5B61092E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A851D07A-3480-4505-AEB4-83A5B61092E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A851D07A-3480-4505-AEB4-83A5B61092E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2913660-0A1F-4B28-AA0A-8D103D19AC45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2913660-0A1F-4B28-AA0A-8D103D19AC45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2913660-0A1F-4B28-AA0A-8D103D19AC45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2913660-0A1F-4B28-AA0A-8D103D19AC45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACDF0F9F-8511-4955-8232-85DDA73BBE2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACDF0F9F-8511-4955-8232-85DDA73BBE2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACDF0F9F-8511-4955-8232-85DDA73BBE2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACDF0F9F-8511-4955-8232-85DDA73BBE2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,6 +170,8 @@ Global
 		{95E28BC1-E43B-4BB0-8136-B27119509A24} = {8E196618-6DB1-4DB6-AE55-49F003088484}
 		{A851D07A-3480-4505-AEB4-83A5B61092E4} = {F63F6673-DA10-41A4-9E01-02AC5125A0C9}
 		{F63F6673-DA10-41A4-9E01-02AC5125A0C9} = {BC2C235F-E382-4286-8BB3-8C8E590D81F2}
+		{A2913660-0A1F-4B28-AA0A-8D103D19AC45} = {3EED25DE-FBB1-4451-8F44-D072B43A2D66}
+		{ACDF0F9F-8511-4955-8232-85DDA73BBE2E} = {D91CABB8-AE3F-4FE8-B8E3-DEDBD6C2EDB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FAC6C2E-62DE-4665-BB16-4E7D445FAB26}

@@ -24,7 +24,7 @@ public class UnitOfWorkContextTests
 
         var sp = services.BuildServiceProvider();
 
-        var uow = sp.GetService<IUnitOfWorkContext>();
+        var uow = sp.GetService<IUnitOfWork>();
         Assert.NotNull(uow);
         Assert.True(InitializerInterceptorFromDIInitializerInterceptor.Intercepted);
         Assert.True(InitializerInterceptorFromDIInitializerInterceptor.ServiceFounded);

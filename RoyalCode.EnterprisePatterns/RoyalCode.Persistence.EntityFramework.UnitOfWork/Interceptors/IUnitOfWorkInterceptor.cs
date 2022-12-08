@@ -6,7 +6,7 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork.Interceptors;
 
 /// <summary>
 /// <para>
-///     This is an EntityFramework interceptor that will be invoked by the <see cref="IUnitOfWorkContext"/>.
+///     This is an EntityFramework interceptor that will be invoked by the <see cref="IUnitOfWork"/>.
 /// </para>
 /// <para>
 ///     In order for interceptors to work, they must be registered in the <see cref="DbContextOptionsBuilder"/>,

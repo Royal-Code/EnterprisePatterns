@@ -1,12 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\base.targets" />
-
-	<PropertyGroup>
-		<TargetFrameworks>$(AspNetCoreTargetVersion)</TargetFrameworks>
-	</PropertyGroup>
-
-	<Import Project="..\versions.targets" />
+	<Import Project="..\aspnet-versions.targets" />
 	
 	<PropertyGroup>
 		<Version>1.0.0-preview1</Version>

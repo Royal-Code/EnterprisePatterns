@@ -1,10 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\base.targets" />
-
-	<PropertyGroup>
-		<TargetFrameworks>$(LibraryTargetVersion)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="..\lib-versions.targets" />
 
 	<PropertyGroup>
 		<Version>1.0.0-preview1</Version>
