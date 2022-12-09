@@ -17,6 +17,7 @@ public partial class UserProfile : AggregateRoot<int>
         Name = name;
         EMail = eMail;
         
+        
     }
     
     [When]

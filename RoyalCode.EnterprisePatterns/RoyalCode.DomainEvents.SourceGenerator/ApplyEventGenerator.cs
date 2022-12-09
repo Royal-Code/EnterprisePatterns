@@ -5,6 +5,52 @@ using System.Text;
 
 namespace RoyalCode.DomainEvents.SourceGenerator;
 
+[Generator(LanguageNames.CSharp)]
+public class ApplyEventIncrementalGenerator : IIncrementalGenerator
+{
+    public void Initialize(IncrementalGeneratorInitializationContext context)
+    {
+        context.RegisterPostInitializationOutput((i) => i.AddSource("WhenAttribute.g.cs", AttributeGenerator.AttributeText));
+
+        var methods = context.SyntaxProvider.CreateSyntaxProvider(HasWhenAttribute, GetMethodDeclarationSyntax)
+            .Collect()
+            .SelectMany((i, t) => i)
+            .Select((i, t) => i);
+
+
+    }
+
+    private static bool HasWhenAttribute(SyntaxNode syntaxNode, CancellationToken cancellationToken)
+    {
+        var methodDeclaration = (MethodDeclarationSyntax)syntaxNode;
+        var attributes = methodDeclaration.AttributeLists;
+        foreach (var attribute in attributes)
+        {
+            var name = ExtractName(attribute.Attributes[0].Name);
+            
+            if (name == "When" || name == "WhenAttribute")
+                return true;
+        }
+        return false;
+    }
+
+    private static string? ExtractName(NameSyntax? name)
+   {
+      return name switch
+      {
+         SimpleNameSyntax ins => ins.Identifier.Text,
+         QualifiedNameSyntax qns => qns.Right.Identifier.Text,
+         _ => null
+      };
+   }
+
+    public static MethodDeclarationSyntax GetMethodDeclarationSyntax(GeneratorSyntaxContext context, CancellationToken token)
+    {
+        return (MethodDeclarationSyntax)context.Node;
+    }
+}
+
+
 [Generator]
 public class ApplyEventGenerator : ISourceGenerator
 {
@@ -228,24 +274,46 @@ public class ApplyEventSyntaxReceiver : ISyntaxContextReceiver
 
     public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
     {
-        // any method with at least one attribute is a candidate for apply generation
+        // get all class methods with the WhenAttribute
         if (context.Node is MethodDeclarationSyntax methodDeclarationSyntax
-            && methodDeclarationSyntax.AttributeLists.Count > 0)
+            && methodDeclarationSyntax.AttributeLists.Count > 0
+            && methodDeclarationSyntax.AttributeLists[0].Attributes.Count > 0
+            && methodDeclarationSyntax.AttributeLists[0].Attributes[0].Name.ToString() == "WhenAttribute")
         {
-            // get the symbol of the method
-            var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodDeclarationSyntax);
+            // add diagnostic of the method
+            var diagnostic = Diagnostic.Create(
+                new DiagnosticDescriptor(
+                    "DomainEventsGenerator903",
+                    "Method found",
+                    "Method {0} found",
+                    "DomainEventsGenerator",
+                    DiagnosticSeverity.Info,
+                    true),
+                methodDeclarationSyntax.GetLocation(),
+                methodDeclarationSyntax.Identifier.Text);
 
-            // check if method symbos has "RoyalCode.DomainEvents.WhenAttribute"
-            var whenAttribute = methodSymbol?.GetAttributes()
-                .FirstOrDefault(x => x.AttributeClass?.ToDisplayString() == "RoyalCode.DomainEvents.WhenAttribute");
-
-            // check if has whenAttribute
-            if (whenAttribute is null)
-                return;
-
-            // create and add method to be processed
             MethodsToProcess.Add(methodDeclarationSyntax);
         }
+
+
+        // // any method with at least one attribute is a candidate for apply generation
+        // if (context.Node is MethodDeclarationSyntax methodDeclarationSyntax
+        //     && methodDeclarationSyntax.AttributeLists.Count > 0)
+        // {
+        //     // get the symbol of the method
+        //     var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodDeclarationSyntax);
+
+        //     // check if method symbos has "RoyalCode.DomainEvents.WhenAttribute"
+        //     var whenAttribute = methodSymbol?.GetAttributes()
+        //         .FirstOrDefault(x => x.AttributeClass?.ToDisplayString() == "RoyalCode.DomainEvents.WhenAttribute");
+
+        //     // check if has whenAttribute
+        //     if (whenAttribute is null)
+        //         return;
+
+        //     // create and add method to be processed
+        //     MethodsToProcess.Add(methodDeclarationSyntax);
+        // }
 
     }
 }
