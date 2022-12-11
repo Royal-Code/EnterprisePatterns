@@ -1,4 +1,8 @@
 ﻿
+#if NET5_0_OR_GREATER
+using System.Text.Json.Serialization;
+#endif
+
 namespace RoyalCode.OperationResult;
 
 /// <summary>
@@ -39,6 +43,24 @@ public class BaseResult : IOperationResult
     {
         Success = true;
     }
+
+#if NET5_0_OR_GREATER
+    /// <summary>
+    /// Constructor for deserialization.
+    /// </summary>
+    /// <param name="success">The success value.</param>
+    /// <param name="messages">The messages.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="messages"/> is null.</exception>
+    [JsonConstructor]
+    public BaseResult(bool success, IEnumerable<ResultMessage> messages)
+    {
+        if (messages is null)
+            throw new ArgumentNullException(nameof(messages));
+
+        _messages = new(messages);
+        Success = success;
+    }
+#endif
 
     /// <summary>
     /// Internal constructor for static methods factory.
