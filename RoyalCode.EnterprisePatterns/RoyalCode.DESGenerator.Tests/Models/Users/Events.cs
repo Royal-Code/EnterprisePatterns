@@ -20,12 +20,12 @@ public static class Events
 
         public EMail EMail { get; private set; }
 
-        public UserCreated(UserProfile userProfile)
+        public UserCreated(UserProfile userProfile, string userName, string name, EMail eMail)
         {
             this.userProfile = userProfile;
-            UserName = userProfile.UserName;
-            Name = userProfile.Name;
-            EMail = userProfile.EMail;
+            UserName = userName;
+            Name = name;
+            EMail = eMail;
         }
 
         [JsonConstructor]
@@ -43,8 +43,22 @@ public static class Events
         public void Saved() { }
     }
 
-    public class UserNameChanged
+    public class UserNameChanged : DomainEventBase
     {
-        public string UserName { get; internal set; }
+        public string UserName { get; }
+
+        public UserNameChanged(string userName)
+        {
+            UserName = userName;
+        }
+
+        [JsonConstructor]
+        public UserNameChanged(
+            Guid id, DateTimeOffset occurred,
+            string userName)
+            : base(id, occurred)
+        {
+            UserName = userName;
+        }
     }
 }
