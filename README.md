@@ -23,3 +23,6 @@ You will find an implementation for the following patterns:
 - Unit of Work
 - Search Filter Specifier (similar to specification)
 
+## Stats
+
+![Alt](https://repobeats.axiom.co/api/embed/499043ab3479a6716c76161c248cc7df44cd19b0.svg "Repobeats analytics image")
