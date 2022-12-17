@@ -1,7 +1,5 @@
 ﻿
-#if NET5_0_OR_GREATER
 using System.Text.Json.Serialization;
-#endif
 
 namespace RoyalCode.OperationResult;
 
@@ -203,9 +201,7 @@ public class ResultMessage : IResultMessage
     /// <exception cref="ArgumentNullException">
     ///     Case <paramref name="text"/> is null.
     /// </exception>
-#if NET5_0_OR_GREATER
     [JsonConstructor]
-#endif
     public ResultMessage(
         ResultMessageType type,
         string text,

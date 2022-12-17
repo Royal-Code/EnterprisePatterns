@@ -1,7 +1,5 @@
 ﻿
-#if NET5_0_OR_GREATER
-using System.Text.Json.Serialization;
-#endif
+using System.Text.Json;
 
 namespace RoyalCode.OperationResult;
 
@@ -23,19 +21,18 @@ public class BaseResult : IOperationResult
     /// <summary>
     /// Private list to store the messages.
     /// </summary>
-    private readonly List<IResultMessage> _messages = new();
+    protected internal readonly List<IResultMessage> messages = new();
 
     /// <summary>
     /// The result messages.
     /// </summary>
-    public IEnumerable<IResultMessage> Messages => _messages.AsReadOnly();
+    public IEnumerable<IResultMessage> Messages => messages.AsReadOnly();
 
     /// <summary>
     /// Determines whether the result of the operation was success or failure.
     /// </summary>
     public bool Success { get; internal protected set; }
-
-
+    
     /// <summary>
     /// Default constructor, with success result, until some error message is added.
     /// </summary>
@@ -44,23 +41,16 @@ public class BaseResult : IOperationResult
         Success = true;
     }
 
-#if NET5_0_OR_GREATER
     /// <summary>
-    /// Constructor for deserialization.
+    /// Default constructor for deserialize.
     /// </summary>
-    /// <param name="success">The success value.</param>
-    /// <param name="messages">The messages.</param>
-    /// <exception cref="ArgumentNullException">If <paramref name="messages"/> is null.</exception>
-    [JsonConstructor]
-    public BaseResult(bool success, IEnumerable<ResultMessage> messages)
+    /// <param name="success"></param>
+    /// <param name="messages"></param>
+    internal protected BaseResult(bool success, IEnumerable<IResultMessage> messages)
     {
-        if (messages is null)
-            throw new ArgumentNullException(nameof(messages));
-
-        _messages = new(messages);
         Success = success;
+        this.messages.AddRange(messages);
     }
-#endif
 
     /// <summary>
     /// Internal constructor for static methods factory.
@@ -69,7 +59,7 @@ public class BaseResult : IOperationResult
     internal protected BaseResult(IResultMessage message)
     {
         Success = message.Type != ResultMessageType.Error;
-        _messages.Add(message);
+        messages.Add(message);
     }
 
     /// <summary>
@@ -80,7 +70,7 @@ public class BaseResult : IOperationResult
     internal protected BaseResult(IOperationResult other, bool success)
     {
         Success = success;
-        _messages.AddRange(other.Messages);
+        messages.AddRange(other.Messages);
     }
 
     /// <summary>
@@ -90,7 +80,7 @@ public class BaseResult : IOperationResult
     internal protected BaseResult(IOperationResult other)
     {
         Success = other.Success;
-        _messages.AddRange(other.Messages);
+        messages.AddRange(other.Messages);
     }
     
     #region factory methods
@@ -188,6 +178,19 @@ public class BaseResult : IOperationResult
         return new BaseResult(ResultMessage.ApplicationError(ex, text));
     }
 
+    /// <summary>
+    /// Deserialize a json string to a <see cref="BaseResult"/>.
+    /// </summary>
+    /// <param name="json">The json string.</param>
+    /// <returns>A new instance of <see cref="BaseResult"/> from json.</returns>
+    public static BaseResult Deserialize(string json)
+    {
+        var result = ResultsSerializeContext.Deserialize(json);
+        return result == null
+            ? new BaseResult()
+            : new BaseResult(result.Success, result.Messages);
+    }
+
     #endregion
 
     /// <summary>
@@ -197,7 +200,7 @@ public class BaseResult : IOperationResult
     public void AddMessage(IResultMessage message)
     {
         Success = Success && message.Type != ResultMessageType.Error;
-        _messages.Add(message);
+        messages.Add(message);
     }
 
     /// <summary>
@@ -209,8 +212,19 @@ public class BaseResult : IOperationResult
     public virtual BaseResult Join(IOperationResult other)
     {
         Success = Success && other.Success;
-        _messages.AddRange(other.Messages);
+        messages.AddRange(other.Messages);
         return this;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Serialize this result to a json string.
+    /// </para>
+    /// </summary>
+    /// <returns>The json string.</returns>
+    public virtual string Serialize()
+    {
+        return JsonSerializer.Serialize(this, ResultsSerializeContext.Default.BaseResult);
     }
 
     private static class Immutable

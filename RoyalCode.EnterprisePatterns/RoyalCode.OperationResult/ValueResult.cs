@@ -1,7 +1,6 @@
 
-#if NET5_0_OR_GREATER
+using System.Text.Json;
 using System.Text.Json.Serialization;
-#endif
 
 namespace RoyalCode.OperationResult;
 
@@ -145,7 +144,6 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
         Success = value is not null;
     }
 
-#if NET5_0_OR_GREATER
     /// <summary>
     /// Default constructor for deserealization.
     /// </summary>
@@ -158,7 +156,6 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     {
         Value = value;
     }
-#endif
 
     /// <summary>
     /// Internal constructor for static methods factory.
@@ -234,4 +231,15 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     /// </summary>
     /// <returns>A new instance of <see cref="BaseResult"/>.</returns>
     public BaseResult ToBase() => CreateSuccess().Join(this);
+
+    /// <summary>
+    /// <para>
+    ///     Serialize this instance to a JSON string.
+    /// </para>
+    /// </summary>
+    /// <returns>The JSON string.</returns>
+    public override string Serialize()
+    {
+        return JsonSerializer.Serialize(this);
+    }
 }
