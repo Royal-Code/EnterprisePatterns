@@ -28,7 +28,7 @@ public class UnitOfWorkBuilderTests
 
         db!.Database.EnsureCreated();
         
-        var uow = sp.GetService<IUnitOfWorkContext>();
+        var uow = sp.GetService<IUnitOfWork>();
         Assert.NotNull(uow);
 
         var repo = sp.GetService<IRepository<Person>>();

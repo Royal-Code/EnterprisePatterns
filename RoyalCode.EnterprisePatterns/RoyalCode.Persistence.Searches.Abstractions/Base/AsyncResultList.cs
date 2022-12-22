@@ -30,10 +30,4 @@ public class AsyncResultList<TModel> : IAsyncResultList<TModel>
 
     /// <inheritdoc />
     public IAsyncEnumerable<TModel> Items { get; init; }
-    
-    /// <inheritdoc />
-    public T GetProjection<T>(string name, T? defaultValue = default)
-    {
-        throw new NotImplementedException();
-    }
 }

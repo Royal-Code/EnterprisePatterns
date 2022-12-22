@@ -2,7 +2,7 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork.Exceptions;
 
 /// <summary>
 /// <para>
-///     Exception of the <see cref="UnitOfWorkContext{TDbContext}"/>.
+///     Exception of the <see cref="UnitOfWork{TDbContext}"/>.
 /// </para>
 /// <para>
 ///     Occurs when the DbContext is not correctly configured to use the unit of work.
