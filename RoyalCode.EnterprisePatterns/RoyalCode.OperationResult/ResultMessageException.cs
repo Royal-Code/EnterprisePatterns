@@ -1,7 +1,5 @@
 ﻿
-#if NET5_0_OR_GREATER
 using System.Text.Json.Serialization;
-#endif
 
 namespace RoyalCode.OperationResult;
 
@@ -35,9 +33,7 @@ public class ResultMessageException
 
         originException = ex;
     }
-
-#if NET5_0_OR_GREATER
-
+    
     /// <summary>
     /// <para>
     ///     Creates a new instance with the values of the properties.
@@ -85,30 +81,6 @@ public class ResultMessageException
     /// Gets the ResultMessageException instance that represent the System.Exception that caused the current exception.
     /// </summary>
     public ResultMessageException? InnerException { get; }
-
-#else
-
-    /// <summary>
-    /// Gets a message that describes the current exception.
-    /// </summary>
-    public string Message { get; set; }
-
-    /// <summary>
-    /// Gets a string representation of the immediate frames on the call stack.
-    /// </summary>
-    public string? StackTrace { get; set; }
-
-    /// <summary>
-    /// The FullName of the exception type.
-    /// </summary>
-    public string FullNameOfExceptionType { get; set; }
-
-    /// <summary>
-    /// Gets the ResultMessageException instance that represent the System.Exception that caused the current exception.
-    /// </summary>
-    public ResultMessageException? InnerException { get; set; }
-
-#endif
 
     /// <summary>
     /// <para>

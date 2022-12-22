@@ -1,4 +1,7 @@
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace RoyalCode.OperationResult;
 
 /// <summary>
@@ -50,7 +53,7 @@ public static class ValueResult
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
     /// <returns>Nova instância.</returns>
-    public static ValueResult<TValue> CreateFailure<TValue>(TValue value, 
+    public static ValueResult<TValue> CreateFailure<TValue>(TValue value,
         Exception ex, string? property = null, string? code = null)
         => new(value, ResultMessage.Error(ex, property, code));
 
@@ -73,7 +76,7 @@ public static class ValueResult
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="text">The error text that will be used in the message.</param>
     /// <returns>New instance.</returns>
-    public static ValueResult<TValue> NotFound<TValue>(string text) 
+    public static ValueResult<TValue> NotFound<TValue>(string text)
         => new(default, ResultMessage.NotFound(text));
 
     /// <summary>
@@ -142,6 +145,19 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     }
 
     /// <summary>
+    /// Default constructor for deserealization.
+    /// </summary>
+    /// <param name="value">
+    /// <param name="success"></param>
+    /// <param name="messages"></param>
+    [JsonConstructor]
+    public ValueResult(TValue? value, bool success, IEnumerable<ResultMessage> messages)
+        : base(success, messages)
+    {
+        Value = value;
+    }
+
+    /// <summary>
     /// Internal constructor for static methods factory.
     /// </summary>
     /// <param name="message">The message.</param>
@@ -176,7 +192,7 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     /// <param name="other">Other result.</param>
     public ValueResult(TValue value, IOperationResult other) : base(other)
     {
-        if (value is null) 
+        if (value is null)
             throw new ArgumentNullException(nameof(value));
 
         Value = value;
@@ -215,4 +231,15 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     /// </summary>
     /// <returns>A new instance of <see cref="BaseResult"/>.</returns>
     public BaseResult ToBase() => CreateSuccess().Join(this);
+
+    /// <summary>
+    /// <para>
+    ///     Serialize this instance to a JSON string.
+    /// </para>
+    /// </summary>
+    /// <returns>The JSON string.</returns>
+    public override string Serialize()
+    {
+        return JsonSerializer.Serialize(this);
+    }
 }

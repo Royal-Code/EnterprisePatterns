@@ -9,12 +9,12 @@ namespace RoyalCode.OperationResult;
 public interface IOperationResult
 {
     /// <summary>
-    /// Determina se o resultado da operação foi sucesso ou falha.
+    /// Determine whether the result of the operation was success or failure.
     /// </summary>
     bool Success { get; }
 
     /// <summary>
-    /// Mensagens do resultado.
+    /// The result messages.
     /// </summary>
     IEnumerable<IResultMessage> Messages { get; }
 }

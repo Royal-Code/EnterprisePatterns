@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace RoyalCode.OperationResult;
 
 /// <summary>
@@ -79,7 +81,7 @@ public class ResultMessage : IResultMessage
     {
         return new ResultMessage(ResultMessageType.Error, text, property, code, ex);
     }
-   
+
     /// <summary>
     /// <para>
     ///     Creates a new message of error.
@@ -97,7 +99,7 @@ public class ResultMessage : IResultMessage
     {
         if (ex is null)
             throw new ArgumentNullException(nameof(ex));
-            
+
         return new ResultMessage(ResultMessageType.Error, ex.Message, property, code, ex);
     }
 
@@ -199,8 +201,9 @@ public class ResultMessage : IResultMessage
     /// <exception cref="ArgumentNullException">
     ///     Case <paramref name="text"/> is null.
     /// </exception>
+    [JsonConstructor]
     public ResultMessage(
-        ResultMessageType type, 
+        ResultMessageType type,
         string text,
         string? property = null,
         string? code = null,
