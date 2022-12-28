@@ -1,4 +1,6 @@
-﻿namespace RoyalCode.OperationResult;
+﻿using System.Net;
+
+namespace RoyalCode.OperationResult;
 
 /// <summary>
 /// <para>
@@ -28,6 +30,19 @@ public interface IResultMessage
     /// Some kind of code that can identify the type of message or the message itself.
     /// </summary>
     string? Code { get; }
+
+    /// <summary>
+    /// <para>
+    ///     Contains the values of status codes defined for HTTP.
+    /// </para>
+    /// <para>
+    ///     This is a optional property.
+    /// </para>
+    /// <para>
+    ///     Used to help convert operation results into webapi's responses.
+    /// </para>
+    /// </summary>
+    HttpStatusCode? HttpStatus { get; }
 
     /// <summary>
     /// Exception related to the message.

@@ -1,4 +1,5 @@
 ﻿
+using System.Net;
 using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResult;
@@ -116,7 +117,10 @@ public class ResultMessage : IResultMessage
     /// </returns>
     public static ResultMessage NotFound(string text)
     {
-        return new ResultMessage(ResultMessageType.Error, text, null, ResultErrorCodes.NotFound);
+        return new ResultMessage(ResultMessageType.Error, text, null, ResultErrorCodes.NotFound)
+        {
+            HttpStatus = HttpStatusCode.NotFound
+        };
     }
 
     /// <summary>
@@ -132,7 +136,10 @@ public class ResultMessage : IResultMessage
     /// </returns>
     public static ResultMessage Forbidden(string text)
     {
-        return new ResultMessage(ResultMessageType.Error, text, null, ResultErrorCodes.Forbidden);
+        return new ResultMessage(ResultMessageType.Error, text, null, ResultErrorCodes.Forbidden)
+        {
+            HttpStatus = HttpStatusCode.Forbidden
+        };
     }
 
     /// <summary>
@@ -149,7 +156,10 @@ public class ResultMessage : IResultMessage
     /// </returns>
     public static ResultMessage InvalidParameters(string text, string? property = null)
     {
-        return new ResultMessage(ResultMessageType.Error, text, property, ResultErrorCodes.InvalidParameters);
+        return new ResultMessage(ResultMessageType.Error, text, property, ResultErrorCodes.InvalidParameters)
+        {
+            HttpStatus = HttpStatusCode.BadRequest
+        };
     }
 
     /// <summary>
@@ -167,9 +177,12 @@ public class ResultMessage : IResultMessage
     /// </returns>
     public static ResultMessage ValidationError(string text, string? property = null, Exception? ex = null)
     {
-        return new ResultMessage(ResultMessageType.Error, text, property, ResultErrorCodes.Validation, ex);
+        return new ResultMessage(ResultMessageType.Error, text, property, ResultErrorCodes.Validation, ex)
+        {
+            HttpStatus = HttpStatusCode.BadRequest
+        };
     }
-
+    
     /// <summary>
     /// <para>
     ///     Creates a error message with the code from <see cref="ResultErrorCodes.ApplicationError"/>.
@@ -187,7 +200,10 @@ public class ResultMessage : IResultMessage
         if (ex is null)
             throw new ArgumentNullException(nameof(ex));
 
-        return new ResultMessage(ResultMessageType.Error, text ?? ex.Message, null, ResultErrorCodes.ApplicationError, ex);
+        return new ResultMessage(ResultMessageType.Error, text ?? ex.Message, null, ResultErrorCodes.ApplicationError, ex)
+        {
+            HttpStatus = HttpStatusCode.InternalServerError
+        };
     }
 
     /// <summary>
@@ -246,6 +262,9 @@ public class ResultMessage : IResultMessage
 
     /// <inheritdoc/>
     public ResultMessageException? Exception { get; private set; }
+
+    /// <inheritdoc/>
+    public HttpStatusCode? HttpStatus { get; set; }
 
     /// <summary>
     /// Returns the text.
