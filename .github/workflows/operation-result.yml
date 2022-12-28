@@ -21,8 +21,20 @@ jobs:
           dotnet-version: '7.0.x'
           include-prerelease: true
 
-      - name: Build and pack
+      - name: Build and pack OperationResult
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult/RoyalCode.OperationResult.csproj -c Release
+        
+      - name: Build and pack ApiResults
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult.ApiResults/RoyalCode.OperationResult.ApiResults.csproj -c Release
 
+      - name: Build and pack MvcResults
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult.MvcResults/RoyalCode.OperationResult.MvcResults.csproj -c Release
+        
+      - name: Build and pack Http
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult.Http/RoyalCode.OperationResult.Http.csproj -c Release
+      
+      - name: Build and pack FluentValidation
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult.FluentValidation/RoyalCode.OperationResult.FluentValidation.csproj -c Release
+        
       - name: Publish
         run: sudo dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
