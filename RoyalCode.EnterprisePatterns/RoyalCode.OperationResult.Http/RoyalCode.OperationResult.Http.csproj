@@ -7,7 +7,7 @@
 		<AssemblyVersion>$(OpResVer)</AssemblyVersion>
 		<FileVersion>$(OpResVer)</FileVersion>
 		<Description>
-			Implementation for the Operation Result Pattern.
+			Extension methods for deserialize operations results objects from http responses.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern</PackageTags>
 	</PropertyGroup>

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResult;
 
@@ -42,6 +43,7 @@ public interface IResultMessage
     ///     Used to help convert operation results into webapi's responses.
     /// </para>
     /// </summary>
+    [JsonIgnore] 
     HttpStatusCode? HttpStatus { get; }
 
     /// <summary>

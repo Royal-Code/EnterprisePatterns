@@ -1,4 +1,5 @@
 
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace RoyalCode.OperationResult;
@@ -554,6 +555,27 @@ public static class ResultsExtensions
     public static bool HasApplicationError(this IOperationResult result)
     {
         return result.HasErrorCode(ResultErrorCodes.ApplicationError);
+    }
+
+    #endregion
+
+    #region Has HttpStatus
+
+    /// <summary>
+    /// Check if any message has an http status code, and if so, returns that has the highest value.
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="httpStatus">The http status code.</param>
+    /// <returns><see langword="true"/> if the result has a message with any http status code, otherwise <see langword="false"/>.</returns>
+    public static bool HasHttpStatus(this IOperationResult result, [NotNullWhen(true)] out HttpStatusCode? httpStatus)
+    {
+        httpStatus = null;
+        foreach (var message in result.Messages)
+        {
+            if (message.HttpStatus.HasValue && (httpStatus is null || httpStatus < message.HttpStatus))
+                httpStatus = message.HttpStatus;
+        }
+        return httpStatus.HasValue;
     }
 
     #endregion

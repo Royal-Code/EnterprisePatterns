@@ -11,25 +11,25 @@ public static class ResultErrorCodes
     /// <summary>
     /// Errors where the parameters entered are invalid.
     /// </summary>
-    public static string InvalidParameters = "400.1";
+    public const string InvalidParameters = "400.1";
 
     /// <summary>
     /// Domain and entity state validation errors.
     /// </summary>
-    public static string Validation = "400.2";
+    public const string Validation = "400.2";
 
     /// <summary>
     /// Errors of some entity/registry not found.
     /// </summary>
-    public static string NotFound = "404.1";
+    public const string NotFound = "404.1";
 
     /// <summary>
     /// User without access or permission.
     /// </summary>
-    public static string Forbidden = "403.1";
+    public const string Forbidden = "403.1";
 
     /// <summary>
     /// Application error, exception, which is not a validation error.
     /// </summary>
-    public static string ApplicationError = "500.1";
+    public const string ApplicationError = "500.1";
 }

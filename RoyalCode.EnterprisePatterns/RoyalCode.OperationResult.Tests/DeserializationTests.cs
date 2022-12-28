@@ -94,10 +94,26 @@ public class DeserializationTests
     }
 
     [Fact]
-    public void Deserialize_ValueResult_WithContext_MustBeSameAs_WithoutContext()
+    public void Deserialize_Success_ValueResult_WithContext_MustBeSameAs_WithoutContext()
     {
         // arrange
         var result = ValueResult.CreateSuccess(new SomeStruct { Id = 12, Name = "Some name" });
+        var json = result.Serialize();
+
+        // act
+        var r1 = ValueResult.Deserialize<SomeStruct>(json);
+        var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json);
+
+        // assert
+        r1.Should().BeEquivalentTo(r2);
+    }
+
+    [Fact]
+    public void Deserialize_Failure_ValueResult_WithContext_MustBeSameAs_WithoutContext()
+    {
+        // arrange
+        var result = ValueResult.CreateSuccess(new SomeStruct { Id = 12, Name = "Some name" });
+        result.WithValidationError("Some error");
         var json = result.Serialize();
 
         // act

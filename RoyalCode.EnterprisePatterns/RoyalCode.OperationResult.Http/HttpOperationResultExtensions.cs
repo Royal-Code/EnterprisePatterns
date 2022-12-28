@@ -1,8 +1,8 @@
-﻿using RoyalCode.OperationResult.Serialization;
-using System.Net;
+﻿using RoyalCode.OperationResult;
+using RoyalCode.OperationResult.Serialization;
 using System.Net.Http.Json;
 
-namespace RoyalCode.OperationResult;
+namespace System.Net.Http;
 
 /// <summary>
 /// <para>

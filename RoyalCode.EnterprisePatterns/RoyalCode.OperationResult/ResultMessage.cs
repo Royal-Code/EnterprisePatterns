@@ -250,6 +250,16 @@ public class ResultMessage : IResultMessage
         Property = property;
         Code = code;
         Exception = exception;
+        if (code is not null)
+            HttpStatus = code switch
+            {
+                ResultErrorCodes.NotFound => HttpStatusCode.NotFound,
+                ResultErrorCodes.Forbidden => HttpStatusCode.Forbidden,
+                ResultErrorCodes.InvalidParameters => HttpStatusCode.BadRequest,
+                ResultErrorCodes.Validation => HttpStatusCode.BadRequest,
+                ResultErrorCodes.ApplicationError => HttpStatusCode.InternalServerError,
+                _ => null
+            };
     }
 
     internal ResultMessage(
@@ -284,6 +294,7 @@ public class ResultMessage : IResultMessage
     public ResultMessageException? Exception { get; private set; }
 
     /// <inheritdoc/>
+    [JsonIgnore]
     public HttpStatusCode? HttpStatus { get; set; }
 
     /// <summary>
