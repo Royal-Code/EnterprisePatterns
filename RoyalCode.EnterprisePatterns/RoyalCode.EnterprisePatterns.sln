@@ -64,9 +64,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.OperationResult.T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Http", "Http", "{E08AE8FB-8B8C-4910-8E6B-71124505D09B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.OperationResult.Http", "RoyalCode.OperationResult.Http\RoyalCode.OperationResult.Http.csproj", "{481DBEBD-2137-4153-A6FB-CA2801DFE94C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.OperationResult.Http", "RoyalCode.OperationResult.Http\RoyalCode.OperationResult.Http.csproj", "{481DBEBD-2137-4153-A6FB-CA2801DFE94C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.OperationResult.ApiResults", "RoyalCode.OperationResult.ApiResults\RoyalCode.OperationResult.ApiResults.csproj", "{0067C422-E1DF-425A-94D3-AE662E3F96FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.OperationResult.ApiResults", "RoyalCode.OperationResult.ApiResults\RoyalCode.OperationResult.ApiResults.csproj", "{0067C422-E1DF-425A-94D3-AE662E3F96FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.OperationResult.MvcResults", "RoyalCode.OperationResult.MvcResults\RoyalCode.OperationResult.MvcResults.csproj", "{ABD8C63B-2849-48F1-9479-7758594C9103}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -150,6 +152,10 @@ Global
 		{0067C422-E1DF-425A-94D3-AE662E3F96FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0067C422-E1DF-425A-94D3-AE662E3F96FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0067C422-E1DF-425A-94D3-AE662E3F96FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABD8C63B-2849-48F1-9479-7758594C9103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABD8C63B-2849-48F1-9479-7758594C9103}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABD8C63B-2849-48F1-9479-7758594C9103}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABD8C63B-2849-48F1-9479-7758594C9103}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -182,6 +188,7 @@ Global
 		{E08AE8FB-8B8C-4910-8E6B-71124505D09B} = {BC2C235F-E382-4286-8BB3-8C8E590D81F2}
 		{481DBEBD-2137-4153-A6FB-CA2801DFE94C} = {E08AE8FB-8B8C-4910-8E6B-71124505D09B}
 		{0067C422-E1DF-425A-94D3-AE662E3F96FA} = {E08AE8FB-8B8C-4910-8E6B-71124505D09B}
+		{ABD8C63B-2849-48F1-9479-7758594C9103} = {E08AE8FB-8B8C-4910-8E6B-71124505D09B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FAC6C2E-62DE-4665-BB16-4E7D445FAB26}

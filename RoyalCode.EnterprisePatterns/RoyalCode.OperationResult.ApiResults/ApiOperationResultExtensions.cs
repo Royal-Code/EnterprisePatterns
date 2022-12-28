@@ -6,116 +6,114 @@ namespace Microsoft.AspNetCore.Http;
 /// <summary>
 /// Extensions for adapt <see cref="IOperationResult"/> to <see cref="IResult"/>.
 /// </summary>
-public static partial class ApiOperationResultExtensions
+public static partial class ApiResults
 {
     /// <summary>
-    /// Cria um sucesso padrão, sem mensagem.
+    /// Creates a default success, with no message.
     /// </summary>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
-    public static IResult Ok() => Results.Ok();
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
+    public static IResult Ok() => Results.Ok(BaseResult.ImmutableSuccess);
 
     /// <summary>
-    /// Cria um sucesso padrão, incluindo um objeto de retorno.
+    /// Creates a default success, including a return object.
     /// </summary>
-    /// <typeparam name="T">O tipo do objeto de retorno.</typeparam>
-    /// <param name="value">O objeto de retorno.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <typeparam name="T">The type of the return object.</typeparam>
+    /// <param name="value">The return object.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult Ok<T>(T value) => Results.Ok(ValueResult.CreateSuccess(value));
 
     /// <summary>
-    /// Cria um sucesso padrão, incluindo um objeto de retorno e status code 201 (Created).
+    /// Creates a default success, including a return object and status code 201 (Created).
     /// </summary>
-    /// <typeparam name="T">O tipo do objeto de retorno.</typeparam>
-    /// <param name="uri">A URI para o recurso criado.</param>
-    /// <param name="value">O objeto de retorno.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <typeparam name="T">The type of the return object.</typeparam>
+    /// <param name="uri">The URI of the created resource.</param>
+    /// <param name="value">The return object.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult Created<T>(string uri, T value)
         => Results.Created(uri, ValueResult.CreateSuccess(value));
 
     /// <summary>
-    /// Cria um sucesso padrão, incluindo um objeto de retorno e status code 201 (Created).
+    /// Creates a default success, including a return object and status code 201 (Created).
     /// </summary>
-    /// <typeparam name="T">O tipo do objeto de retorno.</typeparam>
-    /// <param name="uri">A URI para o recurso criado.</param>
-    /// <param name="value">O objeto de retorno.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <typeparam name="T">The type of the return object.</typeparam>
+    /// <param name="uri">The URI of the created resource.</param>
+    /// <param name="value">The return object.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult Created<T>(Uri uri, T value)
         => Results.Created(uri, ValueResult.CreateSuccess(value));
 
 
     /// <summary>
-    /// Cria um erro interno a partir da exception.
+    /// Creates an internal error from the exception.
     /// </summary>
-    /// <param name="ex">A exception.</param>
-    /// <param name="text">O texto a ser adicionado ao resultado, opcional, quando não informado é utilizada a mensagem da exception.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="ex">The exception.</param>
+    /// <param name="text">The text to be added to the result, optional, when not informed the exception message is used.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult ApplicationError(Exception ex, string? text = null)
         => Results.Json(BaseResult.ApplicationError(ex, text), statusCode: StatusCodes.Status500InternalServerError);
 
     /// <summary>
-    /// Cria um resultado de falha com status code 404 (Not Found).
+    /// Creates a failure result with status code 404 (Not Found).
     /// </summary>
-    /// <param name="message">A mensagem de erro.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="message">The message to be added to the result.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult NotFound(string message)
         => Results.NotFound(BaseResult.NotFound(message));
 
     /// <summary>
-    /// Cria um resultado de falha com status code 403 (Forbidden).
+    /// Creates a failure result with status code 403 (Forbidden).
     /// </summary>
-    /// <param name="message">A mensagem de erro.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="message">The message to be added to the result.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult Forbidden(string message)
         => Results.Json(BaseResult.Forbidden(message), statusCode: StatusCodes.Status403Forbidden);
 
     /// <summary>
-    /// Cria um resultado de falha com status code 400 (Bad Request).
+    /// Creates a failure result with status code 400 (Bad Request).
     /// </summary>
-    /// <param name="message">A mensagem de erro.</param>
-    /// <param name="property">O nome da propriedade que gerou o erro, opcional.</param>
+    /// <param name="message">The message to be added to the result.</param>
+    /// <param name="property">The property name that caused the error, optional.</param>
     /// <param name="ex">A exception que gerou o erro, opcional.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult BadRequest(string message, string? property = null, Exception? ex = null)
         => Results.BadRequest(BaseResult.ValidationError(message, property, ex));
 
     /// <summary>
-    /// Cria um <see cref="IResult"/> a partir do <see cref="IOperationResult"/> informando o status code desejado.
+    /// Creates a <see cref="IResult"/> from the <see cref="IOperationResult"/> informing the necessary status code.
     /// </summary>
-    /// <param name="statusCode">O status code desejado.</param>
-    /// <param name="result">O resultado da operação.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="statusCode">The status code.</param>
+    /// <param name="result">The <see cref="IOperationResult"/>.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult StatusCode(int statusCode, IOperationResult result)
         => Results.Json(result, statusCode: statusCode);
 
     /// <summary>
-    /// Cria um <see cref="IResult"/> com um resultado de erro e informando o status code desejado.
+    /// Creates a <see cref="IResult"/> with an error message and informing the necessary status code.
     /// </summary>
-    /// <param name="statusCode">O status code desejado.</param>
-    /// <param name="errorMessage">A mensagem de erro.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="statusCode">The status code.</param>
+    /// <param name="errorMessage">The error message.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult StatusCode(int statusCode, string errorMessage)
         => Results.Json(BaseResult.CreateFailure(errorMessage), statusCode: statusCode);
 
     /// <summary>
-    /// Cria um <see cref="IResult"/> com um resultado de erro, um objeto de retorno
-    /// e informando o status code desejado.
+    /// Creates a <see cref="IResult"/> with a value and an error message and informing the necessary status code.
     /// </summary>
-    /// <typeparam name="T">O tipo do objeto de retorno.</typeparam>
-    /// <param name="value">O objeto de retorno.</param>
-    /// <param name="statusCode">O status code desejado.</param>
-    /// <param name="errorMessage">A mensagem de erro.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <typeparam name="T">The type of the return object.</typeparam>
+    /// <param name="value">The return object.</param>
+    /// <param name="statusCode">The status code.</param>
+    ///<param name="errorMessage">The error message.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult StatusCode<T>(T value, int statusCode, string errorMessage)
         => Results.Json(ValueResult.CreateFailure(value, errorMessage), statusCode: statusCode);
 
     /// <summary>
-    /// Cria um <see cref="IResult"/> com um resultado de sucesso, um objeto de retorno
-    /// e informando o status code desejado.
+    /// Creates a <see cref="IResult"/> with a value and informing the necessary status code.
     /// </summary>
-    /// <typeparam name="T">O tipo do objeto de retorno.</typeparam>
-    /// <param name="value">O objeto de retorno.</param>
-    /// <param name="statusCode">O status code desejado.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <typeparam name="T">The type of the return object.</typeparam>
+    /// <param name="value">The return object.</param>
+    /// <param name="statusCode">The status code.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult StatusCode<T>(T value, int statusCode)
         => Results.Json(ValueResult.CreateSuccess(value), statusCode: statusCode);
 }
@@ -128,11 +126,11 @@ public static partial class ApiOperationResultExtensions
 public static partial class ApiResults
 {
     /// <summary>
-    ///     Cria um <see cref="IResult" /> a partir do resultado da operação com o "Status Code" correspondente
-    ///     aos valores do resultado.
+    ///     Creates a <see cref="IResult" /> from the operation result 
+    ///     with the "Status Code" corresponding to the result values.
     /// </summary>
-    /// <param name="result">O resultado da operação.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="result">The operation result.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult ToHttpResult(this IOperationResult result)
     {
         if (result.HasHttpStatus(out var statusCode))
@@ -153,16 +151,16 @@ public static partial class ApiResults
 
     /// <summary>
     /// <para>
-    ///     Cria um <see cref="IResult" /> a partir do resultado da operação com o "Status Code" correspondente.
-    ///     aos valores do resultado.
+    ///     Creates a <see cref="IResult" /> from the operation result 
+    ///     with the "Status Code" corresponding to the result values.
     /// </para>
     /// <para>
     ///     Em caso de sucesso é returnado o <see cref="IResult" /> com o "Status Code" 201 (Created).
     /// </para>
     /// </summary>
-    /// <param name="result">O resultado da operação.</param>
-    /// <param name="uri">A URI para o recurso criado.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="result">The operation result.</param>
+    /// <param name="uri">The URI of the created resource.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult ToHttpResult(this IOperationResult result, string? uri)
     {
         if (result.Success && uri is not null)
@@ -180,11 +178,11 @@ public static partial class ApiResults
 public static partial class ApiResults
 {
     /// <summary>
-    ///     Cria um <see cref="IResult" /> a partir do resultado da operação com o "Status Code" correspondente
-    ///     aos valores do resultado.
+    ///     Creates a <see cref="IResult" /> from the operation result 
+    ///     with the "Status Code" corresponding to the result values.
     /// </summary>
-    /// <param name="result">O resultado da operação.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="result">The operation result.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult ToHttpResult(this IOperationResult result)
     {
         if (result.HasHttpStatus(out var statusCode))
@@ -205,16 +203,16 @@ public static partial class ApiResults
 
     /// <summary>
     /// <para>
-    ///     Cria um <see cref="IResult" /> a partir do resultado da operação com o "Status Code" correspondente.
-    ///     aos valores do resultado.
+    ///     Creates a <see cref="IResult" /> from the operation result 
+    ///     with the "Status Code" corresponding to the result values.
     /// </para>
     /// <para>
     ///     Em caso de sucesso é returnado o <see cref="IResult" /> com o "Status Code" 201 (Created).
     /// </para>
     /// </summary>
-    /// <param name="result">O resultado da operação.</param>
-    /// <param name="uri">A URI para o recurso criado.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="result">The operation result.</param>
+    /// <param name="uri">The URI of the created resource.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult ToHttpResult(this IOperationResult result, string? uri)
     {
         if (result.Success && uri is not null)
@@ -223,11 +221,11 @@ public static partial class ApiResults
     }
 
     /// <summary>
-    ///     Cria um <see cref="IResult" /> a partir do resultado da operação com o "Status Code" correspondente
-    ///     aos valores do resultado.
+    ///     Creates a <see cref="IResult" /> from the operation result 
+    ///     with the "Status Code" corresponding to the result values.
     /// </summary>
-    /// <param name="result">O resultado da operação.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="result">The operation result.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult ToHttpResult<T>(this IOperationResult<T> result)
     {
         if (result.HasHttpStatus(out var statusCode))
@@ -248,16 +246,16 @@ public static partial class ApiResults
 
     /// <summary>
     /// <para>
-    ///     Cria um <see cref="IResult" /> a partir do resultado da operação com o "Status Code" correspondente.
-    ///     aos valores do resultado.
+    ///     Creates a <see cref="IResult" /> from the operation result 
+    ///     with the "Status Code" corresponding to the result values.
     /// </para>
     /// <para>
-    ///     Em caso de sucesso é returnado o <see cref="IResult" /> com o "Status Code" 201 (Created).
+    ///     On success a <see cref="IResult" /> with "Status Code" 201 (Created) is returned.
     /// </para>
     /// </summary>
-    /// <param name="result">O resultado da operação.</param>
-    /// <param name="uri">A URI para o recurso criado.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="result">The operation result.</param>
+    /// <param name="uri">The URI of the created resource.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult ToHttpResult<T>(this IOperationResult<T> result, string? uri)
     {
         if (result.Success && uri is not null)
@@ -266,11 +264,11 @@ public static partial class ApiResults
     }
 
     /// <summary>
-    /// Cria um <see cref="IResult" /> com o "Status Code" 500 (Internal Server Error) a partir da exceção.
+    /// Creates a <see cref="IResult" /> with "Status Code" 500 (Internal Server Error) from the exception.
     /// </summary>
-    /// <param name="exception">A exceção.</param>
-    /// <param name="text">O texto a ser adicionado ao resultado, opcional, quando não informado é utilizada a mensagem da exception.</param>
-    /// <returns>O <see cref="IResult" /> criado.</returns>
+    /// <param name="exception">The exception.</param>
+    /// <param name="text">The text to be included as a message in the result.</param>
+    /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult ToHttpResult(this Exception exception, string? text = null)
         => Results.Json(BaseResult.ApplicationError(exception, text), statusCode: StatusCodes.Status500InternalServerError);
 }
