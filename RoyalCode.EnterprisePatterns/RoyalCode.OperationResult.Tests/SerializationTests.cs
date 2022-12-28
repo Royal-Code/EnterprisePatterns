@@ -30,7 +30,7 @@ public class SerializationTests
         var json = JsonSerializer.Serialize(result);
 
         // assert
-        json.Should().Be("""{"Messages":[{"Type":1,"Text":"Warning message","Property":null,"Code":null,"HttpStatus":null,"Exception":null}],"Success":true}""");
+        json.Should().Be("""{"Messages":[{"Type":1,"Text":"Warning message","Property":null,"Code":null,"Exception":null}],"Success":true}""");
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class SerializationTests
         var json = JsonSerializer.Serialize(result);
 
         // assert
-        json.Should().Be("""{"Messages":[{"Type":2,"Text":"Info message","Property":null,"Code":null,"HttpStatus":null,"Exception":null}],"Success":true}""");
+        json.Should().Be("""{"Messages":[{"Type":2,"Text":"Info message","Property":null,"Code":null,"Exception":null}],"Success":true}""");
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class SerializationTests
         var json = JsonSerializer.Serialize(result);
 
         // assert
-        json.Should().Be("""{"Messages":[{"Type":3,"Text":"Success message","Property":null,"Code":null,"HttpStatus":null,"Exception":null}],"Success":true}""");
+        json.Should().Be("""{"Messages":[{"Type":3,"Text":"Success message","Property":null,"Code":null,"Exception":null}],"Success":true}""");
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class SerializationTests
         var json = JsonSerializer.Serialize(result);
 
         // assert
-        json.Should().Be("""{"Messages":[{"Type":0,"Text":"Error message","Property":null,"Code":null,"HttpStatus":null,"Exception":null}],"Success":false}""");
+        json.Should().Be("""{"Messages":[{"Type":0,"Text":"Error message","Property":null,"Code":null,"Exception":null}],"Success":false}""");
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class SerializationTests
         var json = JsonSerializer.Serialize(result);
 
         // assert
-        json.Should().Be("""{"Messages":[{"Type":0,"Text":"Error message","Property":null,"Code":null,"HttpStatus":null,"Exception":{"Message":"Error message","StackTrace":null,"FullNameOfExceptionType":"System.Exception","InnerException":null}}],"Success":false}""");
+        json.Should().Be("""{"Messages":[{"Type":0,"Text":"Error message","Property":null,"Code":null,"Exception":{"Message":"Error message","StackTrace":null,"FullNameOfExceptionType":"System.Exception","InnerException":null}}],"Success":false}""");
     }
 
     [Fact]
