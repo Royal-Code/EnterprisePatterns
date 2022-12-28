@@ -1,4 +1,5 @@
 
+using System.Net;
 using System.Text.Json;
 
 namespace RoyalCode.OperationResult;
@@ -24,11 +25,12 @@ public static class ValueResult
     /// <param name="text">The error text that will be used in the message.</param>
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <param name="ex">The exception, optional.</param>
     /// <returns>Nova instância.</returns>
     public static ValueResult<TValue> CreateFailure<TValue>(TValue value, string text,
-        string? property = null, string? code = null, Exception? ex = null)
-        => new(value, ResultMessage.Error(text, property, code, ex));
+        string? property = null, string? code = null, HttpStatusCode? httpStatus = null, Exception? ex = null)
+        => new(value, ResultMessage.Error(text, property, code, httpStatus, ex));
 
     /// <summary>
     /// Creates a new failure operation result with the value of the operation and the error message.
@@ -37,11 +39,12 @@ public static class ValueResult
     /// <param name="text">The error text that will be used in the message.</param>
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <param name="ex">The exception, optional.</param>
     /// <returns>Nova instância.</returns>
     public static ValueResult<TValue> CreateFailure<TValue>(string text,
-        string? property = null, string? code = null, Exception? ex = null)
-        => new(default, ResultMessage.Error(text, property, code, ex));
+        string? property = null, string? code = null, HttpStatusCode? httpStatus = null, Exception? ex = null)
+        => new(default, ResultMessage.Error(text, property, code, httpStatus, ex));
 
     /// <summary>
     /// Creates a new failure operation result with the value of the operation and the error message.

@@ -12,9 +12,12 @@
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern</PackageTags>
 	</PropertyGroup>
 
-	<!-- when target is netstandard2.1 then add the System.Text.Json package -->
+	<!-- when target is netstandard2.1 then add the System.Net.Http.Json package -->
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
-		<PackageReference Include="System.Text.Json" Version="6.0.0" />
+		<PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿
+using System.Net;
 using System.Text.Json;
 
 namespace RoyalCode.OperationResult;
@@ -100,11 +101,12 @@ public class BaseResult : IOperationResult
     /// <param name="text">The error text that will be used in the message.</param>
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <param name="ex">The exception, optional.</param>
     /// <returns>New instance.</returns>
-    public static BaseResult CreateFailure(string text, string? property = null, string? code = null, Exception? ex = null)
+    public static BaseResult CreateFailure(string text, string? property = null, string? code = null, HttpStatusCode? httpStatus = null, Exception? ex = null)
     {
-        return new BaseResult(ResultMessage.Error(text, property, code, ex));
+        return new BaseResult(ResultMessage.Error(text, property, code, httpStatus, ex));
     }
 
     /// <summary>
@@ -113,10 +115,11 @@ public class BaseResult : IOperationResult
     /// <param name="ex">The exception that generate the message.</param>
     /// <param name="property">The related property, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <returns>New instance.</returns>
-    public static BaseResult CreateFailure(Exception ex, string? property = null, string? code = null)
+    public static BaseResult CreateFailure(Exception ex, string? property = null, string? code = null, HttpStatusCode? httpStatus = null)
     {
-        return new BaseResult(ResultMessage.Error(ex, property, code));
+        return new BaseResult(ResultMessage.Error(ex, property, code, httpStatus));
     }
 
     /// <summary>
