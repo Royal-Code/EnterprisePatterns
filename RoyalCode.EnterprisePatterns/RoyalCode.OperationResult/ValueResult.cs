@@ -1,6 +1,5 @@
 
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResult;
 
@@ -122,6 +121,20 @@ public static class ValueResult
     /// <returns>New instance.</returns>
     public static ValueResult<TValue> ApplicationError<TValue>(Exception ex, string? text = null)
         => new(default, ResultMessage.ApplicationError(ex, text));
+
+    /// <summary>
+    /// Deserialize a json string to a <see cref="ValueResult{TValue}"/>.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="json">The json string.</param>
+    /// <returns>The deserialized object.</returns>
+    public static ValueResult<TValue> Deserialize<TValue>(string json)
+    {
+        var result = ResultsSerializeContext.Deserialize<TValue>(json);
+        return result is null
+            ? new ValueResult<TValue>(default, true, Enumerable.Empty<IResultMessage>())
+            : new ValueResult<TValue>(result.Value, result.Success, result.Messages);
+    }
 }
 
 /// <summary>
@@ -147,11 +160,7 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     /// <summary>
     /// Default constructor for deserealization.
     /// </summary>
-    /// <param name="value">
-    /// <param name="success"></param>
-    /// <param name="messages"></param>
-    [JsonConstructor]
-    public ValueResult(TValue? value, bool success, IEnumerable<ResultMessage> messages)
+    internal ValueResult(TValue? value, bool success, IEnumerable<IResultMessage> messages)
         : base(success, messages)
     {
         Value = value;

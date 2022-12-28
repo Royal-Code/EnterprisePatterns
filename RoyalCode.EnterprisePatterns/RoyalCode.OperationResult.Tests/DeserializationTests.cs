@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using RoyalCode.OperationResult.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -90,6 +91,21 @@ public class DeserializationTests
 
         // assert
         newResult.Should().BeEquivalentTo(result);
+    }
+
+    [Fact]
+    public void Deserialize_ValueResult_WithContext_MustBeSameAs_WithoutContext()
+    {
+        // arrange
+        var result = ValueResult.CreateSuccess(new SomeStruct { Id = 12, Name = "Some name" });
+        var json = result.Serialize();
+
+        // act
+        var r1 = ValueResult.Deserialize<SomeStruct>(json);
+        var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json);
+
+        // assert
+        r1.Should().BeEquivalentTo(r2);
     }
 }
 
