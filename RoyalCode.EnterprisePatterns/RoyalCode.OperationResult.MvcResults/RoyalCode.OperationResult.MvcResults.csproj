@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\aspnet-versions.targets" />
+
+	<PropertyGroup>
+		<Version>$(OpResVer)$(OpResPreview)</Version>
+		<AssemblyVersion>$(OpResVer)</AssemblyVersion>
+		<FileVersion>$(OpResVer)</FileVersion>
+		<Description>
+			Extensions methods for adapt operations results objects to apsnetcode mvc objects results.
+		</Description>
+		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
+	</ItemGroup>
+
+</Project>
