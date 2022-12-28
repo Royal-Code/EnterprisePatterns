@@ -17,14 +17,18 @@ public class ResultMessage : IResultMessage
     /// <param name="text">The message text.</param>
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <returns>
     /// <para>
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage Success(string text, string? property = null, string? code = null)
+    public static ResultMessage Success(string text, string? property = null, string? code = null, HttpStatusCode? httpStatus = null)
     {
-        return new ResultMessage(ResultMessageType.Success, text, property, code);
+        return new ResultMessage(ResultMessageType.Success, text, property, code)
+        {
+            HttpStatus = httpStatus
+        };
     }
 
     /// <summary>
@@ -35,14 +39,18 @@ public class ResultMessage : IResultMessage
     /// <param name="text">The message text.</param>
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <returns>
     /// <para>
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage Info(string text, string? property = null, string? code = null)
+    public static ResultMessage Info(string text, string? property = null, string? code = null, HttpStatusCode? httpStatus = null)
     {
-        return new ResultMessage(ResultMessageType.Info, text, property, code);
+        return new ResultMessage(ResultMessageType.Info, text, property, code)
+        {
+            HttpStatus = httpStatus
+        };
     }
 
     /// <summary>
@@ -54,14 +62,18 @@ public class ResultMessage : IResultMessage
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
     /// <param name="ex">The exception, optional.</param>
+    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <returns>
     /// <para>
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage Warning(string text, string? property = null, string? code = null, Exception? ex = null)
+    public static ResultMessage Warning(string text, string? property = null, string? code = null, Exception? ex = null, HttpStatusCode? httpStatus = null)
     {
-        return new ResultMessage(ResultMessageType.Warning, text, property, code, ex);
+        return new ResultMessage(ResultMessageType.Warning, text, property, code, ex)
+        {
+            HttpStatus = httpStatus
+        };
     }
 
     /// <summary>
@@ -72,15 +84,19 @@ public class ResultMessage : IResultMessage
     /// <param name="text">The message text.</param>
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <param name="ex">The exception, optional.</param>
     /// <returns>
     /// <para>
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage Error(string text, string? property = null, string? code = null, Exception? ex = null)
+    public static ResultMessage Error(string text, string? property = null, string? code = null, HttpStatusCode? httpStatus = null, Exception? ex = null)
     {
-        return new ResultMessage(ResultMessageType.Error, text, property, code, ex);
+        return new ResultMessage(ResultMessageType.Error, text, property, code, ex)
+        {
+            HttpStatus = httpStatus
+        };
     }
 
     /// <summary>
@@ -91,17 +107,21 @@ public class ResultMessage : IResultMessage
     /// <param name="ex">The exception that generate the message.</param>
     /// <param name="property">The related property, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <returns>
     /// <para>
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage Error(Exception ex, string? property = null, string? code = null)
+    public static ResultMessage Error(Exception ex, string? property = null, string? code = null, HttpStatusCode? httpStatus = null)
     {
         if (ex is null)
             throw new ArgumentNullException(nameof(ex));
 
-        return new ResultMessage(ResultMessageType.Error, ex.Message, property, code, ex);
+        return new ResultMessage(ResultMessageType.Error, ex.Message, property, code, ex)
+        {
+            HttpStatus = httpStatus
+        };
     }
 
     /// <summary>
@@ -182,7 +202,7 @@ public class ResultMessage : IResultMessage
             HttpStatus = HttpStatusCode.BadRequest
         };
     }
-    
+
     /// <summary>
     /// <para>
     ///     Creates a error message with the code from <see cref="ResultErrorCodes.ApplicationError"/>.

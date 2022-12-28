@@ -1,4 +1,6 @@
 
+using System.Net;
+
 namespace RoyalCode.OperationResult;
 
 /// <summary>
@@ -167,11 +169,12 @@ public static class ResultsExtensions
     /// <param name="text">The message text.</param>
     /// <param name="property">The related property, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <param name="ex">The exception that generate the message, optional.</param>
     public static void AddError(this BaseResult result, string text, 
-        string? property = null, string? code = null, Exception? ex = null)
+        string? property = null, string? code = null, HttpStatusCode? httpStatus = null, Exception? ex = null)
     {
-        result.AddMessage(ResultMessage.Error(text, property, code, ex));
+        result.AddMessage(ResultMessage.Error(text, property, code, httpStatus, ex));
     }
 
     /// <summary>
@@ -347,13 +350,14 @@ public static class ResultsExtensions
     /// <param name="text">The message text.</param>
     /// <param name="property">The related property, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <param name="ex">The exception that generate the message, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
     public static TResult WithError<TResult>(this TResult result, string text, 
-        string? property = null, string? code = null, Exception? ex = null)
+        string? property = null, string? code = null, HttpStatusCode? httpStatus = null, Exception? ex = null)
         where TResult : BaseResult
     {
-        result.AddMessage(ResultMessage.Error( text, property, code, ex));
+        result.AddMessage(ResultMessage.Error( text, property, code, httpStatus, ex));
         return result;
     }
 
