@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.Persistence.EntityFramework.Repositories.Configurations;
 
 namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 
@@ -40,16 +41,23 @@ public interface IUnitOfWorkBuilder<out TDbContext>
     IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<IServiceProvider, DbContextOptionsBuilder> configurer);
 
     /// <summary>
-    ///  Configure the <see cref="DbContext"/> for the unit of work..
+    /// Configure the <see cref="DbContext"/> for the unit of work..
     /// </summary>
     /// <param name="configurer">Action to configure.</param>
     /// <returns>The same instance.</returns>
     IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<DbContextOptionsBuilder> configurer);
 
     /// <summary>
-    ///  Configure the <see cref="DbContext"/> for the unit of work..
+    /// Configure the <see cref="DbContext"/> for the unit of work..
     /// </summary>
     /// <param name="configurer">Action to configure.</param>
     /// <returns>The same instance.</returns>
     IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<IServiceProvider, DbContextOptionsBuilder> configurer);
+
+    /// <summary>
+    /// Configure the repositories for the unit of work.
+    /// </summary>
+    /// <param name="configureAction">Action to configure.</param>
+    /// <returns>The same instance.</returns>
+    IUnitOfWorkBuilder<TDbContext> ConfigureRepositories(Action<IRepositoryConfigurer<TDbContext>> configureAction);
 }

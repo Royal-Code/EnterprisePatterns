@@ -19,5 +19,7 @@
 	<PropertyGroup>
 		<OpResVer>1.0.0</OpResVer>
 		<OpResPreview></OpResPreview>
+		<PersistVer>1.0.0</PersistVer>
+		<PersistPreview>-preview1</PersistPreview>
 	</PropertyGroup>
 </Project>

@@ -3,15 +3,17 @@
 	<Import Project="..\lib-versions.targets" />
 
 	<PropertyGroup>
-		<Version>1.0.0-preview1</Version>
-		<AssemblyVersion>1.0.0</AssemblyVersion>
-		<FileVersion>1.0.0</FileVersion>
+		<Version>$(PersistVer)$(PersistPreview)</Version>
+		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
+		<FileVersion>$(PersistVer)</FileVersion>
 		<Description>
 			Abstract components for an extension version of the Unit Of Work Pattern.
 			The Work Context is an pattern that include the Unit Of Work functionality
 			and add access to others patterns like Repository, Search, Event, Message Bus, etc.
 		</Description>
-		<PackageTags>RoyalCode Enterprise-Patterns UoW Unit-Of-Work Unit-Context</PackageTags>
+		<PackageTags>
+			RoyalCode Enterprise-Patterns UoW Unit-Of-Work WorkContext Work-Context
+		</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

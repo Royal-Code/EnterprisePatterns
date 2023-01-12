@@ -3,9 +3,9 @@
 	<Import Project="..\lib-versions.targets" />
 
 	<PropertyGroup>
-		<Version>1.0.0-preview1</Version>
-		<AssemblyVersion>1.0.0</AssemblyVersion>
-		<FileVersion>1.0.0</FileVersion>
+		<Version>$(PersistVer)$(PersistPreview)</Version>
+		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
+		<FileVersion>$(PersistVer)</FileVersion>
 		<Description>
 			Abstract components for the Entity Pattern.
 		</Description>

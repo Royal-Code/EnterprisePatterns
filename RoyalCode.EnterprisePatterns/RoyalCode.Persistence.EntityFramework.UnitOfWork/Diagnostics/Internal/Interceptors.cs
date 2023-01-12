@@ -6,7 +6,7 @@ using RoyalCode.Persistence.EntityFramework.UnitOfWork.Interceptors;
 
 namespace RoyalCode.Persistence.EntityFramework.UnitOfWork.Diagnostics.Internal;
 
-internal class Interceptors<TDbContext>
+internal static class Interceptors<TDbContext>
     where TDbContext : DbContext
 {
     private static IUnitOfWorkInterceptor? unitOfWorkInterceptor;

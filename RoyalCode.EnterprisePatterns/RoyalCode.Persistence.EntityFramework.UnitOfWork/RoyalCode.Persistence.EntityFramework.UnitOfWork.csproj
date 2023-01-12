@@ -3,9 +3,9 @@
 	<Import Project="..\aspnet-versions.targets" />
 	
 	<PropertyGroup>
-		<Version>1.0.0-preview1</Version>
-		<AssemblyVersion>1.0.0</AssemblyVersion>
-		<FileVersion>1.0.0</FileVersion>
+		<Version>$(PersistVer)$(PersistPreview)</Version>
+		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
+		<FileVersion>$(PersistVer)</FileVersion>
 		<Description>
 			Persistence components implementation with EntityFrameworkCore,
 			including the handling of unit of works.
@@ -20,6 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Repositories\RoyalCode.Persistence.EntityFramework.Repositories.csproj" />
 	  <ProjectReference Include="..\RoyalCode.UnitOfWork.Abstractions\RoyalCode.UnitOfWork.Abstractions.csproj" />
 	</ItemGroup>
 
