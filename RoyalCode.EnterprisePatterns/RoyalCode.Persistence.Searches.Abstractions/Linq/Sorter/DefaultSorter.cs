@@ -9,7 +9,7 @@ namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
 /// </para>
 /// <list type="bullet">
 ///     <item>
-///         <term><see cref="IOrderByProvider{TModel}"/>: </term>
+///         <term><see cref="IOrderByProvider"/>: </term>
 ///         <description>Used to find <see cref="IOrderByHandler{TModel}"/>.</description>
 ///     </item>
 ///     <item>
@@ -26,13 +26,13 @@ namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
 public class DefaultSorter<TModel> : ISorter<TModel>
     where TModel: class
 {
-    private readonly IOrderByProvider<TModel> provider;
+    private readonly IOrderByProvider provider;
 
     /// <summary>
-    /// Creates a new sorter with the <see cref="IOrderByProvider{TModel}"/> to get the handlers.
+    /// Creates a new sorter with the <see cref="IOrderByProvider"/> to get the handlers.
     /// </summary>
     /// <param name="provider">The order by handlers provider.</param>
-    public DefaultSorter(IOrderByProvider<TModel> provider)
+    public DefaultSorter(IOrderByProvider provider)
     {
         this.provider = provider;
     }
@@ -44,7 +44,7 @@ public class DefaultSorter<TModel> : ISorter<TModel>
 
         foreach (var sorting in sortings)
         {
-            var handler = provider.GetHandler(sorting.OrderBy);
+            var handler = provider.GetHandler<TModel>(sorting.OrderBy);
             if (handler is null)
                 continue;
 
@@ -58,7 +58,7 @@ public class DefaultSorter<TModel> : ISorter<TModel>
     /// <inheritdoc />
     public IQueryable<TModel> DefaultOrderBy(IQueryable<TModel> query)
     {
-        var handler = provider.GetDefaultHandler();
+        var handler = provider.GetDefaultHandler<TModel>();
         var builder = new OrderByBuilder<TModel>(query)
         {
             CurrentDirection = ListSortDirection.Ascending

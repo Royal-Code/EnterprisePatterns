@@ -3,7 +3,7 @@ namespace RoyalCode.Persistence.EntityFramework.Searches;
 /// <summary>
 /// Exception for when a selector is not informed for the search and also there is none configured for a given entity and DTO.
 /// </summary>
-public class SelectorNotFoundException : InvalidOperationException
+public sealed class SelectorNotFoundException : InvalidOperationException
 {
     /// <summary>
     /// Creates a new exception.

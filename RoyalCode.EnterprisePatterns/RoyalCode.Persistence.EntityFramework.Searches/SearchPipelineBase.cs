@@ -15,8 +15,25 @@ namespace RoyalCode.Persistence.EntityFramework.Searches;
 public abstract class SearchPipelineBase<TEntity>
     where TEntity : class
 {
+    /// <summary>
+    /// <para>
+    ///     The component that will provide the <see cref="IQueryable{T}"/> to be used in the pipeline.
+    /// </para>
+    /// </summary>
     protected readonly IQueryableProvider<TEntity> queryableProvider;
+
+    /// <summary>
+    /// <para>
+    ///     Factory to create the <see cref="ISpecifier{TModel, TFilter}"/> to be used in the pipeline.
+    /// </para>
+    /// </summary>
     protected readonly ISpecifierFactory specifierFactory;
+
+    /// <summary>
+    /// <para>
+    ///     Component to apply the order by instructions.
+    /// </para>
+    /// </summary>
     protected readonly ISorter<TEntity> sorter;
 
     /// <summary>

@@ -1,16 +1,55 @@
+using Microsoft.EntityFrameworkCore;
+using RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
+using RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
+using RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
 using RoyalCode.Persistence.Searches.Abstractions.Pipeline;
 
 namespace RoyalCode.Persistence.EntityFramework.Searches;
 
-public class SearchPipelineFactory : ISearchPipelineFactory
+/// <inheritdoc />
+public sealed class SearchPipelineFactory<TDbContext> : ISearchPipelineFactory
+    where TDbContext : DbContext
 {
-    public ISearchPipeline<TEntity> Create<TEntity>() where TEntity : class
+    private readonly TDbContext db;
+    private readonly ISpecifierFactory specifierFactory;
+    private readonly IOrderByProvider orderByProvider;
+    private readonly ISelectorFactory selectorFactory;
+
+    /// <summary>
+    /// <para>
+    ///     Create a new instance of <see cref="SearchPipelineFactory{TDbContext}"/>.
+    /// </para>
+    /// </summary>
+    /// <param name="db">The database context.</param>
+    /// <param name="specifierFactory">The specifier factory.</param>
+    /// <param name="orderByProvider">The order by provider.</param>
+    /// <param name="selectorFactory">The selector factory.</param>
+    public SearchPipelineFactory(
+        TDbContext db,
+        ISpecifierFactory specifierFactory,
+        IOrderByProvider orderByProvider,
+        ISelectorFactory selectorFactory)
     {
-        throw new NotImplementedException();
+        this.db = db;
+        this.specifierFactory = specifierFactory;
+        this.orderByProvider = orderByProvider;
+        this.selectorFactory = selectorFactory;
     }
 
+    /// <inheritdoc />
+    public ISearchPipeline<TEntity> Create<TEntity>() where TEntity : class
+    {
+        var queryableProvider = new QueryableProvider<TDbContext, TEntity>(db);
+        var sorter = new DefaultSorter<TEntity>(orderByProvider);
+        return new SearchPipeline<TEntity>(queryableProvider, specifierFactory, sorter);
+    }
+
+    /// <inheritdoc />
     public ISearchPipeline<TDto> Create<TEntity, TDto>() where TEntity : class where TDto : class
     {
-        throw new NotImplementedException();
+        var queryableProvider = new QueryableProvider<TDbContext, TEntity>(db);
+        var sorter = new DefaultSorter<TEntity>(orderByProvider);
+        var selector = selectorFactory.Create<TEntity, TDto>();
+        return new SearchPipeline<TEntity, TDto>(queryableProvider, specifierFactory, sorter, selector);
     }
 }
