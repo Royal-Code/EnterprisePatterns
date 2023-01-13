@@ -1,6 +1,4 @@
-﻿using RoyalCode.Persistence.Searches.Abstractions.Linq;
-
-namespace RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
+﻿namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Selector;
 
 /// <summary>
 /// Default implementation of <see cref="ISelectorFactory"/>.

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
 using RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
+using RoyalCode.Persistence.Searches.Abstractions.Linq.Selector;
 using RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
 using RoyalCode.Persistence.Searches.Abstractions.Pipeline;
 

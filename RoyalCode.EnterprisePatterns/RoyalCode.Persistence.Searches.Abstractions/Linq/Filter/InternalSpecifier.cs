@@ -1,7 +1,7 @@
 ﻿using RoyalCode.Persistence.Searches.Abstractions.Linq;
 using System.Runtime.CompilerServices;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
+namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
 
 internal sealed class InternalSpecifier<TModel, TFilter> : ISpecifier<TModel, TFilter>
     where TModel : class

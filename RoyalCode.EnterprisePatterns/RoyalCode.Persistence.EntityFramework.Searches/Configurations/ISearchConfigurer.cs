@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace RoyalCode.Persistence.EntityFramework.Searches.Configurations;
 
@@ -10,7 +9,11 @@ namespace RoyalCode.Persistence.EntityFramework.Searches.Configurations;
 public interface ISearchConfigurer<out TDbContext>
     where TDbContext : DbContext
 {
-
-    ISearchConfigurer<TDbContext> AddSpecifier<TModel, TFilter>(
-        Func<IQueryable<TModel>, TFilter, IQueryable<TModel>> specifier); // adicionar ao SpecifierFactory
+    /// <summary>
+    /// Add a search for an entity as a service, related to <see cref="DbContext"/> used by the unit of work.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <returns>The same instance.</returns>
+    ISearchConfigurer<TDbContext> Add<TEntity>()
+        where TEntity : class;
 }

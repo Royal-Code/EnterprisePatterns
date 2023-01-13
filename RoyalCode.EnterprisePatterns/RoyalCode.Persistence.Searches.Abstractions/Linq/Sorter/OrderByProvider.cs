@@ -1,6 +1,4 @@
-﻿using RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
-
-namespace RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
+﻿namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
 
 internal sealed class OrderByProvider : IOrderByProvider
 {

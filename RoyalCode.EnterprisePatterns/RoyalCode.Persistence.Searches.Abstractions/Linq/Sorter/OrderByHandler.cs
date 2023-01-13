@@ -1,8 +1,7 @@
-﻿using RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
+namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
 
 internal sealed class OrderByHandler<TModel, TProperty> : IOrderByHandler<TModel>
     where TModel : class

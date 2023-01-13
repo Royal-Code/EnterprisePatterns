@@ -32,8 +32,12 @@ public sealed class RepositoryConfigurer<TDbContext> : IRepositoryConfigurer<TDb
     }
 
     /// <inheritdoc />
-    public IRepositoryConfigurer<TDbContext> AddRepository<TEntity>() where TEntity : class
+    public IRepositoryConfigurer<TDbContext> Add<TEntity>() where TEntity : class
     {
+        // TODO: poderia haver um IRepository<TDbContext, TEntity> para que, na hora do WorkContext resolver,
+        //       ele possa usar o DbContext correto.
+        //       O mesmo é válido para ISearch.
+
         var repoType = typeof(IRepository<>).MakeGenericType(typeof(TEntity));
 
         services.Add(ServiceDescriptor.Describe(

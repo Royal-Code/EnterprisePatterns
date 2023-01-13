@@ -1,7 +1,6 @@
-﻿using RoyalCode.Persistence.Searches.Abstractions.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
+namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
 
 /// <summary>
 /// <para>
@@ -10,7 +9,7 @@ namespace RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
 /// </summary>
 internal sealed class SpecifiersMap
 {
-    public static SpecifiersMap Instance { get; } = new SpecifiersMap();
+    public static SpecifiersMap Instance { get; } = new();
 
     private readonly Dictionary<(Type, Type), object> specifiers = new();
 
@@ -22,7 +21,7 @@ internal sealed class SpecifiersMap
 
     public object this[(Type, Type) key] => specifiers[key];
 
-    public void AddSpecifier<TModel, TFilter>(ISpecifier<TModel, TFilter> specifier)
+    public void Add<TModel, TFilter>(ISpecifier<TModel, TFilter> specifier)
         where TModel : class
         where TFilter : class
     {
@@ -33,7 +32,7 @@ internal sealed class SpecifiersMap
         specifiers.Add(key, specifier);
     }
 
-    public void AddSpecifier<TModel, TFilter>(Func<IQueryable<TModel>, TFilter, IQueryable<TModel>> specifier)
+    public void Add<TModel, TFilter>(Func<IQueryable<TModel>, TFilter, IQueryable<TModel>> specifier)
         where TModel : class
         where TFilter : class
     {

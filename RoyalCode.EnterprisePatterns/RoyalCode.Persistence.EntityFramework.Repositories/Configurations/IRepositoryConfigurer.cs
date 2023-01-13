@@ -14,6 +14,6 @@ public interface IRepositoryConfigurer<out TDbContext>
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <returns>The same instance.</returns>
-    IRepositoryConfigurer<TDbContext> AddRepository<TEntity>()
+    IRepositoryConfigurer<TDbContext> Add<TEntity>()
         where TEntity : class;
 }

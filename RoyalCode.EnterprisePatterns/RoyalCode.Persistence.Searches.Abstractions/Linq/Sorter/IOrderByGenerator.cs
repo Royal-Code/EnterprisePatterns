@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
+namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
 
 /// <summary>
 /// <para>

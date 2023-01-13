@@ -1,7 +1,4 @@
-﻿
-using RoyalCode.Persistence.Searches.Abstractions.Linq;
-
-namespace RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
+﻿namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Selector;
 
 /// <summary>
 /// A factory to create <see cref="ISelector{TEntity, TDto}"/>

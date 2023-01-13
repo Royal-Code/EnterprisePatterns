@@ -22,7 +22,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
-		<PackageReference Include="RoyalCode.Extensions.PropertySelection" Version="1.0.0" />
+		
 	</ItemGroup>
 
 </Project>

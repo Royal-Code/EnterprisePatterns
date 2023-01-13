@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Persistence.EntityFramework.Repositories.Configurations;
+using RoyalCode.Persistence.EntityFramework.Searches.Configurations;
 
 namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 
@@ -16,6 +17,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     private readonly IServiceCollection services;
     private readonly ServiceLifetime lifetime;
     private readonly Action<Type>? repositoryAddedCallback;
+    private readonly Action<Type>? searchAddedCallback;
 
     /// <summary>
     /// Creates a new builder.
@@ -23,14 +25,17 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     /// <param name="services">The service collection.</param>
     /// <param name="lifetime">The lifetime that will be used when register services.</param>
     /// <param name="repositoryAddedCallback">The callback that will be called when a repository is added.</param>
+    /// <param name="searchAddedCallback">The callback that will be called when a search is added.</param>
     public UnitOfWorkBuilder(
         IServiceCollection services, 
         ServiceLifetime lifetime, 
-        Action<Type>? repositoryAddedCallback = null)
+        Action<Type>? repositoryAddedCallback = null,
+        Action<Type>? searchAddedCallback = null)
     {
         this.services = services;
         this.lifetime = lifetime;
         this.repositoryAddedCallback = repositoryAddedCallback;
+        this.searchAddedCallback = searchAddedCallback;
     }
 
     /// <inheritdoc />
@@ -103,6 +108,17 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
 
         var repositoryConfigurer = new RepositoryConfigurer<TDbContext>(services, lifetime, repositoryAddedCallback);
         configureAction(repositoryConfigurer);
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IUnitOfWorkBuilder<TDbContext> ConfigureSearches(Action<ISearchConfigurer<TDbContext>> configureAction)
+    {
+        if (configureAction is null)
+            throw new ArgumentNullException(nameof(configureAction));
+
+        var searchConfigurer = new SearchConfigurer<TDbContext>(services, lifetime, searchAddedCallback);
+        configureAction(searchConfigurer);
         return this;
     }
 }

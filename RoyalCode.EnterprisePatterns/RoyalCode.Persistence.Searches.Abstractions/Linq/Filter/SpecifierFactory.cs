@@ -1,7 +1,5 @@
-﻿using RoyalCode.Persistence.Searches.Abstractions.Linq;
-using RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
-
-namespace RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
+﻿
+namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
 
 /// <summary>
 /// <para>

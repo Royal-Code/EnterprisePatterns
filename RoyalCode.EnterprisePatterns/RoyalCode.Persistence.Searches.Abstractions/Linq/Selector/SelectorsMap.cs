@@ -1,9 +1,7 @@
-﻿
-using RoyalCode.Persistence.Searches.Abstractions.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches.Infrastructure;
+namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Selector;
 
 /// <summary>
 /// A class that maps the types of the entity and Dto to the selector (<see cref="ISelector{TEntity, TDto}"/>).
@@ -22,7 +20,7 @@ internal class SelectorsMap
 
     public object this[(Type, Type) key] => selectors[key];
 
-    public void AddSelector<TEntity, TDto>(ISelector<TEntity, TDto> selector)
+    public void Add<TEntity, TDto>(ISelector<TEntity, TDto> selector)
         where TEntity : class
         where TDto : class
     {
@@ -33,7 +31,7 @@ internal class SelectorsMap
         selectors.Add(key, selector);
     }
 
-    public void AddSelector<TEntity, TDto>(Expression<Func<TEntity, TDto>> selector)
+    public void Add<TEntity, TDto>(Expression<Func<TEntity, TDto>> selector)
         where TEntity : class
         where TDto : class
     {

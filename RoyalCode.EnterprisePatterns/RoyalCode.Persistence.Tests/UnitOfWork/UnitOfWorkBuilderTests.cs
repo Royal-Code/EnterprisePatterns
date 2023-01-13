@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.Persistence.EntityFramework.Repositories.Extensions;
 using RoyalCode.Persistence.Tests.Entities;
 using RoyalCode.Repositories.Abstractions;
 using RoyalCode.UnitOfWork.Abstractions;
@@ -17,7 +16,10 @@ public class UnitOfWorkBuilderTests
 
         services.AddUnitOfWork<UnitOfWorkBuilderDbContext>()
             .ConfigureDbContextPool(builder => builder.UseSqlite("DataSource=:memory:"))
-            .AddRepositories(c => c.AddRepository<Person>());
+            .ConfigureRepositories(c =>
+            {
+                c.Add<Person>();
+            });
 
         var root = services.BuildServiceProvider();
         var scope = root.CreateScope();
