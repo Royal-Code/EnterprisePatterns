@@ -5,7 +5,6 @@ using Moq;
 using RoyalCode.Aggregates;
 using RoyalCode.DomainEvents;
 using RoyalCode.EventDispatcher;
-using RoyalCode.Persistence.EntityFramework.Repositories.Extensions;
 using RoyalCode.Repositories.Abstractions;
 using RoyalCode.UnitOfWork.Abstractions;
 using Xunit;
@@ -28,7 +27,7 @@ public class DispatchDomainEventsTests
                 builder.UseInMemoryDatabase(nameof(MustDispatchDomainEvents));
                 builder.UseDomainEventHandler();
             })
-            .AddRepositories(c => c.AddRepository<DispatchDomainEventsEntity>());
+            .ConfigureRepositories(c => c.Add<DispatchDomainEventsEntity>());
 
         var sp = services.BuildServiceProvider();
 
@@ -45,7 +44,7 @@ public class DispatchDomainEventsTests
         Verify(mock);
     }
 
-    private Mock<IEventDispatcher> CreateMock()
+    private static Mock<IEventDispatcher> CreateMock()
     {
         var mock = new Mock<IEventDispatcher>();
 
@@ -58,7 +57,7 @@ public class DispatchDomainEventsTests
         return mock;
     }
 
-    private void Verify(Mock<IEventDispatcher> mock)
+    private static void Verify(Mock<IEventDispatcher> mock)
     {
         mock.Verify(m => m.Dispatch(It.IsAny<Type>(), It.IsAny<object>(), DispatchStrategy.InCurrentScope), 
             Times.Once);

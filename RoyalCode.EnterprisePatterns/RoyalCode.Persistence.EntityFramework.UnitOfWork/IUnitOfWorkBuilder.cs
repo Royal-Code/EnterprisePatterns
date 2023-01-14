@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Persistence.EntityFramework.Repositories.Configurations;
+using RoyalCode.Persistence.EntityFramework.Searches.Configurations;
 
 namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 
@@ -60,4 +61,11 @@ public interface IUnitOfWorkBuilder<out TDbContext>
     /// <param name="configureAction">Action to configure.</param>
     /// <returns>The same instance.</returns>
     IUnitOfWorkBuilder<TDbContext> ConfigureRepositories(Action<IRepositoryConfigurer<TDbContext>> configureAction);
+
+    /// <summary>
+    /// Configure the searches for the unit of work.
+    /// </summary>
+    /// <param name="configureAction">Action to configure.</param>
+    /// <returns>The same instance.</returns>
+    IUnitOfWorkBuilder<TDbContext> ConfigureSearches(Action<ISearchConfigurer<TDbContext>> configureAction);
 }

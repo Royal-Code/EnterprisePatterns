@@ -5,9 +5,8 @@ namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
 ///     Manages and provides the query ordering handlers of a given data model.
 /// </para>
 /// </summary>
-/// <typeparam name="TModel">The query source model type.</typeparam>
-public interface IOrderByProvider<TModel>
-    where TModel: class
+public interface IOrderByProvider
+    
 {
     /// <summary>
     /// <para>
@@ -18,10 +17,25 @@ public interface IOrderByProvider<TModel>
     ///     May be returned null if no handler is configured for the order by identification, or throw an exception.
     /// </para>
     /// </summary>
+    /// <typeparam name="TModel">The query source model type.</typeparam>
     /// <param name="orderBy">A sort name that identifies how the query should be sorted.</param>
     /// <returns>An ordering handler or null if not exists.</returns>
     /// <exception cref="Exception">Optional, if no handler is configured for the order by identification.</exception>
-    IOrderByHandler<TModel>? GetHandler(string orderBy);
-    
-    IOrderByHandler<TModel> GetDefaultHandler();
+    IOrderByHandler<TModel>? GetHandler<TModel>(string orderBy) where TModel : class;
+
+    /// <summary>
+    /// <para>
+    ///     It tries to get the default ordering handler configured for the data model.
+    /// </para>
+    /// <para>
+    ///     The common property used as default is the "Id" property.
+    /// </para>
+    /// <para>
+    ///     May be returned null if no default handler is configured for the data model, or throw an exception.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TModel">The query source model type.</typeparam>
+    /// <returns>The default ordering handler or null if not exists.</returns>
+    /// <exception cref="Exception">Optional, if no handler is configured for the order by identification.</exception>
+    IOrderByHandler<TModel> GetDefaultHandler<TModel>() where TModel : class;
 }

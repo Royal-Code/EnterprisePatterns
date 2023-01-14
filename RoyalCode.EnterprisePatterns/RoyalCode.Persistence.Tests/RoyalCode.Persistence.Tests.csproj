@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
         <PackageReference Include="Moq" Version="4.16.1" />
         <PackageReference Include="xunit" Version="2.4.1" />
@@ -28,6 +28,8 @@
       <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Repositories\RoyalCode.Persistence.EntityFramework.Repositories.csproj" />
       <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Searches\RoyalCode.Persistence.EntityFramework.Searches.csproj" />
       <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.UnitOfWork\RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj" />
+      <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.WorkContext\RoyalCode.Persistence.EntityFramework.WorkContext.csproj" />
+      <ProjectReference Include="..\RoyalCode.WorkContext.Abstractions\RoyalCode.WorkContext.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

@@ -7,6 +7,9 @@ namespace RoyalCode.Persistence.Searches.Abstractions.Base;
 public abstract class SearchBase<TEntity> : ISearch<TEntity>
     where TEntity : class
 {
+    /// <summary>
+    /// The criteria for performing the search.
+    /// </summary>
     protected readonly SearchCriteria criteria = new();
     
     /// <inheritdoc />

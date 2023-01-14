@@ -10,7 +10,6 @@ using RoyalCode.Repositories.Abstractions;
 using RoyalCode.UnitOfWork.Abstractions;
 using Xunit;
 using Moq;
-using RoyalCode.Persistence.EntityFramework.Repositories.Extensions;
 
 namespace RoyalCode.Persistence.Tests.Events;
 
@@ -29,7 +28,10 @@ public class IgnoreDomainEventCollectionTests
                 builder.UseInMemoryDatabase(nameof(MustSaveEntityButNotSaveDomainEvents));
                 builder.UseDomainEventHandler();
             })
-            .AddRepositories(c => c.AddRepository<IgnoreDomainEventCollectionEntity>());
+            .ConfigureRepositories(c =>
+            {
+                c.Add<IgnoreDomainEventCollectionEntity>();
+            });
 
         var sp = services.BuildServiceProvider();
 

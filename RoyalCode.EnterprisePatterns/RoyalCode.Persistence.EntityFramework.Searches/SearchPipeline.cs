@@ -15,7 +15,7 @@ namespace RoyalCode.Persistence.EntityFramework.Searches;
 /// </para>
 /// </summary>
 /// <typeparam name="TEntity">The entity type.</typeparam>
-public class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISearchPipeline<TEntity>
+public sealed class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISearchPipeline<TEntity>
     where TEntity : class
 {
     /// <inheritdoc />
@@ -148,7 +148,7 @@ public class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISearchPipel
 /// </summary>
 /// <typeparam name="TEntity">The entity type.</typeparam>
 /// <typeparam name="TDto">The selected DTO type.</typeparam>
-public class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>, ISearchPipeline<TDto>
+public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>, ISearchPipeline<TDto>
     where TEntity : class
     where TDto : class
 {

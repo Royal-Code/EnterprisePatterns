@@ -18,7 +18,7 @@ public static class PersistenceServiceCollectionExtensions
     /// <param name="lifetime">The services lifetime, by default is scoped.</param>
     /// <typeparam name="TDbContext">The type of the DbContext used in the unit of work.</typeparam>
     /// <returns>
-    ///     A unit of work builder to configure the <see cref="DbContext"/> and services like repositories.
+    ///     A unit of work builder to configure the <see cref="DbContext"/> and services like repositories and searches.
     /// </returns>
     public static IUnitOfWorkBuilder<TDbContext> AddUnitOfWork<TDbContext>(
         this IServiceCollection services,

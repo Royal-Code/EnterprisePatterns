@@ -15,4 +15,6 @@
 /// </para>
 /// </summary>
 /// <typeparam name="T">The entity type.</typeparam>
-public interface IRepository<T> : IAdder<T>, IFinder<T>, IUpdater<T>, IRemover<T> { }
+public interface IRepository<T> : IAdder<T>, IFinder<T>, IUpdater<T>, IRemover<T>
+    where T : class
+{ }

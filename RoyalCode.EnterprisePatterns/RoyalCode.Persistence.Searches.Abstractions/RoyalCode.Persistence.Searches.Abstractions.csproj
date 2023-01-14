@@ -2,20 +2,22 @@
 
 	<Import Project="..\aspnet-versions.targets" />
 
-    <PropertyGroup>
-        <Version>1.0.0-preview1</Version>
-        <AssemblyVersion>1.0.0</AssemblyVersion>
-        <FileVersion>1.0.0</FileVersion>
-        <Description>
-            Persistence abstract components for search entities by filters and specifiers.
-        </Description>
-        <PackageTags>
-            RoyalCode Enterprise-Patterns Repository Searchable Search Specifier Filter-Specifier-Pattern Specification
-        </PackageTags>
-    </PropertyGroup>
+	<PropertyGroup>
+		<Version>$(PersistVer)$(PersistPreview)</Version>
+		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
+		<FileVersion>$(PersistVer)</FileVersion>
+		<Description>
+			Persistence abstract components for search entities by filters and specifiers.
+		</Description>
+		<PackageTags>
+			RoyalCode Enterprise-Patterns Repository Searchable Search Specifier Filter-Specifier-Pattern Specification
+		</PackageTags>
+	</PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\RoyalCode.Searches.Abstractions\RoyalCode.Searches.Abstractions.csproj" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\RoyalCode.Searches.Abstractions\RoyalCode.Searches.Abstractions.csproj" />
+		<PackageReference Include="RoyalCode.Extensions.PropertySelection" Version="1.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(DotNetCoreVersion)" />
+	</ItemGroup>
 
 </Project>

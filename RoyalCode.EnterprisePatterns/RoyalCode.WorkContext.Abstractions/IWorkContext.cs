@@ -10,39 +10,18 @@ namespace RoyalCode.WorkContext.Abstractions;
 ///     that enables the access to data access components related to a context,
 ///     or one could say, related to a persistence unit.
 /// </para>
+/// <para>
+///     By default, the <see cref="IWorkContext"/> is used to access the repositories and search components.
+/// </para>
+/// <para>
+///     For extended features, it is possible to create a new interface that inherits from <see cref="IWorkContext"/>
+///     and add new methods to access the new components.
+/// </para>
+/// <para>
+///     This is design to encapsulate the common required services for the application services.
+///     It is a mistake compare this component with a service locator, because the <see cref="IWorkContext"/> 
+///     is not a service locator, neither is a dependency injection container,
+///     and the services that are provided is part of the persistence unit.
+/// </para>
 /// </summary>
-public interface IWorkContext : IUnitOfWork
-{
-    /// <summary>
-    /// <para>
-    ///     Gets the repository for the entity.
-    /// </para>
-    /// <para>
-    ///     The repository must be part of the persistence unit, otherwise an exception will be thrown.
-    /// </para>
-    /// </summary>
-    /// <typeparam name="T">The entity type.</typeparam>
-    /// <returns>The entity repository.</returns>
-    /// <exception cref="InvalidOperationException">
-    ///     If the entity is not part of the persistence unit, 
-    ///     where there will not be a repository configured for the entity in this context.
-    /// </exception>
-    IRepository<T> Repository<T>() 
-        where T : class;
-
-    /// <summary>
-    /// <para>
-    ///     Gets an instance of the search component for a context entity.
-    /// </para>
-    /// <para>
-    ///     There must be a search component for the persistence unit, otherwise an exception will be thrown.
-    /// </para>
-    /// </summary>
-    /// <typeparam name="T">The entity type.</typeparam>
-    /// <returns>A new search.</returns>
-    /// <exception cref="InvalidOperationException">
-    ///     If entity is not part of the persistence unit or there is no search component for it.
-    /// </exception>
-    ISearch<T> Search<T>() 
-        where T : class;
-}
+public interface IWorkContext : IUnitOfWork, IEntityManager, ISearchable { }

@@ -16,9 +16,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.UnitOfWork\RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj" />
 	  <ProjectReference Include="..\RoyalCode.Persistence.Searches.Abstractions\RoyalCode.Persistence.Searches.Abstractions.csproj" />
 	  <ProjectReference Include="..\RoyalCode.Searches.Abstractions\RoyalCode.Searches.Abstractions.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
+		
 	</ItemGroup>
 
 </Project>
