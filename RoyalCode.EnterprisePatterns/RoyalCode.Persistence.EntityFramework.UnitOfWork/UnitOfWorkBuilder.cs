@@ -16,8 +16,6 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
 {
     private readonly IServiceCollection services;
     private readonly ServiceLifetime lifetime;
-    private readonly Action<Type>? repositoryAddedCallback;
-    private readonly Action<Type>? searchAddedCallback;
 
     /// <summary>
     /// Creates a new builder.
@@ -34,8 +32,6 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     {
         this.services = services;
         this.lifetime = lifetime;
-        this.repositoryAddedCallback = repositoryAddedCallback;
-        this.searchAddedCallback = searchAddedCallback;
     }
 
     /// <inheritdoc />
@@ -106,7 +102,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
         if (configureAction is null)
             throw new ArgumentNullException(nameof(configureAction));
 
-        var repositoryConfigurer = new RepositoryConfigurer<TDbContext>(services, lifetime, repositoryAddedCallback);
+        var repositoryConfigurer = new RepositoryConfigurer<TDbContext>(services, lifetime);
         configureAction(repositoryConfigurer);
         return this;
     }
@@ -117,7 +113,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
         if (configureAction is null)
             throw new ArgumentNullException(nameof(configureAction));
 
-        var searchConfigurer = new SearchConfigurer<TDbContext>(services, lifetime, searchAddedCallback);
+        var searchConfigurer = new SearchConfigurer<TDbContext>(services, lifetime);
         configureAction(searchConfigurer);
         return this;
     }

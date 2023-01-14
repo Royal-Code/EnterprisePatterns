@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.Persistence.EntityFramework.Repositories;
 using RoyalCode.Persistence.EntityFramework.UnitOfWork;
 using RoyalCode.Repositories.Abstractions;
 using RoyalCode.Searches.Abstractions;
@@ -30,7 +31,7 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     /// <inheritdoc />
     public ISearch<TEntity> CreateSearch<TEntity>() where TEntity : class
     {
-        var search = serviceProvider.GetService<ISearch<TEntity>>();
+        var search = serviceProvider.GetService<Searches.ISearch<TDbContext, TEntity>>();
         if (search is null)
             throw new InvalidOperationException($"The search for the entity type {typeof(TEntity)} was not configured for the unit of work");
 
@@ -40,7 +41,7 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     /// <inheritdoc />
     public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
     {
-        var repository = serviceProvider.GetService<IRepository<TEntity>>();
+        var repository = serviceProvider.GetService<IRepository<TDbContext, TEntity>>();
         if (repository is null)
             throw new InvalidOperationException($"The repository for the entity type {typeof(TEntity)} was not configured for the unit of work");
 

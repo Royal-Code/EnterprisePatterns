@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using RoyalCode.Entities;
-using RoyalCode.Repositories.Abstractions;
 
 namespace RoyalCode.Persistence.EntityFramework.Repositories;
 
@@ -11,7 +10,7 @@ namespace RoyalCode.Persistence.EntityFramework.Repositories;
 /// </summary>
 /// <typeparam name="TDbContext">The EF DbContext type related to the entity.</typeparam>
 /// <typeparam name="TEntity">The entity type.</typeparam>
-public class Repository<TDbContext, TEntity> : IRepository<TEntity>
+public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     where TEntity: class
     where TDbContext: DbContext
 {

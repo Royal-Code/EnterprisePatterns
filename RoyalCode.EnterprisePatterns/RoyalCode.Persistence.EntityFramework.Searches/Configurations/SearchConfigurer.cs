@@ -13,22 +13,18 @@ public class SearchConfigurer<TDbContext> : ISearchConfigurer<TDbContext>
 {
     private readonly IServiceCollection services;
     private readonly ServiceLifetime lifetime;
-    private readonly Action<Type>? callback;
 
     /// <summary>
     /// Creates a new instance of <see cref="SearchConfigurer{TDbContext}"/>.
     /// </summary>
     /// <param name="services">The service collection to register the searches as a service.</param>
     /// <param name="lifetime">The lifetime of the service.</param>
-    /// <param name="callback">The callback to be called after the search is registered.</param>
     public SearchConfigurer(
         IServiceCollection services,
-        ServiceLifetime lifetime,
-        Action<Type>? callback = null)
+        ServiceLifetime lifetime)
     {
         this.services = services;
         this.lifetime = lifetime;
-        this.callback = callback;
 
         services.AddSearchesLinq();
         services.TryAddTransient<ISearchPipelineFactory, SearchPipelineFactory<TDbContext>>();
@@ -38,11 +34,17 @@ public class SearchConfigurer<TDbContext> : ISearchConfigurer<TDbContext>
     public ISearchConfigurer<TDbContext> Add<TEntity>() where TEntity : class
     {
         var searchType = typeof(ISearch<>).MakeGenericType(typeof(TEntity));
-        var entitySearchImplType = typeof(Search<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
+        var dbSearchType = typeof(ISearch<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
+        var searchImplType = typeof(InternalSearch<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
         
         services.Add(ServiceDescriptor.Describe(
+            dbSearchType,
+            searchImplType,
+            lifetime));
+
+        services.Add(ServiceDescriptor.Describe(
             searchType,
-            entitySearchImplType,
+            sp => sp.GetService(dbSearchType)!,
             lifetime));
 
         var queryableProviderType = typeof(IQueryableProvider<>).MakeGenericType(typeof(TEntity));
@@ -52,8 +54,6 @@ public class SearchConfigurer<TDbContext> : ISearchConfigurer<TDbContext>
             queryableProviderType,
             queryableProviderImplType,
             lifetime));
-
-        callback?.Invoke(typeof(TEntity));
 
         return this;
     }
