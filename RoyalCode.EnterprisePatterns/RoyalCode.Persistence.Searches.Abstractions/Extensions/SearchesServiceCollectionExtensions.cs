@@ -30,6 +30,7 @@ public static class SearchesServiceCollectionExtensions
         services.AddSingleton<ISpecifierGenerator, DefaultSpecifierGenerator>();
         services.AddSingleton<IOrderByGenerator, DefaultOrderByGenerator>();
         services.AddSingleton<ISelectorGenerator, DefaultSelectorGenerator>();
+        services.AddSingleton<ISelectorExpressionGenerator, DefaultSelectorExpressionGenerator>();
         
         return services;
     }
