@@ -1,0 +1,55 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: persistence-nuget
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+          include-prerelease: true
+
+      - name: Build and pack Entities
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Entities/RoyalCode.Entities.csproj -c Release
+        
+      - name: Build and pack Repositories Abstractions
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Repositories.Abstractions/RoyalCode.Repositories.Abstractions.csproj -c Release
+
+      - name: Build and pack Searches Abstractions
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Searches.Abstractions/RoyalCode.Searches.Abstractions.csproj -c Release
+        
+      - name: Build and pack Unit Of Work Abstractions
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.UnitOfWork.Abstractions/RoyalCode.UnitOfWork.Abstractions.csproj -c Release
+      
+      - name: Build and pack Work Context Abstractions
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.Abstractions/RoyalCode.WorkContext.Abstractions.csproj -c Release
+        
+      - name: Build and pack Persistence Search Abstractions
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.Searches.Abstractions/RoyalCode.Persistence.Searches.Abstractions.csproj -c Release
+        
+      - name: Build and pack Persistence EF Repositories
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.Repositories/RoyalCode.Persistence.EntityFramework.Repositories.csproj -c Release
+        
+      - name: Build and pack Persistence EF Search
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.Searches/RoyalCode.Persistence.EntityFramework.Searches.csproj -c Release
+        
+      - name: Build and pack Persistence EF Unit Of Work
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.UnitOfWork/RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj -c Release
+        
+      - name: Build and pack Persistence EF Work Context
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.WorkContext/RoyalCode.Persistence.EntityFramework.WorkContext.csproj -c Release
+        
+      - name: Publish
+        run: sudo dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
