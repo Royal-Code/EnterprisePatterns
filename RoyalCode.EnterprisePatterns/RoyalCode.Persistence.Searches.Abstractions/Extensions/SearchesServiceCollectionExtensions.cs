@@ -28,6 +28,7 @@ public static class SearchesServiceCollectionExtensions
         services.AddSingleton(SelectorsMap.Instance);
 
         services.AddSingleton<ISpecifierGenerator, DefaultSpecifierGenerator>();
+        services.AddSingleton<ISelectorExpressionGenerator, DefaultSelectorExpressionGenerator>();
         services.AddSingleton<IOrderByGenerator, DefaultOrderByGenerator>();
         services.AddSingleton<ISelectorGenerator, DefaultSelectorGenerator>();
         services.AddSingleton<ISelectorExpressionGenerator, DefaultSelectorExpressionGenerator>();

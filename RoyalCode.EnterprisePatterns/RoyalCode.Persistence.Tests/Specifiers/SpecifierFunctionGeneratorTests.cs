@@ -18,12 +18,12 @@ public class SpecifierFunctionGeneratorTests
     }
 }
 
-file class SimpleModel
+public class SimpleModel
 {
-    string Name { get; set; }
+    public string Name { get; set; }
 }
 
-file class SimpleFilter
+public class SimpleFilter
 {
-    string Name { get; set; }
+    public string Name { get; set; }
 }

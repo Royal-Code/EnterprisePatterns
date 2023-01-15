@@ -20,6 +20,13 @@ public sealed class CriterionAttribute : Attribute
 
     /// <summary>
     /// <para>
+    ///     Requires the use of the Not operator
+    /// </para>
+    /// </summary>
+    public bool Negation { get; set; }
+
+    /// <summary>
+    /// <para>
     ///     The name of the target property.
     /// </para>
     /// <para>
@@ -34,4 +41,11 @@ public sealed class CriterionAttribute : Attribute
     /// </para>
     /// </summary>
     public bool Ignore { get; set; }
+
+    /// <summary>
+    /// <para>
+    ///     Ignore the property if the value is null or empty.
+    /// </para>
+    /// </summary>
+    public bool IgnoreIfIsEmpty { get; set; } = true;
 }

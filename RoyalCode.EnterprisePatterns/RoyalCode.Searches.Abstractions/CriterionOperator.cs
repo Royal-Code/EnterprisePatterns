@@ -8,13 +8,14 @@
 public enum CriterionOperator
 {
     /// <summary>
+    ///     Automatic choise the operator.
+    /// </summary>
+    Auto,
+    
+    /// <summary>
     ///     The criterion is equal to the value.
     /// </summary>
     Equal,
-    /// <summary>
-    ///     The criterion is not equal to the value.
-    /// </summary>
-    NotEqual,
     /// <summary>
     ///     The criterion is greater than the value.
     /// </summary>
@@ -36,25 +37,14 @@ public enum CriterionOperator
     /////     The criterion is in the values.
     ///// </summary>
     //In,
-    ///// <summary>
-    /////     The criterion is not in the values.
-    ///// </summary>
-    //NotIn,
     
     /// <summary>
     ///     The criterion is like the value.
     /// </summary>
     Like,
-    /// <summary>
-    ///     The criterion is not like the value.
-    /// </summary>
-    NotLike,
-    /// <summary>
-    ///     The criterion is null.
-    /// </summary>
-    IsNull,
-    /// <summary>
-    ///     The criterion is not null.
-    /// </summary>
-    IsNotNull,
+    
+    ///// <summary>
+    /////     The criterion is null.
+    ///// </summary>
+    //IsNull,
 }
