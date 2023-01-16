@@ -32,17 +32,27 @@ public enum CriterionOperator
     ///     The criterion is less than or equal to the value.
     /// </summary>
     LessThanOrEqual,
-    
-    ///// <summary>
-    /////     The criterion is in the values.
-    ///// </summary>
-    //In,
-    
+    /// <summary>
+    ///     The value is in the criterions.
+    /// </summary>
+    In,
     /// <summary>
     ///     The criterion is like the value.
     /// </summary>
     Like,
-    
+    /// <summary>
+    ///    The criterion is contained in the value.
+    /// </summary>
+    Contains,
+    /// <summary>
+    ///     The value starts with the criterion.
+    /// </summary>
+    StartsWith,
+    /// <summary>
+    ///     The value ends with the criterion.
+    /// </summary>
+    EndsWith,
+
     ///// <summary>
     /////     The criterion is null.
     ///// </summary>
