@@ -14,20 +14,61 @@ namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
 /// </summary>
 public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
 {
+    /// <summary>
+    /// MethodInfo referring to the generic function that checks whether a value is an empty representation of a type.
+    /// </summary>
     private static readonly MethodInfo IsEmptyMethod = typeof(IsEmptyExtension)
         .GetMethod(nameof(IsEmptyExtension.IsEmpty))!;
 
+    /// <summary>
+    /// MethodInfo for checks whether a string is an empty.
+    /// </summary>
     private static readonly MethodInfo IsNullOrWhiteSpaceMethod =
         typeof(string).GetMethod(nameof(string.IsNullOrWhiteSpace))!;
 
+    /// <summary>
+    /// MethodInfo for checks whether a enumerable is empty.
+    /// </summary>
     private static readonly MethodInfo AnyMethod = typeof(Enumerable).GetMethods()
         .Where(m => m.Name == nameof(Enumerable.Any))
-        .Where(m => m.GetParameters().Count() == 1)
+        .Where(m => m.GetParameters().Length == 1)
         .First();
 
+    /// <summary>
+    /// MethodInfo for checks whether a date is empty.
+    /// </summary>
     private static readonly MethodInfo IsBlankMethod = typeof(IsEmptyExtension)
         .GetMethod(nameof(IsEmptyExtension.IsBlank), new Type[] { typeof(DateTime) })!;
 
+    /// <summary>
+    /// Contains Method of string.
+    /// </summary>
+    public static readonly MethodInfo ContainsMethod = typeof(string)
+        .GetMethod(nameof(string.Contains), new Type[] { typeof(string) })!;
+
+    /// <summary>
+    /// StartsWith Method of string.
+    /// </summary>
+    public static readonly MethodInfo StartsWithMethod = typeof(string)
+        .GetMethod(nameof(string.StartsWith), new Type[] { typeof(string) })!;
+
+    /// <summary>
+    /// EndsWith Method of string.
+    /// </summary>
+    public static readonly MethodInfo EndsWithMethod = typeof(string)
+        .GetMethod(nameof(string.EndsWith), new Type[] { typeof(string) })!;
+
+    /// <summary>
+    /// Where method of <see cref="Enumerable"/> to call over <see cref="IEnumerable{T}"/>.
+    /// </summary>
+    internal static readonly MethodInfo InMethod = typeof(Enumerable).GetMethods()
+        .Where(m => m.Name == nameof(Enumerable.Contains))
+        .Where(m => m.GetParameters().Length == 2)
+        .First();
+    
+    /// <summary>
+    /// Types where "greater than" is applied to check that the value is not empty.
+    /// </summary>
     private static readonly Type[] GreaterThenTypes = new Type[]
     {
         typeof(byte),
@@ -74,7 +115,9 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         foreach (var criterionResolution in unconfiguredProperties)
             foreach (var match in selectionMatch.PropertyMatches)
                 if (match.OriginProperty.Name == criterionResolution.FilterPropertyInfo.Name
-                    && match.Match && match.TypeMatch)
+                    && match.Match
+                    && (match.TypeMatch
+                        || CheckTypes(criterionResolution.FilterPropertyInfo.PropertyType, match.TargetSelection!.PropertyType)))
                 {
                     criterionResolution.TargetSelection = match.TargetSelection;
                 }
@@ -88,7 +131,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
     }
 
     private Func<IQueryable<TModel>, TFilter, IQueryable<TModel>>? Create<TModel, TFilter>(
-        List<CriterionResolution> allProperties)
+        List<CriterionResolution> resolvedProperties)
         where TModel : class
         where TFilter : class
     {
@@ -96,16 +139,14 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         var queryParam = Expression.Parameter(typeof(IQueryable<TModel>), "query");
         List<Expression> body = new();
 
-        foreach (var resolution in allProperties)
+        foreach (var resolution in resolvedProperties)
         {
-            var filterMemberAccess = Expression.MakeMemberAccess(filterParam, resolution.FilterPropertyInfo);
             var targetParam = Expression.Parameter(resolution.TargetSelection!.RootDeclaringType, "e");
-            var targetMemberAccess = GetMemberAccess(resolution.TargetSelection!, targetParam);
             var operatorExpression = CreateOperatorExpression(
                 DiscoveryCriterionOperator(resolution.Criterion, resolution.FilterPropertyInfo),
                 resolution.Criterion.Negation,
-                filterMemberAccess,
-                targetMemberAccess);
+                GetMemberAccess(resolution.FilterPropertyInfo, filterParam),
+                GetMemberAccess(resolution.TargetSelection!, targetParam));
 
             // generate the type of the predicate.
             var predicateType = typeof(Func<,>).MakeGenericType(
@@ -128,7 +169,9 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
 
             // create an expression to check if the filter property is empty
             body.Add(resolution.Criterion.IgnoreIfIsEmpty
-                ? GetIfIsEmptyConstraintExpression(filterMemberAccess, assign) 
+                ? GetIfIsEmptyConstraintExpression(
+                    Expression.MakeMemberAccess(filterParam, resolution.FilterPropertyInfo),
+                    assign)
                 : assign);
         }
 
@@ -147,7 +190,20 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         return (Func<IQueryable<TModel>, TFilter, IQueryable<TModel>>?)lambdaFunc.Compile();
     }
 
-    private Expression CreateOperatorExpression(
+    /// <summary>
+    /// <para>
+    ///     Creates the expression that performs the comparison between the model property and the filter property.
+    /// </para>
+    /// </summary>
+    /// <param name="operator">The operator to be used in the comparison.</param>
+    /// <param name="negation">Indicates whether the comparison should be negated.</param>
+    /// <param name="filterMemberAccess">The expression that represents the filter property.</param>
+    /// <param name="targetMemberAccess">The expression that represents the model property.</param>
+    /// <returns>The expression that performs the comparison.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     The operator is not supported.
+    /// </exception>
+    public static Expression CreateOperatorExpression(
         CriterionOperator @operator,
         bool negation,
         MemberExpression filterMemberAccess,
@@ -179,6 +235,34 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
                     typeof(string).GetMethod("Contains", new[] { typeof(string) })!,
                     filterMemberAccess);
                 break;
+            case CriterionOperator.Contains:
+                expression = Expression.Call(targetMemberAccess, ContainsMethod, filterMemberAccess);
+                break;
+            case CriterionOperator.StartsWith:
+                expression = Expression.Call(targetMemberAccess, StartsWithMethod, filterMemberAccess);
+                break;
+            case CriterionOperator.EndsWith:
+                expression = Expression.Call(targetMemberAccess, EndsWithMethod, filterMemberAccess);
+                break;
+            case CriterionOperator.In:
+                // check if filter type is IEnumerable and has a generic type.
+                if (filterMemberAccess.Type.IsGenericType
+                    && filterMemberAccess.Type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                {
+                    // get the generic type of the filter.
+                    var filterGenericType = filterMemberAccess.Type.GetGenericArguments()[0];
+
+                    // get the method to check if the target is in the filter.
+                    var method = InMethod.MakeGenericMethod(filterGenericType);
+
+                    // create the expression to check if the target is in the filter.
+                    expression = Expression.Call(method, filterMemberAccess, targetMemberAccess);
+                }
+                else
+                {
+                    throw new InvalidOperationException("The filter property must be an IEnumerable.");
+                }
+                break;
         }
 
         if (expression is null)
@@ -191,11 +275,11 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
     }
 
     /// <summary>
-    /// Obtém o tipo de uma condição para um filtro a partir do <see cref="CriterionAttribute"/>.
+    /// Gets the operator of a condition for a filter from the <see cref="CriterionAttribute"/>.
     /// </summary>
     /// <param name="criterion"><see cref="CriterionAttribute"/>.</param>
-    /// <param name="filterProperty">Propriedade de um filtro.</param>
-    /// <returns>O tipo de condição que se deverá aplicar no filtro.</returns>
+    /// <param name="filterProperty">The filter property.</param>
+    /// <returns>The operator of the condition that should be applied in the filter.</returns>
     public static CriterionOperator DiscoveryCriterionOperator(
         CriterionAttribute criterion,
         PropertyInfo filterProperty)
@@ -208,10 +292,10 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         {
             return CriterionOperator.Like;
         }
-        //else if (typeof(IEnumerable).IsAssignableFrom(filterProperty.PropertyType))
-        //{
-        //    return CriterionOperator.In;
-        //}
+        else if (typeof(IEnumerable).IsAssignableFrom(filterProperty.PropertyType))
+        {
+            return CriterionOperator.In;
+        }
         //else if (PropertyFilter.GreaterThanOrEqualSuffix.Any(filterProperty.PropertyName.EndsWith))
         //{
         //    return CriterionOperator.GreaterThanOrEqual;
@@ -231,7 +315,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
 
         return CriterionOperator.Equal;
     }
-    
+
     /// <summary>
     /// Gets the expression to access the member, checking if it is a Nullable to get the Value if it is.
     /// </summary>
@@ -249,11 +333,32 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
     }
 
     /// <summary>
-    /// Cria uma expressão condicional para verificando se o valor do filtro não é vazio para execução de uma expressão.
+    /// Gets the expression to access the member, checking if it is a Nullable to get the Value if it is.
     /// </summary>
-    /// <param name="filterMemberAccess">Expressão que retorna o valor do filtro.</param>
-    /// <param name="assignExpression">Expressão que será executada se a condição for verdadeira.</param>
-    /// <returns>Nova expressão da condição, ou a mesma expressão caso não se possa aplicar uma condição.</returns>
+    /// <param name="property">The property.</param>
+    /// <param name="parameterExpression">The parameter expression.</param>
+    /// <returns>The expression to access the member.</returns>
+    public static MemberExpression GetMemberAccess(
+        PropertyInfo property,
+        Expression parameterExpression)
+    {
+        // expressão da propriedade
+        return Nullable.GetUnderlyingType(property.PropertyType) == null
+            ? Expression.MakeMemberAccess(parameterExpression, property)
+            : new PropertySelection(property).SelectChild("Value")!.GetAccessExpression(parameterExpression);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Creates a conditional expression to check whether the filter value is not empty.
+    /// </para>
+    /// <para>
+    ///     The result is an IfThen expression.
+    /// </para>
+    /// </summary>
+    /// <param name="filterMemberAccess">Expression that returns the value of the filter property.</param>
+    /// <param name="assignExpression">Expression that will be executed if the condition is true.</param>
+    /// <returns>New IfThen expression with the generated condition.</returns>
     public static Expression GetIfIsEmptyConstraintExpression(
         Expression filterMemberAccess,
         Expression assignExpression)
@@ -264,9 +369,11 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         {
             constraint = Expression.Not(Expression.Call(IsNullOrWhiteSpaceMethod, filterMemberAccess));
         }
-        else if (type == typeof(IEnumerable))
+        else if (typeof(IEnumerable).IsAssignableFrom(type) && type.GetGenericArguments().Length == 1)
         {
-            constraint = Expression.Call(AnyMethod, filterMemberAccess);
+            constraint = Expression.Call(
+                AnyMethod.MakeGenericMethod(type.GetGenericArguments()[0]),
+                filterMemberAccess);
         }
         else if (Nullable.GetUnderlyingType(type) != null)
         {
@@ -286,24 +393,79 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         }
         else
         {
-            constraint = Expression.Call(IsEmptyMethod, filterMemberAccess);
+            constraint = Expression.Not(Expression.Call(IsEmptyMethod, Expression.Convert(filterMemberAccess, typeof(object))));
         }
 
         return Expression.IfThen(constraint, assignExpression);
     }
-}
 
-internal class CriterionResolution
-{
-    public CriterionResolution(PropertyInfo property, CriterionAttribute? criterionAttribute)
+    /// <summary>
+    /// It checks two types of data, the first from the filter property, the second, from the model property,
+    /// if they are compatible for applying a filter.
+    /// </summary>
+    /// <param name="filterPropertyType">The filter property type.</param>
+    /// <param name="modelPropertyType">The model property type.</param>
+    /// <returns>True if the types are compatible, otherwise false.</returns>
+    public static bool CheckTypes(Type filterPropertyType, Type modelPropertyType)
+        => InnerCheckTypes(filterPropertyType, modelPropertyType, false);
+
+    private static bool InnerCheckTypes(Type filterPropertyType, Type modelPropertyType, bool genericArg)
     {
-        FilterPropertyInfo = property;
-        Criterion = criterionAttribute ?? new CriterionAttribute();
+        // check if filter type is nullable and compare with the model type
+        if (Nullable.GetUnderlyingType(filterPropertyType) == modelPropertyType)
+        {
+            return true;
+        }
+        // check if model type is nullable and compare with the filter type
+        if (Nullable.GetUnderlyingType(modelPropertyType) == filterPropertyType)
+        {
+            return true;
+        }
+
+        // when generic arg, is required to check same types, when not, is required to check if is IEnumerable
+        if (genericArg)
+        {
+            if (filterPropertyType == modelPropertyType)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            // check if filter type is IEnumerable and generic with one arg and compare the arg with the model type
+            if (filterPropertyType.IsGenericType
+                && typeof(IEnumerable).IsAssignableFrom(filterPropertyType)
+                && InnerCheckTypes(filterPropertyType.GetGenericArguments()[0], modelPropertyType, true))
+            {
+                return true;
+            }
+        }
+
+        //// check if both types are assinable to IEnumerable, and generic, and compare the args
+        //if (typeof(IEnumerable).IsAssignableFrom(filterPropertyType)
+        //    && typeof(IEnumerable).IsAssignableFrom(modelPropertyType)
+        //    && filterPropertyType.IsGenericType
+        //    && modelPropertyType.IsGenericType
+        //    && filterPropertyType.GetGenericArguments()[0] == modelPropertyType.GetGenericArguments()[0])
+        //{
+        //    return true;
+        //} ---> for now, it's not possible to apply a condition for this case.
+
+        return false;
+        }
     }
 
-    public PropertyInfo FilterPropertyInfo { get; set; }
+    internal class CriterionResolution
+    {
+        public CriterionResolution(PropertyInfo property, CriterionAttribute? criterionAttribute)
+        {
+            FilterPropertyInfo = property;
+            Criterion = criterionAttribute ?? new CriterionAttribute();
+        }
 
-    public CriterionAttribute Criterion { get; set; }
+        public PropertyInfo FilterPropertyInfo { get; set; }
 
-    public PropertySelection? TargetSelection { get; set; }
-}
+        public CriterionAttribute Criterion { get; set; }
+
+        public PropertySelection? TargetSelection { get; set; }
+    }
