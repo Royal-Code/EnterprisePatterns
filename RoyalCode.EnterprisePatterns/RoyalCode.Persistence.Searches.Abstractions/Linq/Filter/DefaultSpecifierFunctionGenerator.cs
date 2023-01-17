@@ -34,6 +34,12 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         .Where(m => m.GetParameters().Length == 1)
         .First();
 
+    private static readonly MethodInfo WhereMethod = typeof(Queryable).GetMethods()
+        .Where(m => m.Name == nameof(Queryable.Where))
+        .Where(m => m.GetParameters().Length == 2)
+        .Where(m => m.GetParameters()[1].ParameterType.GetGenericArguments()[0].GetGenericArguments().Length == 2)
+        .First();
+
     /// <summary>
     /// MethodInfo for checks whether a date is empty.
     /// </summary>
@@ -65,7 +71,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         .Where(m => m.Name == nameof(Enumerable.Contains))
         .Where(m => m.GetParameters().Length == 2)
         .First();
-    
+
     /// <summary>
     /// Types where "greater than" is applied to check that the value is not empty.
     /// </summary>
@@ -150,7 +156,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
 
             // generate the type of the predicate.
             var predicateType = typeof(Func<,>).MakeGenericType(
-                resolution.TargetSelection.RootDeclaringType,
+                typeof(TModel),
                 typeof(bool));
 
             // create the lamdba expression for the queryable
@@ -158,9 +164,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
 
             // create the method call to apply the filter in the query.
             var methodCall = Expression.Call(
-                typeof(Queryable),
-                "Where",
-                new[] { resolution.TargetSelection.RootDeclaringType },
+                WhereMethod.MakeGenericMethod(typeof(TModel)),
                 queryParam,
                 lambda);
 
@@ -452,20 +456,20 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         //} ---> for now, it's not possible to apply a condition for this case.
 
         return false;
-        }
     }
+}
 
-    internal class CriterionResolution
+internal class CriterionResolution
+{
+    public CriterionResolution(PropertyInfo property, CriterionAttribute? criterionAttribute)
     {
-        public CriterionResolution(PropertyInfo property, CriterionAttribute? criterionAttribute)
-        {
-            FilterPropertyInfo = property;
-            Criterion = criterionAttribute ?? new CriterionAttribute();
-        }
-
-        public PropertyInfo FilterPropertyInfo { get; set; }
-
-        public CriterionAttribute Criterion { get; set; }
-
-        public PropertySelection? TargetSelection { get; set; }
+        FilterPropertyInfo = property;
+        Criterion = criterionAttribute ?? new CriterionAttribute();
     }
+
+    public PropertyInfo FilterPropertyInfo { get; set; }
+
+    public CriterionAttribute Criterion { get; set; }
+
+    public PropertySelection? TargetSelection { get; set; }
+}
