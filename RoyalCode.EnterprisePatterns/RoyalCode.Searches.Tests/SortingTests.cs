@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace RoyalCode.Searches.Tests;
 
-public class DeserializeTests
+public class SortingTests
 {
     [Fact]
     public void Deserialize_ResultList_With_Sorting_MustBeEquivalent()
@@ -66,6 +66,34 @@ public class DeserializeTests
 
         // assert
         result.Should().BeEquivalentTo(expected);
+    }
+
+    [Theory]
+    [InlineData("Name asc", true, "Name", ListSortDirection.Ascending)]
+    [InlineData("Name desc", true, "Name", ListSortDirection.Descending)]
+    [InlineData("Name", true, "Name", ListSortDirection.Ascending)]
+    [InlineData("Name-asc", true, "Name", ListSortDirection.Ascending)]
+    [InlineData("Name-desc", true, "Name", ListSortDirection.Descending)]
+    [InlineData(null, false, null, ListSortDirection.Ascending)]
+    [InlineData("", false, null, ListSortDirection.Ascending)]
+    [InlineData(" ", false, null, ListSortDirection.Ascending)]
+    public void TryParse_NotJsonStrings(
+        string orderby,
+        bool expectedResult,
+        string expectedOrderBy,
+        ListSortDirection expectedDirection)
+    {
+        // arrange
+        // act
+        var result = Sorting.TryParse(orderby, out var sorting);
+
+        // assert
+        result.Should().Be(expectedResult);
+        if (expectedResult)
+        {
+            sorting.Direction.Should().Be(expectedDirection);
+            sorting.OrderBy.Should().Be(expectedOrderBy);
+        }
     }
 }
 

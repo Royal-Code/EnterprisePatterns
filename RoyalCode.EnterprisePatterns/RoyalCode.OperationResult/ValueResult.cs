@@ -145,6 +145,8 @@ public static class ValueResult
 /// </summary>
 public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
 {
+    
+
     /// <summary>
     /// The value returned by the operation.
     /// </summary>
@@ -252,6 +254,6 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     /// <returns>The JSON string.</returns>
     public override string Serialize()
     {
-        return JsonSerializer.Serialize(this);
+        return JsonSerializer.Serialize(this, ResultsSerializeContext.JsonSerializerOptions);
     }
 }

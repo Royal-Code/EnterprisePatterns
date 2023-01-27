@@ -7,12 +7,14 @@ namespace RoyalCode.OperationResult.Tests;
 
 public class DeserializationTests
 {
+    private readonly JsonSerializerOptions options = new(JsonSerializerDefaults.Web);
+
     [Fact]
     public void Deserialize_BaseResult_Success()
     {
         // arrange
         var result = BaseResult.CreateSuccess();
-        var json = JsonSerializer.Serialize(result);
+        var json = JsonSerializer.Serialize(result, options);
 
         // act
         var newResult = ResultsSerializeContext.Deserialize(json);
@@ -27,7 +29,7 @@ public class DeserializationTests
         // arrange
         var result = BaseResult.CreateSuccess();
         result.AddWarning("Warning message");
-        var json = JsonSerializer.Serialize(result);
+        var json = JsonSerializer.Serialize(result, options);
 
         // act
         var newResult = ResultsSerializeContext.Deserialize(json);
@@ -42,7 +44,7 @@ public class DeserializationTests
         // arrange
         var result = BaseResult.CreateSuccess();
         result.AddError(new Exception("Exception message"));
-        var json = JsonSerializer.Serialize(result);
+        var json = JsonSerializer.Serialize(result, options);
 
         // act
         var newResult = ResultsSerializeContext.Deserialize(json);
@@ -56,7 +58,7 @@ public class DeserializationTests
     {
         // arrange
         var result = ValueResult.CreateSuccess(new SomeValue(12, "Some name"));
-        var json = JsonSerializer.Serialize(result);
+        var json = JsonSerializer.Serialize(result, options);
 
         // act
         var newResult = ResultsSerializeContext.Deserialize<SomeValue>(json);
@@ -70,7 +72,7 @@ public class DeserializationTests
     {
         // arrange
         var result = ValueResult.CreateSuccess(new SomeRecord(12, "Some name"));
-        var json = JsonSerializer.Serialize(result);
+        var json = JsonSerializer.Serialize(result, options);
 
         // act
         var newResult = ResultsSerializeContext.Deserialize<SomeRecord>(json);
@@ -84,7 +86,7 @@ public class DeserializationTests
     {
         // arrange
         var result = ValueResult.CreateSuccess(new SomeStruct { Id = 12, Name = "Some name" });
-        var json = JsonSerializer.Serialize(result);
+        var json = JsonSerializer.Serialize(result, options);
 
         // act
         var newResult = ResultsSerializeContext.Deserialize<SomeStruct>(json);
@@ -102,7 +104,7 @@ public class DeserializationTests
 
         // act
         var r1 = ValueResult.Deserialize<SomeStruct>(json);
-        var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json);
+        var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json, options);
 
         // assert
         r1.Should().BeEquivalentTo(r2);
@@ -118,7 +120,7 @@ public class DeserializationTests
 
         // act
         var r1 = ValueResult.Deserialize<SomeStruct>(json);
-        var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json);
+        var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json, options);
 
         // assert
         r1.Should().BeEquivalentTo(r2);

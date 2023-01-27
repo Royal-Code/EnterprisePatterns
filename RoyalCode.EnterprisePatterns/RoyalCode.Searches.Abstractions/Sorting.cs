@@ -11,14 +11,14 @@ namespace RoyalCode.Searches.Abstractions;
 /// </summary>
 public class Sorting : ISorting
 {
-    public string? OrderBy { get; set; }
+    public string OrderBy { get; set; }
 
     public ListSortDirection Direction { get; set; }
 
     private static JsonSerializerOptions? jsonSerializerOptions;
     public static bool TryParse(string? orderBy, out Sorting sorting)
     {
-        if (orderBy is null)
+        if (string.IsNullOrWhiteSpace(orderBy))
         {
             sorting = default!;
             return false;
@@ -40,23 +40,23 @@ public class Sorting : ISorting
 
 
         // check if the param orderBy ends with asc or desc in a case insensitive way
-        var isAscending = orderBy.EndsWith("asc", StringComparison.OrdinalIgnoreCase);
-        var isDescending = orderBy.EndsWith("desc", StringComparison.OrdinalIgnoreCase);
+        // when is ascending, the order by ends with ' asc' or '-asc'
+        // when is descending, the order by ends with ' desc' or '-desc'
+        var isAscending = orderBy.EndsWith(" asc", StringComparison.OrdinalIgnoreCase)
+            || orderBy.EndsWith("-asc", StringComparison.OrdinalIgnoreCase);
+        var isDescending = orderBy.EndsWith(" desc", StringComparison.OrdinalIgnoreCase)
+            || orderBy.EndsWith("-desc", StringComparison.OrdinalIgnoreCase);
 
         // remove the asc or desc from the orderBy
         orderBy = isAscending
-            ? orderBy[..^3]
+            ? orderBy[..^4]
             : isDescending
-                ? orderBy[..^4]
+                ? orderBy[..^5]
                 : orderBy;
 
         sorting = new Sorting
         {
-            OrderBy = isAscending
-                ? orderBy.Substring(0, orderBy.Length - 3)
-                : isDescending
-                    ? orderBy.Substring(0, orderBy.Length - 4)
-                    : orderBy,
+            OrderBy = orderBy,
             Direction = isDescending ? ListSortDirection.Descending : ListSortDirection.Ascending
         };
         return true;
