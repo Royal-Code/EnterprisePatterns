@@ -90,7 +90,7 @@ public class SerializationTests
     }
 
     [Fact]
-    public void Serialize_WithContext_MustBeSameAs_WithoutContext()
+    public void Serialize_WithContext_MustBeSameAs_ForWebAndWithoutNulls()
     {
         // arrange
         var result = BaseResult.CreateSuccess()
@@ -98,7 +98,10 @@ public class SerializationTests
 
         // act
         var json = result.Serialize();
-        var json2 = JsonSerializer.Serialize(result);
+        var json2 = JsonSerializer.Serialize(result, new JsonSerializerOptions(JsonSerializerDefaults.Web)
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
 
         // assert
         json.Should().Be(json2);

@@ -8,12 +8,24 @@ namespace RoyalCode.OperationResult;
 /// <summary>
 /// Serialization context for <see cref="IOperationResult"/>.
 /// </summary>
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(BaseResult))]
 [JsonSerializable(typeof(DeserializableResult))]
 [JsonSerializable(typeof(ResultMessage))]
 [JsonSerializable(typeof(ResultMessageException))]
 public partial class ResultsSerializeContext : JsonSerializerContext
 {
+    /// <summary>
+    /// The default <see cref="JsonSerializerOptions"/> used for serialization and deserialization.
+    /// </summary>
+    public static readonly JsonSerializerOptions JsonSerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true,
+    };
+    
     /// <summary>
     /// Deserialize a <see cref="OperationResult.BaseResult"/> from a JSON string.
     /// </summary>
@@ -36,5 +48,5 @@ public partial class ResultsSerializeContext : JsonSerializerContext
     /// <param name="json">The JSON string.</param>
     /// <returns>The deserialized <see cref="IOperationResult"/>.</returns>
     public static IOperationResult<TValue>? Deserialize<TValue>(string json)
-        => JsonSerializer.Deserialize<DeserializableResult<TValue>>(json);
+        => JsonSerializer.Deserialize<DeserializableResult<TValue>>(json, JsonSerializerOptions);
 }
