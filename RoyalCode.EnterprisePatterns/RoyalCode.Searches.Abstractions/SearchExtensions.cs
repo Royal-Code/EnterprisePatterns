@@ -16,8 +16,8 @@ public static class SearchExtensions
     /// <param name="search">The search.</param>
     /// <param name="options">The options.</param>
     /// <returns>The search with the options applied.</returns>
-    public static ISearchOptions<T> WithOptions<T>(this ISearchOptions<T> search, SearchOptions options)
-        where T : ISearchOptions<T>
+    public static ISearch<T> WithOptions<T>(this ISearch<T> search, SearchOptions options)
+        where T : class
     {
         if (options.ItemsPerPage.HasValue)
             search = search.UsePages(options.ItemsPerPage.Value);
