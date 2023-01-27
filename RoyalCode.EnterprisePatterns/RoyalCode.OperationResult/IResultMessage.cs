@@ -44,7 +44,7 @@ public interface IResultMessage
     /// </para>
     /// </summary>
     [JsonIgnore] 
-    HttpStatusCode? HttpStatus { get; }
+    HttpStatusCode? Status { get; }
 
     /// <summary>
     /// Exception related to the message.

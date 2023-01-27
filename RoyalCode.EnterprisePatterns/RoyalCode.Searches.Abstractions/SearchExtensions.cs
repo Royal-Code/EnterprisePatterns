@@ -1,0 +1,46 @@
+﻿
+namespace RoyalCode.Searches.Abstractions;
+
+/// <summary>
+/// <para>
+///     Extensions methods for <see cref="ISearchOptions{TSearch}"/>, <see cref="ISearch{TEntity}"/>
+///     and <see cref="ISearch{TEntity, TDto}"/>.
+/// </para>
+/// </summary>
+public static class SearchExtensions
+{
+    /// <summary>
+    /// Applies the <see cref="SearchOptions"/> to the <see cref="ISearchOptions{TSearch}"/>.
+    /// </summary>
+    /// <typeparam name="T">The search object type.</typeparam>
+    /// <param name="search">The search.</param>
+    /// <param name="options">The options.</param>
+    /// <returns>The search with the options applied.</returns>
+    public static ISearchOptions<T> WithOptions<T>(this ISearchOptions<T> search, SearchOptions options)
+        where T : ISearchOptions<T>
+    {
+        if (options.ItemsPerPage.HasValue)
+            search = search.UsePages(options.ItemsPerPage.Value);
+
+        if (options.Page.HasValue)
+            search = search.FetchPage(options.Page.Value);
+
+        if (options.LastCount.HasValue)
+            search = search.UseLastCount(options.LastCount.Value);
+
+        if (options.Count.HasValue)
+            search = search.UseCount(options.Count.Value);
+
+        return search;
+    }
+
+    public static ISearch<T> OrderBy<T>(this ISearch<T> search, ISorting[]? sortings)
+        where T : class
+    {
+        if (sortings is not null)
+            foreach (var sorting in sortings)
+                search.OrderBy(sorting);
+
+        return search;
+    }
+}

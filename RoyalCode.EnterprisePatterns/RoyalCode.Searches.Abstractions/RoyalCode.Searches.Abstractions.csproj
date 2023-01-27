@@ -12,4 +12,9 @@
 		<PackageTags>RoyalCode Enterprise-Patterns Repository Searchable Search</PackageTags>
 	</PropertyGroup>
 
+	<!-- if dotnet standart 2.1 then incluide system.text.json version 6 -->
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+		<PackageReference Include="System.Text.Json" Version="6.0.0" />
+	</ItemGroup>
+	
 </Project>
