@@ -1,6 +1,6 @@
-using RoyalCode.Searches.Abstractions;
+using System.Text.Json.Serialization;
 
-namespace RoyalCode.Persistence.Searches.Abstractions.Base;
+namespace RoyalCode.Searches.Abstractions;
 
 /// <summary>
 /// <para>
@@ -23,6 +23,7 @@ public class AsyncResultList<TModel> : IAsyncResultList<TModel>
     public int Pages { get; init; }
 
     /// <inheritdoc />
+    [JsonConverter(typeof(SortingsConverter))]
     public IEnumerable<ISorting> Sortings { get; init; }
 
     /// <inheritdoc />

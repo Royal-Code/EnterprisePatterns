@@ -27,7 +27,7 @@ public class ResultMessage : IResultMessage
     {
         return new ResultMessage(ResultMessageType.Success, text, property, code)
         {
-            HttpStatus = httpStatus
+            Status = httpStatus
         };
     }
 
@@ -49,7 +49,7 @@ public class ResultMessage : IResultMessage
     {
         return new ResultMessage(ResultMessageType.Info, text, property, code)
         {
-            HttpStatus = httpStatus
+            Status = httpStatus
         };
     }
 
@@ -72,7 +72,7 @@ public class ResultMessage : IResultMessage
     {
         return new ResultMessage(ResultMessageType.Warning, text, property, code, ex)
         {
-            HttpStatus = httpStatus
+            Status = httpStatus
         };
     }
 
@@ -95,7 +95,7 @@ public class ResultMessage : IResultMessage
     {
         return new ResultMessage(ResultMessageType.Error, text, property, code, ex)
         {
-            HttpStatus = httpStatus
+            Status = httpStatus
         };
     }
 
@@ -120,7 +120,7 @@ public class ResultMessage : IResultMessage
 
         return new ResultMessage(ResultMessageType.Error, ex.Message, property, code, ex)
         {
-            HttpStatus = httpStatus
+            Status = httpStatus
         };
     }
 
@@ -139,7 +139,7 @@ public class ResultMessage : IResultMessage
     {
         return new ResultMessage(ResultMessageType.Error, text, null, ResultErrorCodes.NotFound)
         {
-            HttpStatus = HttpStatusCode.NotFound
+            Status = HttpStatusCode.NotFound
         };
     }
 
@@ -158,7 +158,7 @@ public class ResultMessage : IResultMessage
     {
         return new ResultMessage(ResultMessageType.Error, text, null, ResultErrorCodes.Forbidden)
         {
-            HttpStatus = HttpStatusCode.Forbidden
+            Status = HttpStatusCode.Forbidden
         };
     }
 
@@ -178,7 +178,7 @@ public class ResultMessage : IResultMessage
     {
         return new ResultMessage(ResultMessageType.Error, text, property, ResultErrorCodes.InvalidParameters)
         {
-            HttpStatus = HttpStatusCode.BadRequest
+            Status = HttpStatusCode.BadRequest
         };
     }
 
@@ -199,7 +199,7 @@ public class ResultMessage : IResultMessage
     {
         return new ResultMessage(ResultMessageType.Error, text, property, ResultErrorCodes.Validation, ex)
         {
-            HttpStatus = HttpStatusCode.BadRequest
+            Status = HttpStatusCode.BadRequest
         };
     }
 
@@ -222,7 +222,7 @@ public class ResultMessage : IResultMessage
 
         return new ResultMessage(ResultMessageType.Error, text ?? ex.Message, null, ResultErrorCodes.ApplicationError, ex)
         {
-            HttpStatus = HttpStatusCode.InternalServerError
+            Status = HttpStatusCode.InternalServerError
         };
     }
 
@@ -251,7 +251,7 @@ public class ResultMessage : IResultMessage
         Code = code;
         Exception = exception;
         if (code is not null)
-            HttpStatus = code switch
+            Status = code switch
             {
                 ResultErrorCodes.NotFound => HttpStatusCode.NotFound,
                 ResultErrorCodes.Forbidden => HttpStatusCode.Forbidden,
@@ -295,7 +295,7 @@ public class ResultMessage : IResultMessage
 
     /// <inheritdoc/>
     [JsonIgnore]
-    public HttpStatusCode? HttpStatus { get; set; }
+    public HttpStatusCode? Status { get; set; }
 
     /// <summary>
     /// Returns the text.

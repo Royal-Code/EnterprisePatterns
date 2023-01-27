@@ -123,6 +123,23 @@ public class DeserializationTests
         // assert
         r1.Should().BeEquivalentTo(r2);
     }
+
+    [Fact]
+    public void Deserialize_Success_WithInfoMessage_With_ForWebSerialization()
+    {
+        // arrange
+        var result = BaseResult.CreateSuccess();
+        result.AddInfo("Some info message");
+
+        var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        var json = JsonSerializer.Serialize(result, options);
+
+        // act
+        var newResult = ResultsSerializeContext.Deserialize(json);
+
+        // assert
+        newResult.Should().BeEquivalentTo(result);
+    }
 }
 
 

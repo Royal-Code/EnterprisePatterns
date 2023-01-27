@@ -1,4 +1,5 @@
-﻿
+﻿using System.Text.Json.Serialization;
+
 namespace RoyalCode.Searches.Abstractions;
 
 /// <summary>
@@ -35,6 +36,7 @@ public interface IResultList
     /// <summary>
     /// The sort objects applied to the search.
     /// </summary>
+    [JsonConverter(typeof(SortingsConverter))]
     IEnumerable<ISorting> Sortings { get; }
 
     /// <summary>

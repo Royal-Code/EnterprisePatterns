@@ -572,8 +572,8 @@ public static class ResultsExtensions
         httpStatus = null;
         foreach (var message in result.Messages)
         {
-            if (message.HttpStatus.HasValue && (httpStatus is null || httpStatus < message.HttpStatus))
-                httpStatus = message.HttpStatus;
+            if (message.Status.HasValue && (httpStatus is null || httpStatus < message.Status))
+                httpStatus = message.Status;
         }
         return httpStatus.HasValue;
     }
