@@ -35,12 +35,14 @@ public sealed class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISear
         var sortedQuery = PrepareQuery(criteria);
 
         var executableQuery = criteria.Paginate
-            ? sortedQuery.Skip(criteria.GetSkipCount()).Take(criteria.ItemsPerPage + 1)
+            ? sortedQuery
+                .Skip(criteria.GetSkipCount())
+                .Take(criteria.ItemsPerPage + 1)
             : sortedQuery;
 
         var list = executableQuery.ToList();
         var hasNextPage = list.Count > criteria.ItemsPerPage;
-        var items = hasNextPage ? list.Take(criteria.ItemsPerPage) : list;
+        var items = hasNextPage && criteria.Paginate ? list.Take(criteria.ItemsPerPage) : list;
 
         var count = criteria.LastCount > 0
             ? criteria.LastCount
@@ -79,7 +81,7 @@ public sealed class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISear
 
         var list = await executableQuery.ToListAsync(token);
         var hasNextPage = list.Count > criteria.ItemsPerPage;
-        var items = hasNextPage ? list.Take(criteria.ItemsPerPage) : list;
+        var items = hasNextPage && criteria.Paginate ? list.Take(criteria.ItemsPerPage) : list;
 
         var count = criteria.LastCount > 0
             ? criteria.LastCount
