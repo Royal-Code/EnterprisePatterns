@@ -191,7 +191,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
 
         var list = executableQuery.ToList();
         var hasNextPage = list.Count > criteria.ItemsPerPage;
-        var items = hasNextPage ? list.Take(criteria.ItemsPerPage) : list;
+        var items = hasNextPage && criteria.Paginate ? list.Take(criteria.ItemsPerPage) : list;
 
         var count = criteria.LastCount > 0
             ? criteria.LastCount
@@ -228,7 +228,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
 
         var list = await executableQuery.ToListAsync(token);
         var hasNextPage = list.Count > criteria.ItemsPerPage;
-        var items = hasNextPage ? list.Take(criteria.ItemsPerPage) : list;
+        var items = hasNextPage && criteria.Paginate ? list.Take(criteria.ItemsPerPage) : list;
 
         var count = criteria.LastCount > 0
             ? criteria.LastCount
