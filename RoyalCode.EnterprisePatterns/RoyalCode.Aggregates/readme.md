@@ -46,3 +46,6 @@ ser notificadas.
 
 Esta biblioteca contém abstrações e interfaces para classes que representam raizes de agregados.
 
+A interface `IAggregateRoot` representa a raiz de um agregado, herdando `IEntity` do projeto <kbd>RoyalCode.DomainEvents</kbd> e `IHasEvents` do projeto <kbd>RoyalCode.DomainEvents</kbd>.
+
+A classe `AggregateRoot` contém a implementação base para uma entidade raiz de agregado.
