@@ -104,7 +104,7 @@ public static class MvcResults
     /// <typeparam name="T">The type of the return object.</typeparam>
     /// <param name="value">The return object.</param>
     /// <returns>The <see cref="ObjectResult" /> created.</returns>
-    public static OkObjectResult Ok<T>(T value) => new(ValueResult.CreateSuccess(value));
+    public static OkObjectResult Ok<T>(T value) => new(ValueResult.Create(value));
 
     /// <summary>
     /// Creates a default success, including a return object and status code 201 (Created).
@@ -114,7 +114,7 @@ public static class MvcResults
     /// <param name="value">The return object.</param>
     /// <returns>The <see cref="ObjectResult" /> created.</returns>
     public static CreatedResult Created<T>(string uri, T value)
-        => new(uri, ValueResult.CreateSuccess(value));
+        => new(uri, ValueResult.Create(value));
 
     /// <summary>
     /// Creates a default success, including a return object and status code 201 (Created).
@@ -124,7 +124,7 @@ public static class MvcResults
     /// <param name="value">The return object.</param>
     /// <returns>The <see cref="ObjectResult" /> created.</returns>
     public static CreatedResult Created<T>(Uri uri, T value)
-        => new(uri, ValueResult.CreateSuccess(value));
+        => new(uri, ValueResult.Create(value));
 
     /// <summary>
     /// Creates an internal server error from the exception.
@@ -185,7 +185,7 @@ public static class MvcResults
     /// <param name="errorMessage">The error message.</param>
     /// <returns>The <see cref="ObjectResult" /> created.</returns>
     public static ObjectResult StatusCode(int statusCode, string errorMessage)
-        => new(BaseResult.CreateFailure(errorMessage))
+        => new(BaseResult.Failure(errorMessage))
         {
             StatusCode = statusCode
         };
@@ -199,7 +199,7 @@ public static class MvcResults
     /// <param name="errorMessage">The error message.</param>
     /// <returns>The <see cref="ObjectResult" /> created.</returns>
     public static ObjectResult StatusCode<T>(T value, int statusCode, string errorMessage)
-        => new(ValueResult.CreateFailure(value, errorMessage))
+        => new(ValueResult.Error(value, errorMessage))
         {
             StatusCode = statusCode
         };
@@ -212,7 +212,7 @@ public static class MvcResults
     /// <param name="statusCode">The status code.</param>
     /// <returns>The <see cref="ObjectResult" /> created.</returns>
     public static ObjectResult StatusCode<T>(T value, int statusCode)
-        => new(ValueResult.CreateSuccess(value))
+        => new(ValueResult.Create(value))
         {
             StatusCode = statusCode
         };

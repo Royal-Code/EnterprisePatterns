@@ -44,7 +44,7 @@ public static class ResultsExtensions
 
     private static Exception CreateException(this IEnumerable<IResultMessage> messages)
     {
-        var exceptions = messages.Where(m => m.Type == ResultMessageType.Error)
+        var exceptions = messages
             .Select(m => m.ToException())
             .ToList();
 
@@ -68,7 +68,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     A new instance of <see cref="IOperationResult{TValue}"/>.
     /// </returns>
-    public static IOperationResult<TValue> Adapt<TValue>(this IOperationResult result)
+    public static IOperationResult<TValue> ToValue<TValue>(this IOperationResult result)
     {
         return new ValueResult<TValue>(result);
     }
@@ -84,7 +84,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     A new instance of <see cref="IOperationResult{TValue}"/>.
     /// </returns>
-    public static IOperationResult<TValue> Adapt<TValue>(this IOperationResult result, TValue value)
+    public static IOperationResult<TValue> ToValue<TValue>(this IOperationResult result, TValue value)
     {
         return new ValueResult<TValue>(value, result);
     }
@@ -112,55 +112,28 @@ public static class ResultsExtensions
 
     #region Add Messages
 
+    private static ResultMessage AddMessage(this BaseResult result, ResultMessage message)
+    {
+        result.Add(message);
+        return message;
+    }
+
     /// <summary>
     /// Adds a new message with its properties to the operation result.
     /// </summary>
     /// <param name="result">The operation result.</param>
-    /// <param name="type">The message type.</param>
     /// <param name="text">The message text.</param>
     /// <param name="property">The related property, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <param name="ex">The exception that generate the message, optional.</param>
-    public static void AddMessage(this BaseResult result,
-        ResultMessageType type, string text, string? property, string? code, Exception? ex)
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage Add(this BaseResult result,
+        string text, string? property, string? code, HttpStatusCode? status, Exception? ex)
     {
-        result.AddMessage(new ResultMessage(type, text, property, code, ex));
-    }
-
-    /// <summary>
-    /// Adds a new success message with its properties to the operation result.
-    /// </summary>
-    /// <param name="result">The operation result.</param>
-    /// <param name="text">The message text.</param>
-    /// <param name="property">The related property, optional.</param>
-    /// <param name="code">The message code, optional.</param>
-    public static void AddSuccess(this BaseResult result, string text, string? property = null, string? code = null)
-    {
-        result.AddMessage(ResultMessage.Success(text, property, code));
-    }
-
-    /// <summary>
-    /// Adds a new informative message with its properties to the operation result.
-    /// </summary>
-    /// <param name="result">The operation result.</param>
-    /// <param name="text">The message text.</param>
-    /// <param name="property">The related property, optional.</param>
-    /// <param name="code">The message code, optional.</param>
-    public static void AddInfo(this BaseResult result, string text, string? property = null, string? code = null)
-    {
-        result.AddMessage(ResultMessage.Info(text, property, code));
-    }
-
-    /// <summary>
-    /// Adds a new warning message with its properties to the operation result.
-    /// </summary>
-    /// <param name="result">The operation result.</param>
-    /// <param name="text">The message text.</param>
-    /// <param name="property">The related property, optional.</param>
-    /// <param name="code">The message code, optional.</param>
-    public static void AddWarning(this BaseResult result, string text, string? property = null, string? code = null)
-    {
-        result.AddMessage(ResultMessage.Warning(text, property, code));
+        return result.AddMessage(new ResultMessage(text, property, code, status, ex));
     }
 
     /// <summary>
@@ -170,12 +143,28 @@ public static class ResultsExtensions
     /// <param name="text">The message text.</param>
     /// <param name="property">The related property, optional.</param>
     /// <param name="code">The message code, optional.</param>
-    /// <param name="httpStatus">The HTTP status code, optional.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <param name="ex">The exception that generate the message, optional.</param>
-    public static void AddError(this BaseResult result, string text, 
-        string? property = null, string? code = null, HttpStatusCode? httpStatus = null, Exception? ex = null)
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddError(this BaseResult result, string? code, string text,
+        string? property = null, HttpStatusCode? status = null, Exception? ex = null)
     {
-        result.AddMessage(ResultMessage.Error(text, property, code, httpStatus, ex));
+        return result.AddMessage(ResultMessage.Error(code, text, property, status, ex));
+    }
+
+    /// <summary>
+    /// Adds a new error message to the operation result.
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="text">The message text.</param>
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddError(this BaseResult result, string text)
+    {
+        return result.AddMessage(ResultMessage.Error(text));
     }
 
     /// <summary>
@@ -185,83 +174,171 @@ public static class ResultsExtensions
     /// <param name="ex">The exception that generate the message.</param>
     /// <param name="property">The related property, optional.</param>
     /// <param name="code">The message code, optional.</param>
-    public static void AddError(this BaseResult result, Exception ex, string? property = null, string? code = null)
+    /// <param name="status">The HTTP status code, optional.</param>
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddError(this BaseResult result, Exception ex, 
+        string? property = null, string? code = null, HttpStatusCode? status = null)
     {
-        result.AddMessage(ResultMessage.Error(ex, property, code));
+        return result.AddMessage(ResultMessage.Error(ex, property, code, status));
     }
 
     /// <summary>
     /// <para>
-    ///     Adds a new error message of type not found,
-    ///     and with the message code <see cref="ResultErrorCodes.NotFound"/>.
+    ///     Adds a new error message with the code from <see cref="GenericErrorCodes.NotFound"/>
+    ///     and HTTP status NotFound 404.
     /// </para>
     /// </summary>
     /// <param name="result">The operation result.</param>
     /// <param name="text">The message text.</param>
-    /// <returns>The same instace of <paramref name="result"/>.</returns>
-    public static void AddNotFound(this BaseResult result, string text)
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddNotFound(this BaseResult result, string text, string? property)
     {
-        result.AddMessage(ResultMessage.NotFound(text));
+        return result.AddMessage(ResultMessage.NotFound(text, property));
     }
 
     /// <summary>
     /// <para>
-    ///     Adds a new error message of type forbidden,
-    ///     and with the message code <see cref="ResultErrorCodes.Forbidden"/>.
+    ///     Adds a new error message with a specified code
+    ///     and HTTP status NotFound 404.
     /// </para>
     /// </summary>
     /// <param name="result">The operation result.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
     /// <param name="text">The message text.</param>
-    public static void AddForbidden(this BaseResult result, string text)
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddNotFound(this BaseResult result, string code, string text, string? property)
     {
-        result.AddMessage(ResultMessage.Forbidden(text));
+        return result.AddMessage(ResultMessage.NotFound(code, text, property));
     }
 
     /// <summary>
     /// <para>
-    ///     Adds a new error message of type invalid parameters,
-    ///     and with the message code <see cref="ResultErrorCodes.InvalidParameters"/>.
+    ///     Adds a new error message with a specified code and HTTP status Forbidden 403.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddForbidden(this BaseResult result, string code, string text, string? property = null)
+    {
+        return result.AddMessage(ResultMessage.Forbidden(code, text, property));
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new error message with a specified code and HTTP status Conflict 409.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddConflict(this BaseResult result, string code, string text, string? property = null)
+    {
+        return result.AddMessage(ResultMessage.Conflict(code, text, property));
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new error message with the code from <see cref="GenericErrorCodes.InvalidParameters"/> 
+    ///     and HTTP status BadRequest 400.
     /// </para>
     /// </summary>
     /// <param name="result">The operation result.</param>
     /// <param name="text">The message text.</param>
     /// <param name="property">The related property, optional.</param>
-    public static void AddInvalidParameters(this BaseResult result, string text, string? property = null)
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddInvalidParameters(this BaseResult result, string text, string property)
     {
-        result.AddMessage(ResultMessage.InvalidParameters(text, property));
+        return result.AddMessage(ResultMessage.InvalidParameters(text, property));
     }
 
     /// <summary>
     /// <para>
-    ///     Adds a new error message of type validation error,
-    ///     and with the message code <see cref="ResultErrorCodes.Validation"/>.
+    ///     Adds a new error message with the code from <see cref="GenericErrorCodes.Validation"/> 
+    ///     and HTTP status UnprocessableEntity 422.
     /// </para>
     /// </summary>
     /// <param name="result">The operation result.</param>
     /// <param name="text">The message text.</param>
     /// <param name="property">The related property, optional.</param>
     /// <param name="ex">The exception that generate the message, optional.</param>
-    public static void AddValidationError(this BaseResult result, 
-        string text, string? property = null, Exception? ex = null)
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddValidationError(this BaseResult result,
+        string text, string property, Exception? ex = null)
     {
-        result.AddMessage(ResultMessage.ValidationError(text, property, ex));
+        return result.AddMessage(ResultMessage.ValidationError(text, property, ex));
     }
 
     /// <summary>
     /// <para>
-    ///     Adds a new error message of type application error,
-    ///     and with the message code <see cref="ResultErrorCodes.ApplicationError"/>.
+    ///     Adds a new error message with the specified code and HTTP status UnprocessableEntity 422.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The related property, optional.</param>
+    /// <param name="ex">The exception that generate the message, optional.</param>
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddValidationError(this BaseResult result,
+        string code, string text, string property, Exception? ex = null)
+    {
+        return result.AddMessage(ResultMessage.ValidationError(code, text, property, ex));
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new error message with the code from <see cref="GenericErrorCodes.Validation"/> 
+    ///     and HTTP status UnprocessableEntity 422.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="ex">The exception that generate the message.</param>
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddValidationError(this BaseResult result, Exception ex)
+    {
+        return result.AddMessage(ResultMessage.ValidationError(ex));
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new error message with the code from <see cref="GenericErrorCodes.ApplicationError"/>
+    ///     and HTTP status InternalServerError 500.
     /// </para>
     /// </summary>
     /// <param name="result">The operation result.</param>
     /// <param name="ex">The exception that generate the message.</param>
     /// <param name="text">The message text, optional, when not informed the exception message will be used.</param>
-    public static void AddApplicationError(this BaseResult result, Exception ex, string? text = null)
+    /// <returns>
+    ///     The created message.
+    /// </returns>
+    public static ResultMessage AddApplicationError(this BaseResult result, Exception ex, string? text = null)
     {
-        if (ex is null)
-            throw new ArgumentNullException(nameof(ex));
-
-        result.AddMessage(ResultMessage.ApplicationError(ex, text));
+        return result.AddMessage(ResultMessage.ApplicationError(ex, text));
     }
 
     #endregion
@@ -280,64 +357,7 @@ public static class ResultsExtensions
     public static TResult WithMessage<TResult>(this TResult result, IResultMessage message)
         where TResult : BaseResult
     {
-        result.AddMessage(message);
-        return result;
-    }
-
-    /// <summary>
-    /// <para>
-    ///     Adds a new success message and return the same operation result instance.
-    /// </para>
-    /// </summary>
-    /// <typeparam name="TResult">The operation result type.</typeparam>
-    /// <param name="result">The operation result.</param>
-    /// <param name="text">The message text.</param>
-    /// <param name="property">The related property, optional.</param>
-    /// <param name="code">The message code, optional.</param>
-    /// <returns>The same instace of <paramref name="result"/>.</returns>
-    public static TResult WithSuccess<TResult>(this TResult result, string text, 
-        string? property = null, string? code = null)
-        where TResult : BaseResult
-    {
-        result.AddMessage(ResultMessage.Success(text, property, code));
-        return result;
-    }
-
-    /// <summary>
-    /// <para>
-    ///     Adds a new informative message and return the same operation result instance.
-    /// </para>
-    /// </summary>
-    /// <typeparam name="TResult">The operation result type.</typeparam>
-    /// <param name="result">The operation result.</param>
-    /// <param name="text">The message text.</param>
-    /// <param name="property">The related property, optional.</param>
-    /// <param name="code">The message code, optional.</param>
-    /// <returns>The same instace of <paramref name="result"/>.</returns>
-    public static TResult WithInfo<TResult>(this TResult result,
-        string text, string? property = null, string? code = null)
-        where TResult : BaseResult
-    {
-        result.AddMessage(ResultMessage.Info( text, property, code));
-        return result;
-    }
-
-    /// <summary>
-    /// <para>
-    ///     Adds a new warning message and return the same operation result instance.
-    /// </para>
-    /// </summary>
-    /// <typeparam name="TResult">The operation result type.</typeparam>
-    /// <param name="result">The operation result.</param>
-    /// <param name="text">The message text.</param>
-    /// <param name="property">The related property, optional.</param>
-    /// <param name="code">The message code, optional.</param>
-    /// <returns>The same instace of <paramref name="result"/>.</returns>
-    public static TResult WithWarning<TResult>(this TResult result, string text, 
-        string? property = null, string? code = null)
-        where TResult : BaseResult
-    {
-        result.AddMessage(ResultMessage.Warning(text, property, code));
+        result.Add(message);
         return result;
     }
 
@@ -351,14 +371,30 @@ public static class ResultsExtensions
     /// <param name="text">The message text.</param>
     /// <param name="property">The related property, optional.</param>
     /// <param name="code">The message code, optional.</param>
-    /// <param name="httpStatus">The HTTP status code, optional.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <param name="ex">The exception that generate the message, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
-    public static TResult WithError<TResult>(this TResult result, string text, 
-        string? property = null, string? code = null, HttpStatusCode? httpStatus = null, Exception? ex = null)
+    public static TResult WithError<TResult>(this TResult result, string? code, string text,
+        string? property = null, HttpStatusCode? status = null, Exception? ex = null)
         where TResult : BaseResult
     {
-        result.AddMessage(ResultMessage.Error( text, property, code, httpStatus, ex));
+        result.Add(ResultMessage.Error(code, text, property, status, ex));
+        return result;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new error message and return the same operation result instance.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The operation result type.</typeparam>
+    /// <param name="result">The operation result.</param>
+    /// <param name="text">The message text.</param>
+    /// <returns>The same instace of <paramref name="result"/>.</returns>
+    public static TResult WithError<TResult>(this TResult result, string text)
+        where TResult : BaseResult
+    {
+        result.Add(ResultMessage.Error(text));
         return result;
     }
 
@@ -372,71 +408,111 @@ public static class ResultsExtensions
     /// <param name="ex">The exception that generate the message.</param>
     /// <param name="property">The related property, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
-    public static TResult WithError<TResult>(this TResult result, Exception ex, 
-        string? property = null, string? code = null)
+    public static TResult WithError<TResult>(this TResult result, 
+        Exception ex, string? property = null, string? code = null, HttpStatusCode? status = null)
         where TResult : BaseResult
     {
-        result.AddMessage(ResultMessage.Error(ex, property, code));
+        result.Add(ResultMessage.Error(ex, property, code, status));
         return result;
     }
 
     /// <summary>
     /// <para>
-    ///     Adds a new error message of type not found,
-    ///     and with the message code <see cref="ResultErrorCodes.NotFound"/>.
+    ///     Adds a new error message with the code from <see cref="GenericErrorCodes.NotFound"/>
+    ///     and HTTP status NotFound 404.
     /// </para>
     /// </summary>
     /// <typeparam name="TResult">The operation result type.</typeparam>
     /// <param name="result">The operation result.</param>
     /// <param name="text">The message text.</param>
+    /// <param name="property">The property related, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
-    public static TResult WithNotFound<TResult>(this TResult result, string text)
+    public static TResult WithNotFound<TResult>(this TResult result, string text, string? property)
         where TResult : BaseResult
     {
-        result.AddMessage(ResultMessage.NotFound(text));
+        result.Add(ResultMessage.NotFound(text, property));
         return result;
     }
 
     /// <summary>
     /// <para>
-    ///     Adds a new error message of type forbidden,
-    ///     and with the message code <see cref="ResultErrorCodes.Forbidden"/>.
+    ///     Adds a new error message with a specified code
+    ///     and HTTP status NotFound 404.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The operation result type.</typeparam>
+    /// <param name="result">The operation result.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>The same instace of <paramref name="result"/>.</returns>
+    public static TResult WithNotFound<TResult>(this TResult result, string code, string text, string? property)
+        where TResult : BaseResult
+    {
+        result.Add(ResultMessage.NotFound(code, text, property));
+        return result;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new error message with a specified code and HTTP status Forbidden 403.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The operation result type.</typeparam>
+    /// <param name="result">The operation result.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>The same instace of <paramref name="result"/>.</returns>
+    public static TResult WithForbidden<TResult>(this TResult result, string code, string text, string? property = null)
+        where TResult : BaseResult
+    {
+        result.Add(ResultMessage.Forbidden(code, text, property));
+        return result;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new error message with a specified code and HTTP status Conflict 409.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The operation result type.</typeparam>
+    /// <param name="result">The operation result.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>The same instace of <paramref name="result"/>.</returns>
+    public static TResult WithConflict<TResult>(this TResult result, string code, string text, string? property = null)
+        where TResult : BaseResult
+    {
+        result.Add(ResultMessage.Conflict(code, text, property));
+        return result;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new error message with the code from <see cref="GenericErrorCodes.InvalidParameters"/> 
+    ///     and HTTP status BadRequest 400.
     /// </para>
     /// </summary>
     /// <typeparam name="TResult">The operation result type.</typeparam>
     /// <param name="result">The operation result.</param>
     /// <param name="text">The message text.</param>
+    /// <param name="property">The related property.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
-    public static TResult WithForbidden<TResult>(this TResult result, string text)
+    public static TResult WithInvalidParameters<TResult>(this TResult result, string text, string property)
         where TResult : BaseResult
     {
-        result.AddMessage(ResultMessage.Forbidden(text));
+        result.Add(ResultMessage.InvalidParameters(text, property));
         return result;
     }
 
     /// <summary>
     /// <para>
-    ///     Adds a new error message of type invalid parameters,
-    ///     and with the message code <see cref="ResultErrorCodes.InvalidParameters"/>.
-    /// </para>
-    /// </summary>
-    /// <typeparam name="TResult">The operation result type.</typeparam>
-    /// <param name="result">The operation result.</param>
-    /// <param name="text">The message text.</param>
-    /// <param name="property">The related property, optional.</param>
-    /// <returns>The same instace of <paramref name="result"/>.</returns>
-    public static TResult WithInvalidParameters<TResult>(this TResult result, string text, string? property = null)
-        where TResult : BaseResult
-    {
-        result.AddMessage(ResultMessage.InvalidParameters(text, property));
-        return result;
-    }
-
-    /// <summary>
-    /// <para>
-    ///     Adds a new error message of type validation error,
-    ///     and with the message code <see cref="ResultErrorCodes.Validation"/>.
+    ///     Adds a new error message with the code from <see cref="GenericErrorCodes.Validation"/> 
+    ///     and HTTP status UnprocessableEntity 422.
     /// </para>
     /// </summary>
     /// <typeparam name="TResult">The operation result type.</typeparam>
@@ -445,18 +521,55 @@ public static class ResultsExtensions
     /// <param name="property">The related property, optional.</param>
     /// <param name="ex">The exception that generate the message, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
-    public static TResult WithValidationError<TResult>(this TResult result, 
-        string text, string? property = null, Exception? ex = null)
+    public static TResult WithValidationError<TResult>(this TResult result,
+        string text, string property, Exception? ex = null)
         where TResult : BaseResult
     {
-        result.AddMessage(ResultMessage.ValidationError(text, property, ex));
+        result.Add(ResultMessage.ValidationError(text, property, ex));
         return result;
     }
 
     /// <summary>
     /// <para>
-    ///     Adds a new error message of type application error,
-    ///     and with the message code <see cref="ResultErrorCodes.ApplicationError"/>.
+    ///     Adds a new error message with the specified code and HTTP status UnprocessableEntity 422.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The operation result type.</typeparam>
+    /// <param name="result">The operation result.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The related property, optional.</param>
+    /// <param name="ex">The exception that generate the message, optional.</param>
+    /// <returns>The same instace of <paramref name="result"/>.</returns>
+    public static TResult WithValidationError<TResult>(this TResult result,
+        string code, string text, string property, Exception? ex = null)
+        where TResult : BaseResult
+    {
+        result.Add(ResultMessage.ValidationError(code, text, property, ex));
+        return result;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new error message with the code from <see cref="GenericErrorCodes.Validation"/> 
+    ///     and HTTP status UnprocessableEntity 422.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The operation result type.</typeparam>
+    /// <param name="result">The operation result.</param>
+    /// <param name="ex">The exception that generate the message, optional.</param>
+    /// <returns>The same instace of <paramref name="result"/>.</returns>
+    public static TResult WithValidationError<TResult>(this TResult result, Exception ex)
+        where TResult : BaseResult
+    {
+        result.Add(ResultMessage.ValidationError(ex));
+        return result;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new error message with the code from <see cref="GenericErrorCodes.ApplicationError"/>
+    ///     and HTTP status InternalServerError 500.
     /// </para>
     /// </summary>
     /// <typeparam name="TResult">The operation result type.</typeparam>
@@ -467,10 +580,7 @@ public static class ResultsExtensions
     public static TResult WithApplicationError<TResult>(this TResult result, Exception ex, string? text = null)
         where TResult : BaseResult
     {
-        if (ex is null)
-            throw new ArgumentNullException(nameof(ex));
-
-        result.AddMessage(ResultMessage.ApplicationError(ex, text));
+        result.Add(ResultMessage.ApplicationError(ex, text));
         return result;
     }
 
@@ -506,7 +616,7 @@ public static class ResultsExtensions
     /// <returns><see langword="true"/> if the result has a message with the InvalidParameters error code, otherwise <see langword="false"/>.</returns>
     public static bool HasInvalidParameters(this IOperationResult result)
     {
-        return result.HasErrorCode(ResultErrorCodes.InvalidParameters);
+        return result.HasErrorCode(GenericErrorCodes.InvalidParameters);
     }
 
     /// <summary>
@@ -518,19 +628,7 @@ public static class ResultsExtensions
     /// <returns><see langword="true"/> if the result has a message with the Validation error code, otherwise <see langword="false"/>.</returns>
     public static bool HasValidation(this IOperationResult result)
     {
-        return result.HasErrorCode(ResultErrorCodes.Validation);
-    }
-
-    /// <summary>
-    /// <para>
-    ///     Checks if the result has a message with the Forbidden error code.
-    /// </para>
-    /// </summary>
-    /// <param name="result">The operation result.</param>
-    /// <returns><see langword="true"/> if the result has a message with the Forbidden error code, otherwise <see langword="false"/>.</returns>
-    public static bool HasForbidden(this IOperationResult result)
-    {
-        return result.HasErrorCode(ResultErrorCodes.Forbidden);
+        return result.HasErrorCode(GenericErrorCodes.Validation);
     }
 
     /// <summary>
@@ -542,7 +640,7 @@ public static class ResultsExtensions
     /// <returns><see langword="true"/> if the result has a message with the NotFound error code, otherwise <see langword="false"/>.</returns>
     public static bool HasNotFound(this IOperationResult result)
     {
-        return result.HasErrorCode(ResultErrorCodes.NotFound);
+        return result.HasErrorCode(GenericErrorCodes.NotFound);
     }
 
     /// <summary>
@@ -554,7 +652,7 @@ public static class ResultsExtensions
     /// <returns><see langword="true"/> if the result has a message with the ApplicationError error code, otherwise <see langword="false"/>.</returns>
     public static bool HasApplicationError(this IOperationResult result)
     {
-        return result.HasErrorCode(ResultErrorCodes.ApplicationError);
+        return result.HasErrorCode(GenericErrorCodes.ApplicationError);
     }
 
     #endregion

@@ -19,7 +19,7 @@ public static class ValidationsOperationResultExtensions
         if (result.IsValid)
             return BaseResult.ImmutableSuccess;
 
-        var br = BaseResult.CreateSuccess();
+        var br = BaseResult.Create();
 
         result.Errors.AddErrorsTo(br);
         return br;
@@ -52,7 +52,7 @@ public static class ValidationsOperationResultExtensions
         if (result.IsValid)
             return new BaseResult();
 
-        var br = BaseResult.CreateSuccess();
+        var br = BaseResult.Create();
 
         result.Errors.AddErrorsTo(br);
         return br;

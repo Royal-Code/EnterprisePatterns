@@ -11,11 +11,6 @@ namespace RoyalCode.OperationResult;
 public interface IResultMessage
 {
     /// <summary>
-    /// The message type.
-    /// </summary>
-    ResultMessageType Type { get; }
-
-    /// <summary>
     /// The text of the message. The object is to display the message to users.
     /// </summary>
     string Text { get; }
@@ -23,12 +18,12 @@ public interface IResultMessage
     /// <summary>
     /// Property that originated the message, 
     /// or property that is intended for the message. 
-    /// When not linked to any property, inform a blank string.
+    /// When not linked to any property, it will be null.
     /// </summary>
     string? Property { get; }
 
     /// <summary>
-    /// Some kind of code that can identify the type of message or the message itself.
+    /// Some kind of code that can identify the type of message, error, validation, rule.
     /// </summary>
     string? Code { get; }
 
@@ -49,5 +44,6 @@ public interface IResultMessage
     /// <summary>
     /// Exception related to the message.
     /// </summary>
-    ResultMessageException? Exception { get; }
+    [JsonIgnore] 
+    Exception? Exception { get; }
 }

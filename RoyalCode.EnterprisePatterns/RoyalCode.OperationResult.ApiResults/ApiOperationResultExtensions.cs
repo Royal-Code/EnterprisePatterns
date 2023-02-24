@@ -20,7 +20,7 @@ public static partial class ApiResults
     /// <typeparam name="T">The type of the return object.</typeparam>
     /// <param name="value">The return object.</param>
     /// <returns>The created <see cref="IResult"/> for the response.</returns>
-    public static IResult Ok<T>(T value) => Results.Ok(ValueResult.CreateSuccess(value));
+    public static IResult Ok<T>(T value) => Results.Ok(ValueResult.Create(value));
 
     /// <summary>
     /// Creates a default success, including a return object and status code 201 (Created).
@@ -30,7 +30,7 @@ public static partial class ApiResults
     /// <param name="value">The return object.</param>
     /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult Created<T>(string uri, T value)
-        => Results.Created(uri, ValueResult.CreateSuccess(value));
+        => Results.Created(uri, ValueResult.Create(value));
 
     /// <summary>
     /// Creates a default success, including a return object and status code 201 (Created).
@@ -40,7 +40,7 @@ public static partial class ApiResults
     /// <param name="value">The return object.</param>
     /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult Created<T>(Uri uri, T value)
-        => Results.Created(uri, ValueResult.CreateSuccess(value));
+        => Results.Created(uri, ValueResult.Create(value));
 
 
     /// <summary>
@@ -94,7 +94,7 @@ public static partial class ApiResults
     /// <param name="errorMessage">The error message.</param>
     /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult StatusCode(int statusCode, string errorMessage)
-        => Results.Json(BaseResult.CreateFailure(errorMessage), statusCode: statusCode);
+        => Results.Json(BaseResult.Failure(errorMessage), statusCode: statusCode);
 
     /// <summary>
     /// Creates a <see cref="IResult"/> with a value and an error message and informing the necessary status code.
@@ -105,7 +105,7 @@ public static partial class ApiResults
     ///<param name="errorMessage">The error message.</param>
     /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult StatusCode<T>(T value, int statusCode, string errorMessage)
-        => Results.Json(ValueResult.CreateFailure(value, errorMessage), statusCode: statusCode);
+        => Results.Json(ValueResult.Error(value, errorMessage), statusCode: statusCode);
 
     /// <summary>
     /// Creates a <see cref="IResult"/> with a value and informing the necessary status code.
@@ -115,7 +115,7 @@ public static partial class ApiResults
     /// <param name="statusCode">The status code.</param>
     /// <returns>The created <see cref="IResult"/> for the response.</returns>
     public static IResult StatusCode<T>(T value, int statusCode)
-        => Results.Json(ValueResult.CreateSuccess(value), statusCode: statusCode);
+        => Results.Json(ValueResult.Create(value), statusCode: statusCode);
 }
 
 #if NET6_0

@@ -13,7 +13,7 @@ public class DeserializationTests
     public void Deserialize_BaseResult_Success()
     {
         // arrange
-        var result = BaseResult.CreateSuccess();
+        var result = BaseResult.Create();
         var json = JsonSerializer.Serialize(result, options);
 
         // act
@@ -27,7 +27,7 @@ public class DeserializationTests
     public void Deserialize_BaseResult_Success_WithWarningMessage()
     {
         // arrange
-        var result = BaseResult.CreateSuccess();
+        var result = BaseResult.Create();
         result.AddWarning("Warning message");
         var json = JsonSerializer.Serialize(result, options);
 
@@ -42,7 +42,7 @@ public class DeserializationTests
     public void Deserialize_BaseResult_Success_WithException()
     {
         // arrange
-        var result = BaseResult.CreateSuccess();
+        var result = BaseResult.Create();
         result.AddError(new Exception("Exception message"));
         var json = JsonSerializer.Serialize(result, options);
 
@@ -57,7 +57,7 @@ public class DeserializationTests
     public void Deserialize_ValueResult_Class()
     {
         // arrange
-        var result = ValueResult.CreateSuccess(new SomeValue(12, "Some name"));
+        var result = ValueResult.Create(new SomeValue(12, "Some name"));
         var json = JsonSerializer.Serialize(result, options);
 
         // act
@@ -71,7 +71,7 @@ public class DeserializationTests
     public void Deserialize_ValueResult_Record()
     {
         // arrange
-        var result = ValueResult.CreateSuccess(new SomeRecord(12, "Some name"));
+        var result = ValueResult.Create(new SomeRecord(12, "Some name"));
         var json = JsonSerializer.Serialize(result, options);
 
         // act
@@ -85,7 +85,7 @@ public class DeserializationTests
     public void Deserialize_ValueResult_Struct()
     {
         // arrange
-        var result = ValueResult.CreateSuccess(new SomeStruct { Id = 12, Name = "Some name" });
+        var result = ValueResult.Create(new SomeStruct { Id = 12, Name = "Some name" });
         var json = JsonSerializer.Serialize(result, options);
 
         // act
@@ -99,7 +99,7 @@ public class DeserializationTests
     public void Deserialize_Success_ValueResult_WithContext_MustBeSameAs_WithoutContext()
     {
         // arrange
-        var result = ValueResult.CreateSuccess(new SomeStruct { Id = 12, Name = "Some name" });
+        var result = ValueResult.Create(new SomeStruct { Id = 12, Name = "Some name" });
         var json = result.Serialize();
 
         // act
@@ -114,7 +114,7 @@ public class DeserializationTests
     public void Deserialize_Failure_ValueResult_WithContext_MustBeSameAs_WithoutContext()
     {
         // arrange
-        var result = ValueResult.CreateSuccess(new SomeStruct { Id = 12, Name = "Some name" });
+        var result = ValueResult.Create(new SomeStruct { Id = 12, Name = "Some name" });
         result.WithValidationError("Some error");
         var json = result.Serialize();
 
@@ -130,7 +130,7 @@ public class DeserializationTests
     public void Deserialize_Success_WithInfoMessage_With_ForWebSerialization()
     {
         // arrange
-        var result = BaseResult.CreateSuccess();
+        var result = BaseResult.Create();
         result.AddInfo("Some info message");
 
         var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);

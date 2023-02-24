@@ -48,7 +48,7 @@ public static class HttpOperationResultExtensions
             // if it is not empty, returns a success message
             return string.IsNullOrWhiteSpace(text)
                 ? BaseResult.ImmutableSuccess
-                : BaseResult.CreateSuccess().WithSuccess(text);
+                : BaseResult.Create().WithSuccess(text);
         }
 
         // if it is not successful, then generates an error result.
@@ -61,17 +61,17 @@ public static class HttpOperationResultExtensions
             case HttpStatusCode.NotFound:
                 return BaseResult.NotFound(text);
             case HttpStatusCode.InternalServerError:
-                return BaseResult.CreateFailure(text, code: ResultErrorCodes.ApplicationError, httpStatus: HttpStatusCode.InternalServerError);
+                return BaseResult.Failure(text, code: GenericErrorCodes.ApplicationError, httpStatus: HttpStatusCode.InternalServerError);
 
             // case of redirection, generates the result with the location
             case HttpStatusCode.Moved:
             case HttpStatusCode.Redirect:
             case HttpStatusCode.RedirectKeepVerb:
             case HttpStatusCode.RedirectMethod:
-                return BaseResult.CreateFailure(text).WithInfo($"Location: {response.Headers.Location}");
+                return BaseResult.Failure(text).WithInfo($"Location: {response.Headers.Location}");
 
             default:
-                return BaseResult.CreateFailure(text, code: response.StatusCode.ToString(), httpStatus: response.StatusCode);
+                return BaseResult.Failure(text, code: response.StatusCode.ToString(), httpStatus: response.StatusCode);
         }
     }
 
@@ -97,7 +97,7 @@ public static class HttpOperationResultExtensions
             {
                 // if is plain on success, deserializes TValue and generates the success result
                 var value = await response.Content.ReadFromJsonAsync<TValue>(cancellationToken: cancellationToken);
-                return ValueResult.CreateSuccess(value!);
+                return ValueResult.Create(value!);
             }
 
             // try to obtain the result of the operation
@@ -118,7 +118,7 @@ public static class HttpOperationResultExtensions
         if (response.IsSuccessStatusCode)
         {
             TValue value = default!;
-            var result = ValueResult.CreateSuccess(value);
+            var result = ValueResult.Create(value);
             if (!string.IsNullOrWhiteSpace(text))
                 result.WithSuccess(text);
 
@@ -136,7 +136,7 @@ public static class HttpOperationResultExtensions
                 return ValueResult.NotFound<TValue>(text);
             case HttpStatusCode.InternalServerError:
                 return ValueResult.CreateFailure<TValue>(text, 
-                    code: ResultErrorCodes.ApplicationError,
+                    code: GenericErrorCodes.ApplicationError,
                     httpStatus: HttpStatusCode.InternalServerError);
 
             // case of redirection, generates the result with the location

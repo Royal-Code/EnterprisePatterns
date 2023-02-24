@@ -14,7 +14,6 @@ namespace RoyalCode.OperationResult;
 [JsonSerializable(typeof(BaseResult))]
 [JsonSerializable(typeof(DeserializableResult))]
 [JsonSerializable(typeof(ResultMessage))]
-[JsonSerializable(typeof(ResultMessageException))]
 public partial class ResultsSerializeContext : JsonSerializerContext
 {
     /// <summary>

@@ -1,5 +1,5 @@
 
-using RoyalCode.OperationResult.Exceptions;
+using System.Net;
 
 namespace RoyalCode.OperationResult;
 
@@ -8,6 +8,19 @@ namespace RoyalCode.OperationResult;
 /// </summary>
 public static class ResultMessageExtensions
 {
+    /// <summary>
+    /// <para>
+    ///     Join the text of all messagem in one string.
+    /// </para>
+    /// </summary>
+    /// <param name="messages">A collection of messages.</param>
+    /// <param name="separator">The separator, by default it is a new line.</param>
+    /// <returns>A String that contains the text of all the messages.</returns>
+    public static string JoinMessages(this IEnumerable<IResultMessage> messages, string separator = "\n")
+    {
+        return string.Join(separator, messages);
+    }
+
     /// <summary>
     /// <para>
     ///     Generate an exception from the message. In case the message contains an original exception, 
@@ -22,7 +35,7 @@ public static class ResultMessageExtensions
     /// </returns>
     public static Exception ToException(this IResultMessage message)
     {
-        return message.Exception?.GetOriginExcepion() ?? message.ToInvalidOperationException();
+        return message.Exception ?? message.ToInvalidOperationException();
     }
 
     /// <summary>
@@ -38,51 +51,131 @@ public static class ResultMessageExtensions
     /// </returns>
     public static InvalidOperationException ToInvalidOperationException(this IResultMessage message)
     {
-        var originalException = message.Exception?.GetOriginExcepion();
+        var originalException = message.Exception;
+
         return originalException is not null
             ? originalException is InvalidOperationException ioex
                 ? ioex
                 : new InvalidOperationException(message.Text, originalException)
-            : message.Exception is not null
-                ? new InvalidOperationException(message.Text, message.Exception.ToInvalidOperationInnerException())
-                : new InvalidOperationException(message.Text);
+            : new InvalidOperationException(message.Text);
     }
 
     /// <summary>
     /// <para>
-    ///     Generate one <see cref="InvalidOperationInnerException"/> from the message exception model.
+    ///     Set a new value for the message text.
     /// </para>
     /// </summary>
-    /// <param name="messageException">The message exception model.</param>
-    /// <returns>
-    /// <para>
-    ///     A new instance of <see cref="InvalidOperationInnerException"/>.
-    /// </para>
-    /// </returns>
-    public static InvalidOperationInnerException ToInvalidOperationInnerException(this ResultMessageException messageException)
+    /// <param name="message">The message.</param>
+    /// <param name="text">The new text.</param>
+    /// <returns>The same instance of <see cref="ResultMessage"/>. for chaining.</returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="message"/> is null.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///     <paramref name="text"/> is null or empty.
+    /// </exception>
+    public static ResultMessage WithText(this ResultMessage message, string text)
     {
-        return messageException.InnerException is not null
-            ? new InvalidOperationInnerException(
-                messageException.Message,
-                messageException.StackTrace,
-                messageException.FullNameOfExceptionType,
-                messageException.InnerException.ToInvalidOperationInnerException())
-            : new InvalidOperationInnerException(
-                messageException.Message,
-                messageException.StackTrace,
-                messageException.FullNameOfExceptionType);
+        if (message is null)
+            throw new ArgumentNullException(nameof(message));
+
+        if (string.IsNullOrEmpty(text))
+            throw new ArgumentException($"'{nameof(text)}' cannot be null or empty.", nameof(text));
+
+        message.Text= text;
+        return message;
     }
 
     /// <summary>
     /// <para>
-    ///     Join the text of all messagem in one string.
+    ///     Set a new value for the message property.
     /// </para>
     /// </summary>
-    /// <param name="messages">A collection of messages.</param>
-    /// <param name="separator">The separator, by default it is a new line.</param>
-    /// <returns>A String that contains the text of all the messages.</returns>
-    public static string JoinMessages(this IEnumerable<IResultMessage> messages, string separator = "\n")
+    /// <param name="message">The message.</param>
+    /// <param name="property">The new property.</param>
+    /// <returns>The same instance of <see cref="ResultMessage"/>. for chaining.</returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="message"/> is null.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///     <paramref name="property"/> is null or empty.
+    /// </exception>
+    public static ResultMessage WithProperty(this ResultMessage message, string property)
     {
-        return string.Join(separator, messages);
+        if (message is null)
+            throw new ArgumentNullException(nameof(message));
+
+        if (string.IsNullOrEmpty(property))
+            throw new ArgumentException($"'{nameof(property)}' cannot be null or empty.", nameof(property));
+
+        message.Property = property;
+        return message;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Set a new value for the message code.
+    /// </para>
+    /// </summary>
+    /// <param name="message">The message.</param>
+    /// <param name="code">The new code.</param>
+    /// <returns>The same instance of <see cref="ResultMessage"/>. for chaining.</returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="message"/> is null.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///     <paramref name="code"/> is null or empty.
+    /// </exception>
+    public static ResultMessage WithCode(this ResultMessage message, string code)
+    {
+        if (message is null)
+            throw new ArgumentNullException(nameof(message));
+        if (string.IsNullOrEmpty(code))
+            throw new ArgumentException($"'{nameof(code)}' cannot be null or empty.", nameof(code));
+
+        message.Code = code;
+        return message;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Set a new value for the message status.
+    /// </para>
+    /// </summary>
+    /// <param name="message">The message.</param>
+    /// <param name="status">The new status.</param>
+    /// <returns>The same instance of <see cref="ResultMessage"/>. for chaining.</returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="message"/> is null.
+    /// </exception>
+    public static ResultMessage WithStatus(this ResultMessage message, HttpStatusCode status) 
+    {
+        if (message is null)
+            throw new ArgumentNullException(nameof(message));
+
+        message.Status = status;
+        return message;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Set a new value for the message exception.
+    /// </para>
+    /// </summary>
+    /// <param name="message">The message.</param>
+    /// <param name="exception">The new exception.</param>
+    /// <returns>The same instance of <see cref="ResultMessage"/>. for chaining.</returns>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="message"/> is null or <paramref name="exception"/> is null.
+    /// </exception>
+    public static ResultMessage WithException(this ResultMessage message, Exception exception)
+    {
+        if (message is null)
+            throw new ArgumentNullException(nameof(message));
+        if (exception is null)
+            throw new ArgumentNullException(nameof(exception));
+
+        message.Exception = exception;
+        return message;
     }
 }

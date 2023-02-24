@@ -10,7 +10,7 @@ public class SerializationTests
     public void Serialize_BaseResult_Success()
     {
         // arrange
-        var result = BaseResult.CreateSuccess();
+        var result = BaseResult.Create();
 
         // act
         var json = JsonSerializer.Serialize(result);
@@ -23,7 +23,7 @@ public class SerializationTests
     public void Serialize_BaseResult_Success_WithWarningMessage()
     {
         // arrange
-        var result = BaseResult.CreateSuccess();
+        var result = BaseResult.Create();
         result.AddWarning("Warning message");
 
         // act
@@ -37,7 +37,7 @@ public class SerializationTests
     public void Serialize_BaseResult_Success_WithInfoMessage()
     {
         // arrange
-        var result = BaseResult.CreateSuccess()
+        var result = BaseResult.Create()
             .WithInfo("Info message");
 
         // act
@@ -51,7 +51,7 @@ public class SerializationTests
     public void Serialize_BaseResult_Success_WithSuccessMessage()
     {
         // arrange
-        var result = BaseResult.CreateSuccess()
+        var result = BaseResult.Create()
             .WithSuccess("Success message");
 
         // act
@@ -65,7 +65,7 @@ public class SerializationTests
     public void Serialize_BaseResult_Success_WithErrorMessage_Then_Became_Failure()
     {
         // arrange
-        var result = BaseResult.CreateSuccess()
+        var result = BaseResult.Create()
             .WithError("Error message");
 
         // act
@@ -79,7 +79,7 @@ public class SerializationTests
     public void Serialize_BaseResult_Success_WithException_Then_Became_Failure()
     {
         // arrange
-        var result = BaseResult.CreateSuccess()
+        var result = BaseResult.Create()
             .WithError(new Exception("Error message"));
 
         // act
@@ -93,7 +93,7 @@ public class SerializationTests
     public void Serialize_WithContext_MustBeSameAs_ForWebAndWithoutNulls()
     {
         // arrange
-        var result = BaseResult.CreateSuccess()
+        var result = BaseResult.Create()
             .WithError(new Exception("Error message"));
 
         // act
@@ -111,7 +111,7 @@ public class SerializationTests
     public void Serialize_ValueResult_Class()
     {
         // arrange
-        var result = ValueResult.CreateSuccess(new SomeValue(12, "Some name"));
+        var result = ValueResult.Create(new SomeValue(12, "Some name"));
 
         // act
         var json = JsonSerializer.Serialize(result);
@@ -124,7 +124,7 @@ public class SerializationTests
     public void Serialize_ValueResult_Record()
     {
         // arrange
-        var result = ValueResult.CreateSuccess(new SomeRecord(12, "Some name"));
+        var result = ValueResult.Create(new SomeRecord(12, "Some name"));
 
         // act
         var json = JsonSerializer.Serialize(result);
@@ -137,7 +137,7 @@ public class SerializationTests
     public void Serialize_ValueResult_Struct()
     {
         // arrange
-        var result = ValueResult.CreateSuccess(new SomeStruct { Id = 12, Name = "Some name" });
+        var result = ValueResult.Create(new SomeStruct { Id = 12, Name = "Some name" });
 
         // act
         var json = JsonSerializer.Serialize(result);
