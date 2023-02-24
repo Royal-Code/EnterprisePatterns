@@ -1,6 +1,7 @@
 
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResult;
 
@@ -221,11 +222,16 @@ public static class ValueResult
 /// </summary>
 public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
 {
-    
+    /// <summary>
+    /// The value returned by the operation.
+    /// </summary>
+    [JsonIgnore]
+    object? IResultHasValue.Value => Value;
 
     /// <summary>
     /// The value returned by the operation.
     /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
     public TValue? Value { get; }
 
     /// <summary>

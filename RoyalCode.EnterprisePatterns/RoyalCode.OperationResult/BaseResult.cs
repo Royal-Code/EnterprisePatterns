@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Immutable;
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -27,7 +28,14 @@ public class BaseResult : IOperationResult
     /// <summary>
     /// The result messages.
     /// </summary>
-    public IEnumerable<IResultMessage> Messages => messages.AsReadOnly();
+    [JsonIgnore]
+    IEnumerable<IResultMessage> IOperationResult.Messages => messages;
+
+    /// <summary>
+    /// The result messages.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IEnumerable<IResultMessage>? Messages => messages.Count == 0 ? null : messages;
 
     /// <summary>
     /// Determines whether the result of the operation was success or failure.

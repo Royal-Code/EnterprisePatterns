@@ -31,11 +31,11 @@ public interface IOperationResult
 /// </para>
 /// </summary>
 /// <typeparam name="TValue">The result type of the value returned by the operation.</typeparam>
-public interface IOperationResult<TValue> : IOperationResult
+public interface IOperationResult<TValue> : IOperationResult, IResultHasValue
 {
     /// <summary>
     /// The value returned by the operation.
     /// </summary>
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
-    TValue? Value { get; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    new TValue? Value { get; }
 }

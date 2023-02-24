@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Immutable;
+using System.Net;
 using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResult;
@@ -253,6 +254,8 @@ public class ResultMessage : IResultMessage
             ex);
     }
 
+    private LinkedList<KeyValuePair<string, object>>? additionalInformation;
+
     /// <summary>
     /// <para>
     ///     Creates a new result message.
@@ -314,8 +317,52 @@ public class ResultMessage : IResultMessage
     [JsonIgnore]
     public HttpStatusCode? Status { get; internal set; }
 
+    /// <inheritdoc/>
+    [JsonExtensionData]
+    public IDictionary<string, object>? AdditionalInformation
+        => additionalInformation?.ToImmutableDictionary();
+
     /// <summary>
     /// Returns the text.
     /// </summary>
     public override string ToString() => Text;
+
+    /// <summary>
+    /// <para>
+    ///     Adds extra information to the message.
+    /// </para>
+    /// <para>
+    ///     This method adds data to the <see cref="AdditionalInformation"/> property.
+    /// </para>
+    /// <para>
+    ///     If the key already exists, the value will be overwritten.
+    /// </para>
+    /// </summary>
+    /// <param name="key">Additional information key.</param>
+    /// <param name="value">Additional information value.</param>
+    /// <returns>The same instance of the message for chaining calls.</returns>
+    /// <exception cref="ArgumentException">
+    ///     if the <paramref name="key"/> is null, empty or contains only white spaces.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    ///     if the <paramref name="value"/> is null.
+    /// </exception>
+    public ResultMessage WithAdditionInfo(string key, object value)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+            throw new ArgumentException($"'{nameof(key)}' cannot be null or whitespace.", nameof(key));
+
+        if (value is null)
+            throw new ArgumentNullException(nameof(value));
+
+        additionalInformation ??= new();
+
+        var kvp = additionalInformation.FirstOrDefault(i => i.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
+        if (kvp.Key is not null)
+            additionalInformation.Remove(kvp);
+
+        additionalInformation.AddLast(new KeyValuePair<string, object>(key, value));
+
+        return this;
+    }
 }

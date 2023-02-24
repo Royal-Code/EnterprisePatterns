@@ -46,4 +46,11 @@ public interface IResultMessage
     /// </summary>
     [JsonIgnore] 
     Exception? Exception { get; }
+
+    /// <summary>
+    /// Additional information from the message.
+    /// Ids of objects related to the message can be used.
+    /// </summary>
+    [JsonExtensionData]
+    IDictionary<string, object>? AdditionalInformation { get; }
 }
