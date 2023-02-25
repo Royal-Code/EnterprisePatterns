@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace RoyalCode.OperationResult.Serialization;
 
 /// <summary>
@@ -55,4 +57,7 @@ public class DeserializableResult<TValue> : DeserializableResult, IOperationResu
     /// The operation result value.
     /// </summary>
     public TValue? Value { get; set; }
+
+    [JsonIgnore]
+    object? IResultHasValue.Value => Value;
 }
