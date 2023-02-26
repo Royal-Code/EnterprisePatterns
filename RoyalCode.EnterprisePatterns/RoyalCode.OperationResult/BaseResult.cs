@@ -48,7 +48,13 @@ public class BaseResult : IOperationResult
     /// </summary>
     [JsonIgnore] 
     public bool Failure => !Success;
-    
+
+    /// <summary>
+    /// Count of the error messages of the result.
+    /// </summary>
+    [JsonIgnore]
+    public int ErrorsCount => messages.Count;
+
     /// <summary>
     /// Default constructor, with success result, until some error message is added.
     /// </summary>
@@ -334,6 +340,9 @@ public class BaseResult : IOperationResult
             /// abstract.
             /// </summary>
             public abstract bool Success { get; }
+
+            /// <inheritdoc />
+            public int ErrorsCount => 0;
         }
 
         /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace RoyalCode.OperationResult.ProblemDetails;
+﻿using RoyalCode.OperationResult.ProblemDetails.Convertion;
+
+namespace RoyalCode.OperationResult.ProblemDetails;
 
 /// <summary>
 /// Converts the <see cref="IOperationResult"/> to <see cref="ProblemDetails"/>.
@@ -12,35 +14,64 @@ public static class ProblemDetailsConverter
         if (result.Success)
             return null!;
 
-
-
-
-        // get the description
-        //var description = options.Descriptor
-    }
-
-    public static ResultProblemCode GetResultProblemCode(this IOperationResult result)
-    {
-        var code = result.Code;
-        var aggregate = false;
-
-        if (code is null)
+        var builder = new ProblemDetailsBuilder();
+        foreach (var message in result.Messages)
         {
-            code = result.GetType().Name;
-            aggregate = true;
+            ConvertMessage(message, builder);
         }
 
-        return new ResultProblemCode
-        {
-            Code = code,
-            Aggregate = aggregate
-        };
+        if (builder.Code is null)
+            return null!;
+
+        // get the description
+        options.Descriptor.TryGetDescription(builder.Code, out var description);
+            
+        // defini status code
+        // como fazer?
+
     }
-}
 
-public struct ResultProblemCode
-{
-    public string Code { get; set; }
+    private static void ConvertMessage(IResultMessage message, ProblemDetailsBuilder builder)
+    {
+        bool isGenericError = message.Code is null
+            ? true
+            : GenericErrorCodes.Contains(message.Code);
+        var code = message.Code ?? GenericErrorCodes.InvalidParameters;
 
-    public bool Aggregate { get; set; }
+        builder.SetCode(code, isGenericError);
+
+        if (isGenericError)
+        {
+            // se o codigo for de parâmetros inválidos, ou validação, então adicionar os detalhes
+            if (code == GenericErrorCodes.InvalidParameters
+                || code == GenericErrorCodes.Validation)
+            {
+                builder.AddInvalidParameter(new InvalidParameterDetails(message.Text)
+                {
+                    Name = message.Property,
+                    Extensions = message.AdditionalInformation
+                });
+            }
+            // se for not found
+            else if (code == GenericErrorCodes.NotFound)
+            {
+                builder.AddNotFound(new NotFoundDetails(message.Text)
+                {
+                    Property = message.Property,
+                    Extensions = message.AdditionalInformation
+                });
+            }
+            // se não, adiciona erro interno
+            else
+            {
+                builder.AddInternalErrorMessage(message.Text);
+                if (message.AdditionalInformation is not null)
+                    builder.AddExtension(message.AdditionalInformation);
+            }
+        }
+        else
+        {
+            builder.AddCustomProblem(message);
+        }
+    }
 }

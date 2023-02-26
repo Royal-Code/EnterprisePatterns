@@ -16,6 +16,12 @@ public interface IOperationResult
     bool Success { get; }
 
     /// <summary>
+    /// Count of the error messages of the result.
+    /// </summary>
+    [JsonIgnore]
+    int ErrorsCount { get; }
+
+    /// <summary>
     /// The result messages.
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

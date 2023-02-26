@@ -45,4 +45,37 @@ public static class GenericErrorCodes
     /// Application error, exception, which is not a validation error.
     /// </summary>
     public const string ApplicationError = "500";
+
+    /// <summary>
+    /// Verify if the code is a generic error code.
+    /// </summary>
+    /// <param name="code">The code to be verified.</param>
+    /// <returns>True if the code is a generic error code.</returns>
+    public static bool Contains(string code)
+    {
+        return code == InvalidParameters
+            || code == Validation
+            || code == NotFound
+            || code == ApplicationError;
+    }
+
+    /// <summary>
+    /// Check if the new code has more priority than the current code.
+    /// </summary>
+    /// <param name="currentCode">The current code.</param>
+    /// <param name="newCode">The new code.</param>
+    /// <returns>True if the new code has more priority than the current code.</returns>
+    public static bool HaveMorePriority(string currentCode, string newCode)
+    {
+        if (currentCode == newCode)
+            return false;
+
+        if (currentCode == ApplicationError || newCode == NotFound)
+            return false;
+
+        if (currentCode == Validation && newCode == InvalidParameters)
+            return false;
+
+        return true;
+    }
 }

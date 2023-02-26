@@ -17,8 +17,8 @@
 		<None Include="../icon.png" Pack="true" PackagePath="/"/>
 	</ItemGroup>
 	<PropertyGroup>
-		<OpResVer>1.0.1</OpResVer>
-		<OpResPreview></OpResPreview>
+		<OpResVer>2.0.0</OpResVer>
+		<OpResPreview>-preview-1</OpResPreview>
 		<PersistVer>1.0.0</PersistVer>
 		<PersistPreview>-preview3.2</PersistPreview>
 	</PropertyGroup>
