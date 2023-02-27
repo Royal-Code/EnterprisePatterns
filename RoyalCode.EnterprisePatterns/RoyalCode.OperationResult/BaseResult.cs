@@ -23,6 +23,7 @@ public class BaseResult : IOperationResult
     /// <summary>
     /// Private list to store the messages.
     /// </summary>
+    [JsonIgnore]
     protected internal readonly List<IResultMessage> messages = new();
 
     /// <summary>
@@ -270,19 +271,6 @@ public class BaseResult : IOperationResult
         return new BaseResult(ResultMessage.ApplicationError(ex, text));
     }
 
-    /// <summary>
-    /// Deserialize a json string to a <see cref="BaseResult"/>.
-    /// </summary>
-    /// <param name="json">The json string.</param>
-    /// <returns>A new instance of <see cref="BaseResult"/> from json.</returns>
-    public static BaseResult Deserialize(string json)
-    {
-        var result = ResultsSerializeContext.Deserialize(json);
-        return result == null
-            ? new BaseResult()
-            : new BaseResult(result.Success, result.Messages);
-    }
-
     #endregion
 
     /// <summary>
@@ -308,17 +296,6 @@ public class BaseResult : IOperationResult
         return this;
     }
 
-    /// <summary>
-    /// <para>
-    ///     Serialize this result to a json string.
-    /// </para>
-    /// </summary>
-    /// <returns>The json string.</returns>
-    public virtual string Serialize()
-    {
-        return JsonSerializer.Serialize(this, ResultsSerializeContext.Default.BaseResult);
-    }
-
     private static class Immutable
     {
         /// <summary>
@@ -334,14 +311,17 @@ public class BaseResult : IOperationResult
             /// <summary>
             /// Always the same instace, an empty array.
             /// </summary>
+            [JsonIgnore]
             public IEnumerable<IResultMessage> Messages => Array.Empty<IResultMessage>();
 
             /// <summary>
             /// abstract.
             /// </summary>
+            [JsonIgnore]
             public abstract bool Success { get; }
 
             /// <inheritdoc />
+            [JsonIgnore]
             public int ErrorsCount => 0;
         }
 
@@ -358,6 +338,7 @@ public class BaseResult : IOperationResult
             /// <summary>
             /// Always true.
             /// </summary>
+            [JsonIgnore]
             public override bool Success => true;
         }
 
@@ -374,6 +355,7 @@ public class BaseResult : IOperationResult
             /// <summary>
             /// Always false.
             /// </summary>
+            [JsonIgnore]
             public override bool Success => false;
         }
     }

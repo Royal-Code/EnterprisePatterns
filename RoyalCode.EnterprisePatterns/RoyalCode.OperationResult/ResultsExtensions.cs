@@ -660,20 +660,38 @@ public static class ResultsExtensions
     #region Has HttpStatus
 
     /// <summary>
-    /// Check if any message has an http status code, and if so, returns that has the highest value.
+    /// Get the http status code from the result.
     /// </summary>
     /// <param name="result">The operation result.</param>
-    /// <param name="httpStatus">The http status code.</param>
-    /// <returns><see langword="true"/> if the result has a message with any http status code, otherwise <see langword="false"/>.</returns>
-    public static bool HasHttpStatus(this IOperationResult result, [NotNullWhen(true)] out HttpStatusCode? httpStatus)
+    /// <returns>
+    ///     The http status code, if any message has an http status code, and if so, returns that has the highest value.
+    /// </returns>
+    public static int GetHttpStatus(this IOperationResult result)
     {
-        httpStatus = null;
+        if (result.Success)
+            return 200;
+
+        int httpStatus = 0;
         foreach (var message in result.Messages)
         {
-            if (message.Status.HasValue && (httpStatus is null || httpStatus < message.Status))
-                httpStatus = message.Status;
+            if (message.Status is null)
+                continue;
+
+            int status = (int)message.Status.Value;
+            
+            if (status == 404 && httpStatus == 0)
+            {
+                httpStatus = 404;
+                continue;
+            }
+
+            if (status > httpStatus)
+            {
+                httpStatus = status;
+            }
         }
-        return httpStatus.HasValue;
+
+        return httpStatus == 0 ? 400 : httpStatus;
     }
 
     #endregion

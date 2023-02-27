@@ -11,16 +11,19 @@ public class DeserializableResult : IOperationResult
     /// <summary>
     /// Determine whether the result of the operation was success or failure.
     /// </summary>
+    [JsonIgnore] 
     public bool Success { get; set; }
 
     /// <summary>
     /// The message of the result.
     /// </summary>
-    public IEnumerable<ResultMessage>? Messages { get; set; }
+    public List<ResultMessage>? Messages { get; set; }
 
-    /// <summary>
-    /// The <see cref="IOperationResult"/> messages.
-    /// </summary>
+    /// <inheritdoc />
+    [JsonIgnore] 
+    public int ErrorsCount => Messages?.Count ?? 0;
+
+    /// <inheritdoc />
     IEnumerable<IResultMessage> IOperationResult.Messages => Messages ?? Enumerable.Empty<IResultMessage>();
 
     /// <summary>

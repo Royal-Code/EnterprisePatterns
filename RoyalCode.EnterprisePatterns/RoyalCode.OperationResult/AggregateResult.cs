@@ -24,6 +24,9 @@ public class AggregateResult : IAggregateResult
     /// </summary>
     public IEnumerable<IResultMessage> Messages => innerResults.SelectMany(r => r.Messages);
 
+    /// <inheritdoc />
+    public int ErrorsCount => innerResults.Count == 0 ? 0 : innerResults.Sum(r => r.ErrorsCount);
+
     /// <summary>
     /// Add a inner result.
     /// </summary>

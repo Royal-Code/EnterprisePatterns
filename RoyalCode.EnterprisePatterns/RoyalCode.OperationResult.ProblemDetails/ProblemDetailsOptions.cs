@@ -38,7 +38,6 @@ public class ProblemDetailsOptions
     /// <summary>
     /// Complete the options configuration, adding the problem details from the files.
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
     internal void Complete(ILogger logger)
     {
         if (completed)
