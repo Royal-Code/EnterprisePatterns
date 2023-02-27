@@ -13,6 +13,51 @@ public class ProblemDetailsDescriptor
     /// </summary>
     public const string AggregateProblemsDetails = "aggregate-problems-details";
 
+    /// <summary>
+    /// Extension field for the problems details of an aggregation of problems.
+    /// </summary>
+    public const string AggregateExtensionField = "inner-details";
+
+    /// <summary>
+    /// Extension field for the details of invalid parameters.
+    /// </summary>
+    public const string InvalidParametersExtensionField = "invalid-params";
+
+    /// <summary>
+    /// Extension field for internal server errors messagens
+    /// </summary>
+    public const string ErrorsExtensionField = "errors";
+
+    /// <summary>
+    /// Extension field for the details of an entity not found.
+    /// </summary>
+    public const string NotFoundExtensionField = "not-found";
+
+    /// <summary>
+    /// The Detail field for the an aggregation of problems.
+    /// </summary>
+    public static string AggregateMessage = "Multiples problems";
+
+    /// <summary>
+    /// The Detail field for the an internal error.
+    /// </summary>
+    public static string InternalErrorsMessage = "Internal error";
+
+    /// <summary>
+    /// The Detail field for the an invalid parameters.
+    /// </summary>
+    public static string InvalidParametersMessage = "Invalid parameters";
+
+    /// <summary>
+    /// The Detail field for the an entity not found.
+    /// </summary>
+    public static string NotFoundMessage = "Entity not found";
+
+    /// <summary>
+    /// The Detail field for the an undefined error.
+    /// </summary>
+    public static string DefaultMessage = "An error has occurred";
+
     private readonly Dictionary<string, ProblemDetailsDescription> descriptions = new()
     {
         {
