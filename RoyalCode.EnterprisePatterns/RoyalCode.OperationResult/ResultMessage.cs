@@ -1,6 +1,9 @@
 ﻿using System.Collections.Immutable;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+
+[assembly: InternalsVisibleTo("RoyalCode.OperationResult.Http")]
 
 namespace RoyalCode.OperationResult;
 
