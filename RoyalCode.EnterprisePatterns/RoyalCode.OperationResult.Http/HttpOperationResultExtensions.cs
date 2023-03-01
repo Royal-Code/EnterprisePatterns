@@ -1,6 +1,7 @@
 ﻿using RoyalCode.OperationResult;
 using RoyalCode.OperationResult.Serialization;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace System.Net.Http;
 
@@ -17,139 +18,126 @@ public static class HttpOperationResultExtensions
     /// </para>
     /// </summary>
     /// <param name="response">The <see cref="HttpResponseMessage"/>.</param>
-    /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
+    /// <param name="token">The <see cref="CancellationToken"/>.</param>
     /// <returns>The <see cref="IOperationResult"/>.</returns>
-    public static async Task<IOperationResult> GetOperationResultAsync(
-        this HttpResponseMessage response,
-        CancellationToken cancellationToken = default)
+    public static async Task<IOperationResult> ToOperationResultAsync(
+        this HttpResponseMessage response, CancellationToken token = default)
     {
-        // check that the content is json
-        if (response.Content.Headers.ContentType?.MediaType == "application/json")
-        {
-            // try to obtain the result of the operation
-            var operationResult = await response.Content.ReadFromJsonAsync(
-                ResultsSerializeContext.Default.DeserializableResult,
-                cancellationToken);
-
-            if (operationResult is not null)
-                return operationResult;
-        }
-
-        // if is not json, reads the content as string
-#if NET5_0_OR_GREATER
-        var text = await response.Content.ReadAsStringAsync(cancellationToken);
-#else
-        var text = await response.Content.ReadAsStringAsync();
-#endif
-
-        // if the status code is success, returns a success result.
         if (response.IsSuccessStatusCode)
         {
-            // if it is not empty, returns a success message
-            return string.IsNullOrWhiteSpace(text)
-                ? BaseResult.ImmutableSuccess
-                : BaseResult.CreateSuccess().WithSuccess(text);
+            // on success, when there is no value,
+            // returns a success OperationResult with no message
+            return BaseResult.ImmutableSuccess;
         }
-
-        // if it is not successful, then generates an error result.
-        switch (response.StatusCode)
+        else
         {
-            case HttpStatusCode.BadRequest:
-                return BaseResult.ValidationError(text);
-            case HttpStatusCode.Forbidden:
-                return BaseResult.Forbidden(text);
-            case HttpStatusCode.NotFound:
-                return BaseResult.NotFound(text);
-            case HttpStatusCode.InternalServerError:
-                return BaseResult.CreateFailure(text, code: ResultErrorCodes.ApplicationError, httpStatus: HttpStatusCode.InternalServerError);
+            // check if the content is not json
+            if (response.Content.Headers.ContentType?.MediaType != "application/json")
+            {
+                return await response.ReadNonJsonContent(token);
+            }
 
-            // case of redirection, generates the result with the location
-            case HttpStatusCode.Moved:
-            case HttpStatusCode.Redirect:
-            case HttpStatusCode.RedirectKeepVerb:
-            case HttpStatusCode.RedirectMethod:
-                return BaseResult.CreateFailure(text).WithInfo($"Location: {response.Headers.Location}");
+            // in case of errors, the OperationResult must be deserialised
+            var result = await response.Content.ReadFromJsonAsync(
+                SerializationContext.Default.DeserializableResult,
+                token);
 
-            default:
-                return BaseResult.CreateFailure(text, code: response.StatusCode.ToString(), httpStatus: response.StatusCode);
+            result ??= new DeserializableResult();
+
+            // set Success as false
+            result.Success = false;
+
+            if (result.Messages is not null)
+            {
+                var status = response.StatusCode;
+                // provides the status code of the response for each message
+                foreach (var message in result.Messages)
+                {
+                    message.Status = status;
+                }
+            }
+
+            // returns the new OperationResult
+            return result;
         }
     }
 
     /// <summary>
     /// <para>
-    ///     Get <see cref="IOperationResult{T}" /> from <see cref="HttpResponseMessage"/>.
+    ///     Get <see cref="IOperationResult{TValue}" /> from <see cref="HttpResponseMessage"/>.
     /// </para>
     /// </summary>
     /// <typeparam name="TValue">The type of the value.</typeparam>
     /// <param name="response">The <see cref="HttpResponseMessage"/>.</param>
-    /// <param name="isPlanOnSuccess">The flag to plan the value on success.</param>
-    /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
-    /// <returns>The <see cref="IOperationResult{T}"/>.</returns>
-    public static async Task<IOperationResult<TValue>> GetOperationResultAsync<TValue>(
-        this HttpResponseMessage response,
-        bool isPlanOnSuccess = false,
-        CancellationToken cancellationToken = default)
+    /// <param name="options">
+    ///     The <see cref="JsonSerializerOptions"/> for the <typeparamref name="TValue"/>, 
+    ///     used when status code is success.
+    /// </param>
+    /// <param name="token">The <see cref="CancellationToken"/>.</param>
+    /// <returns>The <see cref="IOperationResult{TValue}"/>.</returns>
+    public static async Task<IOperationResult<TValue>> ToOperationResultAsync<TValue>(
+        this HttpResponseMessage response, JsonSerializerOptions? options = null, CancellationToken token = default)
     {
-        // try to obtain the result of the operation
-        if (response.Content.Headers.ContentType?.MediaType == "application/json")
-        {
-            if (isPlanOnSuccess && response.IsSuccessStatusCode)
-            {
-                // if is plain on success, deserializes TValue and generates the success result
-                var value = await response.Content.ReadFromJsonAsync<TValue>(cancellationToken: cancellationToken);
-                return ValueResult.CreateSuccess(value!);
-            }
-
-            // try to obtain the result of the operation
-            var operationResult = await response.Content.ReadFromJsonAsync<DeserializableResult<TValue>>(cancellationToken: cancellationToken);
-
-            if (operationResult != null)
-                return operationResult;
-        }
-
-        // if is not json, reads the content as string
-#if NET5_0_OR_GREATER
-        var text = await response.Content.ReadAsStringAsync(cancellationToken);
-#else
-        var text = await response.Content.ReadAsStringAsync();
-#endif
-
-        // if the status code is success, returns a success result.
         if (response.IsSuccessStatusCode)
         {
-            TValue value = default!;
-            var result = ValueResult.CreateSuccess(value);
-            if (!string.IsNullOrWhiteSpace(text))
-                result.WithSuccess(text);
+            // on success, with value, the value must be deserialized
+            var value = await response.Content.ReadFromJsonAsync<TValue>(options, token);
 
+            return ValueResult.Create(value!);
+        }
+        else
+        {
+            // check if the content is not json
+            if (response.Content.Headers.ContentType?.MediaType != "application/json")
+            {
+                return (await response.ReadNonJsonContent(token)).ToValue<TValue>();
+            }
+
+            // in case of errors, the OperationResult must be deserialised
+            var result = await response.Content.ReadFromJsonAsync<DeserializableResult<TValue>>(
+                cancellationToken: token);
+
+            result ??= new DeserializableResult<TValue>();
+
+            // set Success as false
+            result.Success = false;
+
+            if (result.Messages is not null)
+            {
+                var status = response.StatusCode;
+                // provides the status code of the response for each message
+                foreach (var message in result.Messages)
+                {
+                    message.Status = status;
+                }
+            }
+
+            // retorna o OperationResult
             return result;
         }
+    }
 
-        // if it is not successful, then it generates an error result.
-        switch (response.StatusCode)
+    private static async Task<BaseResult> ReadNonJsonContent(
+        this HttpResponseMessage response, CancellationToken token = default)
+    {
+        // when is not json, try reads the content as string, if the response has content
+        string? text = null;
+        if (response.Content.Headers.ContentLength > 0)
         {
-            case HttpStatusCode.BadRequest:
-                return ValueResult.ValidationError<TValue>(text);
-            case HttpStatusCode.Forbidden:
-                return ValueResult.Forbidden<TValue>(text);
-            case HttpStatusCode.NotFound:
-                return ValueResult.NotFound<TValue>(text);
-            case HttpStatusCode.InternalServerError:
-                return ValueResult.CreateFailure<TValue>(text, 
-                    code: ResultErrorCodes.ApplicationError,
-                    httpStatus: HttpStatusCode.InternalServerError);
-
-            // case of redirection, generates the result with the location
-            case HttpStatusCode.Moved:
-            case HttpStatusCode.Redirect:
-            case HttpStatusCode.RedirectKeepVerb:
-            case HttpStatusCode.RedirectMethod:
-                return ValueResult.CreateFailure<TValue>(text).WithInfo($"Location: {response.Headers.Location}");
-
-            default:
-                return ValueResult.CreateFailure<TValue>(text,
-                    code: response.StatusCode.ToString(), 
-                    httpStatus: response.StatusCode);
+#if NET6_0_OR_GREATER
+            text = await response.Content.ReadAsStringAsync(token);
+#else
+            text = await response.Content.ReadAsStringAsync();
+#endif
         }
+
+        // create a BaseResult with the status code and the content as message
+        var failureResult = BaseResult.Create();
+        if (text is not null)
+            failureResult.WithError(text, response.StatusCode);
+        else
+            failureResult.WithError(response.StatusCode.ToString(), response.StatusCode);
+
+        return failureResult;
     }
 }

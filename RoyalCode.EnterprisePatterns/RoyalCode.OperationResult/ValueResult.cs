@@ -1,6 +1,6 @@
 
 using System.Net;
-using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResult;
 
@@ -15,7 +15,7 @@ public static class ValueResult
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="value">The value of the operation.</param>
     /// <returns>New instance.</returns>
-    public static ValueResult<TValue> CreateSuccess<TValue>(TValue value) => new(value);
+    public static ValueResult<TValue> Create<TValue>(TValue value) => new(value);
 
     /// <summary>
     /// Creates a new failure operation result with the value of the operation and the error message.
@@ -25,12 +25,12 @@ public static class ValueResult
     /// <param name="text">The error text that will be used in the message.</param>
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
-    /// <param name="httpStatus">The HTTP status code, optional.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <param name="ex">The exception, optional.</param>
     /// <returns>Nova instância.</returns>
-    public static ValueResult<TValue> CreateFailure<TValue>(TValue value, string text,
-        string? property = null, string? code = null, HttpStatusCode? httpStatus = null, Exception? ex = null)
-        => new(value, ResultMessage.Error(text, property, code, httpStatus, ex));
+    public static ValueResult<TValue> Error<TValue>(TValue value, string? code, string text,
+        string? property = null, HttpStatusCode? status = null, Exception? ex = null)
+        => new(value, ResultMessage.Error(code, text, property, status, ex));
 
     /// <summary>
     /// Creates a new failure operation result with the value of the operation and the error message.
@@ -39,12 +39,33 @@ public static class ValueResult
     /// <param name="text">The error text that will be used in the message.</param>
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
-    /// <param name="httpStatus">The HTTP status code, optional.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <param name="ex">The exception, optional.</param>
     /// <returns>Nova instância.</returns>
-    public static ValueResult<TValue> CreateFailure<TValue>(string text,
-        string? property = null, string? code = null, HttpStatusCode? httpStatus = null, Exception? ex = null)
-        => new(default, ResultMessage.Error(text, property, code, httpStatus, ex));
+    public static ValueResult<TValue> Error<TValue>(string? code, string text,
+        string? property = null, HttpStatusCode? status = null, Exception? ex = null)
+        => new(default, ResultMessage.Error(code, text, property, status, ex));
+
+    /// <summary>
+    /// Creates a new failure operation result with the value of the operation and the error message.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="value">The value of the operation.</param>
+    /// <param name="text">The error text that will be used in the message.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
+    /// <returns>Nova instância.</returns>
+    public static ValueResult<TValue> Error<TValue>(TValue value, string text, HttpStatusCode? status = null)
+        => new(value, ResultMessage.Error(text, status));
+
+    /// <summary>
+    /// Creates a new failure operation result with the value of the operation and the error message.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="text">The error text that will be used in the message.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
+    /// <returns>Nova instância.</returns>
+    public static ValueResult<TValue> Error<TValue>(string text, HttpStatusCode? status = null)
+        => new(default, ResultMessage.Error(text, status));
 
     /// <summary>
     /// Creates a new failure operation result with the value of the operation and the error message.
@@ -54,10 +75,11 @@ public static class ValueResult
     /// <param name="ex">The exception.</param>
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>Nova instância.</returns>
-    public static ValueResult<TValue> CreateFailure<TValue>(TValue value,
-        Exception ex, string? property = null, string? code = null)
-        => new(value, ResultMessage.Error(ex, property, code));
+    public static ValueResult<TValue> Error<TValue>(TValue value,
+        Exception ex, string? property = null, string? code = null, HttpStatusCode? status = null)
+        => new(value, ResultMessage.Error(ex, property, code, status));
 
     /// <summary>
     /// Creates a new failure operation result with the value of the operation and the error message.
@@ -66,57 +88,113 @@ public static class ValueResult
     /// <param name="ex">The exception.</param>
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">The message code, optional.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>Nova instância.</returns>
-    public static ValueResult<TValue> CreateFailure<TValue>(
-        Exception ex, string? property = null, string? code = null)
-        => new(default, ResultMessage.Error(ex, property, code));
+    public static ValueResult<TValue> Error<TValue>(
+        Exception ex, string? property = null, string? code = null, HttpStatusCode? status = null)
+        => new(default, ResultMessage.Error(ex, property, code, status));
 
     /// <summary>
-    /// Creates a new operation result with the value of the operation and with a failure message of type not found
-    /// and with the message code <see cref="ResultErrorCodes.NotFound"/>.
+    /// Creates a new operation result with the value of the operation and with a error message 
+    /// with the code from <see cref="GenericErrorCodes.NotFound"/>
+    /// and HTTP status NotFound 404.
     /// </summary>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="text">The error text that will be used in the message.</param>
+    /// <param name="property">The property related, optional.</param>
     /// <returns>New instance.</returns>
-    public static ValueResult<TValue> NotFound<TValue>(string text)
-        => new(default, ResultMessage.NotFound(text));
+    public static ValueResult<TValue> NotFound<TValue>(string text, string? property)
+        => new(default, ResultMessage.NotFound(text, property));
 
     /// <summary>
-    /// Creates a new operation result with the value of the operation and with a failure message of type forbidden
-    /// and with the message code <see cref="ResultErrorCodes.Forbidden"/>.
+    /// Creates a new operation result with the value of the operation and with a error message with a specified code
+    /// and HTTP status NotFound 404.
     /// </summary>
     /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
     /// <param name="text">The error text that will be used in the message.</param>
+    /// <param name="property">The property related, optional.</param>
     /// <returns>New instance.</returns>
-    public static ValueResult<TValue> Forbidden<TValue>(string text)
-        => new(default, ResultMessage.Forbidden(text));
+    public static ValueResult<TValue> NotFound<TValue>(string code, string text, string? property)
+        => new(default, ResultMessage.NotFound(code, text, property));
 
     /// <summary>
-    /// Creates a new operation result with the value of the operation and with a failure message of type invalid parameters
-    /// and with the message code <see cref="ResultErrorCodes.InvalidParameters"/>.
+    /// Creates a new operation result with the value of the operation and with a error message 
+    /// with a specified code and HTTP status Forbidden 403.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>New instance.</returns>
+    public static ValueResult<TValue> Forbidden<TValue>(string code, string text, string? property = null)
+        => new(default, ResultMessage.Forbidden(code, text, property));
+
+    /// <summary>
+    /// Creates a new operation result with the value of the operation and with a error message 
+    /// with a specified code and HTTP status Conflict 409.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>New instance.</returns>
+    public static ValueResult<TValue> Conflict<TValue>(string code, string text, string? property = null)
+        => new(default, ResultMessage.Conflict(code, text, property));
+
+    /// <summary>
+    /// Creates a new operation result with the value of the operation and with a error message 
+    /// with the code from <see cref="GenericErrorCodes.InvalidParameters"/> 
+    /// and HTTP status BadRequest 400.
     /// </summary>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="text">The error text that will be used in the message.</param>
-    /// <param name="property">The related property, optional.</param>
+    /// <param name="property">The related property.</param>
     /// <returns>New instance.</returns>
     public static ValueResult<TValue> InvalidParameters<TValue>(string text, string property)
         => new(default, ResultMessage.InvalidParameters(text, property));
 
     /// <summary>
-    /// Creates a new operation result with the value of the operation and with a failure message of type validation errors
-    /// and with the message code <see cref="ResultErrorCodes.Validation"/>.
+    /// Creates a new operation result with the value of the operation and with a error message 
+    /// with the code from <see cref="GenericErrorCodes.Validation"/> 
+    /// and HTTP status UnprocessableEntity 422.
     /// </summary>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="text">The error text that will be used in the message.</param>
     /// <param name="property">The related property, optional.</param>
     /// <param name="ex">The exception, optional.</param>
     /// <returns>New instance.</returns>
-    public static ValueResult<TValue> ValidationError<TValue>(string text, string? property = null, Exception? ex = null)
+    public static ValueResult<TValue> ValidationError<TValue>(string text, string property, Exception? ex = null)
         => new(default, ResultMessage.ValidationError(text, property, ex));
 
     /// <summary>
-    /// Creates a new operation result with the value of the operation and with a failure message of type application error
-    /// and with the message code <see cref="ResultErrorCodes.ApplicationError"/>.
+    /// Creates a new operation result with the value of the operation and with a error message
+    /// with the specified code and HTTP status UnprocessableEntity 422.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The error text that will be used in the message.</param>
+    /// <param name="property">The related property, optional.</param>
+    /// <param name="ex">The exception, optional.</param>
+    /// <returns>New instance.</returns>
+    public static ValueResult<TValue> ValidationError<TValue>(string code, string text, string property, Exception? ex = null)
+        => new(default, ResultMessage.ValidationError(code, text, property, ex));
+
+    /// <summary>
+    /// Creates a new operation result with the value of the operation and with a error message 
+    /// with the code from <see cref="GenericErrorCodes.Validation"/> 
+    /// and HTTP status UnprocessableEntity 422.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="ex">The exception, optional.</param>
+    /// <returns>New instance.</returns>
+    public static ValueResult<TValue> ValidationError<TValue>(Exception ex)
+        => new(default, ResultMessage.ValidationError(ex));
+
+    /// <summary>
+    /// Creates a new operation result with the value of the operation and with a error message 
+    /// with the code from <see cref="GenericErrorCodes.ApplicationError"/>
+    /// and HTTP status InternalServerError 500.
     /// </summary>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="ex">The exception that generate the message.</param>
@@ -124,20 +202,6 @@ public static class ValueResult
     /// <returns>New instance.</returns>
     public static ValueResult<TValue> ApplicationError<TValue>(Exception ex, string? text = null)
         => new(default, ResultMessage.ApplicationError(ex, text));
-
-    /// <summary>
-    /// Deserialize a json string to a <see cref="ValueResult{TValue}"/>.
-    /// </summary>
-    /// <typeparam name="TValue">The value type.</typeparam>
-    /// <param name="json">The json string.</param>
-    /// <returns>The deserialized object.</returns>
-    public static ValueResult<TValue> Deserialize<TValue>(string json)
-    {
-        var result = ResultsSerializeContext.Deserialize<TValue>(json);
-        return result is null
-            ? new ValueResult<TValue>(default, true, Enumerable.Empty<IResultMessage>())
-            : new ValueResult<TValue>(result.Value, result.Success, result.Messages);
-    }
 }
 
 /// <summary>
@@ -145,11 +209,16 @@ public static class ValueResult
 /// </summary>
 public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
 {
-    
+    /// <summary>
+    /// The value returned by the operation.
+    /// </summary>
+    [JsonIgnore]
+    object? IResultHasValue.Value => Value;
 
     /// <summary>
     /// The value returned by the operation.
     /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] 
     public TValue? Value { get; }
 
     /// <summary>
@@ -244,16 +313,5 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     /// Create a new operation result from this, with the same messages, but without the value.
     /// </summary>
     /// <returns>A new instance of <see cref="BaseResult"/>.</returns>
-    public BaseResult ToBase() => CreateSuccess().Join(this);
-
-    /// <summary>
-    /// <para>
-    ///     Serialize this instance to a JSON string.
-    /// </para>
-    /// </summary>
-    /// <returns>The JSON string.</returns>
-    public override string Serialize()
-    {
-        return JsonSerializer.Serialize(this, ResultsSerializeContext.JsonSerializerOptions);
-    }
+    public BaseResult ToBase() => Create().Join(this);
 }

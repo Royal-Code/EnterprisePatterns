@@ -19,7 +19,7 @@ public static class ValidationsOperationResultExtensions
         if (result.IsValid)
             return BaseResult.ImmutableSuccess;
 
-        var br = BaseResult.CreateSuccess();
+        var br = BaseResult.Create();
 
         result.Errors.AddErrorsTo(br);
         return br;
@@ -52,7 +52,7 @@ public static class ValidationsOperationResultExtensions
         if (result.IsValid)
             return new BaseResult();
 
-        var br = BaseResult.CreateSuccess();
+        var br = BaseResult.Create();
 
         result.Errors.AddErrorsTo(br);
         return br;
@@ -116,10 +116,7 @@ public static class ValidationsOperationResultExtensions
                     result.AddError(error.ErrorMessage, error.PropertyName, error.ErrorCode, HttpStatusCode.BadRequest);
                     break;
                 case Severity.Warning:
-                    result.AddWarning(error.ErrorMessage, error.PropertyName, error.ErrorCode);
-                    break;
                 case Severity.Info:
-                    result.AddInfo(error.ErrorMessage, error.PropertyName, error.ErrorCode);
                     break;
                 default:
                     result.AddError(error.ErrorMessage, error.PropertyName, error.ErrorCode, HttpStatusCode.BadRequest);

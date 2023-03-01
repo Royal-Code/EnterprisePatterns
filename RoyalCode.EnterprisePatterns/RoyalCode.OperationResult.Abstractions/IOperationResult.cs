@@ -1,4 +1,5 @@
-﻿
+﻿using System.Text.Json.Serialization;
+
 namespace RoyalCode.OperationResult;
 
 /// <summary>
@@ -11,11 +12,19 @@ public interface IOperationResult
     /// <summary>
     /// Determine whether the result of the operation was success or failure.
     /// </summary>
+    [JsonIgnore] 
     bool Success { get; }
+
+    /// <summary>
+    /// Count of the error messages of the result.
+    /// </summary>
+    [JsonIgnore]
+    int ErrorsCount { get; }
 
     /// <summary>
     /// The result messages.
     /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     IEnumerable<IResultMessage> Messages { get; }
 }
 
@@ -28,10 +37,11 @@ public interface IOperationResult
 /// </para>
 /// </summary>
 /// <typeparam name="TValue">The result type of the value returned by the operation.</typeparam>
-public interface IOperationResult<TValue> : IOperationResult
+public interface IOperationResult<TValue> : IOperationResult, IResultHasValue
 {
     /// <summary>
     /// The value returned by the operation.
     /// </summary>
-    TValue? Value { get; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    new TValue? Value { get; }
 }

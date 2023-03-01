@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace RoyalCode.OperationResult.Serialization;
 
 /// <summary>
@@ -9,16 +11,19 @@ public class DeserializableResult : IOperationResult
     /// <summary>
     /// Determine whether the result of the operation was success or failure.
     /// </summary>
-    public bool Success { get; set; }
+    [JsonIgnore] 
+    public bool Success => ErrorsCount == 0;
 
     /// <summary>
     /// The message of the result.
     /// </summary>
-    public IEnumerable<ResultMessage>? Messages { get; set; }
+    public List<ResultMessage>? Messages { get; set; }
 
-    /// <summary>
-    /// The <see cref="IOperationResult"/> messages.
-    /// </summary>
+    /// <inheritdoc />
+    [JsonIgnore] 
+    public int ErrorsCount => Messages?.Count ?? 0;
+
+    /// <inheritdoc />
     IEnumerable<IResultMessage> IOperationResult.Messages => Messages ?? Enumerable.Empty<IResultMessage>();
 
     /// <summary>
@@ -47,7 +52,6 @@ public class DeserializableResult<TValue> : DeserializableResult, IOperationResu
     internal DeserializableResult(TValue? value, DeserializableResult publicResult)
     {
         Value = value;
-        Success = publicResult.Success;
         Messages = publicResult.Messages;
     }
 
@@ -55,4 +59,7 @@ public class DeserializableResult<TValue> : DeserializableResult, IOperationResu
     /// The operation result value.
     /// </summary>
     public TValue? Value { get; set; }
+
+    [JsonIgnore]
+    object? IResultHasValue.Value => Value;
 }

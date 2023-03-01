@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Project="..\aspnet-versions.targets" />
 
@@ -7,14 +7,14 @@
 		<AssemblyVersion>$(OpResVer)</AssemblyVersion>
 		<FileVersion>$(OpResVer)</FileVersion>
 		<Description>
-			Extensions methods for adapt operations results objects to minimal api http results.
+			Extensions methods for adapt operations results objects to problem details.
 		</Description>
-		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern</PackageTags>
+		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern ProblemDetails</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-		<ProjectReference Include="..\RoyalCode.OperationResult.ProblemDetails\RoyalCode.OperationResult.ProblemDetails.csproj" />
+		<ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
 	</ItemGroup>
 
 </Project>

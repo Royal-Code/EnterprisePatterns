@@ -1,4 +1,4 @@
-﻿
+﻿using System.Collections.Immutable;
 using System.Net;
 using System.Text.Json.Serialization;
 
@@ -11,69 +11,23 @@ public class ResultMessage : IResultMessage
 {
     /// <summary>
     /// <para>
-    ///     Creates a new message of success.
+    ///     Creates a new message of error.
     /// </para>
     /// </summary>
     /// <param name="text">The message text.</param>
     /// <param name="property">The property related, optional.</param>
-    /// <param name="code">The message code, optional.</param>
-    /// <param name="httpStatus">The HTTP status code, optional.</param>
-    /// <returns>
-    /// <para>
-    ///     New instance of message.
-    /// </para>
-    /// </returns>
-    public static ResultMessage Success(string text, string? property = null, string? code = null, HttpStatusCode? httpStatus = null)
-    {
-        return new ResultMessage(ResultMessageType.Success, text, property, code)
-        {
-            Status = httpStatus
-        };
-    }
-
-    /// <summary>
-    /// <para>
-    ///     Creates a new message of information.
-    /// </para>
-    /// </summary>
-    /// <param name="text">The message text.</param>
-    /// <param name="property">The property related, optional.</param>
-    /// <param name="code">The message code, optional.</param>
-    /// <param name="httpStatus">The HTTP status code, optional.</param>
-    /// <returns>
-    /// <para>
-    ///     New instance of message.
-    /// </para>
-    /// </returns>
-    public static ResultMessage Info(string text, string? property = null, string? code = null, HttpStatusCode? httpStatus = null)
-    {
-        return new ResultMessage(ResultMessageType.Info, text, property, code)
-        {
-            Status = httpStatus
-        };
-    }
-
-    /// <summary>
-    /// <para>
-    ///     Creates a new message of warning.
-    /// </para>
-    /// </summary>
-    /// <param name="text">The message text.</param>
-    /// <param name="property">The property related, optional.</param>
-    /// <param name="code">The message code, optional.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <param name="ex">The exception, optional.</param>
-    /// <param name="httpStatus">The HTTP status code, optional.</param>
     /// <returns>
     /// <para>
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage Warning(string text, string? property = null, string? code = null, Exception? ex = null, HttpStatusCode? httpStatus = null)
+    public static ResultMessage Error(string? code, string text,
+        string? property = null, HttpStatusCode? status = null, Exception? ex = null)
     {
-        return new ResultMessage(ResultMessageType.Warning, text, property, code, ex)
-        {
-            Status = httpStatus
-        };
+        return new ResultMessage(text, property, code, status, ex);
     }
 
     /// <summary>
@@ -82,21 +36,15 @@ public class ResultMessage : IResultMessage
     /// </para>
     /// </summary>
     /// <param name="text">The message text.</param>
-    /// <param name="property">The property related, optional.</param>
-    /// <param name="code">The message code, optional.</param>
-    /// <param name="httpStatus">The HTTP status code, optional.</param>
-    /// <param name="ex">The exception, optional.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>
     /// <para>
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage Error(string text, string? property = null, string? code = null, HttpStatusCode? httpStatus = null, Exception? ex = null)
+    public static ResultMessage Error(string text, HttpStatusCode? status = null)
     {
-        return new ResultMessage(ResultMessageType.Error, text, property, code, ex)
-        {
-            Status = httpStatus
-        };
+        return new ResultMessage(text, null, null, status, null);
     }
 
     /// <summary>
@@ -106,65 +54,25 @@ public class ResultMessage : IResultMessage
     /// </summary>
     /// <param name="ex">The exception that generate the message.</param>
     /// <param name="property">The related property, optional.</param>
-    /// <param name="code">The message code, optional.</param>
-    /// <param name="httpStatus">The HTTP status code, optional.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>
     /// <para>
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage Error(Exception ex, string? property = null, string? code = null, HttpStatusCode? httpStatus = null)
+    public static ResultMessage Error(Exception ex, string? property = null, string? code = null, HttpStatusCode? status = null)
     {
         if (ex is null)
             throw new ArgumentNullException(nameof(ex));
 
-        return new ResultMessage(ResultMessageType.Error, ex.Message, property, code, ex)
-        {
-            Status = httpStatus
-        };
+        return new ResultMessage(ex.Message, property, code, status, ex);
     }
 
     /// <summary>
     /// <para>
-    ///     Creates a error message with the code from <see cref="ResultErrorCodes.NotFound"/>.
-    /// </para>
-    /// </summary>
-    /// <param name="text">The message text.</param>
-    /// <returns>
-    /// <para>
-    ///     New instance of message.
-    /// </para>
-    /// </returns>
-    public static ResultMessage NotFound(string text)
-    {
-        return new ResultMessage(ResultMessageType.Error, text, null, ResultErrorCodes.NotFound)
-        {
-            Status = HttpStatusCode.NotFound
-        };
-    }
-
-    /// <summary>
-    /// <para>
-    ///     Creates a error message with the code from <see cref="ResultErrorCodes.Forbidden"/>.
-    /// </para>
-    /// </summary>
-    /// <param name="text">The message text.</param>
-    /// <returns>
-    /// <para>
-    ///     New instance of message.
-    /// </para>
-    /// </returns>
-    public static ResultMessage Forbidden(string text)
-    {
-        return new ResultMessage(ResultMessageType.Error, text, null, ResultErrorCodes.Forbidden)
-        {
-            Status = HttpStatusCode.Forbidden
-        };
-    }
-
-    /// <summary>
-    /// <para>
-    ///     Creates a error message with the code from <see cref="ResultErrorCodes.InvalidParameters"/>.
+    ///     Creates a error message with the code from <see cref="GenericErrorCodes.NotFound"/>
+    ///     and HTTP status NotFound 404.
     /// </para>
     /// </summary>
     /// <param name="text">The message text.</param>
@@ -174,38 +82,154 @@ public class ResultMessage : IResultMessage
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage InvalidParameters(string text, string? property = null)
+    public static ResultMessage NotFound(string text, string? property)
     {
-        return new ResultMessage(ResultMessageType.Error, text, property, ResultErrorCodes.InvalidParameters)
-        {
-            Status = HttpStatusCode.BadRequest
-        };
+        return new ResultMessage(text, property, GenericErrorCodes.NotFound, HttpStatusCode.NotFound);
     }
 
     /// <summary>
     /// <para>
-    ///     Creates a error message with the code from <see cref="ResultErrorCodes.Validation"/>.
+    ///     Creates a error message with a specified code
+    ///     and HTTP status NotFound 404.
+    /// </para>
+    /// </summary>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>
+    /// <para>
+    ///     New instance of message.
+    /// </para>
+    /// </returns>
+    public static ResultMessage NotFound(string code, string text, string? property)
+    {
+        return new ResultMessage(text, property, code, HttpStatusCode.NotFound);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Creates a error message with a specified code and HTTP status Forbidden 403.
+    /// </para>
+    /// </summary>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>
+    /// <para>
+    ///     New instance of message.
+    /// </para>
+    /// </returns>
+    public static ResultMessage Forbidden(string code, string text, string? property = null)
+    {
+        return new ResultMessage(text, property, code, HttpStatusCode.Forbidden);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Creates a error message with a specified code and HTTP status Conflict 409.
+    /// </para>
+    /// </summary>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related, optional.</param>
+    /// <returns>
+    /// <para>
+    ///     New instance of message.
+    /// </para>
+    /// </returns>
+    public static ResultMessage Conflict(string code, string text, string? property = null)
+    {
+        return new ResultMessage(text, property, code, HttpStatusCode.Conflict);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Creates a error message with the code from <see cref="GenericErrorCodes.InvalidParameters"/> 
+    ///     and HTTP status BadRequest 400.
     /// </para>
     /// </summary>
     /// <param name="text">The message text.</param>
-    /// <param name="property">The property related, optional.</param>
+    /// <param name="property">The property related.</param>
+    /// <returns>
+    /// <para>
+    ///     New instance of message.
+    /// </para>
+    /// </returns>
+    public static ResultMessage InvalidParameters(string text, string property)
+    {
+        return new ResultMessage(text, property, GenericErrorCodes.InvalidParameters, HttpStatusCode.BadRequest);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Creates a error message with the code from <see cref="GenericErrorCodes.Validation"/> 
+    ///     and HTTP status UnprocessableEntity 422.
+    /// </para>
+    /// </summary>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related.</param>
     /// <param name="ex">The exception, optional.</param>
     /// <returns>
     /// <para>
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage ValidationError(string text, string? property = null, Exception? ex = null)
+    public static ResultMessage ValidationError(string text, string property, Exception? ex = null)
     {
-        return new ResultMessage(ResultMessageType.Error, text, property, ResultErrorCodes.Validation, ex)
-        {
-            Status = HttpStatusCode.BadRequest
-        };
+        return new ResultMessage(text, property, GenericErrorCodes.Validation, HttpStatusCode.UnprocessableEntity, ex);
     }
 
     /// <summary>
     /// <para>
-    ///     Creates a error message with the code from <see cref="ResultErrorCodes.ApplicationError"/>.
+    ///     Creates a error message with the specified code and HTTP status UnprocessableEntity 422.
+    /// </para>
+    /// </summary>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="text">The message text.</param>
+    /// <param name="property">The property related.</param>
+    /// <param name="ex">The exception, optional.</param>
+    /// <returns>
+    /// <para>
+    ///     New instance of message.
+    /// </para>
+    /// </returns>
+    public static ResultMessage ValidationError(string code, string text, string property, Exception? ex = null)
+    {
+        return new ResultMessage(text, property, code, HttpStatusCode.UnprocessableEntity, ex);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Creates a error message with the code from <see cref="GenericErrorCodes.Validation"/> 
+    ///     and HTTP status UnprocessableEntity 422.
+    /// </para>
+    /// </summary>
+    /// <param name="ex">The exception.</param>
+    /// <returns>
+    /// <para>
+    ///     New instance of message.
+    /// </para>
+    /// </returns>
+    public static ResultMessage ValidationError(Exception ex)
+    {
+        if (ex is null)
+            throw new ArgumentNullException(nameof(ex));
+
+        string? property = null;
+        if (ex is ArgumentException aex)
+            property = aex.ParamName;
+
+        return new ResultMessage(ex.Message,
+            property,
+            GenericErrorCodes.Validation,
+            HttpStatusCode.UnprocessableEntity,
+            ex);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Creates a error message with the code from <see cref="GenericErrorCodes.ApplicationError"/>
+    ///     and HTTP status InternalServerError 500.
     /// </para>
     /// </summary>
     /// <param name="ex">The exception.</param>
@@ -220,85 +244,126 @@ public class ResultMessage : IResultMessage
         if (ex is null)
             throw new ArgumentNullException(nameof(ex));
 
-        return new ResultMessage(ResultMessageType.Error, text ?? ex.Message, null, ResultErrorCodes.ApplicationError, ex)
-        {
-            Status = HttpStatusCode.InternalServerError
-        };
+        string? property = null;
+        if (ex is ArgumentException aex)
+            property = aex.ParamName;
+        
+        return new ResultMessage(text ?? ex.Message,
+            property,
+            GenericErrorCodes.ApplicationError, 
+            HttpStatusCode.InternalServerError,
+            ex);
     }
 
+    private LinkedList<KeyValuePair<string, object>>? additionalInformation;
+
     /// <summary>
-    /// Creates a new result message.
+    /// <para>
+    ///     Creates a new result message.
+    /// </para>
+    /// <para>
+    ///     Used for deserialization only.
+    /// </para>
     /// </summary>
-    /// <param name="type">The message type.</param>
     /// <param name="text">The text of the message. The object is to display the message to users.</param>
     /// <param name="property">Property that originated the message.</param>
     /// <param name="code">Some kind of code that can identify the type of message or the message itself.</param>
-    /// <param name="exception">Exception related to the message.</param>
-    /// <exception cref="ArgumentNullException">
-    ///     Case <paramref name="text"/> is null.
-    /// </exception>
     [JsonConstructor]
     public ResultMessage(
-        ResultMessageType type,
         string text,
         string? property = null,
-        string? code = null,
-        ResultMessageException? exception = null)
+        string? code = null)
     {
-        Type = type;
-        Text = text ?? throw new ArgumentNullException(nameof(text));
+        Text = text;
         Property = property;
         Code = code;
-        Exception = exception;
         if (code is not null)
             Status = code switch
             {
-                ResultErrorCodes.NotFound => HttpStatusCode.NotFound,
-                ResultErrorCodes.Forbidden => HttpStatusCode.Forbidden,
-                ResultErrorCodes.InvalidParameters => HttpStatusCode.BadRequest,
-                ResultErrorCodes.Validation => HttpStatusCode.BadRequest,
-                ResultErrorCodes.ApplicationError => HttpStatusCode.InternalServerError,
+                GenericErrorCodes.NotFound => HttpStatusCode.NotFound,
+                GenericErrorCodes.InvalidParameters => HttpStatusCode.BadRequest,
+                GenericErrorCodes.Validation => HttpStatusCode.UnprocessableEntity,
+                GenericErrorCodes.ApplicationError => HttpStatusCode.InternalServerError,
                 _ => null
             };
     }
 
     internal ResultMessage(
-        ResultMessageType type,
         string text,
         string? property,
         string? code,
-        Exception? exception)
+        HttpStatusCode? status,
+        Exception? exception = null)
     {
-        Type = type;
         Text = text ?? throw new ArgumentNullException(nameof(text));
         Property = property;
         Code = code;
-        if (exception is not null)
-            Exception = ResultMessageException.FromException(exception);
+        Status = status;
+        Exception = exception;
     }
 
+    /// <inheritdoc/>
+    public string Text { get; internal set; }
 
     /// <inheritdoc/>
-    public ResultMessageType Type { get; private set; }
+    public string? Property { get; internal set; }
 
     /// <inheritdoc/>
-    public string Text { get; private set; }
+    public string? Code { get; internal set; }
 
     /// <inheritdoc/>
-    public string? Property { get; private set; }
-
-    /// <inheritdoc/>
-    public string? Code { get; private set; }
-
-    /// <inheritdoc/>
-    public ResultMessageException? Exception { get; private set; }
+    public Exception? Exception { get; internal set; }
 
     /// <inheritdoc/>
     [JsonIgnore]
-    public HttpStatusCode? Status { get; set; }
+    public HttpStatusCode? Status { get; internal set; }
+
+    /// <inheritdoc/>
+    [JsonExtensionData]
+    public IDictionary<string, object>? AdditionalInformation
+        => additionalInformation?.ToImmutableDictionary();
 
     /// <summary>
     /// Returns the text.
     /// </summary>
     public override string ToString() => Text;
+
+    /// <summary>
+    /// <para>
+    ///     Adds extra information to the message.
+    /// </para>
+    /// <para>
+    ///     This method adds data to the <see cref="AdditionalInformation"/> property.
+    /// </para>
+    /// <para>
+    ///     If the key already exists, the value will be overwritten.
+    /// </para>
+    /// </summary>
+    /// <param name="key">Additional information key.</param>
+    /// <param name="value">Additional information value.</param>
+    /// <returns>The same instance of the message for chaining calls.</returns>
+    /// <exception cref="ArgumentException">
+    ///     if the <paramref name="key"/> is null, empty or contains only white spaces.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    ///     if the <paramref name="value"/> is null.
+    /// </exception>
+    public ResultMessage WithAdditionInfo(string key, object value)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+            throw new ArgumentException($"'{nameof(key)}' cannot be null or whitespace.", nameof(key));
+
+        if (value is null)
+            throw new ArgumentNullException(nameof(value));
+
+        additionalInformation ??= new();
+
+        var kvp = additionalInformation.FirstOrDefault(i => i.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
+        if (kvp.Key is not null)
+            additionalInformation.Remove(kvp);
+
+        additionalInformation.AddLast(new KeyValuePair<string, object>(key, value));
+
+        return this;
+    }
 }
