@@ -13,52 +13,10 @@ public class SerializationTests
         var result = BaseResult.Create();
 
         // act
-        var json = JsonSerializer.Serialize(result);
+        var json = SerializationContext.Serialize(result);
 
         // assert
-        json.Should().Be("{\"Messages\":[],\"Success\":true}");
-    }
-
-    [Fact]
-    public void Serialize_BaseResult_Success_WithWarningMessage()
-    {
-        // arrange
-        var result = BaseResult.Create();
-        result.AddWarning("Warning message");
-
-        // act
-        var json = JsonSerializer.Serialize(result);
-
-        // assert
-        json.Should().Be("""{"Messages":[{"Type":1,"Text":"Warning message","Property":null,"Code":null,"Exception":null}],"Success":true}""");
-    }
-
-    [Fact]
-    public void Serialize_BaseResult_Success_WithInfoMessage()
-    {
-        // arrange
-        var result = BaseResult.Create()
-            .WithInfo("Info message");
-
-        // act
-        var json = JsonSerializer.Serialize(result);
-
-        // assert
-        json.Should().Be("""{"Messages":[{"Type":2,"Text":"Info message","Property":null,"Code":null,"Exception":null}],"Success":true}""");
-    }
-
-    [Fact]
-    public void Serialize_BaseResult_Success_WithSuccessMessage()
-    {
-        // arrange
-        var result = BaseResult.Create()
-            .WithSuccess("Success message");
-
-        // act
-        var json = JsonSerializer.Serialize(result);
-
-        // assert
-        json.Should().Be("""{"Messages":[{"Type":3,"Text":"Success message","Property":null,"Code":null,"Exception":null}],"Success":true}""");
+        json.Should().Be("{}");
     }
 
     [Fact]
@@ -69,10 +27,10 @@ public class SerializationTests
             .WithError("Error message");
 
         // act
-        var json = JsonSerializer.Serialize(result);
+        var json = SerializationContext.Serialize(result);
 
         // assert
-        json.Should().Be("""{"Messages":[{"Type":0,"Text":"Error message","Property":null,"Code":null,"Exception":null}],"Success":false}""");
+        json.Should().Be("""{"messages":[{"text":"Error message"}]}""");
     }
 
     [Fact]
@@ -83,10 +41,10 @@ public class SerializationTests
             .WithError(new Exception("Error message"));
 
         // act
-        var json = JsonSerializer.Serialize(result);
+        var json = SerializationContext.Serialize(result);
 
         // assert
-        json.Should().Be("""{"Messages":[{"Type":0,"Text":"Error message","Property":null,"Code":null,"Exception":{"Message":"Error message","StackTrace":null,"FullNameOfExceptionType":"System.Exception","InnerException":null}}],"Success":false}""");
+        json.Should().Be("""{"messages":[{"text":"Error message"}]}""");
     }
 
     [Fact]
@@ -114,10 +72,10 @@ public class SerializationTests
         var result = ValueResult.Create(new SomeValue(12, "Some name"));
 
         // act
-        var json = JsonSerializer.Serialize(result);
+        var json = SerializationContext.Serialize(result);
 
         // assert
-        json.Should().Be("""{"Value":{"Id":12,"Name":"Some name"},"Messages":[],"Success":true}""");
+        json.Should().Be("""{"value":{"id":12,"name":"Some name"}}""");
     }
 
     [Fact]
@@ -127,10 +85,10 @@ public class SerializationTests
         var result = ValueResult.Create(new SomeRecord(12, "Some name"));
 
         // act
-        var json = JsonSerializer.Serialize(result);
+        var json = SerializationContext.Serialize(result);
 
         // assert
-        json.Should().Be("""{"Value":{"Id":12,"Name":"Some name"},"Messages":[],"Success":true}""");
+        json.Should().Be("""{"value":{"id":12,"name":"Some name"}}""");
     }
 
     [Fact]
@@ -140,10 +98,25 @@ public class SerializationTests
         var result = ValueResult.Create(new SomeStruct { Id = 12, Name = "Some name" });
 
         // act
-        var json = JsonSerializer.Serialize(result);
+        var json = SerializationContext.Serialize(result);
 
         // assert
-        json.Should().Be("""{"Value":{"Id":12,"Name":"Some name"},"Messages":[],"Success":true}""");
+        json.Should().Be("""{"value":{"id":12,"name":"Some name"}}""");
+    }
+
+    [Fact]
+    public void Serialize_ResultWithTwoMessages_WithAllProperies()
+    {
+        // arrange
+        var result = BaseResult.Create()
+            .WithError(new Exception("Error message 1"), "Property1", "error-code-1", System.Net.HttpStatusCode.InternalServerError)
+            .WithError(new Exception("Error message 2"), "Property2", "error-code-2", System.Net.HttpStatusCode.InternalServerError);
+
+        // act
+        var json = SerializationContext.Serialize(result);
+
+        // assert
+        json.Should().Be("""{"messages":[{"text":"Error message 1","property":"Property1","code":"error-code-1"},{"text":"Error message 2","property":"Property2","code":"error-code-2"}]}""");
     }
 }
 

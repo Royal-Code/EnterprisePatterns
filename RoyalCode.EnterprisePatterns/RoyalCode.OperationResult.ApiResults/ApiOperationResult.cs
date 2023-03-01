@@ -49,17 +49,11 @@ public class ApiOperationResult : IResult
     /// <inheritdoc />
     public Task ExecuteAsync(HttpContext httpContext)
     {
-        if (headerName is null)
+        if (httpContext.TryGetResultTypeHeader(out var resultType))
         {
-            var configuration = httpContext.RequestServices.GetRequiredService<IConfiguration>();
-            headerName = configuration.GetValue<string>(OperationResultHeaderKey) ?? OperationResultHeaderDefaultValue;
-        }
-
-        if (httpContext.Request.Headers.TryGetValue(headerName, out var resultHeader))
-        {
-            if (resultHeader == "ProblemDetails")
+            if (resultType == "ProblemDetails")
                 return CreateProblemDetailsResult(httpContext);
-            if (resultHeader == "OperationResult")
+            if (resultType == "OperationResult")
                 return CreateOperationResult(httpContext);
         }
 

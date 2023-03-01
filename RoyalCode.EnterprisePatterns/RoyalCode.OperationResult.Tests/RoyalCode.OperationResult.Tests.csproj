@@ -24,7 +24,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
+	  <ProjectReference Include="..\RoyalCode.OperationResult.ProblemDetails\RoyalCode.OperationResult.ProblemDetails.csproj" />
+	  <ProjectReference Include="..\RoyalCode.OperationResult.Serialization\RoyalCode.OperationResult.Serialization.csproj" />
 	</ItemGroup>
 
 </Project>

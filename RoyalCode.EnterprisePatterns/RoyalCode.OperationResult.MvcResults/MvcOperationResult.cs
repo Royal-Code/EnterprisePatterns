@@ -47,11 +47,11 @@ public class MvcOperationResult : ObjectResult
             headerName = configuration.GetValue<string>(OperationResultHeaderKey) ?? OperationResultHeaderDefaultValue;
         }
 
-        if (httpContext.Request.Headers.TryGetValue(headerName, out var resultHeader))
+        if (httpContext.TryGetResultTypeHeader(out var resultType))
         {
-            if (resultHeader == "ProblemDetails")
+            if (resultType == "ProblemDetails")
                 CreateProblemDetailsResult(httpContext);
-            if (resultHeader == "OperationResult")
+            if (resultType == "OperationResult")
                 CreateOperationResult();
         }
         else if (Result.Success)

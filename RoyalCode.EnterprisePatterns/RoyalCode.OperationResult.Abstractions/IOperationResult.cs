@@ -42,6 +42,6 @@ public interface IOperationResult<TValue> : IOperationResult, IResultHasValue
     /// <summary>
     /// The value returned by the operation.
     /// </summary>
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     new TValue? Value { get; }
 }

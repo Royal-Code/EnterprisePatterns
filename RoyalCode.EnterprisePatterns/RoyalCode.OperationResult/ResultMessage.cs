@@ -1,9 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-
-[assembly: InternalsVisibleTo("RoyalCode.OperationResult.Http")]
 
 namespace RoyalCode.OperationResult;
 
@@ -39,14 +36,15 @@ public class ResultMessage : IResultMessage
     /// </para>
     /// </summary>
     /// <param name="text">The message text.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>
     /// <para>
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage Error(string text)
+    public static ResultMessage Error(string text, HttpStatusCode? status = null)
     {
-        return new ResultMessage(text, null, null, null, null);
+        return new ResultMessage(text, null, null, status, null);
     }
 
     /// <summary>

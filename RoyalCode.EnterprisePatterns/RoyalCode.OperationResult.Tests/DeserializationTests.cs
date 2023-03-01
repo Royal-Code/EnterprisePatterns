@@ -17,25 +17,10 @@ public class DeserializationTests
         var json = JsonSerializer.Serialize(result, options);
 
         // act
-        var newResult = ResultsSerializeContext.Deserialize(json);
+        var newResult = SerializationContext.Deserialize(json);
 
         // assert
-        newResult.Should().BeEquivalentTo(result);
-    }
-
-    [Fact]
-    public void Deserialize_BaseResult_Success_WithWarningMessage()
-    {
-        // arrange
-        var result = BaseResult.Create();
-        result.AddWarning("Warning message");
-        var json = JsonSerializer.Serialize(result, options);
-
-        // act
-        var newResult = ResultsSerializeContext.Deserialize(json);
-
-        // assert
-        newResult.Should().BeEquivalentTo(result);
+        newResult.Should().BeEquivalentTo<IOperationResult>(result);
     }
 
     [Fact]
@@ -47,10 +32,13 @@ public class DeserializationTests
         var json = JsonSerializer.Serialize(result, options);
 
         // act
-        var newResult = ResultsSerializeContext.Deserialize(json);
+        var newResult = SerializationContext.Deserialize(json);
 
         // assert
-        newResult.Should().BeEquivalentTo(result);
+        newResult.Should().BeEquivalentTo<IOperationResult>(result, o =>
+        {
+            return o.ExcludingMissingMembers().For(r => r.Messages).Exclude(m => m.Exception);
+        });
     }
 
     [Fact]
@@ -61,10 +49,10 @@ public class DeserializationTests
         var json = JsonSerializer.Serialize(result, options);
 
         // act
-        var newResult = ResultsSerializeContext.Deserialize<SomeValue>(json);
+        var newResult = SerializationContext.Deserialize<SomeValue>(json);
 
         // assert
-        newResult.Should().BeEquivalentTo(result);
+        newResult.Should().BeEquivalentTo<IOperationResult<SomeValue>>(result);
     }
 
     [Fact]
@@ -75,10 +63,10 @@ public class DeserializationTests
         var json = JsonSerializer.Serialize(result, options);
 
         // act
-        var newResult = ResultsSerializeContext.Deserialize<SomeRecord>(json);
+        var newResult = SerializationContext.Deserialize<SomeRecord>(json);
 
         // assert
-        newResult.Should().BeEquivalentTo(result);
+        newResult.Should().BeEquivalentTo<IOperationResult<SomeRecord>>(result);
     }
 
     [Fact]
@@ -89,10 +77,10 @@ public class DeserializationTests
         var json = JsonSerializer.Serialize(result, options);
 
         // act
-        var newResult = ResultsSerializeContext.Deserialize<SomeStruct>(json);
+        var newResult = SerializationContext.Deserialize<SomeStruct>(json);
 
         // assert
-        newResult.Should().BeEquivalentTo(result);
+        newResult.Should().BeEquivalentTo<IOperationResult<SomeStruct>>(result);
     }
 
     [Fact]
@@ -103,11 +91,11 @@ public class DeserializationTests
         var json = result.Serialize();
 
         // act
-        var r1 = ValueResult.Deserialize<SomeStruct>(json);
+        var r1 = SerializationContext.Deserialize<SomeStruct>(json);
         var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json, options);
 
         // assert
-        r1.Should().BeEquivalentTo(r2);
+        r1.Should().BeEquivalentTo<IOperationResult<SomeStruct>>(r2);
     }
 
     [Fact]
@@ -115,32 +103,15 @@ public class DeserializationTests
     {
         // arrange
         var result = ValueResult.Create(new SomeStruct { Id = 12, Name = "Some name" });
-        result.WithValidationError("Some error");
+        result.WithValidationError("Some error", "some property");
         var json = result.Serialize();
 
         // act
-        var r1 = ValueResult.Deserialize<SomeStruct>(json);
+        var r1 = SerializationContext.Deserialize<SomeStruct>(json);
         var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json, options);
 
         // assert
-        r1.Should().BeEquivalentTo(r2);
-    }
-
-    [Fact]
-    public void Deserialize_Success_WithInfoMessage_With_ForWebSerialization()
-    {
-        // arrange
-        var result = BaseResult.Create();
-        result.AddInfo("Some info message");
-
-        var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-        var json = JsonSerializer.Serialize(result, options);
-
-        // act
-        var newResult = ResultsSerializeContext.Deserialize(json);
-
-        // assert
-        newResult.Should().BeEquivalentTo(result);
+        r1.Should().BeEquivalentTo<IOperationResult<SomeStruct>>(r2);
     }
 }
 

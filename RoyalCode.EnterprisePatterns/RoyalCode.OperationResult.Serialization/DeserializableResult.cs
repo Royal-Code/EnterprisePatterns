@@ -12,7 +12,7 @@ public class DeserializableResult : IOperationResult
     /// Determine whether the result of the operation was success or failure.
     /// </summary>
     [JsonIgnore] 
-    public bool Success { get; set; }
+    public bool Success => ErrorsCount == 0;
 
     /// <summary>
     /// The message of the result.
@@ -52,7 +52,6 @@ public class DeserializableResult<TValue> : DeserializableResult, IOperationResu
     internal DeserializableResult(TValue? value, DeserializableResult publicResult)
     {
         Value = value;
-        Success = publicResult.Success;
         Messages = publicResult.Messages;
     }
 

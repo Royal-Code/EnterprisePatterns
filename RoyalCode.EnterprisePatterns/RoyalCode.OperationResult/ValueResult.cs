@@ -1,6 +1,5 @@
 
 using System.Net;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResult;
@@ -53,18 +52,20 @@ public static class ValueResult
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="value">The value of the operation.</param>
     /// <param name="text">The error text that will be used in the message.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>Nova instância.</returns>
-    public static ValueResult<TValue> Error<TValue>(TValue value, string text)
-        => new(value, ResultMessage.Error(text));
+    public static ValueResult<TValue> Error<TValue>(TValue value, string text, HttpStatusCode? status = null)
+        => new(value, ResultMessage.Error(text, status));
 
     /// <summary>
     /// Creates a new failure operation result with the value of the operation and the error message.
     /// </summary>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <param name="text">The error text that will be used in the message.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>Nova instância.</returns>
-    public static ValueResult<TValue> Error<TValue>(string text)
-        => new(default, ResultMessage.Error(text));
+    public static ValueResult<TValue> Error<TValue>(string text, HttpStatusCode? status = null)
+        => new(default, ResultMessage.Error(text, status));
 
     /// <summary>
     /// Creates a new failure operation result with the value of the operation and the error message.
@@ -217,7 +218,7 @@ public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
     /// <summary>
     /// The value returned by the operation.
     /// </summary>
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] 
     public TValue? Value { get; }
 
     /// <summary>

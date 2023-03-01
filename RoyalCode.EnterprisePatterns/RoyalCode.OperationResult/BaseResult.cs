@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Net;
-using System.Text.Json;
+﻿using System.Net;
 using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResult;
@@ -136,10 +134,11 @@ public class BaseResult : IOperationResult
     /// Creates a new operation result with a failure message.
     /// </summary>
     /// <param name="text">The error text that will be used in the message.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>New instance.</returns>
-    public static BaseResult Error(string text)
+    public static BaseResult Error(string text, HttpStatusCode? status = null)
     {
-        return new BaseResult(ResultMessage.Error(text));
+        return new BaseResult(ResultMessage.Error(text, status));
     }
 
     /// <summary>
@@ -295,6 +294,8 @@ public class BaseResult : IOperationResult
         messages.AddRange(other.Messages);
         return this;
     }
+
+
 
     private static class Immutable
     {

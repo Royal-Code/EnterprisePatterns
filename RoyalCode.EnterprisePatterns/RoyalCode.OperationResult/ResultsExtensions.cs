@@ -1,5 +1,3 @@
-
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace RoyalCode.OperationResult;
@@ -159,12 +157,13 @@ public static class ResultsExtensions
     /// </summary>
     /// <param name="result">The operation result.</param>
     /// <param name="text">The message text.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>
     ///     The created message.
     /// </returns>
-    public static ResultMessage AddError(this BaseResult result, string text)
+    public static ResultMessage AddError(this BaseResult result, string text, HttpStatusCode? status = null)
     {
-        return result.AddMessage(ResultMessage.Error(text));
+        return result.AddMessage(ResultMessage.Error(text, status));
     }
 
     /// <summary>
@@ -390,11 +389,12 @@ public static class ResultsExtensions
     /// <typeparam name="TResult">The operation result type.</typeparam>
     /// <param name="result">The operation result.</param>
     /// <param name="text">The message text.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
-    public static TResult WithError<TResult>(this TResult result, string text)
+    public static TResult WithError<TResult>(this TResult result, string text, HttpStatusCode? status = null)
         where TResult : BaseResult
     {
-        result.Add(ResultMessage.Error(text));
+        result.Add(ResultMessage.Error(text, status));
         return result;
     }
 
