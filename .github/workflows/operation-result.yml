@@ -21,8 +21,17 @@ jobs:
           dotnet-version: '7.0.x'
           include-prerelease: true
 
+      - name: Build and pack OperationResult.Abstractions
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult.Abstractions/RoyalCode.OperationResult.Abstractions.csproj -c Release
+        
       - name: Build and pack OperationResult
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult/RoyalCode.OperationResult.csproj -c Release
+      
+      - name: Build and pack OperationResult.Serialization
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult.Serialization/RoyalCode.OperationResult.Serialization.csproj -c Release
+      
+      - name: Build and pack OperationResult.ProblemDetails
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult.ProblemDetails/RoyalCode.OperationResult.ProblemDetails.csproj -c Release
         
       - name: Build and pack ApiResults
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult.ApiResults/RoyalCode.OperationResult.ApiResults.csproj -c Release
