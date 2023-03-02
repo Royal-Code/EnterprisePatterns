@@ -8,6 +8,9 @@ namespace RoyalCode.Searches.Abstractions;
 /// <para>
 ///     Filters and sorting can be applied, but the search engine must be able to apply them.
 /// </para>
+/// <para>
+///     When used with a unit of work, all changes made to the entities must be saved.
+/// </para>
 /// </summary>
 /// <typeparam name="TEntity">The entity type</typeparam>
 public interface IAllEntities<TEntity>

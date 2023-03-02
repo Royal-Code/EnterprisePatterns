@@ -29,22 +29,29 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     }
 
     /// <inheritdoc />
+    public IAllEntities<TEntity> All<TEntity>() where TEntity : class
+    {
+        var search = serviceProvider.GetService<Searches.IAllEntities<TDbContext, TEntity>>();
+        return search is null
+            ? throw new InvalidOperationException($"The search for all the entities of type {typeof(TEntity)} was not configured for the unit of work")
+            : (IAllEntities<TEntity>)search;
+    }
+
+    /// <inheritdoc />
     public ISearch<TEntity> CreateSearch<TEntity>() where TEntity : class
     {
         var search = serviceProvider.GetService<Searches.ISearch<TDbContext, TEntity>>();
-        if (search is null)
-            throw new InvalidOperationException($"The search for the entity type {typeof(TEntity)} was not configured for the unit of work");
-
-        return search;
+        return search is null
+            ? throw new InvalidOperationException($"The search for the entity type {typeof(TEntity)} was not configured for the unit of work")
+            : (ISearch<TEntity>)search;
     }
 
     /// <inheritdoc />
     public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
     {
         var repository = serviceProvider.GetService<IRepository<TDbContext, TEntity>>();
-        if (repository is null)
-            throw new InvalidOperationException($"The repository for the entity type {typeof(TEntity)} was not configured for the unit of work");
-
-        return repository;
+        return repository is null
+            ? throw new InvalidOperationException($"The repository for the entity type {typeof(TEntity)} was not configured for the unit of work")
+            : (IRepository<TEntity>)repository;
     }
 }

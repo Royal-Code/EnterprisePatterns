@@ -29,37 +29,49 @@ public class SearchConfigurer<TDbContext> : ISearchConfigurer<TDbContext>
         services.AddSearchesLinq();
         services.TryAddTransient<IPipelineFactory, PipelineFactory<TDbContext>>();
     }
-    
+
     /// <inheritdoc />
     public ISearchConfigurer<TDbContext> Add<TEntity>() where TEntity : class
     {
-        // adiciona search como serviço
+        // add search as a service for the respective context
         var searchType = typeof(ISearch<>).MakeGenericType(typeof(TEntity));
         var dbSearchType = typeof(ISearch<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
         var searchImplType = typeof(InternalSearch<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
-        
+
         services.Add(ServiceDescriptor.Describe(
             dbSearchType,
             searchImplType,
-            lifetime));
+            ServiceLifetime.Transient));
 
         services.Add(ServiceDescriptor.Describe(
             searchType,
             sp => sp.GetService(dbSearchType)!,
-            lifetime));
+            ServiceLifetime.Transient));
 
-        // adiciona all entities como serviço
-        // TODO:
+        // add all entities as a service for the respective context
+        var allType = typeof(IAllEntities<>).MakeGenericType(typeof(TEntity));
+        var dbAllType = typeof(IAllEntities<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
+        var allImplType = typeof(InternalAllEntities<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
+
+        services.Add(ServiceDescriptor.Describe(
+            dbAllType,
+            allImplType,
+            ServiceLifetime.Transient));
+
+        services.Add(ServiceDescriptor.Describe(
+            allType,
+            sp => sp.GetService(dbAllType)!,
+            ServiceLifetime.Transient));
 
 
         // TODO: check if is really necessary the registration of the IQueryableProvider
-        var queryableProviderType = typeof(IQueryableProvider<>).MakeGenericType(typeof(TEntity));
-        var queryableProviderImplType = typeof(QueryableProvider<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
-        
-        services.Add(ServiceDescriptor.Describe(
-            queryableProviderType,
-            queryableProviderImplType,
-            lifetime));
+        //var queryableProviderType = typeof(IQueryableProvider<>).MakeGenericType(typeof(TEntity));
+        //var queryableProviderImplType = typeof(QueryableProvider<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
+
+        //services.Add(ServiceDescriptor.Describe(
+        //    queryableProviderType,
+        //    queryableProviderImplType,
+        //    lifetime));
 
         return this;
     }

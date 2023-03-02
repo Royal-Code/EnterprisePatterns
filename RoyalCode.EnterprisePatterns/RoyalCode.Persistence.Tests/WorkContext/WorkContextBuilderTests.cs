@@ -63,6 +63,12 @@ public class WorkContextBuilderTests
         var contextSearch = context!.CreateSearch<Person>();
         Assert.NotNull(contextSearch);
 
+        var allPersons = sp.GetService<IAllEntities<Person>>();
+        Assert.NotNull(allPersons);
+
+        var contextAllPersons = context!.All<Person>();
+        Assert.NotNull(contextAllPersons);
+
         scope.Dispose();
     }
 }

@@ -40,14 +40,16 @@ public static class HttpOperationResultExtensions
             // in case of errors, the OperationResult must be deserialised
             var result = await response.Content.ReadFromJsonAsync(
                 SerializationContext.Default.DeserializableResult,
-                token);
+                token) ?? new DeserializableResult();
 
-            result ??= new DeserializableResult();
+            result.Messages ??= new List<ResultMessage>();
 
-            // set Success as false
-            result.Success = false;
-
-            if (result.Messages is not null)
+            if (result.Messages.Count == 0)
+            {
+                // if there is no message, add a default message
+                result.Messages.Add(new ResultMessage(response.ReasonPhrase, null, null, response.StatusCode));
+            }
+            else
             {
                 var status = response.StatusCode;
                 // provides the status code of the response for each message
@@ -57,7 +59,6 @@ public static class HttpOperationResultExtensions
                 }
             }
 
-            // returns the new OperationResult
             return result;
         }
     }
@@ -95,14 +96,16 @@ public static class HttpOperationResultExtensions
 
             // in case of errors, the OperationResult must be deserialised
             var result = await response.Content.ReadFromJsonAsync<DeserializableResult<TValue>>(
-                cancellationToken: token);
+                cancellationToken: token) ?? new DeserializableResult<TValue>();
 
-            result ??= new DeserializableResult<TValue>();
+            result.Messages ??= new List<ResultMessage>();
 
-            // set Success as false
-            result.Success = false;
-
-            if (result.Messages is not null)
+            if (result.Messages.Count == 0)
+            {
+                // if there is no message, add a default message
+                result.Messages.Add(new ResultMessage(response.ReasonPhrase, null, null, response.StatusCode));
+            }
+            else
             {
                 var status = response.StatusCode;
                 // provides the status code of the response for each message
@@ -112,7 +115,6 @@ public static class HttpOperationResultExtensions
                 }
             }
 
-            // retorna o OperationResult
             return result;
         }
     }
@@ -136,7 +138,7 @@ public static class HttpOperationResultExtensions
         if (text is not null)
             failureResult.WithError(text, response.StatusCode);
         else
-            failureResult.WithError(response.StatusCode.ToString(), response.StatusCode);
+            failureResult.WithError(response.ReasonPhrase, response.StatusCode);
 
         return failureResult;
     }

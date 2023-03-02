@@ -25,5 +25,25 @@ public interface ISearchable
     ///     If entity is not part of the persistence unit or there is no search component for it.
     /// </exception>
     ISearch<TEntity> CreateSearch<TEntity>() where TEntity : class;
+
+    /// <summary>
+    /// <para>
+    ///     Gets all entities of the persistence unit, where it is possible to add filters and sorters.
+    /// </para>
+    /// <para>
+    ///     The purpose of <see cref="IAllEntities{TEntity}"/> is to query entities for update or delete.
+    /// </para>
+    /// <para>
+    ///     When used with a unit of work, all changes made to the entities must be saved.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <returns>
+    ///     A new instance of <see cref="IAllEntities{TEntity}"/>.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    ///     If entity is not part of the persistence unit or there is no search component for it.
+    /// </exception>
+    IAllEntities<TEntity> All<TEntity>() where TEntity : class;
 }
 
