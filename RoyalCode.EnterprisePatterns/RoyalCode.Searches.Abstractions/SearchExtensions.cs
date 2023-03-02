@@ -34,6 +34,13 @@ public static class SearchExtensions
         return search;
     }
 
+    /// <summary>
+    /// Applies a set of sorting to the search.
+    /// </summary>
+    /// <typeparam name="T">The search object type.</typeparam>
+    /// <param name="search">The search.</param>
+    /// <param name="sortings">The sortings.</param>
+    /// <returns>The search with the sortings applied.</returns>
     public static ISearch<T> OrderBy<T>(this ISearch<T> search, ISorting[]? sortings)
         where T : class
     {
