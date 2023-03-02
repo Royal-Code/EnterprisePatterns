@@ -15,7 +15,7 @@ namespace RoyalCode.OperationResult;
 [JsonSerializable(typeof(BaseResult))]
 [JsonSerializable(typeof(DeserializableResult))]
 [JsonSerializable(typeof(ResultMessage))]
-public partial class SerializationContext : JsonSerializerContext
+internal partial class SerializationContext : JsonSerializerContext
 {
     /// <summary>
     /// The default <see cref="JsonSerializerOptions"/> used for serialization and deserialization.

@@ -1,19 +1,24 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RoyalCode.OperationResult.ProblemDetails.Convertion;
 
 namespace RoyalCode.OperationResult.MvcResults;
 
+/// <summary>
+/// MVC <see cref="ObjectResult"/> for <see cref="IOperationResult"/>.
+/// </summary>
 public class MvcOperationResult : ObjectResult
 {
-    private const string OperationResultHeaderKey = "OperationResultHeader";
-    private const string OperationResultHeaderDefaultValue = "X-Result";
-
-    private static string? headerName;
-
+    /// <summary>
+    /// Creates a new instance of <see cref="MvcOperationResult"/>.
+    /// </summary>
+    /// <param name="result">The <see cref="IOperationResult"/>.</param>
+    /// <param name="createdPath">The path created by the operation.</param>
+    /// <param name="formatPathWithValue">
+    ///     If true, the <paramref name="createdPath"/> will be formatted with the value of the result.
+    /// </param>
     public MvcOperationResult(IOperationResult result, string? createdPath, bool formatPathWithValue) 
         : base(result)
     {
@@ -37,16 +42,10 @@ public class MvcOperationResult : ObjectResult
     /// </summary>
     public bool FormatPathWithValue { get; }
 
+    /// <inheritdoc />
     public override Task ExecuteResultAsync(ActionContext context)
     {
         var httpContext = context.HttpContext;
-
-        if (headerName is null)
-        {
-            var configuration = httpContext.RequestServices.GetRequiredService<IConfiguration>();
-            headerName = configuration.GetValue<string>(OperationResultHeaderKey) ?? OperationResultHeaderDefaultValue;
-        }
-
         if (httpContext.TryGetResultTypeHeader(out var resultType))
         {
             if (resultType == "ProblemDetails")

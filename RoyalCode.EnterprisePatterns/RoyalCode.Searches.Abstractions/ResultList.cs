@@ -24,13 +24,13 @@ public class ResultList<TModel> : IResultList<TModel>
 
     /// <inheritdoc />
     [JsonConverter(typeof(SortingsConverter))]
-    public IEnumerable<ISorting> Sortings { get; init; }
+    public IEnumerable<ISorting> Sortings { get; init; } = null!;
 
     /// <inheritdoc />
-    public Dictionary<string, object> Projections { get; init; }
+    public Dictionary<string, object> Projections { get; init; } = null!;
 
     /// <inheritdoc />
-    public IEnumerable<TModel> Items { get; init; }
+    public IEnumerable<TModel> Items { get; init; } = null!;
 
     /// <inheritdoc />
     public T GetProjection<T>(string name, T? defaultValue = default)

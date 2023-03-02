@@ -10,6 +10,7 @@
 			Implementation for the Operation Result Pattern.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern</PackageTags>
+		<NoWarn>$(NoWarn);SYSLIB0012;SYSLIB0005</NoWarn>
 	</PropertyGroup>
 
 	<!-- when target is netstandard2.1 then add the System.Text.Json package -->

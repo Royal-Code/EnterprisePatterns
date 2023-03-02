@@ -290,7 +290,7 @@ public class SimpleModel
 {
     public int Id { get; set; }
 
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public Guid Guid { get; set; }
 
@@ -299,25 +299,25 @@ public class SimpleModel
 
 public class SimpleFilter
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 }
 
 file class NullablePropertiesFilter
 {
-    public string? Name { get; set; }
+    public string? Name { get; set; } = null!;
 
     public Guid? Guid { get; set; }
 }
 
 file class MultiFilterTypes
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public int? Age { get; set; }
 
     public DateTime Date { get; set; }
 
-    public IEnumerable<string> Tags { get; set; }
+    public IEnumerable<string> Tags { get; set; } = null!;
 
     public decimal Value { get; set; }
 
@@ -337,20 +337,20 @@ file struct SomeStructValues
 
 file class OperatorsModel
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public int Age { get; set; }
 
-    public string Tag { get; set; }
+    public string Tag { get; set; } = null!;
 }
 
 file class OperatorsFilter
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public int Age { get; set; }
 
-    public IEnumerable<string> Tag { get; set; }
+    public IEnumerable<string> Tag { get; set; } = null!;
 }
 
 file class LocalDbContext : DbContext

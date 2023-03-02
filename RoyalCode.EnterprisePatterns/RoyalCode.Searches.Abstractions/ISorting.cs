@@ -10,7 +10,7 @@ public interface ISorting
     /// <summary>
     /// One or more property names on which the sorting should be done.
     /// </summary>
-    string OrderBy { get; set; }
+    string OrderBy { get; }
 
     /// <summary>
     /// <para>
@@ -20,5 +20,5 @@ public interface ISorting
     ///     Ascending = 0, Descending = 1.
     /// </para>
     /// </summary>
-    ListSortDirection Direction { get; set; }
+    ListSortDirection Direction { get; }
 }

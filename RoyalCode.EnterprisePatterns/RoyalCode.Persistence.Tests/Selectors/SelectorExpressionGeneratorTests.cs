@@ -76,9 +76,9 @@ file class SimpleDto
 
 file class ComplexEntity
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
-    public ComplexType Complex { get; set; }
+    public ComplexType Complex { get; set; } = null!;
 }
 
 file class ComplexType
@@ -88,7 +88,7 @@ file class ComplexType
 
 file class DtoForComplex
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public int ComplexValue { get; set; }
 }

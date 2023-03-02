@@ -24,11 +24,11 @@ public class AsyncResultList<TModel> : IAsyncResultList<TModel>
 
     /// <inheritdoc />
     [JsonConverter(typeof(SortingsConverter))]
-    public IEnumerable<ISorting> Sortings { get; init; }
+    public IEnumerable<ISorting> Sortings { get; init; } = null!;
 
     /// <inheritdoc />
-    public Dictionary<string, object> Projections { get; init; }
+    public Dictionary<string, object> Projections { get; init; } = null!;
 
     /// <inheritdoc />
-    public IAsyncEnumerable<TModel> Items { get; init; }
+    public IAsyncEnumerable<TModel> Items { get; init; } = null!;
 }

@@ -78,6 +78,9 @@ public abstract class SearchBase<TEntity, TDto> : ISearch<TEntity, TDto>
     where TEntity : class
     where TDto : class
 {
+    /// <summary>
+    /// The criteria for performing the search.
+    /// </summary>
     protected readonly SearchCriteria criteria;
 
     /// <summary>

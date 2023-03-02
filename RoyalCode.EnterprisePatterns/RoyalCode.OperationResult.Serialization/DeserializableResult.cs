@@ -1,5 +1,6 @@
 ﻿
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace RoyalCode.OperationResult.Serialization;
 
@@ -8,6 +9,27 @@ namespace RoyalCode.OperationResult.Serialization;
 /// </summary>
 public class DeserializableResult : IOperationResult
 {
+    /// <summary>
+    /// Options for serialization and deserialization.
+    /// </summary>
+    public static JsonTypeInfo<DeserializableResult> JsonTypeInfo => SerializationContext.Default.DeserializableResult;
+
+    /// <summary>
+    /// Deserialize a <see cref="IOperationResult"/> from a JSON string.
+    /// </summary>
+    /// <param name="json">The JSON string.</param>
+    /// <returns>The deserialized <see cref="IOperationResult"/>.</returns>
+    public static IOperationResult? Deserialize(string json)
+        => SerializationContext.Deserialize(json);
+
+    /// <summary>
+    /// Deserialize a <see cref="IOperationResult"/> from a JSON string.
+    /// </summary>
+    /// <param name="json">The JSON string.</param>
+    /// <returns>The deserialized <see cref="IOperationResult"/>.</returns>
+    public static IOperationResult<TValue>? Deserialize<TValue>(string json)
+        => SerializationContext.Deserialize<TValue>(json);
+
     /// <summary>
     /// Determine whether the result of the operation was success or failure.
     /// </summary>

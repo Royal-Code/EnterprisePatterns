@@ -30,9 +30,7 @@ internal class TransactionManager : ITransactionManager, IResettableService
         this.db = db;
         Init();
         
-        interceptor = ((IDbContextDependencies)db).UpdateLogger.Interceptors
-            ?.Aggregate<IStagedSaveChangesInterceptor>()
-            ?? throw new InvalidOperationException();
+        interceptor = Interceptors.GetStagedSaveChangesInterceptor(db);
     }
 
     [MemberNotNull(nameof(stagedContext))]

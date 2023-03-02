@@ -11,11 +11,38 @@ namespace RoyalCode.Searches.Abstractions;
 /// </summary>
 public class Sorting : ISorting
 {
-    public string OrderBy { get; set; }
+    private static JsonSerializerOptions? jsonSerializerOptions;
 
+    /// <inheritdoc />
+    public string OrderBy { get; set; } = null!;
+
+    /// <inheritdoc />
     public ListSortDirection Direction { get; set; }
 
-    private static JsonSerializerOptions? jsonSerializerOptions;
+    /// <summary>
+    /// <para>
+    ///     Try parse a string to a <see cref="Sorting"/>.
+    /// </para>
+    /// <para>
+    /// <listheader>
+    ///     Is accepted: 
+    /// </listheader>
+    /// <list type="bullet">
+    /// <item>
+    ///     The pattern <c>{PropertyName}</c>, <c>{PropertyName} asc</c>, <c>{PropertyName}-asc</c>,
+    ///     <c>{PropertyName} desc</c> or <c>{PropertyName}-desc</c>.
+    /// </item>
+    /// <item>
+    ///     A json string with the pattern <c>{"OrderBy": "{PropertyName}", "Direction": "{Direction}"}</c>.
+    /// </item>
+    /// </list>
+    /// </para>
+    /// </summary>
+    /// <param name="orderBy">The string to be parsed.</param>
+    /// <param name="sorting">The <see cref="Sorting"/> parsed.</param>
+    /// <returns>
+    ///     <c>true</c> if the string was parsed successfully; otherwise, <c>false</c>.
+    /// </returns>
     public static bool TryParse(string? orderBy, out Sorting sorting)
     {
         if (string.IsNullOrWhiteSpace(orderBy))
@@ -37,7 +64,6 @@ public class Sorting : ISorting
             sorting = jsonSorting;
             return true;
         }
-
 
         // check if the param orderBy ends with asc or desc in a case insensitive way
         // when is ascending, the order by ends with ' asc' or '-asc'

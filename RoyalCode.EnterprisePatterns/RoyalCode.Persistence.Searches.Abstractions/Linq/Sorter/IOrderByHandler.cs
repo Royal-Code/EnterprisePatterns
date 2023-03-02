@@ -10,7 +10,7 @@ namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
 ///     and <c>ThenBy</c> or <c>ThenByDescending</c> methods of the <see cref="IOrderedQueryable{T}"/>.
 /// </para>
 /// <para>
-///     These components are managed and maintained by the <see cref="IOrderByProvider{TModel}"/>.
+///     These components are managed and maintained by the <see cref="OrderByHandlersMap"/>.
 /// </para>
 /// </summary>
 /// <typeparam name="TModel">The query source model type.</typeparam>

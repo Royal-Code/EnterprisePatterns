@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RoyalCode.OperationResult.ProblemDetails.Convertion;
@@ -11,11 +10,6 @@ namespace RoyalCode.OperationResult.ApiResults;
 /// </summary>
 public class ApiOperationResult : IResult
 {
-    private const string OperationResultHeaderKey = "OperationResultHeader";
-    private const string OperationResultHeaderDefaultValue = "X-Result";
-
-    private static string? headerName;
-
     /// <summary>
     /// Creates a new instance of <see cref="ApiOperationResult"/>.
     /// </summary>

@@ -17,7 +17,7 @@ public class DeserializationTests
         var json = JsonSerializer.Serialize(result, options);
 
         // act
-        var newResult = SerializationContext.Deserialize(json);
+        var newResult = DeserializableResult.Deserialize(json);
 
         // assert
         newResult.Should().BeEquivalentTo<IOperationResult>(result);
@@ -32,7 +32,7 @@ public class DeserializationTests
         var json = JsonSerializer.Serialize(result, options);
 
         // act
-        var newResult = SerializationContext.Deserialize(json);
+        var newResult = DeserializableResult.Deserialize(json);
 
         // assert
         newResult.Should().BeEquivalentTo<IOperationResult>(result, o =>
@@ -49,7 +49,7 @@ public class DeserializationTests
         var json = JsonSerializer.Serialize(result, options);
 
         // act
-        var newResult = SerializationContext.Deserialize<SomeValue>(json);
+        var newResult = DeserializableResult.Deserialize<SomeValue>(json);
 
         // assert
         newResult.Should().BeEquivalentTo<IOperationResult<SomeValue>>(result);
@@ -63,7 +63,7 @@ public class DeserializationTests
         var json = JsonSerializer.Serialize(result, options);
 
         // act
-        var newResult = SerializationContext.Deserialize<SomeRecord>(json);
+        var newResult = DeserializableResult.Deserialize<SomeRecord>(json);
 
         // assert
         newResult.Should().BeEquivalentTo<IOperationResult<SomeRecord>>(result);
@@ -77,7 +77,7 @@ public class DeserializationTests
         var json = JsonSerializer.Serialize(result, options);
 
         // act
-        var newResult = SerializationContext.Deserialize<SomeStruct>(json);
+        var newResult = DeserializableResult.Deserialize<SomeStruct>(json);
 
         // assert
         newResult.Should().BeEquivalentTo<IOperationResult<SomeStruct>>(result);
@@ -91,8 +91,8 @@ public class DeserializationTests
         var json = result.Serialize();
 
         // act
-        var r1 = SerializationContext.Deserialize<SomeStruct>(json);
-        var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json, options);
+        var r1 = DeserializableResult.Deserialize<SomeStruct>(json);
+        var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json, options)!;
 
         // assert
         r1.Should().BeEquivalentTo<IOperationResult<SomeStruct>>(r2);
@@ -107,8 +107,8 @@ public class DeserializationTests
         var json = result.Serialize();
 
         // act
-        var r1 = SerializationContext.Deserialize<SomeStruct>(json);
-        var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json, options);
+        var r1 = DeserializableResult.Deserialize<SomeStruct>(json);
+        var r2 = JsonSerializer.Deserialize<DeserializableResult<SomeStruct>>(json, options)!;
 
         // assert
         r1.Should().BeEquivalentTo<IOperationResult<SomeStruct>>(r2);

@@ -39,7 +39,7 @@ public static class HttpOperationResultExtensions
 
             // in case of errors, the OperationResult must be deserialised
             var result = await response.Content.ReadFromJsonAsync(
-                SerializationContext.Default.DeserializableResult,
+                DeserializableResult.JsonTypeInfo,
                 token) ?? new DeserializableResult();
 
             result.Messages ??= new List<ResultMessage>();
@@ -47,7 +47,8 @@ public static class HttpOperationResultExtensions
             if (result.Messages.Count == 0)
             {
                 // if there is no message, add a default message
-                result.Messages.Add(new ResultMessage(response.ReasonPhrase, null, null, response.StatusCode));
+                result.Messages.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(),
+                    null, null, response.StatusCode));
             }
             else
             {
@@ -103,7 +104,8 @@ public static class HttpOperationResultExtensions
             if (result.Messages.Count == 0)
             {
                 // if there is no message, add a default message
-                result.Messages.Add(new ResultMessage(response.ReasonPhrase, null, null, response.StatusCode));
+                result.Messages.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(), 
+                    null, null, response.StatusCode));
             }
             else
             {
@@ -138,7 +140,7 @@ public static class HttpOperationResultExtensions
         if (text is not null)
             failureResult.WithError(text, response.StatusCode);
         else
-            failureResult.WithError(response.ReasonPhrase, response.StatusCode);
+            failureResult.WithError(response.ReasonPhrase ?? response.StatusCode.ToString(), response.StatusCode);
 
         return failureResult;
     }
