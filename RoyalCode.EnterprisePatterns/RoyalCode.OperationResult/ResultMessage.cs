@@ -66,6 +66,18 @@ public class ResultMessage : IResultMessage
         if (ex is null)
             throw new ArgumentNullException(nameof(ex));
 
+        if (ExceptionsParsers.TryParse(ex, out var message))
+        {
+            if (property is not null)
+                message.Property = property;
+            if (code is not null)
+                message.Code = code;
+            if (status is not null)
+                message.Status = status;
+
+            return message;
+        }
+        
         return new ResultMessage(ex.Message, property, code, status, ex);
     }
 
@@ -215,6 +227,9 @@ public class ResultMessage : IResultMessage
         if (ex is null)
             throw new ArgumentNullException(nameof(ex));
 
+        if (ExceptionsParsers.TryParse(ex, out var message))
+            return message;
+
         string? property = null;
         if (ex is ArgumentException aex)
             property = aex.ParamName;
@@ -243,6 +258,14 @@ public class ResultMessage : IResultMessage
     {
         if (ex is null)
             throw new ArgumentNullException(nameof(ex));
+
+        if (ExceptionsParsers.TryParse(ex, out var message))
+        {
+            if (text is not null)
+                message.Text = text;
+
+            return message;
+        }
 
         string? property = null;
         if (ex is ArgumentException aex)
