@@ -7,7 +7,7 @@ using RoyalCode.Persistence.Searches.Abstractions.Pipeline;
 namespace RoyalCode.Persistence.EntityFramework.Searches;
 
 /// <inheritdoc />
-public sealed class SearchPipelineFactory<TDbContext> : ISearchPipelineFactory
+public sealed class PipelineFactory<TDbContext> : IPipelineFactory
     where TDbContext : DbContext
 {
     private readonly TDbContext db;
@@ -17,14 +17,14 @@ public sealed class SearchPipelineFactory<TDbContext> : ISearchPipelineFactory
 
     /// <summary>
     /// <para>
-    ///     Create a new instance of <see cref="SearchPipelineFactory{TDbContext}"/>.
+    ///     Create a new instance of <see cref="PipelineFactory{TDbContext}"/>.
     /// </para>
     /// </summary>
     /// <param name="db">The database context.</param>
     /// <param name="specifierFactory">The specifier factory.</param>
     /// <param name="orderByProvider">The order by provider.</param>
     /// <param name="selectorFactory">The selector factory.</param>
-    public SearchPipelineFactory(
+    public PipelineFactory(
         TDbContext db,
         ISpecifierFactory specifierFactory,
         IOrderByProvider orderByProvider,
@@ -51,5 +51,13 @@ public sealed class SearchPipelineFactory<TDbContext> : ISearchPipelineFactory
         var sorter = new DefaultSorter<TEntity>(orderByProvider);
         var selector = selectorFactory.Create<TEntity, TDto>();
         return new SearchPipeline<TEntity, TDto>(queryableProvider, specifierFactory, sorter, selector);
+    }
+
+    /// <inheritdoc />
+    public IAllEntitiesPipeline<TEntity> CreateAllEntities<TEntity>() where TEntity : class
+    {
+        var queryableProvider = new QueryableProvider<TDbContext, TEntity>(db, true);
+        var sorter = new DefaultSorter<TEntity>(orderByProvider);
+        return new AllEntitiesPipeline<TEntity>(queryableProvider, specifierFactory, sorter);
     }
 }

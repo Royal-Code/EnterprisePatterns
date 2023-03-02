@@ -3,9 +3,9 @@ using RoyalCode.Persistence.Searches.Abstractions.Pipeline;
 
 namespace RoyalCode.Persistence.EntityFramework.Searches;
 
-internal sealed class InternalSearch<TDbContext, TEntity> : Search<TEntity>, Searches.ISearch<TDbContext, TEntity>
+internal sealed class InternalSearch<TDbContext, TEntity> : Search<TEntity>, ISearch<TDbContext, TEntity>
     where TEntity : class
     where TDbContext : DbContext
 {
-    public InternalSearch(ISearchPipelineFactory factory) : base(factory) { }
+    public InternalSearch(IPipelineFactory factory) : base(factory) { }
 }

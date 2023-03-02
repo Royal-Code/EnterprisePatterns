@@ -8,14 +8,18 @@ internal sealed class QueryableProvider<TDbContext, TEntity> : IQueryableProvide
     where TEntity : class
 {
     private readonly TDbContext db;
+    private readonly bool tracking;
 
-    public QueryableProvider(TDbContext db)
+    public QueryableProvider(TDbContext db, bool tracking = false)
     {
         this.db = db;
+        this.tracking = tracking;
     }
 
     public IQueryable<TEntity> GetQueryable()
     {
-        return db.Set<TEntity>().AsNoTracking();
+        return tracking
+            ? db.Set<TEntity>()
+            : db.Set<TEntity>().AsNoTracking();
     }
 }

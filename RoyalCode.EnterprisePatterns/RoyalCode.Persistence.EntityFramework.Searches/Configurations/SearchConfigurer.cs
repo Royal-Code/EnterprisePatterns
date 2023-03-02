@@ -27,12 +27,13 @@ public class SearchConfigurer<TDbContext> : ISearchConfigurer<TDbContext>
         this.lifetime = lifetime;
 
         services.AddSearchesLinq();
-        services.TryAddTransient<ISearchPipelineFactory, SearchPipelineFactory<TDbContext>>();
+        services.TryAddTransient<IPipelineFactory, PipelineFactory<TDbContext>>();
     }
     
     /// <inheritdoc />
     public ISearchConfigurer<TDbContext> Add<TEntity>() where TEntity : class
     {
+        // adiciona search como serviço
         var searchType = typeof(ISearch<>).MakeGenericType(typeof(TEntity));
         var dbSearchType = typeof(ISearch<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
         var searchImplType = typeof(InternalSearch<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
@@ -47,6 +48,11 @@ public class SearchConfigurer<TDbContext> : ISearchConfigurer<TDbContext>
             sp => sp.GetService(dbSearchType)!,
             lifetime));
 
+        // adiciona all entities como serviço
+        // TODO:
+
+
+        // TODO: check if is really necessary the registration of the IQueryableProvider
         var queryableProviderType = typeof(IQueryableProvider<>).MakeGenericType(typeof(TEntity));
         var queryableProviderImplType = typeof(QueryableProvider<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
         

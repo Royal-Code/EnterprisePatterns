@@ -8,13 +8,13 @@ namespace RoyalCode.Persistence.Searches.Abstractions.Pipeline;
 public class Search<TEntity> : SearchBase<TEntity>
     where TEntity : class
 {
-    private readonly ISearchPipelineFactory factory;
+    private readonly IPipelineFactory factory;
 
     /// <summary>
-    /// Creates a new search with the <see cref="ISearchPipelineFactory"/> to execute the query.
+    /// Creates a new search with the <see cref="IPipelineFactory"/> to execute the query.
     /// </summary>
     /// <param name="factory">A search pipeline factory.</param>
-    public Search(ISearchPipelineFactory factory)
+    public Search(IPipelineFactory factory)
     {
         this.factory = factory;
     }
@@ -59,14 +59,14 @@ public class Search<TEntity, TDto> : SearchBase<TEntity, TDto>
     where TEntity : class
     where TDto : class
 {
-    private readonly ISearchPipelineFactory factory;
+    private readonly IPipelineFactory factory;
 
     /// <summary>
     /// Creates a new search.
     /// </summary>
-    /// <param name="factory">The search pipeline factory</param>
+    /// <param name="factory">The pipeline factory for create the search pipeline.</param>
     /// <param name="criteria">The previous criteria.</param>
-    public Search(ISearchPipelineFactory factory, SearchCriteria criteria) : base(criteria)
+    public Search(IPipelineFactory factory, SearchCriteria criteria) : base(criteria)
     {
         this.factory = factory;
     }

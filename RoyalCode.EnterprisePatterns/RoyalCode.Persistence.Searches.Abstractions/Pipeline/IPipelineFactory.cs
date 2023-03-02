@@ -2,10 +2,11 @@ namespace RoyalCode.Persistence.Searches.Abstractions.Pipeline;
 
 /// <summary>
 /// <para>
-///     Factory to create search pipelines (<see cref="ISearchPipeline{TModel}"/>).
+///     Factory to create search pipelines (<see cref="ISearchPipeline{TModel}"/>),
+///     and searches for all entities (<see cref="IAllEntitiesPipeline{TEntity}"/>).
 /// </para>
 /// </summary>
-public interface ISearchPipelineFactory
+public interface IPipelineFactory
 {
     /// <summary>
     /// Creates a <see cref="ISearchPipeline{TModel}"/> to query entities.
@@ -24,4 +25,14 @@ public interface ISearchPipelineFactory
     ISearchPipeline<TDto> Create<TEntity, TDto>()
         where TEntity : class
         where TDto : class;
+
+    /// <summary>
+    /// Creates a <see cref="IAllEntitiesPipeline{TEntity}"/> to query all entities.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <returns>
+    ///     A new instance of a pipeline to execute the search
+    /// </returns>
+    IAllEntitiesPipeline<TEntity> CreateAllEntities<TEntity>()
+        where TEntity : class;
 }
