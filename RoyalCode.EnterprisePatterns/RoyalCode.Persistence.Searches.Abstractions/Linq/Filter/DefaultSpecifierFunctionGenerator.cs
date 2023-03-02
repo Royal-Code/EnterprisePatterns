@@ -147,26 +147,48 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
 
         foreach (var resolution in resolvedProperties)
         {
-            var targetParam = Expression.Parameter(resolution.TargetSelection!.RootDeclaringType, "e");
-            var operatorExpression = CreateOperatorExpression(
-                DiscoveryCriterionOperator(resolution.Criterion, resolution.FilterPropertyInfo),
-                resolution.Criterion.Negation,
-                GetMemberAccess(resolution.FilterPropertyInfo, filterParam),
-                GetMemberAccess(resolution.TargetSelection!, targetParam));
+            // the predicate expression to pass to the queryable (to where method).
+            Expression predicateExpression;
 
-            // generate the type of the predicate.
-            var predicateType = typeof(Func<,>).MakeGenericType(
-                typeof(TModel),
-                typeof(bool));
+            // check if resolution has a predicate factory
+            var predicateFactory = resolution.TryGetPredicateFactory<TFilter>(resolution.FilterPropertyInfo.PropertyType);
+            if (predicateFactory is not null)
+            {
+                // create a expression to call the predicate factory for create the predicate expression.
+                var predicateFactoryCall = Expression.Call(
+                    Expression.Constant(predicateFactory.Target),
+                    predicateFactory.Method,
+                    GetMemberAccess(resolution.FilterPropertyInfo, filterParam));
 
-            // create the lamdba expression for the queryable
-            var lambda = Expression.Lambda(predicateType, operatorExpression, targetParam);
+                predicateExpression = predicateFactoryCall;
+            }
+            else
+            {
+                // the predicate function parameter, the entity/model of the query.
+                var targetParam = Expression.Parameter(resolution.TargetSelection!.RootDeclaringType, "e");
+
+                var operatorExpression = CreateOperatorExpression(
+                    DiscoveryCriterionOperator(resolution.Criterion, resolution.FilterPropertyInfo),
+                    resolution.Criterion.Negation,
+                    GetMemberAccess(resolution.FilterPropertyInfo, filterParam),
+                    GetMemberAccess(resolution.TargetSelection!, targetParam));
+
+                // generate the type of the predicate.
+                var predicateType = typeof(Func<,>).MakeGenericType(
+                    typeof(TModel),
+                    typeof(bool));
+
+                // create the lamdba expression for the queryable
+                var lambda = Expression.Lambda(predicateType, operatorExpression, targetParam);
+
+                predicateExpression = lambda;
+            }
 
             // create the method call to apply the filter in the query.
             var methodCall = Expression.Call(
                 WhereMethod.MakeGenericMethod(typeof(TModel)),
                 queryParam,
-                lambda);
+                predicateExpression);
 
             // assign the query with the value of the call.
             var assign = Expression.Assign(queryParam, methodCall);
@@ -461,6 +483,8 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
 
 internal class CriterionResolution
 {
+    private Delegate? predicateFactory;
+
     public CriterionResolution(PropertyInfo property, CriterionAttribute? criterionAttribute)
     {
         FilterPropertyInfo = property;
@@ -472,4 +496,55 @@ internal class CriterionResolution
     public CriterionAttribute Criterion { get; set; }
 
     public PropertySelection? TargetSelection { get; set; }
+
+    public void AddPredicateFactory<TFilter, TProperty>(Func<TProperty, Expression<Func<TFilter, bool>>> func)
+    {
+        predicateFactory = func;
+    }
+
+    public Delegate? TryGetPredicateFactory<TFilter>(Type propertyType)
+    {
+        if (predicateFactory is null)
+            return null;
+
+        // check if the predicate factory is compatible with the specified types (Func<TProperty, Expression<Func<TFilter, bool>>>)
+        var predicateFactoryType = predicateFactory.GetType();
+        var expectedType = typeof(Func<,>).MakeGenericType(propertyType, typeof(Expression<Func<TFilter, bool>>));
+        if (expectedType.IsAssignableFrom(predicateFactoryType))
+            return predicateFactory;
+
+        throw new InvalidOperationException(string.Format(
+            "The predicate factory is not compatible with the specified types, filter {0}, property {1}.", 
+            typeof(TFilter),
+            propertyType));
+    }
+}
+
+internal static class SpecifierGeneratorOptions
+{
+
+    
+}
+
+public class SpecifierGeneratorOptions<TFilter>
+{
+    public SpecifierGeneratorPropertyOptions<TFilter, TProperty> For<TProperty>(
+        Expression<Func<TFilter, TProperty>> selector)
+    {
+        // get selected property
+        PropertyInfo property = (selector.Body as MemberExpression)?.Member as PropertyInfo
+            ?? throw new ArgumentException("The selector must be a property selector.", nameof(selector));
+
+        return new SpecifierGeneratorPropertyOptions<TFilter, TProperty>();
+    }
+}
+
+public class SpecifierGeneratorPropertyOptions<TFilter, TProperty>
+{
+    internal Func<TProperty, Expression<Func<TFilter, bool>>>? PredicateFactory { get; private set; }
+
+    public void Predicate(Func<TProperty, Expression<Func<TFilter, bool>>> predicateFactory)
+    {
+        PredicateFactory = predicateFactory;
+    }
 }
