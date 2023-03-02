@@ -12,19 +12,15 @@ public class SearchConfigurer<TDbContext> : ISearchConfigurer<TDbContext>
     where TDbContext : DbContext
 {
     private readonly IServiceCollection services;
-    private readonly ServiceLifetime lifetime;
 
     /// <summary>
     /// Creates a new instance of <see cref="SearchConfigurer{TDbContext}"/>.
     /// </summary>
     /// <param name="services">The service collection to register the searches as a service.</param>
-    /// <param name="lifetime">The lifetime of the service.</param>
     public SearchConfigurer(
-        IServiceCollection services,
-        ServiceLifetime lifetime)
+        IServiceCollection services)
     {
         this.services = services;
-        this.lifetime = lifetime;
 
         services.AddSearchesLinq();
         services.TryAddTransient<IPipelineFactory, PipelineFactory<TDbContext>>();
@@ -62,16 +58,6 @@ public class SearchConfigurer<TDbContext> : ISearchConfigurer<TDbContext>
             allType,
             sp => sp.GetService(dbAllType)!,
             ServiceLifetime.Transient));
-
-
-        // TODO: check if is really necessary the registration of the IQueryableProvider
-        //var queryableProviderType = typeof(IQueryableProvider<>).MakeGenericType(typeof(TEntity));
-        //var queryableProviderImplType = typeof(QueryableProvider<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
-
-        //services.Add(ServiceDescriptor.Describe(
-        //    queryableProviderType,
-        //    queryableProviderImplType,
-        //    lifetime));
 
         return this;
     }

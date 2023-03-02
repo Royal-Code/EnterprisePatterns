@@ -113,7 +113,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
         if (configureAction is null)
             throw new ArgumentNullException(nameof(configureAction));
 
-        var searchConfigurer = new SearchConfigurer<TDbContext>(services, lifetime);
+        var searchConfigurer = new SearchConfigurer<TDbContext>(services);
         configureAction(searchConfigurer);
         return this;
     }

@@ -1,4 +1,8 @@
-﻿using System.Linq.Expressions;
+﻿using RoyalCode.Persistence.Searches.Abstractions.Linq;
+using RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
+using RoyalCode.Persistence.Searches.Abstractions.Linq.Selector;
+using RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
+using System.Linq.Expressions;
 
 namespace RoyalCode.Persistence.EntityFramework.Searches.Configurations;
 
@@ -15,7 +19,28 @@ public interface ISearchConfigurer
     /// <param name="specifier">The specifier function that applies the filter over the model query.</param>
     /// <returns>The same instance of the configuration.</returns>
     ISearchConfigurer AddSpecifier<TModel, TFilter>(
-        Func<IQueryable<TModel>, TFilter, IQueryable<TModel>> specifier); // adicionar ao Map
+        Func<IQueryable<TModel>, TFilter, IQueryable<TModel>> specifier)
+        where TModel : class
+        where TFilter : class
+    {
+        SpecifiersMap.Instance.Add(specifier);
+        return this;
+    }
+
+    /// <summary>
+    /// Add a specifier for the model and filter.
+    /// </summary>
+    /// <typeparam name="TModel">The type of the model.</typeparam>
+    /// <typeparam name="TFilter">The type of the filter.</typeparam>
+    /// <param name="specifier">The specifier that applies the filter over the model query.</param>
+    /// <returns>The same instance of the configuration.</returns>
+    ISearchConfigurer AddSpecifier<TModel, TFilter>(ISpecifier<TModel, TFilter> specifier)
+        where TModel : class
+        where TFilter : class
+    {
+        SpecifiersMap.Instance.Add(specifier);
+        return this;
+    }
 
     /// <summary>
     /// Add a Order By expression for the model and property (<paramref name="orderBy"/>).
@@ -27,7 +52,26 @@ public interface ISearchConfigurer
     /// <returns>The same instance of the configuration.</returns>
     ISearchConfigurer AddOrderBy<TModel, TProperty>(
         string orderBy, Expression<Func<TModel, TProperty>> expression)
-        where TModel : class;
+        where TModel : class
+    {
+        OrderByHandlersMap.Instance.Add(orderBy, expression);
+        return this;
+    }
+
+    /// <summary>
+    /// Add a Order By handler for the model and property (<paramref name="orderBy"/>).
+    /// </summary>
+    ///<typeparam name="TModel">The type of the model.</typeparam>
+    /// <typeparam name="TProperty">The type of the property.</typeparam>
+    /// <param name="orderBy">The name of the property.</param>
+    /// <param name="handler">The handler that represents the property.</param>
+    /// <returns>The same instance of the configuration.</returns>
+    ISearchConfigurer AddOrderBy<TModel, TProperty>(string orderBy, IOrderByHandler<TModel> handler)
+        where TModel : class
+    {
+        OrderByHandlersMap.Instance.Add(orderBy, handler);
+        return this;
+    }
 
     /// <summary>
     /// Add a selector function expression for select values from the model to the DTO.
@@ -39,6 +83,26 @@ public interface ISearchConfigurer
     ISearchConfigurer AddSelector<TEntity, TDto>(
         Expression<Func<TEntity, TDto>> selector)
         where TEntity : class
-        where TDto : class;
+        where TDto : class
+    {
+        SelectorsMap.Instance.Add(selector);
+        return this;
+    }
+
+    /// <summary>
+    /// Add a selector for select values from the model to the DTO.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the model.</typeparam>
+    /// <typeparam name="TDto">The type of the DTO.</typeparam>
+    /// <param name="selector">The selector.</param>
+    /// <returns>The same instance of the configuration.</returns>
+    ISearchConfigurer AddSelector<TEntity, TDto>(
+        ISelector<TEntity, TDto> selector)
+        where TEntity : class
+        where TDto : class
+    {
+        SelectorsMap.Instance.Add(selector);
+        return this;
+    }
 }
 
