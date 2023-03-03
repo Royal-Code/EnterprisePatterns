@@ -2,6 +2,7 @@
 using RoyalCode.Persistence.Searches.Abstractions.Extensions;
 using RoyalCode.Searches.Abstractions;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -14,6 +15,8 @@ namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
 /// </summary>
 public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
 {
+    #region Static Helpers
+
     /// <summary>
     /// MethodInfo referring to the generic function that checks whether a value is an empty representation of a type.
     /// </summary>
@@ -86,6 +89,8 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         typeof(decimal),
     };
 
+    #endregion
+
     /// <inheritdoc />
     public Func<IQueryable<TModel>, TFilter, IQueryable<TModel>>? Generate<TModel, TFilter>()
         where TModel : class
@@ -97,10 +102,23 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
             .Where(cr => !cr.Criterion.Ignore)
             .ToList();
 
+        // try add predicate factories from custom specifier generator options.
+        if (SpecifierGeneratorOptions.TryGetOptions<TModel, TFilter>(out var options))
+        {
+            foreach (var cr in criterionResolutions)
+            {
+                if (options.TryGetPropertyOptions(cr.FilterPropertyInfo, out var propertyOptions))
+                {
+                    if(propertyOptions.PredicateFactory is not null)
+                        cr.AddPredicateFactory(propertyOptions.PredicateFactory);
+                }
+            }
+        }
+
         // for each criterion resolution where the criterion attribute has a property name,
         // creates a property selection for the model type.
         var configuredProperties = criterionResolutions
-            .Where(cr => cr.Criterion.TargetProperty is not null);
+            .Where(cr => cr.IsPending && cr.Criterion.TargetProperty is not null);
         foreach (var resolution in configuredProperties)
         {
             var propertySelection = typeof(TModel).TrySelectProperty(resolution.Criterion.TargetProperty!);
@@ -114,11 +132,10 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         var selectionMatch = typeof(TFilter).MatchProperties(typeof(TModel));
 
         // join the criterion resolutions with the selection match,
-        // where the criterion resolution does not have a property selection,
-        // and the criterion attribute is not setted to ignore the property.
-        var unconfiguredProperties = criterionResolutions
-            .Where(cr => cr.TargetSelection is null);
-        foreach (var criterionResolution in unconfiguredProperties)
+        // where the criterion resolution is pending.
+        var pendingProperties = criterionResolutions
+            .Where(cr => cr.IsPending);
+        foreach (var criterionResolution in pendingProperties)
             foreach (var match in selectionMatch.PropertyMatches)
                 if (match.OriginProperty.Name == criterionResolution.FilterPropertyInfo.Name
                     && match.Match
@@ -128,15 +145,15 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
                     criterionResolution.TargetSelection = match.TargetSelection;
                 }
 
-        // check if all resolution that are not setted to ignore have a property selection.
-        if (criterionResolutions.Any(cr => cr.TargetSelection is null))
+        // check if all resolution are satisfied, if any pending, then return.
+        if (criterionResolutions.Any(cr => cr.IsPending))
             return null;
 
         // creates a function to apply the filter in a query.
         return Create<TModel, TFilter>(criterionResolutions);
     }
 
-    private Func<IQueryable<TModel>, TFilter, IQueryable<TModel>>? Create<TModel, TFilter>(
+    private static Func<IQueryable<TModel>, TFilter, IQueryable<TModel>>? Create<TModel, TFilter>(
         List<CriterionResolution> resolvedProperties)
         where TModel : class
         where TFilter : class
@@ -147,26 +164,48 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
 
         foreach (var resolution in resolvedProperties)
         {
-            var targetParam = Expression.Parameter(resolution.TargetSelection!.RootDeclaringType, "e");
-            var operatorExpression = CreateOperatorExpression(
-                DiscoveryCriterionOperator(resolution.Criterion, resolution.FilterPropertyInfo),
-                resolution.Criterion.Negation,
-                GetMemberAccess(resolution.FilterPropertyInfo, filterParam),
-                GetMemberAccess(resolution.TargetSelection!, targetParam));
+            // the predicate expression to pass to the queryable (to where method).
+            Expression predicateExpression;
 
-            // generate the type of the predicate.
-            var predicateType = typeof(Func<,>).MakeGenericType(
-                typeof(TModel),
-                typeof(bool));
+            // check if resolution has a predicate factory
+            var predicateFactory = resolution.TryGetPredicateFactory<TModel>(resolution.FilterPropertyInfo.PropertyType);
+            if (predicateFactory is not null)
+            {
+                // create a expression to call the predicate factory for create the predicate expression.
+                var predicateFactoryCall = Expression.Call(
+                    Expression.Constant(predicateFactory.Target),
+                    predicateFactory.Method,
+                    GetMemberAccess(resolution.FilterPropertyInfo, filterParam));
 
-            // create the lamdba expression for the queryable
-            var lambda = Expression.Lambda(predicateType, operatorExpression, targetParam);
+                predicateExpression = predicateFactoryCall;
+            }
+            else
+            {
+                // the predicate function parameter, the entity/model of the query.
+                var targetParam = Expression.Parameter(resolution.TargetSelection!.RootDeclaringType, "e");
+
+                var operatorExpression = CreateOperatorExpression(
+                    DiscoveryCriterionOperator(resolution.Criterion, resolution.FilterPropertyInfo),
+                    resolution.Criterion.Negation,
+                    GetMemberAccess(resolution.FilterPropertyInfo, filterParam),
+                    GetMemberAccess(resolution.TargetSelection!, targetParam));
+
+                // generate the type of the predicate.
+                var predicateType = typeof(Func<,>).MakeGenericType(
+                    typeof(TModel),
+                    typeof(bool));
+
+                // create the lamdba expression for the queryable
+                var lambda = Expression.Lambda(predicateType, operatorExpression, targetParam);
+
+                predicateExpression = lambda;
+            }
 
             // create the method call to apply the filter in the query.
             var methodCall = Expression.Call(
                 WhereMethod.MakeGenericMethod(typeof(TModel)),
                 queryParam,
-                lambda);
+                predicateExpression);
 
             // assign the query with the value of the call.
             var assign = Expression.Assign(queryParam, methodCall);
@@ -457,19 +496,4 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
 
         return false;
     }
-}
-
-internal class CriterionResolution
-{
-    public CriterionResolution(PropertyInfo property, CriterionAttribute? criterionAttribute)
-    {
-        FilterPropertyInfo = property;
-        Criterion = criterionAttribute ?? new CriterionAttribute();
-    }
-
-    public PropertyInfo FilterPropertyInfo { get; set; }
-
-    public CriterionAttribute Criterion { get; set; }
-
-    public PropertySelection? TargetSelection { get; set; }
 }

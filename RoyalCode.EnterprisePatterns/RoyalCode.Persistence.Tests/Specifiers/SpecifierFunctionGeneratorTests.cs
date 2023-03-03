@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.Persistence.EntityFramework.Searches.Configurations;
 using RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
 using RoyalCode.Searches.Abstractions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Xunit;
 
@@ -193,7 +195,7 @@ public class SpecifierFunctionGeneratorTests
         Assert.Equal(ExpressionType.Conditional, expression.NodeType);
 
         var condition = ((ConditionalExpression)expression).Test;
-        
+
         if (not)
         {
             Assert.Equal(ExpressionType.Not, condition.NodeType);
@@ -281,8 +283,134 @@ public class SpecifierFunctionGeneratorTests
             Assert.Equal(ExpressionType.Not, expression.NodeType);
             expression = ((UnaryExpression)expression).Operand;
         }
-        
+
         Assert.Equal(expected, expression.NodeType);
+    }
+
+    [Fact]
+    public void ConfigureSpecifierGenerator_TwoAutoFields_OnePredicateFactory()
+    {
+        // arrange configuration
+        ISearchConfigurer configurer = new SearchConfigurer();
+        configurer.ConfigureSpecifierGenerator<ConfigurableEntity, ConfigurableFilter>(cfg =>
+        {
+            cfg.For(f => f.ModelId).Predicate(id => e => e.Models.Any(m => m.Id == id));
+        });
+        // arrange generator
+        var generator = new DefaultSpecifierFunctionGenerator();
+
+        // act
+        var function = generator.Generate<ConfigurableEntity, ConfigurableFilter>();
+
+        // assert
+        Assert.NotNull(function);
+    }
+
+    [Fact]
+    public void ConfigureSpecifierGenerator_OnlyPredicateFactory_NotNullProperty()
+    {
+        // arrange configuration
+        ISearchConfigurer configurer = new SearchConfigurer();
+        configurer.ConfigureSpecifierGenerator<ConfigurableEntity, ConfigurableFilterNotNull>(cfg =>
+        {
+            cfg.For(f => f.ModelId).Predicate(id => e => e.Models.Any(m => m.Id == id));
+        });
+        // arrange generator
+        var generator = new DefaultSpecifierFunctionGenerator();
+
+        // act
+        var function = generator.Generate<ConfigurableEntity, ConfigurableFilterNotNull>();
+
+        // assert
+        Assert.NotNull(function);
+    }
+
+    [Fact]
+    public void ConfigureSpecifierGenerator_RunningWithoutFilterValue_Must_ReturnAll()
+    {
+        // arrange
+        ISearchConfigurer configurer = new SearchConfigurer();
+        configurer.ConfigureSpecifierGenerator<ConfigurableEntity, ConfigurableFilter>(cfg =>
+        {
+            cfg.For(f => f.ModelId).Predicate(id => e => e.Models.Any(m => m.Id == id));
+        });
+
+        var generator = new DefaultSpecifierFunctionGenerator();
+        var function = generator.Generate<ConfigurableEntity, ConfigurableFilter>()!;
+        Assert.NotNull(function);
+
+        var query = ConfigurableEntity.List.AsQueryable();
+        var filter = new ConfigurableFilter();
+
+        // act
+        query = function(query, filter);
+
+        // assert
+        Assert.Equal(3, query.Count());
+    }
+
+    [Theory]
+    [InlineData(1, 1)]
+    [InlineData(2, 1)]
+    [InlineData(3, 1)]
+    [InlineData(4, 1)]
+    [InlineData(5, 1)]
+    [InlineData(6, 1)]
+    [InlineData(7, 0)]
+    public void ConfigureSpecifierGenerator_RunningWithFilter_Must_ApplyPredicates(int id, int expectedCount)
+    {
+        // arrange
+        ISearchConfigurer configurer = new SearchConfigurer();
+        configurer.ConfigureSpecifierGenerator<ConfigurableEntity, ConfigurableFilter>(cfg =>
+        {
+            cfg.For(f => f.ModelId).Predicate(id => e => e.Models.Any(m => m.Id == id));
+        });
+
+        var generator = new DefaultSpecifierFunctionGenerator();
+        var function = generator.Generate<ConfigurableEntity, ConfigurableFilter>()!;
+        Assert.NotNull(function);
+
+        var query = ConfigurableEntity.List.AsQueryable();
+        var filter = new ConfigurableFilter()
+        {
+            ModelId = id
+        };
+
+        // act
+        query = function(query, filter);
+
+        // assert
+        Assert.Equal(expectedCount, query.Count());
+    }
+
+    [Theory]
+    [InlineData(0, 3)]
+    [InlineData(1, 1)]
+    [InlineData(7, 0)]
+    public void ConfigureSpecifierGenerator_RunningWithFilter_NotNullProperty_Must_ApplyPredicates(int id, int expectedCount)
+    {
+        // arrange
+        ISearchConfigurer configurer = new SearchConfigurer();
+        configurer.ConfigureSpecifierGenerator<ConfigurableEntity, ConfigurableFilterNotNull>(cfg =>
+        {
+            cfg.For(f => f.ModelId).Predicate(id => e => e.Models.Any(m => m.Id == id));
+        });
+
+        var generator = new DefaultSpecifierFunctionGenerator();
+        var function = generator.Generate<ConfigurableEntity, ConfigurableFilterNotNull>()!;
+        Assert.NotNull(function);
+
+        var query = ConfigurableEntity.List.AsQueryable();
+        var filter = new ConfigurableFilterNotNull()
+        {
+            ModelId = id
+        };
+
+        // act
+        query = function(query, filter);
+
+        // assert
+        Assert.Equal(expectedCount, query.Count());
     }
 }
 
@@ -363,4 +491,87 @@ file class LocalDbContext : DbContext
     {
         modelBuilder.Entity<SimpleModel>();
     }
+}
+
+file class SearchConfigurer : ISearchConfigurer { }
+
+file class ConfigurableEntity
+{
+    public int Id { get; set; }
+
+    public string Name { get; set; } = null!;
+
+    public List<SimpleModel> Models { get; set; } = null!;
+
+    public static List<ConfigurableEntity> List = new()
+    {
+        new ConfigurableEntity()
+        {
+            Id = 1,
+            Name = "test 1",
+            Models = new List<SimpleModel>()
+            {
+                new SimpleModel()
+                {
+                    Id = 1,
+                    Name = "Simple Model 1"
+                },
+                new SimpleModel()
+                {
+                    Id = 2,
+                    Name = "Simple Model 2"
+                }
+            }
+        },
+        new ConfigurableEntity()
+        {
+            Id = 2,
+            Name = "test 2",
+            Models = new List<SimpleModel>()
+            {
+                new SimpleModel()
+                {
+                    Id = 3,
+                    Name = "Simple Model 3"
+                },
+                new SimpleModel()
+                {
+                    Id = 4,
+                    Name = "Simple Model 4"
+                }
+            }
+        },
+        new ConfigurableEntity()
+        {
+            Id = 3,
+            Name = "test 3",
+            Models = new List<SimpleModel>()
+            {
+                new SimpleModel()
+                {
+                    Id = 5,
+                    Name = "Simple Model 5"
+                },
+                new SimpleModel()
+                {
+                    Id = 6,
+                    Name = "Simple Model 6"
+                }
+            }
+        }
+    };
+}
+
+file class ConfigurableFilter
+{
+    public int? Id { get; set; }
+
+    public string? Name { get; set; }
+
+    public int? ModelId { get; set; }
+}
+
+file class ConfigurableFilterNotNull
+{
+    public int ModelId { get; set; }
 }

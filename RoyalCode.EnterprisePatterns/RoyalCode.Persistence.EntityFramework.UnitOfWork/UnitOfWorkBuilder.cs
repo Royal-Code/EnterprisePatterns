@@ -22,13 +22,9 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="lifetime">The lifetime that will be used when register services.</param>
-    /// <param name="repositoryAddedCallback">The callback that will be called when a repository is added.</param>
-    /// <param name="searchAddedCallback">The callback that will be called when a search is added.</param>
     public UnitOfWorkBuilder(
         IServiceCollection services, 
-        ServiceLifetime lifetime, 
-        Action<Type>? repositoryAddedCallback = null,
-        Action<Type>? searchAddedCallback = null)
+        ServiceLifetime lifetime)
     {
         this.services = services;
         this.lifetime = lifetime;
