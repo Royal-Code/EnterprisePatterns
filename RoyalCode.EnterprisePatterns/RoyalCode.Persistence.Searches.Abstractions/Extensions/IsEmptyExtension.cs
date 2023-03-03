@@ -89,21 +89,21 @@ public static class IsEmptyExtension
     public static bool IsBlank(this DateTime? date)
     {
         // if it has a value, checks if the value is blank, otherwise returns that it is blank (true).
-        return date.HasValue ? date.Value.IsBlank() : true;
+        return !date.HasValue || date.Value.IsBlank();
     }
 
     /// <summary>
     /// Start data for SQL Server.
     /// </summary>
-    public static readonly DateTime SQLDateNull = new DateTime(1753, 01, 01);
+    public static readonly DateTime SQLDateNull = new(1753, 01, 01);
 
     /// <summary>
     /// Start date of C#, DotNet.
     /// </summary>
-    public static readonly DateTime CSDateNull = new DateTime(0001, 01, 01);
+    public static readonly DateTime CSDateNull = new(0001, 01, 01);
 
     /// <summary>
     /// Start date of Unix
     /// </summary>
-    public static readonly DateTime UnixDateNull = new DateTime(1970, 01, 01);
+    public static readonly DateTime UnixDateNull = new(1970, 01, 01);
 }

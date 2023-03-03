@@ -43,6 +43,23 @@ public interface ISearchConfigurer
     }
 
     /// <summary>
+    /// Configure the options for the specifier generator of the model and filter.
+    /// </summary>
+    /// <typeparam name="TModel">The type of the model.</typeparam>
+    /// <typeparam name="TFilter">The type of the filter.</typeparam>
+    /// <param name="configure">The configuration action.</param>
+    /// <returns>The same instance of the configuration.</returns>
+    ISearchConfigurer ConfigureSpecifierGenerator<TModel, TFilter>(
+        Action<ISpecifierGeneratorOptions<TModel, TFilter>> configure)
+        where TModel : class
+        where TFilter : class
+    {
+        var options = SpecifierGeneratorOptions.GetOptions<TModel, TFilter>();
+        configure(options);
+        return this;
+    }
+
+    /// <summary>
     /// Add a Order By expression for the model and property (<paramref name="orderBy"/>).
     /// </summary>
     /// <typeparam name="TModel">The type of the model.</typeparam>

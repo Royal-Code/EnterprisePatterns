@@ -2,6 +2,7 @@
 using RoyalCode.Persistence.Searches.Abstractions.Extensions;
 using RoyalCode.Searches.Abstractions;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -97,10 +98,23 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
             .Where(cr => !cr.Criterion.Ignore)
             .ToList();
 
+        // try add predicate factories from custom specifier generator options.
+        if (SpecifierGeneratorOptions.TryGetOptions<TModel, TFilter>(out var options))
+        {
+            foreach (var cr in criterionResolutions)
+            {
+                if (options.TryGetPropertyOptions(cr.FilterPropertyInfo, out var propertyOptions))
+                {
+                    if(propertyOptions.PredicateFactory is not null)
+                        cr.AddPredicateFactory(propertyOptions.PredicateFactory);
+                }
+            }
+        }
+
         // for each criterion resolution where the criterion attribute has a property name,
         // creates a property selection for the model type.
         var configuredProperties = criterionResolutions
-            .Where(cr => cr.Criterion.TargetProperty is not null);
+            .Where(cr => cr.IsPending && cr.Criterion.TargetProperty is not null);
         foreach (var resolution in configuredProperties)
         {
             var propertySelection = typeof(TModel).TrySelectProperty(resolution.Criterion.TargetProperty!);
@@ -117,7 +131,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         // where the criterion resolution does not have a property selection,
         // and the criterion attribute is not setted to ignore the property.
         var unconfiguredProperties = criterionResolutions
-            .Where(cr => cr.TargetSelection is null);
+            .Where(cr => cr.IsPending);
         foreach (var criterionResolution in unconfiguredProperties)
             foreach (var match in selectionMatch.PropertyMatches)
                 if (match.OriginProperty.Name == criterionResolution.FilterPropertyInfo.Name
@@ -128,15 +142,15 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
                     criterionResolution.TargetSelection = match.TargetSelection;
                 }
 
-        // check if all resolution that are not setted to ignore have a property selection.
-        if (criterionResolutions.Any(cr => cr.TargetSelection is null))
+        // check if all resolution are satisfied, if any pending, then return.
+        if (criterionResolutions.Any(cr => cr.IsPending))
             return null;
 
         // creates a function to apply the filter in a query.
         return Create<TModel, TFilter>(criterionResolutions);
     }
 
-    private Func<IQueryable<TModel>, TFilter, IQueryable<TModel>>? Create<TModel, TFilter>(
+    private static Func<IQueryable<TModel>, TFilter, IQueryable<TModel>>? Create<TModel, TFilter>(
         List<CriterionResolution> resolvedProperties)
         where TModel : class
         where TFilter : class
@@ -151,7 +165,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
             Expression predicateExpression;
 
             // check if resolution has a predicate factory
-            var predicateFactory = resolution.TryGetPredicateFactory<TFilter>(resolution.FilterPropertyInfo.PropertyType);
+            var predicateFactory = resolution.TryGetPredicateFactory<TModel>(resolution.FilterPropertyInfo.PropertyType);
             if (predicateFactory is not null)
             {
                 // create a expression to call the predicate factory for create the predicate expression.
@@ -497,53 +511,151 @@ internal class CriterionResolution
 
     public PropertySelection? TargetSelection { get; set; }
 
-    public void AddPredicateFactory<TFilter, TProperty>(Func<TProperty, Expression<Func<TFilter, bool>>> func)
+    public bool IsPending => TargetSelection is null && predicateFactory is null;
+
+    public void AddPredicateFactory(Delegate predicateFactory)
     {
-        predicateFactory = func;
+        this.predicateFactory = predicateFactory;
     }
 
-    public Delegate? TryGetPredicateFactory<TFilter>(Type propertyType)
+    public Delegate? TryGetPredicateFactory<TModel>(Type filterPropertyType)
     {
         if (predicateFactory is null)
             return null;
 
+        // if the filter property is nullable, get the underlying type
+        filterPropertyType = Nullable.GetUnderlyingType(filterPropertyType) ?? filterPropertyType;
+
         // check if the predicate factory is compatible with the specified types (Func<TProperty, Expression<Func<TFilter, bool>>>)
         var predicateFactoryType = predicateFactory.GetType();
-        var expectedType = typeof(Func<,>).MakeGenericType(propertyType, typeof(Expression<Func<TFilter, bool>>));
+        var expectedType = typeof(Func<,>).MakeGenericType(filterPropertyType, typeof(Expression<Func<TModel, bool>>));
         if (expectedType.IsAssignableFrom(predicateFactoryType))
             return predicateFactory;
 
         throw new InvalidOperationException(string.Format(
-            "The predicate factory is not compatible with the specified types, filter {0}, property {1}.", 
-            typeof(TFilter),
-            propertyType));
+            "The predicate factory is not compatible with the specified types, model {0}, filter property {1}.",
+            typeof(TModel),
+            filterPropertyType));
     }
 }
 
 internal static class SpecifierGeneratorOptions
 {
+    private static Dictionary<(Type, Type), object>? options;
 
-    
+    internal static ISpecifierGeneratorOptions<TModel, TFilter> GetOptions<TModel, TFilter>()
+        where TModel : class
+        where TFilter : class
+    {
+        options ??= new();
+
+        if (options.TryGetValue((typeof(TModel), typeof(TFilter)), out var value))
+            return (ISpecifierGeneratorOptions<TModel, TFilter>)value;
+
+        value = new SpecifierGeneratorOptions<TModel, TFilter>();
+        options.Add((typeof(TModel), typeof(TFilter)), value);
+        return (ISpecifierGeneratorOptions<TModel, TFilter>)value;
+    }
+
+    internal static bool TryGetOptions<TModel, TFilter>(
+        [NotNullWhen(true)] out ISpecifierGeneratorOptions<TModel, TFilter>? specifierOptions)
+        where TModel : class
+        where TFilter : class
+    {
+        if (options is not null && options.TryGetValue((typeof(TModel), typeof(TFilter)), out var value))
+        {
+            specifierOptions = (ISpecifierGeneratorOptions<TModel, TFilter>)value;
+            return true;
+        }
+
+        specifierOptions = null;
+        return false;
+    }
 }
 
-public class SpecifierGeneratorOptions<TFilter>
+public interface ISpecifierGeneratorOptions<TModel, TFilter>
+    where TModel : class
+    where TFilter : class
 {
-    public SpecifierGeneratorPropertyOptions<TFilter, TProperty> For<TProperty>(
-        Expression<Func<TFilter, TProperty>> selector)
+    SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty> For<TProperty>(
+        Expression<Func<TFilter, TProperty>> selector);
+
+    SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty> For<TProperty>(
+        Expression<Func<TFilter, Nullable<TProperty>>> selector)
+        where TProperty : struct;
+
+    bool TryGetPropertyOptions(PropertyInfo filterProperty,
+        [NotNullWhen(true)] out SpecifierGeneratorPropertyOptions<TModel, TFilter>? options);
+}
+
+internal class SpecifierGeneratorOptions<TModel, TFilter> : ISpecifierGeneratorOptions<TModel, TFilter>
+    where TModel : class
+    where TFilter : class
+{
+    private readonly List<SpecifierGeneratorPropertyOptions<TModel, TFilter>> propertyOptions = new();
+
+    public SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty> For<TProperty>(
+        Expression<Func<TFilter, TProperty?>> selector)
     {
         // get selected property
         PropertyInfo property = (selector.Body as MemberExpression)?.Member as PropertyInfo
             ?? throw new ArgumentException("The selector must be a property selector.", nameof(selector));
 
-        return new SpecifierGeneratorPropertyOptions<TFilter, TProperty>();
+        // check if exists the options in propertyOptions
+        var previous = propertyOptions.FirstOrDefault(p => p.PropertyInfo == property);
+        if (previous is not null)
+            return (SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty>)previous;
+
+        var newOptions = new SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty>(property);
+        propertyOptions.Add(newOptions);
+        return newOptions;
+    }
+
+    public SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty> For<TProperty>(
+        Expression<Func<TFilter, TProperty?>> selector)
+        where TProperty : struct
+    {
+        // get selected property
+        PropertyInfo property = (selector.Body as MemberExpression)?.Member as PropertyInfo
+            ?? throw new ArgumentException("The selector must be a property selector.", nameof(selector));
+
+        // check if exists the options in propertyOptions
+        var previous = propertyOptions.FirstOrDefault(p => p.PropertyInfo == property);
+        if (previous is not null)
+            return (SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty>)previous;
+
+        var newOptions = new SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty>(property);
+        propertyOptions.Add(newOptions);
+        return newOptions;
+    }
+
+    public bool TryGetPropertyOptions(PropertyInfo filterProperty, 
+        [NotNullWhen(true)] out SpecifierGeneratorPropertyOptions<TModel, TFilter>? options)
+    {
+        options = propertyOptions.FirstOrDefault(p => p.PropertyInfo == filterProperty);
+        return options is not null;
     }
 }
 
-public class SpecifierGeneratorPropertyOptions<TFilter, TProperty>
+public class SpecifierGeneratorPropertyOptions<TModel, TFilter>
 {
-    internal Func<TProperty, Expression<Func<TFilter, bool>>>? PredicateFactory { get; private set; }
+    public SpecifierGeneratorPropertyOptions(PropertyInfo propertyInfo)
+    {
+        PropertyInfo = propertyInfo;
+    }
 
-    public void Predicate(Func<TProperty, Expression<Func<TFilter, bool>>> predicateFactory)
+    internal PropertyInfo PropertyInfo { get; }
+
+    internal Delegate? PredicateFactory { get; set; }
+}
+
+public class SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty> : SpecifierGeneratorPropertyOptions<TModel, TFilter>
+{
+    public SpecifierGeneratorPropertyOptions(PropertyInfo propertyInfo) 
+        : base(propertyInfo)
+    { }
+
+    public void Predicate(Func<TProperty, Expression<Func<TModel, bool>>> predicateFactory)
     {
         PredicateFactory = predicateFactory;
     }
