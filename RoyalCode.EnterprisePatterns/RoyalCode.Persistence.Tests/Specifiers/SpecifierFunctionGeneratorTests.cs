@@ -501,7 +501,7 @@ file class ConfigurableEntity
 
     public string Name { get; set; } = null!;
 
-    public List<SimpleModel> Models { get; set; }
+    public List<SimpleModel> Models { get; set; } = null!;
 
     public static List<ConfigurableEntity> List = new()
     {
