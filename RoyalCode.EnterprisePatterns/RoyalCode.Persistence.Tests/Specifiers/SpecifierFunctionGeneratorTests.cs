@@ -66,6 +66,19 @@ public class SpecifierFunctionGeneratorTests
     }
 
     [Fact]
+    public void Generate_Must_GenerateTheFilter_For_ExtendedModels()
+    {
+        // arrange
+        var generator = new DefaultSpecifierFunctionGenerator();
+
+        // act
+        var function = generator.Generate<ExtendedModel, ExtendedFilter>();
+
+        // assert
+        Assert.NotNull(function);
+    }
+
+    [Fact]
     public void GetMemberAccess_OnProperty_Must_ReturnTheMemberAccess_WithSameType()
     {
         // arrange
@@ -574,4 +587,22 @@ file class ConfigurableFilter
 file class ConfigurableFilterNotNull
 {
     public int ModelId { get; set; }
+}
+
+
+file class ModelBase
+{
+    public int Id { get; set; }
+}
+
+file class ExtendedModel : ModelBase
+{
+    public string Name { get; set; } = null!;
+}
+
+file class ExtendedFilter
+{
+    public int? Id { get; set; }
+
+    public string? Name { get; set; }
 }

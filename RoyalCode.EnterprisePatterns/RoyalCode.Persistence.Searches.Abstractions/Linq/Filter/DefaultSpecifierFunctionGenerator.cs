@@ -182,7 +182,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
             else
             {
                 // the predicate function parameter, the entity/model of the query.
-                var targetParam = Expression.Parameter(resolution.TargetSelection!.RootDeclaringType, "e");
+                var targetParam = Expression.Parameter(typeof(TModel), "e");
 
                 var operatorExpression = CreateOperatorExpression(
                     DiscoveryCriterionOperator(resolution.Criterion, resolution.FilterPropertyInfo),
