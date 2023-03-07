@@ -31,6 +31,9 @@ public static class SearchExtensions
         if (options.Count.HasValue)
             search = search.UseCount(options.Count.Value);
 
+        foreach (var sorting in options.Sortings)
+            search.OrderBy(sorting);
+
         return search;
     }
 

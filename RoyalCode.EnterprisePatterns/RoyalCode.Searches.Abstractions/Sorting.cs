@@ -65,26 +65,53 @@ public class Sorting : ISorting
             return true;
         }
 
+        ListSortDirection direction = ListSortDirection.Ascending;
+
         // check if the param orderBy ends with asc or desc in a case insensitive way
         // when is ascending, the order by ends with ' asc' or '-asc'
         // when is descending, the order by ends with ' desc' or '-desc'
-        var isAscending = orderBy.EndsWith(" asc", StringComparison.OrdinalIgnoreCase)
-            || orderBy.EndsWith("-asc", StringComparison.OrdinalIgnoreCase);
-        var isDescending = orderBy.EndsWith(" desc", StringComparison.OrdinalIgnoreCase)
-            || orderBy.EndsWith("-desc", StringComparison.OrdinalIgnoreCase);
-
-        // remove the asc or desc from the orderBy
-        orderBy = isAscending
-            ? orderBy[..^4]
-            : isDescending
-                ? orderBy[..^5]
-                : orderBy;
+        // then remove the asc or desc from the orderBy, and set the direction
+        if (orderBy.EndsWith(" asc", StringComparison.OrdinalIgnoreCase)
+            || orderBy.EndsWith("-asc", StringComparison.OrdinalIgnoreCase))
+        {
+            orderBy = orderBy[..^4];
+        }
+        else if(orderBy.EndsWith(" desc", StringComparison.OrdinalIgnoreCase)
+            || orderBy.EndsWith("-desc", StringComparison.OrdinalIgnoreCase))
+        {
+            orderBy = orderBy[..^5];
+            direction = ListSortDirection.Descending;
+        }
 
         sorting = new Sorting
         {
             OrderBy = orderBy,
-            Direction = isDescending ? ListSortDirection.Descending : ListSortDirection.Ascending
+            Direction = direction
         };
+
         return true;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Generate a string representation of the <see cref="Sorting"/>.
+    /// </para>
+    /// <para>
+    ///     When the <see cref="Direction"/> is <see cref="ListSortDirection.Descending"/>,
+    ///     then the string will be <c>{OrderBy}-desc</c>.
+    /// </para>
+    /// <para>
+    ///     When the <see cref="Direction"/> is <see cref="ListSortDirection.Ascending"/>,
+    ///     then the string will be <c>{OrderBy}</c>.
+    /// </para>
+    /// </summary>
+    /// <returns>
+    ///     A string representation of the <see cref="Sorting"/>.
+    /// </returns>
+    public override string ToString()
+    {
+        return Direction is ListSortDirection.Descending
+            ? $"{OrderBy}-desc"
+            : OrderBy;
     }
 }

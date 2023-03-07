@@ -12,6 +12,8 @@ namespace RoyalCode.Searches.Abstractions;
 /// </summary>
 public class SearchOptions
 {
+    private List<Sorting>? sortings;
+
     /// <summary>
     /// <para>
     ///     Defines that the query will be paged and determines the number of items per page.
@@ -44,4 +46,37 @@ public class SearchOptions
     /// Whether to apply record counting.
     /// </summary>
     public bool? Count { get; set; }
+
+    /// <summary>
+    /// The order by instructions for the search.
+    /// </summary>
+    public IEnumerable<Sorting> Sortings => sortings ?? Enumerable.Empty<Sorting>();
+
+    /// <summary>
+    /// Adds a new order by instruction.
+    /// </summary>
+    /// <param name="orderBy">The property name to be ordered.</param>
+    public void OrderBy(string orderBy)
+    {
+        sortings ??= new List<Sorting>();
+        sortings.Add(new Sorting
+        {
+            OrderBy = orderBy,
+            Direction = System.ComponentModel.ListSortDirection.Ascending
+        });
+    }
+
+    /// <summary>
+    /// Adds a new order by instruction.
+    /// </summary>
+    /// <param name="orderBy">The property name to be ordered.</param>
+    public void OrderByDesc(string orderBy)
+    {
+        sortings ??= new List<Sorting>();
+        sortings.Add(new Sorting
+        {
+            OrderBy = orderBy,
+            Direction = System.ComponentModel.ListSortDirection.Descending
+        });
+    }
 }
