@@ -50,9 +50,9 @@ public class SearchOptions
     /// <summary>
     /// The order by instructions for the search.
     /// </summary>
-    public Sorting[] Sortings
+    public Sorting[]? Sortings
     {
-        get => sortings?.ToArray() ?? Array.Empty<Sorting>();
+        get => sortings?.ToArray() ?? null;
         set => sortings = value?.ToList();
     }
 
