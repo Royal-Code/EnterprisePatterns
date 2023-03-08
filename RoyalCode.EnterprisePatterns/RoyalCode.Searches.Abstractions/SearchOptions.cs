@@ -50,7 +50,11 @@ public class SearchOptions
     /// <summary>
     /// The order by instructions for the search.
     /// </summary>
-    public IEnumerable<Sorting> Sortings => sortings ?? Enumerable.Empty<Sorting>();
+    public Sorting[] Sortings
+    {
+        get => sortings?.ToArray() ?? Array.Empty<Sorting>();
+        set => sortings = value?.ToList();
+    }
 
     /// <summary>
     /// Adds a new order by instruction.

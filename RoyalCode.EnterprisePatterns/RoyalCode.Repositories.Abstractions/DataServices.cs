@@ -31,6 +31,21 @@ public interface IAdder<in TEntity>
     /// </remarks>
     /// <param name="entity">The new entity instance.</param>
     void Add(TEntity entity);
+
+    /// <summary>
+    /// <para>
+    ///     Adds a collection of new entities to the repository to be persisted.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///     When implemented together with the Unit Of Work pattern the entity 
+    ///     will not be persisted directly when calling this method, 
+    ///     it will be stored in memory until the completion of the unit of work.
+    /// </para>
+    /// </remarks>
+    /// <param name="entities">A collection of new entities.</param>
+    void AddRange(IEnumerable<TEntity> entities);
 }
 
 /// <summary>
@@ -204,6 +219,32 @@ public interface IUpdater<TEntity>
     /// <para>
     ///     Operation to merge a data model to an existing entity.
     /// </para>
+    /// <remarks>
+    /// <para>
+    ///     The data model should have an id, which will be used to get the entity from the database.
+    /// </para>
+    /// <para>
+    ///     The fields of the data model should be the same as the entity's fields.
+    /// </para>
+    /// <para>
+    ///     When implemented together with the Unit Of Work pattern the entity 
+    ///     will not be persisted directly when calling this method, 
+    ///     it will be stored in memory until the completion of the unit of work.
+    /// </para>
+    /// </remarks>
+    /// </summary>
+    /// <typeparam name="TId">The Id type.</typeparam>
+    /// <param name="models">A collection of models.</param>
+    /// <returns>For each model, true if the entity exists and has been updated, false otherwise.</returns>
+    IEnumerable<bool> MergeRange<TId>(IEnumerable<IHasId<TId>> models)
+    {
+        return models.Select(Merge);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Operation to merge a data model to an existing entity.
+    /// </para>
     /// </summary>
     /// <remarks>
     /// <para>
@@ -227,6 +268,35 @@ public interface IUpdater<TEntity>
     /// </para>
     /// </returns>
     Task<bool> MergeAsync<TId>(IHasId<TId> model, CancellationToken token = default);
+
+    /// <summary>
+    /// <para>
+    ///     Operation to merge a data model to an existing entity.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///     The data model should have an id, which will be used to get the entity from the database.
+    /// </para>
+    /// <para>
+    ///     The fields of the data model should be the same as the entity's fields.
+    /// </para>
+    /// <para>
+    ///     When implemented together with the Unit Of Work pattern the entity 
+    ///     will not be persisted directly when calling this method, 
+    ///     it will be stored in memory until the completion of the unit of work.
+    /// </para>
+    /// </remarks>
+    /// <typeparam name="TId">The Id type.</typeparam>
+    /// <param name="models">A collection of models.</param>
+    /// <param name="token">Token for cancelling tasks.</param>
+    /// <returns>For each model, true if the entity exists and has been updated, false otherwise.</returns>
+    async Task<IEnumerable<bool>> MergeRangeAsync<TId>(
+        IEnumerable<IHasId<TId>> models,
+        CancellationToken token = default)
+    {
+        return await Task.WhenAll(models.Select(model => MergeAsync(model, token)));
+    }
 }
 
 /// <summary>
@@ -263,6 +333,34 @@ public interface IRemover<TEntity>
 
     /// <summary>
     /// <para>
+    ///     Remove a range of entities from the data base.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///     It is assumed that the entity was previously obtained from the database and it exists.
+    /// </para>
+    /// <para>
+    ///     When implemented together with the Unit Of Work pattern the entity 
+    ///     will not be persisted directly when calling this method, 
+    ///     it will be stored in memory until the completion of the unit of work.
+    /// </para>
+    /// </remarks>
+    /// <param name="entities">The entities.</param>
+    /// <exception cref="ArgumentNullException">
+    ///     If <paramref name="entities"/> is null.
+    /// </exception>
+    void RemoveRange(IEnumerable<TEntity> entities)
+    {
+        if (entities == null)
+            throw new ArgumentNullException(nameof(entities));
+
+        foreach (var entity in entities)
+            Remove(entity);
+    }
+
+    /// <summary>
+    /// <para>
     ///     Delete the entity by its Id.
     /// </para>
     /// </summary>
@@ -283,7 +381,30 @@ public interface IRemover<TEntity>
 
     /// <summary>
     /// <para>
-    ///     Delete the entity by its Id.
+    ///     Delete a range of entities by their Ids.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///     When implemented together with the Unit Of Work pattern the entity 
+    ///     will not be persisted directly when calling this method, 
+    ///     it will be stored in memory until the completion of the unit of work.
+    /// </para>
+    /// </remarks>
+    /// <param name="ids">The entities Ids.</param>
+    /// <returns>
+    /// <para>
+    ///     The entities excluded, or null if the entity is not found.
+    /// </para>
+    /// </returns>
+    IEnumerable<TEntity?> DeleteRange(IEnumerable<object> ids)
+    {
+        return ids.Select(Delete);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Delete the entity by their Id.
     /// </para>
     /// </summary>
     /// <remarks>
@@ -301,4 +422,21 @@ public interface IRemover<TEntity>
     /// </para>
     /// </returns>
     Task<TEntity?> DeleteAsync(object id, CancellationToken token = default);
+
+    /// <summary>
+    /// <para>
+    ///     Delete a range of entities by their Ids.
+    /// </para>
+    /// </summary>
+    /// <param name="ids">The entities Ids.</param>
+    /// <param name="token">Token for cancelling tasks.</param>
+    /// <returns>
+    /// <para>
+    ///     The entities excluded, or null if the entity is not found.
+    /// </para>
+    /// </returns>
+    async Task<IEnumerable<TEntity?>> DeleteRangeAsync(IEnumerable<object> ids, CancellationToken token = default)
+    {
+        return await Task.WhenAll(ids.Select(id => DeleteAsync(id, token)));
+    }
 }

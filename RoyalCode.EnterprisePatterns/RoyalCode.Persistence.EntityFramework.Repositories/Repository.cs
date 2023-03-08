@@ -45,6 +45,15 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
             .Add(entity ?? throw new ArgumentNullException(nameof(entity)));
 
     /// <inheritdoc/>
+    public void AddRange(IEnumerable<TEntity> entities)
+    {
+        if (entities is null)
+            throw new ArgumentNullException(nameof(entities));
+
+        db.Set<TEntity>().AddRange(entities);
+    }
+
+    /// <inheritdoc/>
     public bool Merge<TId>(IHasId<TId> model)
     {
         if (model is null)
