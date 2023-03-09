@@ -60,7 +60,8 @@ public class SearchOptions
     /// Adds a new order by instruction.
     /// </summary>
     /// <param name="orderBy">The property name to be ordered.</param>
-    public void OrderBy(string orderBy)
+    /// <returns>The same instance for chaining calls.</returns>
+    public SearchOptions OrderBy(string orderBy)
     {
         sortings ??= new List<Sorting>();
         sortings.Add(new Sorting
@@ -68,13 +69,15 @@ public class SearchOptions
             OrderBy = orderBy,
             Direction = System.ComponentModel.ListSortDirection.Ascending
         });
+        return this;
     }
 
     /// <summary>
     /// Adds a new order by instruction.
     /// </summary>
     /// <param name="orderBy">The property name to be ordered.</param>
-    public void OrderByDesc(string orderBy)
+    /// <returns>The same instance for chaining calls.</returns>
+    public SearchOptions OrderByDesc(string orderBy)
     {
         sortings ??= new List<Sorting>();
         sortings.Add(new Sorting
@@ -82,5 +85,32 @@ public class SearchOptions
             OrderBy = orderBy,
             Direction = System.ComponentModel.ListSortDirection.Descending
         });
+        return this;
+    }
+
+    /// <summary>
+    /// Set properties to return all items.
+    /// </summary>
+    /// <returns>The same instance for chaining calls.</returns>
+    public SearchOptions AllItens()
+    {
+        Count = false;
+        ItemsPerPage = 0;
+        Page = 0;
+        LastCount = 0;
+        return this;
+    }
+
+    /// <summary>
+    /// Update the current options properties with values from the <see cref="IResultList"/>.
+    /// </summary>
+    /// <param name="resultList">A result list returned by an search execution.</param>
+    /// <returns>The same instance for chaining calls.</returns>
+    public SearchOptions UpdateFromResult(IResultList resultList)
+    {
+        LastCount = resultList.Count;
+        ItemsPerPage = resultList.ItemsPerPage;
+        Page = resultList.Page;
+        return this;
     }
 }
