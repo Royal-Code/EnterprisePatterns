@@ -26,8 +26,8 @@ public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGene
 
         // create the match of the properties.
         var match = typeof(TDto).MatchProperties(typeof(TEntity));
-        if (match.PropertyMatches.Any(m => !m.Match || !m.TypeMatch))
-            return null;
+        if (match.PropertyMatches.Any(m => !m.Match || !m.TypeMatch)) // o match type aqui não funciona,
+            return null;                                              // pois deveria ser invertido.
 
         // create the input (entity) parameter.
         var parameter = Expression.Parameter(typeof(TEntity), "entity");
@@ -43,3 +43,5 @@ public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGene
         return Expression.Lambda<Func<TEntity, TDto>>(newDto, parameter);
     }
 }
+
+//public class 

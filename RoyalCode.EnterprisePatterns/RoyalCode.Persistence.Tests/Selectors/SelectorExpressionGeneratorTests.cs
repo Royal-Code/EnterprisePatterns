@@ -60,6 +60,29 @@ public class SelectorExpressionGeneratorTests
         Assert.Equal(entity.Name, dto.Name);
         Assert.Equal(entity.Complex.Value, dto.ComplexValue);
     }
+
+    [Fact]
+    public void Generate_Must_GenerateExpression_For_NullableProperties()
+    {
+        // Arrange
+        var generator = new DefaultSelectorExpressionGenerator();
+
+        // Act
+        var expression = generator.Generate<EntityWithNullable, DtoWithoutNullable>();
+
+        // Assert
+        Assert.NotNull(expression);
+
+        // Arrange
+        var entity = new EntityWithNullable() { Id = 1 };
+
+        // Act
+        var dto = expression!.Compile()(entity);
+
+        // Assert
+        Assert.NotNull(dto);
+        Assert.Equal(entity.Id, dto!.Id);
+    }
 }
 
 file class SimpleEntity
@@ -92,3 +115,14 @@ file class DtoForComplex
 
     public int ComplexValue { get; set; }
 }
+
+file class EntityWithNullable
+{
+    public int? Id { get; set; }
+}
+
+file class DtoWithoutNullable
+{
+    public int Id { get; set; }
+}
+
