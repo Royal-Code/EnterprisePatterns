@@ -1,5 +1,7 @@
 ﻿
 using RoyalCode.Persistence.Searches.Abstractions.Linq.Selector;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace RoyalCode.Persistence.Tests.Selectors;
@@ -82,6 +84,13 @@ public class SelectorExpressionGeneratorTests
         // Assert
         Assert.NotNull(dto);
         Assert.Equal(entity.Id, dto!.Id);
+
+        var q = new List<EntityWithNullable>().AsQueryable();
+        q.Select(e => new DtoWithoutNullable()
+        {
+            Id = e.Id.HasValue ? e.Id.Value : default(int),
+            
+        });
     }
 }
 
