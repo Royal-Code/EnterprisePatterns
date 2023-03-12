@@ -4,18 +4,24 @@ using System.Linq.Expressions;
 
 namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Selector.Converters;
 
-internal class NullableSelectorPropertyConverter : ISelectorPropertyConverter
+internal class NullableSelectorPropertyConverter : ISelectorPropertyConverter, ISelectorPropertyResolver
 {
-    public bool CanConvert(PropertyMatch selection)
+    public bool CanConvert(PropertyMatch selection, ISelectResolver resolver, out ISelectorPropertyConverter? converter)
     {
-        // check if the target (entity) property is nullable and the origin (DTO) property is not nullable.
-        return selection.TargetSelection!.PropertyType.IsNullableType()
-            && selection.OriginProperty.PropertyType.IsNotNullableType();
+        // check if the target (entity) property is nullable and the origin (DTO) property is not nullable,
+        // and the target property type is the same of the origin property type.
+        var canResolve = selection.TargetSelection!.PropertyType.IsNullableType()
+            && selection.OriginProperty.PropertyType.IsNotNullableType()
+            && selection.TargetSelection.PropertyType.GetNullabeUnderlyingType() == selection.OriginProperty.PropertyType;
+
+        converter = canResolve ? this : null;
+        return canResolve;
     }
 
     public Expression GetExpression(PropertyMatch selection, Expression parameter)
     {
-        // generate a expression like:
+        // the target proprerty selection is a nullable property.
+        // so, we need to generate a expression like:
         // e.Id.HasValue ? e.Id.Value : default(int)
         // where:
         // e is the parameter

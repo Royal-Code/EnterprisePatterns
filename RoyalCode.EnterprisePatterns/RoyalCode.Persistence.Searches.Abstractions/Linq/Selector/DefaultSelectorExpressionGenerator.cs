@@ -15,12 +15,14 @@ namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Selector;
 ///     where the DTO has properties with the same type of entity's properties.
 /// </para>
 /// </summary>
-public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGenerator
+public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGenerator, ISelectResolver
 {
-    private readonly IEnumerable<ISelectorPropertyConverter> converters
-        = new List<ISelectorPropertyConverter>()
+    private readonly IEnumerable<ISelectorPropertyResolver> propertyResolver
+        = new List<ISelectorPropertyResolver>()
         {
             new NullableSelectorPropertyConverter(),
+            new EnumSelectorPropertyConverter(),
+            new SubSelectSelectorPropertyResolver()
         };
 
     /// <inheritdoc />
@@ -47,7 +49,8 @@ public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGene
         return Expression.Lambda<Func<TEntity, TDto>>(newDto, parameter);
     }
 
-    private IEnumerable<Resolution>? GetResolutions(Type entityType, Type dtoType, out ConstructorInfo? ctor)
+    /// <inheritdoc />
+    public IEnumerable<SelectResolution>? GetResolutions(Type entityType, Type dtoType, out ConstructorInfo? ctor)
     {
         // init
         ctor = null;
@@ -68,7 +71,7 @@ public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGene
 
         // for each property, check if was matched, check types, and create a resolution
         // if has an unmatch property, return null.
-        var resolutions = new List<Resolution>();
+        var resolutions = new List<SelectResolution>();
         foreach (var item in match.PropertyMatches)
         {
             if (item.Match is false)
@@ -76,12 +79,12 @@ public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGene
 
             if (item.InvetedTypeMatch)
             {
-                resolutions.Add(new Resolution(item, MemberSelectorPropertyConverter.Instance));
+                resolutions.Add(new SelectResolution(item, MemberSelectorPropertyConverter.Instance));
                 continue;
             }
 
             if (TryGetConverter(item, out ISelectorPropertyConverter? converter))
-                resolutions.Add(new Resolution(item, converter));
+                resolutions.Add(new SelectResolution(item, converter));
             else
                 return null;
         }
@@ -90,33 +93,24 @@ public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGene
     }
 
     private bool TryGetConverter(
-        PropertyMatch item,
+        PropertyMatch propertyMatch,
         [NotNullWhen(true)] out ISelectorPropertyConverter? converter)
     {
-        foreach (var c in converters)
+        foreach (var r in propertyResolver)
         {
-            if (c.CanConvert(item))
+            if (r.CanConvert(propertyMatch, this, out var c))
             {
-                converter = c;
+                converter = c!;
                 return true;
-            }    
+            }
         }
         converter = null;
         return false;
     }
 
-    private record Resolution(
-        PropertyMatch Match,
-        ISelectorPropertyConverter Converter);
-
     private class MemberSelectorPropertyConverter : ISelectorPropertyConverter
     {
         public static readonly MemberSelectorPropertyConverter Instance = new();
-
-        public bool CanConvert(PropertyMatch selection)
-        {
-            throw new NotSupportedException();
-        }
 
         public Expression GetExpression(PropertyMatch selection, Expression parameter)
         {

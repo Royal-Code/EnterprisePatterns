@@ -19,15 +19,6 @@ namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Selector.Converters;
 public interface ISelectorPropertyConverter
 {
     /// <summary>
-    /// Check if the converter can convert the <paramref name="selection"/>.
-    /// </summary>
-    /// <param name="selection">The selection to be converted.</param>
-    /// <returns>
-    ///     <c>true</c> if the converter can convert the <paramref name="selection"/>, otherwise <c>false</c>.
-    /// </returns>
-    bool CanConvert(PropertyMatch selection);
-
-    /// <summary>
     /// Get the <see cref="Expression"/> for the <paramref name="selection"/>.
     /// This expression must read the value of the <paramref name="selection"/> target selection
     /// to set the value of the DTO property.
