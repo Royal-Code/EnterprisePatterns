@@ -1,11 +1,12 @@
 ﻿using RoyalCode.Extensions.PropertySelection;
+using RoyalCode.Persistence.Searches.Abstractions.Extensions;
 using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace RoyalCode.Persistence.Searches.Abstractions.Linq.Selector.Converters;
 
-internal class SubSelectSelectorPropertyResolver : ISelectorPropertyResolver
+internal sealed class SubSelectSelectorPropertyResolver : ISelectorPropertyResolver
 {
     public bool CanConvert(PropertyMatch selection, ISelectResolver resolver, out ISelectorPropertyConverter? converter)
     {
@@ -16,45 +17,135 @@ internal class SubSelectSelectorPropertyResolver : ISelectorPropertyResolver
             && selection.TargetSelection.PropertyType.IsAssignableTo(typeof(IEnumerable)) is false
             && selection.OriginProperty.PropertyType.IsAssignableTo(typeof(IEnumerable)) is false;
 
-        if (areClasses)
-        {
-            var resolutions = resolver.GetResolutions(
+        if (areClasses && resolver.GetResolutions(
                 selection.TargetSelection.PropertyType,
                 selection.OriginProperty.PropertyType,
-                out var ctor);
-
-            if (resolutions is not null && ctor is not null)
-            {
-                converter = new Converter(resolutions, ctor);
-                return true;
-            }
+                out var resolutions,
+                out var ctor))
+        {
+            converter = new Converter(resolutions, ctor, selection.TargetSelection);
+            return true;
         }
 
         converter = null;
         return false;
     }
 
-    private class Converter : ISelectorPropertyConverter
+    private sealed class Converter : ISelectorPropertyConverter
     {
         private readonly IEnumerable<SelectResolution> resolutions;
         private readonly ConstructorInfo ctor;
+        private readonly PropertySelection targetSelection;
 
-        public Converter(IEnumerable<SelectResolution> resolutions, ConstructorInfo ctor)
+        public Converter(
+            IEnumerable<SelectResolution> resolutions,
+            ConstructorInfo ctor,
+            PropertySelection targetSelection)
         {
             this.resolutions = resolutions;
             this.ctor = ctor;
+            this.targetSelection = targetSelection;
         }
 
         public Expression GetExpression(PropertyMatch selection, Expression parameter)
         {
+            // get the target member
+            var targetParameter = targetSelection.GetAccessExpression(parameter);
+
             // generate de bindings for create the new DTO
             var bindings = resolutions
-                .Select(r => Expression.Bind(r.Match.OriginProperty, r.Converter.GetExpression(r.Match, parameter)));
+                .Select(r => Expression.Bind(r.Match.OriginProperty, r.Converter.GetExpression(r.Match, targetParameter)));
 
             // create the new DTO with the bindings.
             var newDto = Expression.MemberInit(Expression.New(ctor), bindings);
 
             return newDto;
+        }
+    }
+}
+
+internal sealed class EnumerableSelectorPropertyResolver : ISelectorPropertyResolver
+{
+    public bool CanConvert(
+        PropertyMatch selection,
+        ISelectResolver resolver,
+        out ISelectorPropertyConverter? converter)
+    {
+        Type entityPropertyType = selection.TargetSelection!.PropertyType;
+        Type dtoPropertyType = selection.OriginProperty.PropertyType;
+
+        // check if the target (entity) property and the origin (DTO) property
+        // are enumerable and the element types are classes.
+        if (entityPropertyType.TryGetEnumerableGenericType(out var entityUnderlyingType)
+            && entityUnderlyingType.IsClass
+            && dtoPropertyType.TryGetEnumerableGenericType(out var dtoUnderlyingType)
+            && dtoUnderlyingType.IsClass 
+            && resolver.GetResolutions(
+                entityUnderlyingType,
+                dtoUnderlyingType,
+                out var resolutions,
+                out var ctor))
+        {
+            converter = new Converter(resolutions, ctor, selection);
+            return true;
+        }
+
+        converter = null;
+        return false;
+    }
+
+    private sealed class Converter : ISelectorPropertyConverter
+    {
+        private readonly IEnumerable<SelectResolution> resolutions;
+        private readonly ConstructorInfo ctor;
+        private readonly PropertySelection targetSelection;
+        private readonly PropertyInfo dtoProperty;
+
+        public Converter(
+            IEnumerable<SelectResolution> resolutions,
+            ConstructorInfo ctor,
+            PropertyMatch match)
+        {
+            this.resolutions = resolutions;
+            this.ctor = ctor;
+            targetSelection = match.TargetSelection!;
+            dtoProperty = match.OriginProperty;
+        }
+
+        public Expression GetExpression(PropertyMatch selection, Expression parameter)
+        {
+            // parâmetro da expressão do subselect.
+            var fromParam = Expression.Parameter(targetSelection.PropertyType, "from");
+
+            // generate de bindings for create the new DTO
+            var bindings = resolutions
+                .Select(r => Expression.Bind(r.Match.OriginProperty, r.Converter.GetExpression(r.Match, fromParam)));
+
+            // create the new DTO with the bindings.
+            var newDto = Expression.MemberInit(Expression.New(ctor), bindings);
+
+            // create a lambda for the sub select
+            var lambda = Expression.Lambda(newDto, fromParam);
+
+            // apply the select over the target property
+            var callSelect = Expression.Call(
+                typeof(Enumerable),
+                nameof(Enumerable.Select),
+                new Type[] { targetSelection.PropertyType, ctor.DeclaringType! },
+                targetSelection.GetAccessExpression(parameter),
+                lambda
+            );
+
+            var resultExpression = dtoProperty.PropertyType
+                .IsAssignableFrom(typeof(IEnumerable<>).MakeGenericType(ctor.DeclaringType!))
+                    ? callSelect
+                    : Expression.Call(
+                        typeof(Enumerable),
+                        nameof(Enumerable.ToList),
+                        new Type[] { ctor.DeclaringType! },
+                        callSelect);
+
+            return resultExpression;
         }
     }
 }

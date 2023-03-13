@@ -31,65 +31,70 @@ public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGene
         where TDto : class
     {
         // get resolutions for the types.
-        var resolutions = GetResolutions(typeof(TEntity), typeof(TDto), out var ctor);
-        if (resolutions is null || ctor is null)
+        if (!GetResolutions(typeof(TEntity), typeof(TDto), out var resolutions, out var ctor))
             return null;
 
         // create the input (entity) parameter.
         var parameter = Expression.Parameter(typeof(TEntity), "entity");
 
         // generate de bindings for create the new DTO
-        var bindings = resolutions
-            .Select(r => Expression.Bind(r.Match.OriginProperty, r.Converter.GetExpression(r.Match, parameter)));
+        var bindings = resolutions!.Select(r =>
+        {
+            return Expression.Bind(r.Match.OriginProperty, r.Converter.GetExpression(r.Match, parameter));
+        });
 
         // create the new DTO with the bindings.
-        var newDto = Expression.MemberInit(Expression.New(ctor), bindings);
+        var newDto = Expression.MemberInit(Expression.New(ctor!), bindings);
 
         // generate the lambda expression
         return Expression.Lambda<Func<TEntity, TDto>>(newDto, parameter);
     }
 
     /// <inheritdoc />
-    public IEnumerable<SelectResolution>? GetResolutions(Type entityType, Type dtoType, out ConstructorInfo? ctor)
+    public bool GetResolutions(Type entityType, Type dtoType,
+        [NotNullWhen(true)] out IEnumerable<SelectResolution>? resolutions,
+        [NotNullWhen(true)] out ConstructorInfo? ctor)
     {
         // init
         ctor = null;
+        resolutions = null;
 
         // check if entity type and dto type are classes
         if (entityType.IsClass is false || dtoType.IsClass is false)
-            return null;
+            return false;
 
         // get DTO constructor
         ctor = dtoType.GetConstructors().FirstOrDefault(c => c.GetParameters().Length == 0);
         if (ctor is null)
-            return null;
+            return false;
 
         // create the match of the properties.
         var match = dtoType.MatchProperties(entityType);
         if (match is null) 
-            return null;
+            return false;
 
         // for each property, check if was matched, check types, and create a resolution
         // if has an unmatch property, return null.
-        var resolutions = new List<SelectResolution>();
+        var list = new List<SelectResolution>();
         foreach (var item in match.PropertyMatches)
         {
             if (item.Match is false)
-                return null;
+                return false;
 
             if (item.InvetedTypeMatch)
             {
-                resolutions.Add(new SelectResolution(item, MemberSelectorPropertyConverter.Instance));
+                list.Add(new SelectResolution(item, MemberSelectorPropertyConverter.Instance));
                 continue;
             }
 
             if (TryGetConverter(item, out ISelectorPropertyConverter? converter))
-                resolutions.Add(new SelectResolution(item, converter));
+                list.Add(new SelectResolution(item, converter));
             else
-                return null;
+                return false;
         }
 
-        return resolutions;
+        resolutions = list;
+        return true;
     }
 
     private bool TryGetConverter(
@@ -108,7 +113,7 @@ public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGene
         return false;
     }
 
-    private class MemberSelectorPropertyConverter : ISelectorPropertyConverter
+    private sealed class MemberSelectorPropertyConverter : ISelectorPropertyConverter
     {
         public static readonly MemberSelectorPropertyConverter Instance = new();
 
