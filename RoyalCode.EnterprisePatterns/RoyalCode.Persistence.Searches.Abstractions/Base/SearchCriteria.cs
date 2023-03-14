@@ -120,7 +120,7 @@ public class SearchCriteria
     /// </summary>
     /// <returns>The number of records that must be skipped.</returns>
     public int GetSkipCount() => Paginate ? ItemsPerPage * (GetPageNumber() - 1) : 0;
-    
+
     /// <summary>
     /// Default values for each new <see cref="SearchCriteria"/> created.
     /// </summary>
@@ -129,11 +129,11 @@ public class SearchCriteria
         /// <summary>
         /// The default value of <see cref="SearchCriteria.ItemsPerPage"/>.
         /// </summary>
-        public static int DefaultItemsPerPage = 10;
-        
+        public static int DefaultItemsPerPage { get; set; } = 10;
+
         /// <summary>
         /// The default value of <see cref="SearchCriteria.UseCount"/>.
         /// </summary>
-        public static bool DefaultUseCount = true;
+        public static bool DefaultUseCount { get; set; } = true;
     }
 }

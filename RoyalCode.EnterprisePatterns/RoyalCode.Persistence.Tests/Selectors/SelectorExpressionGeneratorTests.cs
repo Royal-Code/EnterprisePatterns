@@ -2,7 +2,6 @@
 using RoyalCode.Persistence.Searches.Abstractions.Linq.Selector;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 using Xunit;
 
 namespace RoyalCode.Persistence.Tests.Selectors;
@@ -271,31 +270,31 @@ public class SelectorExpressionGeneratorTests
                 {
                     new EntityItemWithSubType() 
                     { 
-                        Id = 1,
-                        PropertyWithInt = new EntityWithCollectionOfInt() { Id = 1, Values = new List<int>() { 1, 2, 3 } },
+                        Id = 3,
+                        PropertyWithInt = new EntityWithCollectionOfInt() { Id = 4, Values = new List<int>() { 1, 2, 3 } },
                         PropertyWithItem = new EntityWithCollectionOfItem()
                         {
-                            Id = 1, 
+                            Id = 5, 
                             Values = new List<EntityItem>()
                             {
-                                new EntityItem() { Id = 1, Name = "Name1" },
-                                new EntityItem() { Id = 2, Name = "Name2" },
-                                new EntityItem() { Id = 3, Name = "Name3" }
+                                new EntityItem() { Id = 6, Name = "Name1" },
+                                new EntityItem() { Id = 7, Name = "Name2" },
+                                new EntityItem() { Id = 8, Name = "Name3" }
                             }
                         },
                     },
                     new EntityItemWithSubType()
                     {
-                        Id = 2,
-                        PropertyWithInt = new EntityWithCollectionOfInt() { Id = 2, Values = new List<int>() { 4, 5, 6 } },
+                        Id = 9,
+                        PropertyWithInt = new EntityWithCollectionOfInt() { Id = 10, Values = new List<int>() { 4, 5, 6 } },
                         PropertyWithItem = new EntityWithCollectionOfItem()
                         {
-                            Id = 2, 
+                            Id = 11, 
                             Values = new List<EntityItem>()
                             {
-                                new EntityItem() { Id = 4, Name = "Name4" },
-                                new EntityItem() { Id = 5, Name = "Name5" },
-                                new EntityItem() { Id = 6, Name = "Name6" }
+                                new EntityItem() { Id = 12, Name = "Name4" },
+                                new EntityItem() { Id = 13, Name = "Name5" },
+                                new EntityItem() { Id = 14, Name = "Name6" }
                             }
                         },
                     },
@@ -303,9 +302,9 @@ public class SelectorExpressionGeneratorTests
             },
             SubTypes = new List<EntitySubType>()
             {
-                new EntitySubType() { Id = 3, Name = "Name1" },
-                new EntitySubType() { Id = 4, Name = "Name2" },
-                new EntitySubType() { Id = 5, Name = "Name3" }
+                new EntitySubType() { Id = 15, Name = "Name1" },
+                new EntitySubType() { Id = 16, Name = "Name2" },
+                new EntitySubType() { Id = 17, Name = "Name3" }
             }
         };
 

@@ -7,7 +7,7 @@ namespace RoyalCode.Entities;
 ///     which reference the ID of an entity.
 /// </para>
 /// </summary>
-public interface IHasId<TId>
+public interface IHasId<out TId>
 {
     /// <summary>
     /// The ID of the data model.

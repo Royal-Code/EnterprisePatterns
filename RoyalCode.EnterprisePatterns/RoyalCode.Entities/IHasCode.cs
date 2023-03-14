@@ -10,7 +10,7 @@ namespace RoyalCode.Entities;
 /// </para>
 /// </summary>
 /// <typeparam name="TCode">Data type of the code.</typeparam>
-public interface IHasCode<TCode>
+public interface IHasCode<out TCode>
 {
     /// <summary>
     /// The code of the data model.
