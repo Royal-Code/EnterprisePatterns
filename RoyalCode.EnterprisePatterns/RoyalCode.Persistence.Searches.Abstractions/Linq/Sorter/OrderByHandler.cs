@@ -25,12 +25,12 @@ internal static class OrderByHandler
         var expressionType = expression.GetType();
         var expressionGenerics = expressionType.GetGenericArguments();
         if (expressionGenerics is null or { Length: not 1 })
-            throw new ArgumentException($"The expression type {expressionType} is not supported.");
+            throw new InvalidOrderByExpressionException($"The expression type {expressionType} is not supported.", nameof(expression));
 
         var delegateType = expressionGenerics[0];
         var delegateGenerics = delegateType.GetGenericArguments();
         if (delegateGenerics is null or { Length: not 2 })
-            throw new ArgumentException($"The delegate type {delegateType} is not supported.");
+            throw new InvalidOrderByExpressionException($"The delegate type {delegateType} is not supported.", nameof(expression));
 
         var modelType = delegateGenerics[0];
         var propertyType = delegateGenerics[1];

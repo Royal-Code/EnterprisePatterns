@@ -20,8 +20,7 @@ internal sealed class OrderByProvider : IOrderByProvider
             return (IOrderByHandler<TModel>)handlers[(typeof(TModel), orderBy)];
 
         var expression = generator?.Generate<TModel>(orderBy)
-            ?? throw new InvalidOperationException(
-                $"The order by '{orderBy}' is not supported for the type '{typeof(TModel).Name}'.");
+            ?? throw new OrderByNotSupportedException(orderBy, typeof(TModel).Name);
 
         var handler = OrderByHandler.Create<TModel>(expression);
         handlers.Add((typeof(TModel), orderBy), handler);
