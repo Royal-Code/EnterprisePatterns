@@ -20,6 +20,6 @@
 		<OpResVer>2.0.0</OpResVer>
 		<OpResPreview>-preview-1</OpResPreview>
 		<PersistVer>1.0.0</PersistVer>
-		<PersistPreview>-preview3.6.2</PersistPreview>
+		<PersistPreview>-preview3.7</PersistPreview>
 	</PropertyGroup>
 </Project>
