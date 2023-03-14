@@ -1,5 +1,6 @@
 ﻿
 using RoyalCode.Entities;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RoyalCode.Repositories.Abstractions;
 
@@ -186,6 +187,8 @@ public interface IFinderByCode<TEntity, in TCode>
 /// </para>
 /// </remarks>
 /// <typeparam name="TEntity">Tipo da entidade.</typeparam>
+[SuppressMessage("Major Code Smell", "S2326:Unused type parameters should be removed", 
+    Justification = "Update an entity, used to identify the entity")]
 public interface IUpdater<TEntity>
 {
     /// <summary>

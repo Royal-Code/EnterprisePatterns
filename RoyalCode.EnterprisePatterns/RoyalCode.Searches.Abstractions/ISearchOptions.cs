@@ -4,7 +4,7 @@
 /// Options that can be applied into searches.
 /// </summary>
 /// <typeparam name="TSearch">The search component type.</typeparam>
-public interface ISearchOptions<TSearch>
+public interface ISearchOptions<out TSearch>
 {
     /// <summary>
     /// <para>
