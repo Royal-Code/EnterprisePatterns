@@ -41,6 +41,6 @@ internal class SelectorFactory : ISelectorFactory
             return selector;
         }
 
-        throw new InvalidOperationException($"No selector found for {typeof(TEntity)} to {typeof(TDto)}.");
+        throw new SelectorNotFoundException($"No selector found for {typeof(TEntity)} to {typeof(TDto)}.");
     }
 }
