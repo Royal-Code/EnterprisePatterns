@@ -86,7 +86,7 @@ internal sealed class EnumerableSelectorPropertyResolver : ISelectorPropertyReso
                 out var resolutions,
                 out var ctor))
         {
-            converter = new Converter(resolutions, ctor, selection);
+            converter = new Converter(resolutions, ctor, selection, entityUnderlyingType);
             return true;
         }
 
@@ -98,24 +98,30 @@ internal sealed class EnumerableSelectorPropertyResolver : ISelectorPropertyReso
     {
         private readonly IEnumerable<SelectResolution> resolutions;
         private readonly ConstructorInfo ctor;
+        private readonly Type entityUnderlyingType;
+        private readonly Type dtoUnderlyingType;
         private readonly PropertySelection targetSelection;
         private readonly PropertyInfo dtoProperty;
 
         public Converter(
             IEnumerable<SelectResolution> resolutions,
             ConstructorInfo ctor,
-            PropertyMatch match)
+            PropertyMatch match,
+            Type entityUnderlyingType)
         {
             this.resolutions = resolutions;
             this.ctor = ctor;
+            this.entityUnderlyingType = entityUnderlyingType;
+            dtoUnderlyingType = ctor.DeclaringType!;
             targetSelection = match.TargetSelection!;
             dtoProperty = match.OriginProperty;
+
         }
 
         public Expression GetExpression(PropertyMatch selection, Expression parameter)
         {
             // parâmetro da expressão do subselect.
-            var fromParam = Expression.Parameter(targetSelection.PropertyType, "from");
+            var fromParam = Expression.Parameter(entityUnderlyingType, "from");
 
             // generate de bindings for create the new DTO
             var bindings = resolutions
@@ -131,18 +137,18 @@ internal sealed class EnumerableSelectorPropertyResolver : ISelectorPropertyReso
             var callSelect = Expression.Call(
                 typeof(Enumerable),
                 nameof(Enumerable.Select),
-                new Type[] { targetSelection.PropertyType, ctor.DeclaringType! },
+                new Type[] { entityUnderlyingType, dtoUnderlyingType },
                 targetSelection.GetAccessExpression(parameter),
                 lambda
             );
 
             var resultExpression = dtoProperty.PropertyType
-                .IsAssignableFrom(typeof(IEnumerable<>).MakeGenericType(ctor.DeclaringType!))
+                .IsAssignableFrom(typeof(IEnumerable<>).MakeGenericType(dtoUnderlyingType))
                     ? callSelect
                     : Expression.Call(
                         typeof(Enumerable),
                         nameof(Enumerable.ToList),
-                        new Type[] { ctor.DeclaringType! },
+                        new Type[] { dtoUnderlyingType },
                         callSelect);
 
             return resultExpression;

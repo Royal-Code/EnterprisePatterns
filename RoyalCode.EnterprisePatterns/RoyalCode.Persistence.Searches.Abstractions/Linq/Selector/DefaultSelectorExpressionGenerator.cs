@@ -22,7 +22,8 @@ public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGene
         {
             new NullableSelectorPropertyConverter(),
             new EnumSelectorPropertyConverter(),
-            new SubSelectSelectorPropertyResolver()
+            new SubSelectSelectorPropertyResolver(),
+            new EnumerableSelectorPropertyResolver(),
         };
 
     /// <inheritdoc />

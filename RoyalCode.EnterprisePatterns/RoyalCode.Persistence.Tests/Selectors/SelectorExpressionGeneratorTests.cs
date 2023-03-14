@@ -2,6 +2,7 @@
 using RoyalCode.Persistence.Searches.Abstractions.Linq.Selector;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using Xunit;
 
 namespace RoyalCode.Persistence.Tests.Selectors;
@@ -88,8 +89,7 @@ public class SelectorExpressionGeneratorTests
         var q = new List<EntityWithNullable>().AsQueryable();
         q.Select(e => new DtoWithoutNullable()
         {
-            Id = e.Id.HasValue ? e.Id.Value : default(int),
-            
+            Id = e.Id ?? default,
         });
     }
 
@@ -187,6 +187,142 @@ public class SelectorExpressionGeneratorTests
         Assert.Equal(entity.Value.SubValue.Id, dto.Value.SubValue.Id);
         Assert.Equal(entity.Value.SubValue.Name, dto.Value.SubValue.Name);
     }
+
+    [Fact]
+    public void Generate_Must_GenerateExpression_For_CollectionOfInt()
+    {
+        // Arrange
+        var generator = new DefaultSelectorExpressionGenerator();
+
+        // Act
+        var expression = generator.Generate<EntityWithCollectionOfInt, DtoWithCollectionOfInt>();
+
+        // Assert
+        Assert.NotNull(expression);
+
+        // Arrange
+        var entity = new EntityWithCollectionOfInt()
+        {
+            Id = 1,
+            Values = new List<int>() { 1, 2, 3 }
+        };
+
+        // Act
+        var dto = expression!.Compile()(entity);
+
+        // Assert
+        Assert.NotNull(dto);
+        Assert.Equal(entity.Values, dto.Values);
+    }
+
+    [Fact]
+    public void Generate_Must_GenerateExpression_For_CollectionOfItem()
+    {
+        // Arrange
+        var generator = new DefaultSelectorExpressionGenerator();
+
+        // Act
+        var expression = generator.Generate<EntityWithCollectionOfItem, DtoWithCollectionOfItem>();
+
+        // Assert
+        Assert.NotNull(expression);
+
+        // Arrange
+        var entity = new EntityWithCollectionOfItem()
+        {
+            Id = 1,
+            Values = new List<EntityItem>()
+            {
+                new EntityItem() { Id = 1, Name = "Name1" },
+                new EntityItem() { Id = 2, Name = "Name2" },
+                new EntityItem() { Id = 3, Name = "Name3" }
+            }
+        };
+
+        // Act
+        var dto = expression!.Compile()(entity);
+
+        // Assert
+        Assert.NotNull(dto);
+        Assert.Equal(entity.Values.Select(e => e.Id), dto.Values.Select(e => e.Id));
+        Assert.Equal(entity.Values.Select(e => e.Name), dto.Values.Select(e => e.Name));
+    }
+
+    [Fact]
+    public void Generate_Must_GenerateExpression_For_SubTypesAndCollection()
+    {
+        // Arrange
+        var generator = new DefaultSelectorExpressionGenerator();
+
+        // Act
+        var expression = generator.Generate<EntityWithSubSelectsAndCollections, DtoWithSubSelectsAndCollections>();
+
+        // Assert
+        Assert.NotNull(expression);
+
+        // Arrange
+        var entity = new EntityWithSubSelectsAndCollections()
+        {
+            Id = 1,
+            SubValue = new EntitySubTypeWithCollection()
+            {
+                Id = 2,
+                CollectionOfSubItems = new List<EntityItemWithSubType>()
+                {
+                    new EntityItemWithSubType() 
+                    { 
+                        Id = 1,
+                        PropertyWithInt = new EntityWithCollectionOfInt() { Id = 1, Values = new List<int>() { 1, 2, 3 } },
+                        PropertyWithItem = new EntityWithCollectionOfItem()
+                        {
+                            Id = 1, 
+                            Values = new List<EntityItem>()
+                            {
+                                new EntityItem() { Id = 1, Name = "Name1" },
+                                new EntityItem() { Id = 2, Name = "Name2" },
+                                new EntityItem() { Id = 3, Name = "Name3" }
+                            }
+                        },
+                    },
+                    new EntityItemWithSubType()
+                    {
+                        Id = 2,
+                        PropertyWithInt = new EntityWithCollectionOfInt() { Id = 2, Values = new List<int>() { 4, 5, 6 } },
+                        PropertyWithItem = new EntityWithCollectionOfItem()
+                        {
+                            Id = 2, 
+                            Values = new List<EntityItem>()
+                            {
+                                new EntityItem() { Id = 4, Name = "Name4" },
+                                new EntityItem() { Id = 5, Name = "Name5" },
+                                new EntityItem() { Id = 6, Name = "Name6" }
+                            }
+                        },
+                    },
+                }
+            },
+            SubTypes = new List<EntitySubType>()
+            {
+                new EntitySubType() { Id = 3, Name = "Name1" },
+                new EntitySubType() { Id = 4, Name = "Name2" },
+                new EntitySubType() { Id = 5, Name = "Name3" }
+            }
+        };
+
+        // Act
+        var dto = expression!.Compile()(entity);
+
+        // Assert
+        Assert.NotNull(dto);
+        Assert.Equal(entity.SubValue.Id, dto.SubValue.Id);
+        Assert.Equal(entity.SubValue.CollectionOfSubItems.Select(e => e.Id), dto.SubValue.CollectionOfSubItems.Select(e => e.Id));
+        Assert.Equal(entity.SubValue.CollectionOfSubItems.Select(e => e.PropertyWithInt.Values), dto.SubValue.CollectionOfSubItems.Select(e => e.PropertyWithInt.Values));
+        Assert.Equal(entity.SubValue.CollectionOfSubItems.Select(e => e.PropertyWithItem.Id), dto.SubValue.CollectionOfSubItems.Select(e => e.PropertyWithItem.Id));
+        Assert.Equal(entity.SubValue.CollectionOfSubItems.Select(e => e.PropertyWithItem.Values.Select(v => v.Id)), dto.SubValue.CollectionOfSubItems.Select(e => e.PropertyWithItem.Values.Select(v => v.Id)));
+        Assert.Equal(entity.SubValue.CollectionOfSubItems.Select(e => e.PropertyWithItem.Values.Select(v => v.Name)), dto.SubValue.CollectionOfSubItems.Select(e => e.PropertyWithItem.Values.Select(v => v.Name)));
+        Assert.Equal(entity.SubTypes.Select(e => e.Id), dto.SubTypes.Select(e => e.Id));
+        Assert.Equal(entity.SubTypes.Select(e => e.Name), dto.SubTypes.Select(e => e.Name));
+    }
 }
 
 file class SimpleEntity
@@ -258,26 +394,26 @@ file class EntityForSubSelect
 {
     public int Id { get; set; }
 
-    public EntitySubType SubValue { get; set; }
+    public EntitySubType SubValue { get; set; } = null!;
 }
 
 file class EntitySubType
 {
     public int Id { get; set; }
 
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     // a nullable entity property and a non-nullable dto property
     public int? Money { get; set; }
 
-    public string OtherProperty { get; set; }
+    public string OtherProperty { get; set; } = null!;
 }
 
 file class DtoForSubSelect
 {
     public int Id { get; set; }
 
-    public DtoSubType SubValue { get; set; }
+    public DtoSubType SubValue { get; set; } = null!;
 }
 
 file class DtoSubType
@@ -302,5 +438,95 @@ file class DtoForMultiLevelSubSelect
 {
     public int Id { get; set; }
 
-    public DtoForSubSelect Value { get; set; }
+    public DtoForSubSelect Value { get; set; } = null!;
+}
+
+file class EntityWithCollectionOfInt
+{
+    public int Id { get; set; }
+
+    public ICollection<int> Values { get; set; } = null!;
+}
+
+file class DtoWithCollectionOfInt
+{
+    public IEnumerable<int> Values { get; set; } = null!;
+}
+
+file class EntityWithCollectionOfItem
+{
+    public int Id { get; set; }
+
+    public ICollection<EntityItem> Values { get; set; } = null!;
+}
+
+file class EntityItem
+{
+    public int Id { get; set; }
+
+    public string Name { get; set; } = null!;
+}
+
+file class DtoWithCollectionOfItem
+{
+    public int Id { get; set; }
+
+    public IEnumerable<DtoItem> Values { get; set; } = null!;
+}
+
+file class DtoItem
+{
+    public int Id { get; set; }
+
+    public string Name { get; set; } = null!;
+}
+
+file class EntityWithSubSelectsAndCollections
+{
+    public int Id { get; set; }
+
+    public EntitySubTypeWithCollection SubValue { get; set; } = null!;
+
+    public ICollection<EntitySubType> SubTypes { get; set; } = null!;
+}
+
+file class EntitySubTypeWithCollection
+{
+    public int Id { get; set; }
+
+    public ICollection<EntityItemWithSubType> CollectionOfSubItems { get; set; } = null!;
+}
+
+file class EntityItemWithSubType
+{
+    public int Id { get; set; }
+
+    public EntityWithCollectionOfItem PropertyWithItem { get; set; } = null!;
+
+    public EntityWithCollectionOfInt PropertyWithInt { get; set; } = null!;
+}
+
+file class DtoWithSubSelectsAndCollections
+{
+    public int Id { get; set; }
+
+    public DtoSubTypeWithCollection SubValue { get; set; } = null!;
+
+    public IEnumerable<DtoSubType> SubTypes { get; set; } = null!;
+}
+
+file class DtoSubTypeWithCollection
+{
+    public int Id { get; set; }
+
+    public IEnumerable<DtoItemWithSubType> CollectionOfSubItems { get; set; } = null!;
+}
+
+file class DtoItemWithSubType
+{
+    public int Id { get; set; }
+
+    public DtoWithCollectionOfItem PropertyWithItem { get; set; } = null!;
+
+    public DtoWithCollectionOfInt PropertyWithInt { get; set; } = null!;
 }
