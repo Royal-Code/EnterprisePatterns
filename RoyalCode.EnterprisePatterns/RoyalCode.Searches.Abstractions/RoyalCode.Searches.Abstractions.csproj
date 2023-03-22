@@ -9,7 +9,7 @@
 		<Description>
 			Abstract components for Search entities by filters objects.
 		</Description>
-		<PackageTags>RoyalCode Enterprise-Patterns Repository Searchable Search</PackageTags>
+		<PackageTags>RoyalCode Enterprise-Patterns Repository Searchable Search CQRS Query-Pattern</PackageTags>
 	</PropertyGroup>
 
 	<!-- if dotnet standart 2.1 then incluide system.text.json version 6 -->
