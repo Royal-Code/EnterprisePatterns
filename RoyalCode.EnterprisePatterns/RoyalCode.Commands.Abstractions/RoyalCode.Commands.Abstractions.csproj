@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\lib-versions.targets" />
+	<Import Project="..\aspnet-versions.targets" />
 
 	<PropertyGroup>
 		<Version>$(PersistVer)$(PersistPreview)</Version>
@@ -21,7 +21,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\RoyalCode.OperationResult.Abstractions\RoyalCode.OperationResult.Abstractions.csproj" />
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<ProjectReference Include="..\RoyalCode.OperationResult.Abstractions\RoyalCode.OperationResult.Abstractions.csproj" />
+		<ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
+		<ProjectReference Include="..\RoyalCode.WorkContext.Abstractions\RoyalCode.WorkContext.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>

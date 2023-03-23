@@ -8,52 +8,6 @@ namespace RoyalCode.OperationResult;
 public static class ResultsExtensions
 {
     /// <summary>
-    /// It ensures that the result is success, otherwise it fires a <see cref="InvalidOperationException"/>.
-    /// </summary>
-    /// <param name="result">The result.</param>
-    /// <returns>The same instance of <paramref name="result"/>.</returns>
-    /// <exception cref="InvalidOperationException">
-    ///     Case the result is not success.
-    /// </exception>
-    public static IOperationResult EnsureSuccess(this IOperationResult result)
-    {
-        if (result.Success)
-            return result;
-
-        throw result.Messages.CreateException();
-    }
-
-    /// <summary>
-    /// It ensures that the result is success, otherwise it fires a <see cref="InvalidOperationException"/>.
-    /// </summary>
-    /// <typeparam name="TValue">The result value type.</typeparam>
-    /// <param name="result">The result.</param>
-    /// <returns>The same instance of <paramref name="result"/>.</returns>
-    /// <exception cref="InvalidOperationException">
-    ///     Case the result is not success.
-    /// </exception>
-    public static IOperationResult<TValue> EnsureSuccess<TValue>(this IOperationResult<TValue> result)
-    {
-        if (result.Success)
-            return result;
-
-        throw result.Messages.CreateException();
-    }
-
-    private static Exception CreateException(this IEnumerable<IResultMessage> messages)
-    {
-        var exceptions = messages
-            .Select(m => m.ToException())
-            .ToList();
-
-        Exception exception = exceptions.Count == 1
-            ? exceptions.First()
-            : new AggregateException("Multiple exceptions have occurred, check the internal exceptions to see the details.", exceptions);
-
-        return exception;
-    }
-
-    /// <summary>
     /// <para>
     ///     Creates a new result of type <typeparamref name="TValue"/> from an existing result.
     /// </para>
@@ -590,25 +544,6 @@ public static class ResultsExtensions
 
     /// <summary>
     /// <para>
-    ///     Checks if the result has a message with the specified error code.
-    /// </para>
-    /// </summary>
-    /// <param name="result">The operation result.</param>
-    /// <param name="code">The error code to check.</param>
-    /// <returns><see langword="true"/> if the result has a message with the specified error code, otherwise <see langword="false"/>.</returns>
-    public static bool HasErrorCode(this IOperationResult result, string code)
-    {
-        if (result is null)
-            throw new ArgumentNullException(nameof(result));
-
-        if (string.IsNullOrWhiteSpace(code))
-            throw new ArgumentNullException(nameof(code));
-
-        return result.Messages.Any(m => m.Code == code);
-    }
-
-    /// <summary>
-    /// <para>
     ///     Checks if the result has a message with the InvalidParameters error code.
     /// </para>
     /// </summary>
@@ -657,42 +592,5 @@ public static class ResultsExtensions
 
     #endregion
 
-    #region Has HttpStatus
-
-    /// <summary>
-    /// Get the http status code from the result.
-    /// </summary>
-    /// <param name="result">The operation result.</param>
-    /// <returns>
-    ///     The http status code, if any message has an http status code, and if so, returns that has the highest value.
-    /// </returns>
-    public static int GetHttpStatus(this IOperationResult result)
-    {
-        if (result.Success)
-            return 200;
-
-        int httpStatus = 0;
-        foreach (var message in result.Messages)
-        {
-            if (message.Status is null)
-                continue;
-
-            int status = (int)message.Status.Value;
-            
-            if (status == 404 && httpStatus == 0)
-            {
-                httpStatus = 404;
-                continue;
-            }
-
-            if (status > httpStatus)
-            {
-                httpStatus = status;
-            }
-        }
-
-        return httpStatus == 0 ? 400 : httpStatus;
-    }
-
-    #endregion
+    
 }

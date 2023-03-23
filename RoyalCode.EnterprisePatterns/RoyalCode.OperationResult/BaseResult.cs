@@ -43,12 +43,6 @@ public class BaseResult : IOperationResult
     public bool Success { get; internal protected set; }
 
     /// <summary>
-    /// Determines whether the result of the operation was success or failure.
-    /// </summary>
-    [JsonIgnore] 
-    public bool Failure => !Success;
-
-    /// <summary>
     /// Count of the error messages of the result.
     /// </summary>
     [JsonIgnore]

@@ -82,7 +82,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.OperationResult.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.OperationResult.Serialization", "RoyalCode.OperationResult.Serialization\RoyalCode.OperationResult.Serialization.csproj", "{2788DA89-5643-41BF-9528-921ECF9DD21C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Commands.Abstractions", "RoyalCode.Commands.Abstractions\RoyalCode.Commands.Abstractions.csproj", "{E3A5F862-236E-4F18-AF22-847F297DE7A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Commands.Abstractions", "RoyalCode.Commands.Abstractions\RoyalCode.Commands.Abstractions.csproj", "{E3A5F862-236E-4F18-AF22-847F297DE7A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
