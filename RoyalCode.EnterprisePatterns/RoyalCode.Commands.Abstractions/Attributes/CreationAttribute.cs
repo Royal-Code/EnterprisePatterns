@@ -97,13 +97,13 @@ public static class Registration // extension methods
     private static void AddCreateCommandContextModel(this IServiceCollection services,
         CreateCommandDescription description)
     {
-
+        throw new NotImplementedException();
     }
 
     private static void AddCreateCommandContextEntityModel(this IServiceCollection services,
         CreateCommandDescription description)
     {
-
+        throw new NotImplementedException();
     }
 }
 
