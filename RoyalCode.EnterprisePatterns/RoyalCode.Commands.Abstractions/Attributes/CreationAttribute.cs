@@ -97,7 +97,37 @@ public static class Registration // extension methods
     private static void AddCreateCommandContextModel(this IServiceCollection services,
         CreateCommandDescription description)
     {
-        throw new NotImplementedException();
+        // registrar:
+        //   CreateCommandHandler<TEntity, TContext, TModel> : ICreateCommandHandler<TEntity, TModel>
+        //   DefaultCreationHandler<TService, TEntity, TModel> : ICreationHandler<TEntity, TModel>
+        //   Func<TService, TContext, TEntity>
+
+        var commandHandlerServiceType = typeof(ICreateCommandHandler<,>)
+            .MakeGenericType(description.EntityType, description.ModelDescription.ModelType);
+        var commandHandlerImplType = typeof(CreateCommandHandler<,,>)
+            .MakeGenericType(description.EntityType, 
+                description.ModelDescription.ContextType!, description.ModelDescription.ModelType);
+
+        var creationHandlerServiceType = typeof(ICreationHandler<,>)
+            .MakeGenericType(description.EntityType, description.ModelDescription.ContextType!);
+        var creationHandlerImplType = typeof(DefaultCreationHandler<,,>)
+            .MakeGenericType(description.ServiceType, description.EntityType, description.ModelDescription.ContextType!);
+
+        var functionServiceType = typeof(Func<,,>)
+            .MakeGenericType(description.ServiceType, description.ModelDescription.ContextType!, description.EntityType);
+
+        // create lambda expression for the function execute the service method
+        var serviceParameter = Expression.Parameter(description.ServiceType, "service");
+        var contextParameter = Expression.Parameter(description.ModelDescription.ContextType!, "context");
+        var callExpression = Expression.Call(serviceParameter, description.HandlerMethod, contextParameter);
+        var lambdaExpression = Expression.Lambda(functionServiceType, callExpression, serviceParameter, contextParameter);
+
+        var functionServiceInstance = lambdaExpression.Compile();
+
+        // add services
+        services.AddTransient(commandHandlerServiceType, commandHandlerImplType);
+        services.AddTransient(creationHandlerServiceType, creationHandlerImplType);
+        services.AddSingleton(functionServiceType, functionServiceInstance);
     }
 
     private static void AddCreateCommandContextEntityModel(this IServiceCollection services,
@@ -156,7 +186,12 @@ public class CreateCommandDescription // descriptions namespace?
 
 public class CommandModelDescription
 {
-    private CommandModelDescription(CommandModelType commandModelType, Type modelType, Type? rootEntityType, Type? rootIdType)
+    private CommandModelDescription(
+        CommandModelType commandModelType,
+        Type modelType,
+        Type? rootEntityType,
+        Type? rootIdType,
+        Type? contextType)
     {
         if (rootEntityType is not null && rootIdType is null)
             throw new InvalidOperationException($"The root entity '{rootEntityType.FullName}' must have a property with name 'Id'");
@@ -165,12 +200,15 @@ public class CommandModelDescription
         ModelType = modelType;
         RootEntityType = rootEntityType;
         RootIdType = rootIdType;
+        ContextType = contextType;
     }
 
     public CommandModelType CommandModelType { get; }
 
     public Type ModelType { get; }
     
+    public Type? ContextType { get; }
+
     public Type? RootEntityType { get; }
 
     public Type? RootIdType { get; }
@@ -178,6 +216,7 @@ public class CommandModelDescription
     public static CommandModelDescription Create(Type type)
     {
         Type modelType = type;
+        Type? contextType = null;
         Type? rootEntityType = null;
         CommandModelType commandType = CommandModelType.ModelOnly;
 
@@ -188,12 +227,14 @@ public class CommandModelDescription
             if (i == typeof(ICommandContext<>))
             {
                 commandType = CommandModelType.ContextModel;
+                contextType = type;
                 modelType = type.GetGenericArguments()[0];
                 break;
             }
             else if (i == typeof(ICommandContext<,>))
             {
                 commandType = CommandModelType.ContextEntityModel;
+                contextType = type;
                 rootEntityType = type.GetGenericArguments()[0];
                 modelType = type.GetGenericArguments()[1];
                 break;
@@ -202,7 +243,7 @@ public class CommandModelDescription
 
         Type? rootIdType = rootEntityType?.GetProperty("Id")?.PropertyType;
 
-        var description = new CommandModelDescription(commandType, modelType, rootEntityType, rootIdType);
+        var description = new CommandModelDescription(commandType, modelType, rootEntityType, rootIdType, contextType);
         return description;
     }
 }

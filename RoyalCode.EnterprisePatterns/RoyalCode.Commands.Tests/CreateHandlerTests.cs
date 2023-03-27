@@ -1,7 +1,7 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using RoyalCode.Commands.Abstractions;
 using RoyalCode.Commands.Abstractions.Attributes;
 using RoyalCode.Entities;
@@ -68,8 +68,9 @@ public class CreateHandlerTests
 
     private static void AddWorkContext(IServiceCollection services)
     {
-        DbConnection conn = new SqliteConnection("Data Source=:memory:;Cache=shared");
+        DbConnection conn = new SqliteConnection("Data Source=:memory:");
         conn.Open();
+        services.TryAddSingleton(conn);
         services.AddWorkContext<LocalDbContext>()
             .ConfigureDbContextPool(builder => builder.UseSqlite(conn))
             .ConfigureRepositories(c =>
@@ -80,7 +81,7 @@ public class CreateHandlerTests
 
     private static void EnsureDatabaseCreated(IServiceProvider root)
     {
-        var scope = root.CreateScope();
+        using var scope = root.CreateScope();
         var sp = scope.ServiceProvider;
 
         var db = sp.GetService<LocalDbContext>();
@@ -97,8 +98,9 @@ public class CreateHandlerTests
         {
             modelBuilder.Entity<SimpleEntity>(cf =>
             {
-                cf.ToTable("Simple");
+                cf.ToTable("simple", "t");
                 cf.HasKey(e => e.Id);
+                cf.Property(e => e.Name).HasMaxLength(50);
             });
         }
     }
@@ -111,11 +113,12 @@ file class SimpleDto
     public string Name { get; set; }
 }
 
-file class SimpleEntity : Entity<Guid>
+public class SimpleEntity : Entity<int>
 {
     public SimpleEntity()
     {
-        Id = Guid.NewGuid();
+        // new randon int
+        Id = new Random().Next();
     }
 
     public string Name { get; set; }
