@@ -1,79 +1,107 @@
 ﻿
-using System.Collections.Concurrent;
-using System.ComponentModel;
-using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.OperationResult;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace RoyalCode.Commands.Abstractions.Defaults;
 
-internal sealed class DefaultCreationHandler<TService, TEntity, TModel> : ICreationHandler<TEntity, TModel>
-    where TEntity : class
-    where TModel : class
+internal class DefaultCommandContextFactory : ICommandContextFactory
 {
-    private readonly TService service;
-    private readonly Func<TService, TModel, TEntity> createAction;
+    private readonly CommandContextFactoryMap map;
+    private readonly IServiceProvider serviceProvider;
+    private readonly ContextBuilderGenerator generator;
 
-    public DefaultCreationHandler(TService service, Func<TService, TModel, TEntity> createAction)
+    public async Task<IOperationResult<TContext>> CreateAsync<TContext, TModel>(TModel model)
+        where TContext : ICommandContext<TModel>
+        where TModel : class
     {
-        this.service = service;
-        this.createAction = createAction;
+        // tenta obter o tipo do context builder.
+        if (!map.ContainsKey((typeof(TContext), typeof(TModel)), out Type? contextBuilderType))
+        {
+            if (TryGetContextBuilderType<TContext, TModel>(out contextBuilderType))
+                map.Add((typeof(TContext), typeof(TModel)), contextBuilderType);
+            else
+                throw new InvalidOperationException($"Context builder for {typeof(TContext)} not found.");
+        }
+
+        var builder = (IContextBuilder<TContext, TModel>)serviceProvider.GetRequiredService(contextBuilderType);
+        return await builder.BuildAsync(model);
+    }
+
+    private bool TryGetContextBuilderType<TContext, TModel>([NotNullWhen(true)] out Type? contextBuilderType)
+        where TContext : ICommandContext<TModel>
+        where TModel : class
+    {
+        var type = typeof(IContextBuilder<TContext, TModel>);
+        if(serviceProvider.GetService<IServiceProviderIsService>()?.IsService(type) ?? false)
+        {
+            contextBuilderType = type;
+            return true;
+        }
+
+        contextBuilderType = generator.TryGenerate<TContext, TModel>();
+        return contextBuilderType is not null;
+    }
+
+    private IContextBuilder<TContext, TModel> CreateContextBuilder<TContext, TModel>(Type contextFactoryType)
+        where TContext : ICommandContext<TModel>
+        where TModel : class
+    {
+        //Microsoft.Extensions.DependencyInjection.IServiceProviderIsService
+
+        return (IContextBuilder<TContext, TModel>)serviceProvider.GetRequiredService(contextFactoryType);
+    }
+
+
+    public Task<IOperationResult<TContext>> CreateAsync<TContext, TRootEntity, TModel>(TRootEntity entity, TModel model)
+        where TContext : ICommandContext<TRootEntity, TModel>
+        where TRootEntity : class
+        where TModel : class
+    {
+        throw new NotImplementedException();
+    }
+
+
+}
+
+
+internal sealed class CommandContextFactoryMap
+{
+    public static CommandContextFactoryMap Instance { get; } = new();
+
+    private readonly Dictionary<(Type, Type), Type> contextFactoriesTypes = new();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal bool ContainsKey((Type, Type) value, [NotNullWhen(true)] out Type? contextFactoryType)
+    {
+        return contextFactoriesTypes.TryGetValue(value, out contextFactoryType);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TEntity Create(TModel model) => createAction(service, model);
-}
-
-public static class CommandsErrorMessages
-{
-
-    public const string NotFoundpattern = "{0} {1} was not found for id: {2}";
-
-    /// <summary>
-    /// Utility to use extensions methods to set the error messages of commands in a fluent way.
-    /// </summary>
-    public static Lang Language => new();
-
-    /// <summary>
-    /// An internal class to use extension methods for the <see cref="CommandsErrorMessages"/> class.
-    /// </summary>
-    public class Lang { internal Lang() { } }
-}
-
-public static class GrammarGenre
-{
-    public static Func<Type, string> ProduceGrammarGenre { get; set; } = InternalProduceGrammarGenre;
-
-    public static string Get<T>() => ProduceGrammarGenre(typeof(T));
-
-    private static string InternalProduceGrammarGenre(Type type) => "The";
-}
-
-public static class DisplayNames
-{
-    private static readonly ConcurrentDictionary<Type, string> cache = new();
-
-    public static Func<Type, string> ProduceDisplayName { get; set; } = InternalProduceDisplayName;
-
-    public static string Get<T>() => ProduceDisplayName(typeof(T));
-
-    private static string InternalProduceDisplayName(Type arg)
+    internal void Add((Type, Type) key, Type contextBuilderType)
     {
-        // check cache
-        if (cache.TryGetValue(arg, out var displayName))
-            return displayName;
-
-        // get display name
-        var displayAttribute = arg.GetCustomAttribute<DisplayNameAttribute>();
-        if (displayAttribute is not null)
+        lock(contextFactoriesTypes)
         {
-            displayName = displayAttribute.DisplayName;
-            cache.TryAdd(arg, displayName);
-            return displayName;
+            contextFactoriesTypes[key] = contextBuilderType;
         }
+    }
+}
 
-        // get name
-        displayName = arg.Name;
-        cache.TryAdd(arg, displayName);
-        return displayName;
+
+internal sealed class ContextBuilderGenerator
+{
+    internal Type? TryGenerate<TContext, TModel>()
+        where TContext : ICommandContext<TModel>
+        where TModel : class
+    {
+        var contextType = typeof(TContext);
+        var modelType = typeof(TModel);
+
+
+
+
+
+        throw new NotImplementedException();
     }
 }
