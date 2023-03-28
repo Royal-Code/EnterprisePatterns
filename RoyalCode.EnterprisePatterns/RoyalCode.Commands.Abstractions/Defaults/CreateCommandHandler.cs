@@ -103,13 +103,7 @@ public sealed class CreateCommandHandler<TRootEntity, TId, TEntity, TContext, TM
 
         var rootEntity = await context.GetRepository<TRootEntity>().FindAsync(id!);
         if (rootEntity is null)
-            return ValueResult.NotFound<TEntity>(
-                string.Format(
-                    CommandsErrorMessages.NotFoundpattern,
-                    GrammarGenre.Get<TRootEntity>(),
-                    DisplayNames.Get<TRootEntity>(),
-                    id),
-                nameof(id));
+            return ValueResult.NotFound<TEntity>(CommandsErrorMessages.CreateNotFoundMessage<TRootEntity>(id), nameof(id));
 
         var commandContext = await commandContextFactory.CreateAsync<TContext, TRootEntity, TModel>(rootEntity, model);
         var entity = creationHandler.Create(commandContext);

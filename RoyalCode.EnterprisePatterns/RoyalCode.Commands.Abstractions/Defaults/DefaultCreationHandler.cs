@@ -28,7 +28,7 @@ internal sealed class DefaultCreationHandler<TService, TEntity, TModel> : ICreat
 public static class CommandsErrorMessages
 {
 
-    public const string NotFoundpattern = "{0} {1} was not found for id: {2}";
+    public const string NotFoundPattern = "{0} {1} was not found for id: {2}";
 
     /// <summary>
     /// Utility to use extensions methods to set the error messages of commands in a fluent way.
@@ -39,12 +39,23 @@ public static class CommandsErrorMessages
     /// An internal class to use extension methods for the <see cref="CommandsErrorMessages"/> class.
     /// </summary>
     public class Lang { internal Lang() { } }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string CreateNotFoundMessage<TEntity>(object? id)
+    {
+        return string.Format(
+            NotFoundPattern,
+            GrammarGenre.Get<TEntity>(),
+            DisplayNames.Get<TEntity>(),
+            id);
+    }
 }
 
 public static class GrammarGenre
 {
     public static Func<Type, string> ProduceGrammarGenre { get; set; } = InternalProduceGrammarGenre;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Get<T>() => ProduceGrammarGenre(typeof(T));
 
     private static string InternalProduceGrammarGenre(Type type) => "The";
@@ -56,6 +67,7 @@ public static class DisplayNames
 
     public static Func<Type, string> ProduceDisplayName { get; set; } = InternalProduceDisplayName;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Get<T>() => ProduceDisplayName(typeof(T));
 
     private static string InternalProduceDisplayName(Type arg)

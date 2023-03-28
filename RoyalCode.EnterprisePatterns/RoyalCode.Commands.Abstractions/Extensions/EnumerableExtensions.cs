@@ -7,6 +7,14 @@ namespace RoyalCode.Commands.Abstractions;
 /// </summary>
 public static class EnumerableExtensions
 {
+    public static bool IsNullable(this Type type)
+    {
+        if (type == null)
+            throw new ArgumentNullException(nameof(type));
+
+        return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+    }
+
     /// <summary>
     /// Try to get the generic type of an <see cref="IEnumerable{T}"/>.
     /// </summary>

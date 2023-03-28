@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.OperationResult;
+using RoyalCode.Repositories.Abstractions;
 using RoyalCode.WorkContext.Abstractions;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
@@ -133,6 +134,8 @@ internal sealed class ContextBuilderGenerator
 
         // cria a resolução das propriedades
         var resolution = new GeneratorPropertiesResolution(
+            typeof(TModel),
+            typeof(TContext),
             modelProperty,
             contextModelProperties,
             contextPropertiesWithoutModel);
@@ -143,19 +146,137 @@ internal sealed class ContextBuilderGenerator
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Aqui será gerada uma expression do tipo:
+    /// Expression{Func{TModel, IServiceProvider, CancellationToken, Task{IOperationResult{TContext}}}}
+    /// 
+    /// Para cada propriedade match da resolution, deve ser obtido o repositório do tipo da propridade
+    /// do contexto e usado o método FindAsync para obter a entidade do contexto.
+    /// 
+    /// Se a propriedade do model for nula, então deve ser atribuído null para a propriedade do contexto.
+    /// Quando a propriedade não é nula e o valor retornado do repositório for nulo,
+    /// então deve ser gerado um erro de entidade não encontrada.
+    /// 
+    /// Para cada propriedade que é um serviço, deve ser obtido o serviço do tipo da propriedade.
+    /// </summary>
+    /// <param name="resolution">A resolução com as propriedades.</param>
+    /// <returns>Uma expressão que cria o contexto e gera um OperationResult.</returns>
     private Expression GenerateExpression(GeneratorPropertiesResolution resolution)
     {
-        throw new NotImplementedException();
+        // parâmetros da expressão
+        var modelParameter = Expression.Parameter(resolution.ModelType, "model");
+        var spParameter = Expression.Parameter(typeof(IServiceProvider), "sp");
+        var ctParameter = Expression.Parameter(typeof(CancellationToken), "ct");
+
+        // body expressions
+        var bodyExpressions = new List<Expression>();
+        // variables
+        var variables = new List<ParameterExpression>();
+
+        // expression da variável result do tipo BaseResult
+        var resultVariable = Expression.Variable(typeof(BaseResult), "result");
+
+        // para cada match, deve ser gerado um bloco de código que faz a busca da entidade no repositório.
+        foreach (var match in resolution.PropertyMatches)
+        {
+            GenerateFindExpressions(match, modelParameter, spParameter, ctParameter, resultVariable, variables, bodyExpressions);
+        }
+
+        //throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Gera as expressões para a busca de uma entidade no repositório, adicionando os comandos a lista de expressões.
+    /// </summary>
+    /// <remarks>
+    /// O código gerado deverá ser assim quando a propriedade model é value type e não nullable:
+    /// 
+    /// var repository = sp.GetService(typeof(IRepository{EntityType})) as IRepository{EntityType};
+    /// var entity = await repository.FindAsync(model.PropertyId, ct);
+    /// if (entity == null)
+    ///     result.NotFound(CommandsErrorMessages.CreateNotFoundMessage{EntityType}(id), "ModelPropertyInfoName");
+    /// 
+    /// ----------------------------
+    /// 
+    /// O código gerado deverá ser assim quando a propriedade model é value type e nullable:
+    /// 
+    /// var entity = null;
+    /// if (model.PropertyId.HasValue)
+    /// {
+    ///     var repository = sp.GetService(typeof(IRepository{EntityType})) as IRepository{EntityType};
+    ///     entity = await repository.FindAsync(model.PropertyId.Value, ct);
+    ///     if (entity == null)
+    ///         result.NotFound(CommandsErrorMessages.CreateNotFoundMessage{EntityType}(id), "ModelPropertyInfoName");
+    /// }
+    /// 
+    /// ----------------------------
+    /// 
+    /// O código gerado deverá ser assim quando a propriedade model não é value type:
+    /// 
+    /// var entity = null;
+    /// if (model.PropertyId != null)
+    /// {
+    ///     // código do primeiro exemplo
+    /// }
+    /// 
+    /// </remarks>
+    private void GenerateFindExpressions(
+        ContextModelPropertyMatch match,
+        ParameterExpression modelParameter,
+        ParameterExpression spParameter,
+        ParameterExpression ctParameter,
+        ParameterExpression resultVariable,
+        List<ParameterExpression> variables,
+        List<Expression> bodyExpressions)
+    {
+        // obter IRepository do service provider
+        var repositoryType = typeof(IRepository<>).MakeGenericType(match.ContextProperty.PropertyType);
+        var repositoryVariable = Expression.Variable(repositoryType, "repository");
+        variables.Add(repositoryVariable);
+        var repositoryExpression = Expression.Call(spParameter, typeof(IServiceProvider).GetMethod("GetService")!, Expression.Constant(repositoryType));
+        bodyExpressions.Add(Expression.Assign(repositoryVariable, repositoryExpression));
+
+        // obter a propriedade do model
+        var modelProperty = Expression.Property(modelParameter, match.ModelProperty);
+        // se o tipo do model é nullable, então obter o valor da propriedade Value
+        var modelPropertyValue = match.ModelProperty.PropertyType.IsNullable()
+            ? Expression.Property(modelProperty, "Value")
+            : modelProperty;
+
+        // expressão para obter a entidade do repositório
+        var findExpression = Expression.Call(repositoryVariable, 
+            repositoryType.GetMethod("FindAsync")!, modelPropertyValue, ctParameter);
+
+        // obter a propriedade do contexto
+        var contextProperty = Expression.Property(resultVariable, match.ContextProperty);
+
+
+
+        // se o valor da propriedade do model for nulo, então atribuir null para a propriedade do contexto
+        var ifModelIsNull = Expression.IfThen(
+            Expression.Equal(modelPropertyValue, Expression.Constant(null)),
+            Expression.Assign(contextPropertyValue, Expression.Constant(null)));
+
+        // se o valor da propriedade do model não for nulo, então buscar a entidade no repositório
+        var ifModelIsNotNull = Expression.IfThen(
+            Expression.NotEqual(modelPropertyValue, Expression.Constant(null)),
+            Expression.Block(
+
+        
     }
 }
 
 internal record GeneratorPropertiesResolution(
+    Type ModelType,
+    Type ContextType,
     PropertyInfo ModelProperty, 
     IEnumerable<ContextModelPropertyMatch> PropertyMatches, 
     IEnumerable<PropertyInfo> ServiceProperties);
 
 internal record ContextModelPropertyMatch(PropertyInfo ContextProperty, PropertyInfo ModelProperty)
 {
+    public Expression? Expression { get; set; }
+
     public bool IsMatchValid()
     {
         // tenta obter tipos genéricos das propriedades caso sejam IEnumerables.
@@ -174,6 +295,11 @@ internal record ContextModelPropertyMatch(PropertyInfo ContextProperty, Property
         // com o mesmo tipo da propriedade do model.
         return contextType.GetProperty("Id")?.PropertyType == modelType;
     }
+}
+
+internal record ServiceProperty(PropertyInfo Property)
+{
+    public Expression? Expression { get; set; }
 }
 
 internal sealed class ContextBuilderMap
