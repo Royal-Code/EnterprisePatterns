@@ -114,7 +114,7 @@ internal sealed class ContextBuilderGenerator
         // verificar se os tipos das propriedades do contexto possuem uma propriedade Id
         // que é do mesmo tipo da propriedade do model.
         // se alguma é inválida, então não é possível gerar o builder.
-        if (!contextModelProperties.All(p => p.IsMachValid()))
+        if (!contextModelProperties.All(p => p.IsMatchValid()))
             return null;
 
         // obter as propriedades do contexto que não estão relacionadas com propriedades do model.
@@ -156,11 +156,23 @@ internal record GeneratorPropertiesResolution(
 
 internal record ContextModelPropertyMatch(PropertyInfo ContextProperty, PropertyInfo ModelProperty)
 {
-    public bool IsMachValid()
+    public bool IsMatchValid()
     {
-        // aqui, não está sendo atendido se as propriedades são coleções !!!
+        // tenta obter tipos genéricos das propriedades caso sejam IEnumerables.
+        var contextPropertyIsEnumerable = ContextProperty.PropertyType.TryGetEnumerableGenericType(out var contextType);
+        var modelPropertyIsEnumerable = ModelProperty.PropertyType.TryGetEnumerableGenericType(out var modelType);
 
-        return ContextProperty.PropertyType.GetProperty("Id")?.PropertyType == ModelProperty.PropertyType;
+        // valida se ambas são Enumerable ou não, caso uma seja e outra não, retorna false.
+        if (contextPropertyIsEnumerable != modelPropertyIsEnumerable)
+            return false;
+
+        // se não são Enumerable, então usa os tipos das propriedades.
+        contextType ??= ContextProperty.PropertyType;
+        modelType ??= ModelProperty.PropertyType;
+
+        // verifica se o tipo da propriedade do contexto possui uma propriedade Id
+        // com o mesmo tipo da propriedade do model.
+        return contextType.GetProperty("Id")?.PropertyType == modelType;
     }
 }
 
