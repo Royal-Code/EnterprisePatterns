@@ -182,7 +182,7 @@ internal sealed class ContextBuilderGenerator
             GenerateFindExpressions(match, modelParameter, spParameter, ctParameter, resultVariable, variables, bodyExpressions);
         }
 
-        //throw new NotImplementedException();
+        throw new NotImplementedException();
     }
 
     /// <summary>
@@ -216,7 +216,10 @@ internal sealed class ContextBuilderGenerator
     /// var entity = null;
     /// if (model.PropertyId != null)
     /// {
-    ///     // código do primeiro exemplo
+    ///     var repository = sp.GetService(typeof(IRepository{EntityType})) as IRepository{EntityType};
+    ///     entity = await repository.FindAsync(model.PropertyId, ct);
+    ///     if (entity == null)
+    ///         result.NotFound(CommandsErrorMessages.CreateNotFoundMessage{EntityType}(id), "ModelPropertyInfoName");
     /// }
     /// 
     /// </remarks>
@@ -229,6 +232,10 @@ internal sealed class ContextBuilderGenerator
         List<ParameterExpression> variables,
         List<Expression> bodyExpressions)
     {
+        // declaração da variável da entidade
+        var entityVariable = Expression.Variable(match.ContextProperty.PropertyType, "entity");
+        variables.Add(entityVariable);
+
         // obter IRepository do service provider
         var repositoryType = typeof(IRepository<>).MakeGenericType(match.ContextProperty.PropertyType);
         var repositoryVariable = Expression.Variable(repositoryType, "repository");
@@ -247,22 +254,15 @@ internal sealed class ContextBuilderGenerator
         var findExpression = Expression.Call(repositoryVariable, 
             repositoryType.GetMethod("FindAsync")!, modelPropertyValue, ctParameter);
 
+        // atribuir a entidade para a variável
+
+
         // obter a propriedade do contexto
         var contextProperty = Expression.Property(resultVariable, match.ContextProperty);
 
 
 
-        // se o valor da propriedade do model for nulo, então atribuir null para a propriedade do contexto
-        var ifModelIsNull = Expression.IfThen(
-            Expression.Equal(modelPropertyValue, Expression.Constant(null)),
-            Expression.Assign(contextPropertyValue, Expression.Constant(null)));
-
-        // se o valor da propriedade do model não for nulo, então buscar a entidade no repositório
-        var ifModelIsNotNull = Expression.IfThen(
-            Expression.NotEqual(modelPropertyValue, Expression.Constant(null)),
-            Expression.Block(
-
-        
+        throw new NotImplementedException();
     }
 }
 

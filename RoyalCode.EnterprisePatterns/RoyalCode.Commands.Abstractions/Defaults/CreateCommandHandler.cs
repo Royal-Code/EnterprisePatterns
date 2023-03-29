@@ -71,8 +71,11 @@ public sealed class CreateCommandHandler<TEntity, TContext, TModel> : ICreateCom
                 return result.ToValue<TEntity>();
         }
 
-        var commandContext = await commandContextFactory.CreateAsync<TContext, TModel>(model);
-        var entity = creationHandler.Create(commandContext);
+        var contextCriationResult = await commandContextFactory.CreateAsync<TContext, TModel>(model);
+        if (contextCriationResult.Failure)
+            return contextCriationResult.ToValue<TEntity>();
+
+        var entity = creationHandler.Create(contextCriationResult.Value!);
 
         context.GetRepository<TEntity>().Add(entity);
 
@@ -92,6 +95,18 @@ public sealed class CreateCommandHandler<TRootEntity, TId, TEntity, TContext, TM
     private readonly ICommandContextFactory commandContextFactory;
     private readonly ICreationHandler<TRootEntity, TEntity, TContext, TModel> creationHandler;
 
+    public CreateCommandHandler(
+        IWorkContext context,
+        IEnumerable<IValidator<TModel>> validators,
+        ICommandContextFactory commandContextFactory,
+        ICreationHandler<TRootEntity, TEntity, TContext, TModel> creationHandler)
+    {
+        this.context = context;
+        this.validators = validators;
+        this.commandContextFactory = commandContextFactory;
+        this.creationHandler = creationHandler;
+    }
+
     public async Task<IOperationResult<TEntity>> HandleAsync(TId id, TModel model, CancellationToken token)
     {
         foreach (var validator in validators)
@@ -105,8 +120,11 @@ public sealed class CreateCommandHandler<TRootEntity, TId, TEntity, TContext, TM
         if (rootEntity is null)
             return ValueResult.NotFound<TEntity>(CommandsErrorMessages.CreateNotFoundMessage<TRootEntity>(id), nameof(id));
 
-        var commandContext = await commandContextFactory.CreateAsync<TContext, TRootEntity, TModel>(rootEntity, model);
-        var entity = creationHandler.Create(commandContext);
+        var contextCriationResult = await commandContextFactory.CreateAsync<TContext, TRootEntity, TModel>(rootEntity, model);
+        if (contextCriationResult.Failure)
+            return contextCriationResult.ToValue<TEntity>();
+
+        var entity = creationHandler.Create(contextCriationResult.Value!);
 
         context.GetRepository<TEntity>().Add(entity);
 
