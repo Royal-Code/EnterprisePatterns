@@ -73,6 +73,153 @@ public class AsyncExpressionsTests
         Assert.Equal("Hello World!", result.Third);
     }
 
+    [Theory]
+    [InlineData(1, 2, 3)]
+    [InlineData(1, 2, null)]
+    [InlineData(1, null, 3)]
+    [InlineData(1, null, null)]
+    [InlineData(null, 2, 3)]
+    [InlineData(null, 2, null)]
+    [InlineData(null, null, 3)]
+    [InlineData(null, null, null)]
+    public void ManualConditionalTaskContinuation(int? id1, int? id2, int? id3)
+    {
+        var repo = new Repo();
+        string? text1 = null;
+        string? text2 = null;
+        string? text3 = null;
+        string? expected1 = id1.HasValue ? "Hello World!" : null;
+        string? expected2 = id2.HasValue ? "Hello World!" : null;
+        string? expected3 = id3.HasValue ? "Hello World!" : null;
+
+        Task? task = null;
+        if (id1.HasValue)
+        {
+            var getAsyncTask = task is null
+                ? repo.GetAsync()
+                : task.ContinueWith(t => repo.GetAsync()).Unwrap();
+
+            task = getAsyncTask.ContinueWith(t =>
+            {
+                text1 = t.Result;
+            });
+        }
+        if (id2.HasValue)
+        {
+            var getAsyncTask = task is null
+                ? repo.GetAsync()
+                : task.ContinueWith(t => repo.GetAsync()).Unwrap();
+
+            task = getAsyncTask.ContinueWith(t =>
+            {
+                text2 = t.Result;
+            });
+        }
+        if (id3.HasValue)
+        {
+            var getAsyncTask = task is null
+                ? repo.GetAsync()
+                : task.ContinueWith(t => repo.GetAsync()).Unwrap();
+
+            task = getAsyncTask.ContinueWith(t =>
+            {
+                text3 = t.Result;
+            });
+        }
+
+        var finalTask = task is null
+            ? Task.FromResult(new Values()
+                {
+                    First = text1,
+                    Second = text2,
+                    Third = text3
+                })
+            : task.ContinueWith(t => new Values()
+                {
+                    First = text1,
+                    Second = text2,
+                    Third = text3
+                });
+
+        var result = finalTask.Result;
+        Assert.Equal(expected1, result.First);
+        Assert.Equal(expected2, result.Second);
+        Assert.Equal(expected3, result.Third);
+    }
+
+    [Theory]
+    [InlineData(1, 2, 3)]
+    [InlineData(1, 2, null)]
+    [InlineData(1, null, 3)]
+    [InlineData(1, null, null)]
+    [InlineData(null, 2, 3)]
+    [InlineData(null, 2, null)]
+    [InlineData(null, null, 3)]
+    [InlineData(null, null, null)]
+    public void ManualConditionalTaskContinuation2(int? id1, int? id2, int? id3)
+    {
+        var repo = new Repo();
+        string? text1 = null;
+        string? text2 = null;
+        string? text3 = null;
+        string? expected1 = id1.HasValue ? "Hello World!" : null;
+        string? expected2 = id2.HasValue ? "Hello World!" : null;
+        string? expected3 = id3.HasValue ? "Hello World!" : null;
+
+        Task? task = null;
+
+        task = Task.Run(() =>
+        {
+            if (id1.HasValue)
+            {
+                var getAsyncTask = repo.GetAsync();
+                return getAsyncTask.ContinueWith(t =>
+                {
+                    text1 = t.Result;
+                });
+            }
+            return Task.CompletedTask;
+        });
+
+        task = task.ContinueWith(t =>
+        {
+            if (id2.HasValue)
+            {
+                var getAsyncTask = repo.GetAsync();
+                return getAsyncTask.ContinueWith(t =>
+                {
+                    text2 = t.Result;
+                });
+            }
+            return Task.CompletedTask;
+        }).Unwrap();
+
+        task = task.ContinueWith(t =>
+        {
+            if (id3.HasValue)
+            {
+                var getAsyncTask = repo.GetAsync();
+                return getAsyncTask.ContinueWith(t =>
+                {
+                    text3 = t.Result;
+                });
+            }
+            return Task.CompletedTask;
+        }).Unwrap();
+
+        var finalTask = task.ContinueWith(t => new Values()
+            {
+                First = text1,
+                Second = text2,
+                Third = text3
+            });
+
+        var result = finalTask.Result;
+        Assert.Equal(expected1, result.First);
+        Assert.Equal(expected2, result.Second);
+        Assert.Equal(expected3, result.Third);
+    }
+
     [Fact]
     public void Task_WithoutResult_NoContinuation()
     {
@@ -80,7 +227,7 @@ public class AsyncExpressionsTests
 
         var textVar = Expression.Variable(typeof(string), "text");
         var assign = Expression.Assign(textVar, Expression.Constant("Hello", typeof(string)));
-        
+
         asyncBuilder.AddVariable(textVar);
         asyncBuilder.AddCommand(assign);
 
@@ -104,7 +251,7 @@ public class AsyncExpressionsTests
         asyncBuilder.AddCommand(assign);
 
         var taskBlock = asyncBuilder.Build(textVar, typeof(string));
-        
+
         var lambda = Expression.Lambda<Func<Task<string>>>(taskBlock);
         var func = lambda.Compile();
         var task = func();

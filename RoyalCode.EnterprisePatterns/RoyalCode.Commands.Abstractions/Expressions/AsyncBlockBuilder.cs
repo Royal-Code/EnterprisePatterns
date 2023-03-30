@@ -1,6 +1,5 @@
 ﻿
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace RoyalCode.Commands.Abstractions.Expressions;
 
@@ -8,7 +7,7 @@ namespace RoyalCode.Commands.Abstractions.Expressions;
 /// Classe para criar System.Linq.Expression de blocos assíncronos, 
 /// onde existem task que precisam ser completadas outros comandos possam ser executados.
 /// </summary>
-public class AsyncExpressionBlockBuilder
+public class AsyncBlockBuilder
 {
     private readonly List<Expression> commands = new();
     private readonly List<ParameterExpression> variables = new();
@@ -163,4 +162,32 @@ internal class AsyncChainedBlock
             return Expression.Call(unwrapMethod!, parentTask);
         }
     }
+}
+
+/// <summary>
+/// 
+/// </summary>
+public class AsyncScopeBuilder
+{
+    private AsyncScopeBlock? scopeBlock;
+    private readonly List<ParameterExpression> variables = new();
+
+    public void AddVariable(ParameterExpression variable)
+    {
+        variables.Add(variable);
+    }
+
+
+}
+
+internal class AsyncScopeBlock
+{
+    private readonly AsyncScopeBlock? previous;
+
+    public AsyncScopeBlock()
+    {
+        
+    }
+
+    public AsyncBlockBuilder blockBuilder { get; } = new();
 }

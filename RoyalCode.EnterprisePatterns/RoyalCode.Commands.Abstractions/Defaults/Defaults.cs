@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.Commands.Abstractions.Expressions;
 using RoyalCode.OperationResult;
 using RoyalCode.Repositories.Abstractions;
 using RoyalCode.WorkContext.Abstractions;
@@ -85,6 +86,11 @@ internal sealed class ContextBuilderGenerator
 {
     private readonly IServiceProviderIsService serviceProviderIsService;
 
+    public ContextBuilderGenerator(IServiceProviderIsService serviceProviderIsService)
+    {
+        this.serviceProviderIsService = serviceProviderIsService;
+    }
+
     internal Type? TryGenerate<TContext, TModel>()
         where TContext : ICommandContext<TModel>
         where TModel : class
@@ -116,6 +122,14 @@ internal sealed class ContextBuilderGenerator
         // que é do mesmo tipo da propriedade do model.
         // se alguma é inválida, então não é possível gerar o builder.
         if (!contextModelProperties.All(p => p.IsMatchValid()))
+            return null;
+
+        // verificar se existem repositórios para as propriedades do contexto
+        var contextModelPropertiesHaveRepository = contextModelProperties
+            .All(p => serviceProviderIsService.IsService(typeof(IRepository<>).MakeGenericType(p.ContextProperty.PropertyType)));
+
+        // se alguma não possuir repositório, então não é possível gerar o builder.
+        if (!contextModelPropertiesHaveRepository)
             return null;
 
         // obter as propriedades do contexto que não estão relacionadas com propriedades do model.
@@ -168,10 +182,8 @@ internal sealed class ContextBuilderGenerator
         var spParameter = Expression.Parameter(typeof(IServiceProvider), "sp");
         var ctParameter = Expression.Parameter(typeof(CancellationToken), "ct");
 
-        // body expressions
-        var bodyExpressions = new List<Expression>();
-        // variables
-        var variables = new List<ParameterExpression>();
+        // async body expressions builder
+        var asyncBlock = new AsyncExpressionBlockBuilder();
 
         // expression da variável result do tipo BaseResult
         var resultVariable = Expression.Variable(typeof(BaseResult), "result");
@@ -179,7 +191,7 @@ internal sealed class ContextBuilderGenerator
         // para cada match, deve ser gerado um bloco de código que faz a busca da entidade no repositório.
         foreach (var match in resolution.PropertyMatches)
         {
-            GenerateFindExpressions(match, modelParameter, spParameter, ctParameter, resultVariable, variables, bodyExpressions);
+            GenerateFindExpressions(match, modelParameter, spParameter, ctParameter, resultVariable, asyncBlock);
         }
 
         throw new NotImplementedException();
@@ -229,19 +241,18 @@ internal sealed class ContextBuilderGenerator
         ParameterExpression spParameter,
         ParameterExpression ctParameter,
         ParameterExpression resultVariable,
-        List<ParameterExpression> variables,
-        List<Expression> bodyExpressions)
+        AsyncExpressionBlockBuilder asyncBlock)
     {
         // declaração da variável da entidade
         var entityVariable = Expression.Variable(match.ContextProperty.PropertyType, "entity");
-        variables.Add(entityVariable);
+        asyncBlock.AddVariable(entityVariable);
 
         // obter IRepository do service provider
         var repositoryType = typeof(IRepository<>).MakeGenericType(match.ContextProperty.PropertyType);
         var repositoryVariable = Expression.Variable(repositoryType, "repository");
-        variables.Add(repositoryVariable);
+        asyncBlock.AddVariable(repositoryVariable);
         var repositoryExpression = Expression.Call(spParameter, typeof(IServiceProvider).GetMethod("GetService")!, Expression.Constant(repositoryType));
-        bodyExpressions.Add(Expression.Assign(repositoryVariable, repositoryExpression));
+        asyncBlock.AddCommand(Expression.Assign(repositoryVariable, repositoryExpression));
 
         // obter a propriedade do model
         var modelProperty = Expression.Property(modelParameter, match.ModelProperty);
