@@ -183,7 +183,7 @@ internal sealed class ContextBuilderGenerator
         var ctParameter = Expression.Parameter(typeof(CancellationToken), "ct");
 
         // async body expressions builder
-        var asyncBlock = new AsyncExpressionBlockBuilder();
+        var asyncBlockBuilder = new AsyncBlockBuilder();
 
         // expression da variável result do tipo BaseResult
         var resultVariable = Expression.Variable(typeof(BaseResult), "result");
@@ -191,7 +191,7 @@ internal sealed class ContextBuilderGenerator
         // para cada match, deve ser gerado um bloco de código que faz a busca da entidade no repositório.
         foreach (var match in resolution.PropertyMatches)
         {
-            GenerateFindExpressions(match, modelParameter, spParameter, ctParameter, resultVariable, asyncBlock);
+            GenerateFindExpressions(match, modelParameter, spParameter, ctParameter, resultVariable, asyncBlockBuilder);
         }
 
         throw new NotImplementedException();
@@ -241,18 +241,18 @@ internal sealed class ContextBuilderGenerator
         ParameterExpression spParameter,
         ParameterExpression ctParameter,
         ParameterExpression resultVariable,
-        AsyncExpressionBlockBuilder asyncBlock)
+        AsyncBlockBuilder asyncBlockBuilder)
     {
         // declaração da variável da entidade
         var entityVariable = Expression.Variable(match.ContextProperty.PropertyType, "entity");
-        asyncBlock.AddVariable(entityVariable);
+        asyncBlockBuilder.AddVariable(entityVariable);
 
         // obter IRepository do service provider
         var repositoryType = typeof(IRepository<>).MakeGenericType(match.ContextProperty.PropertyType);
         var repositoryVariable = Expression.Variable(repositoryType, "repository");
-        asyncBlock.AddVariable(repositoryVariable);
+        asyncBlockBuilder.AddVariable(repositoryVariable);
         var repositoryExpression = Expression.Call(spParameter, typeof(IServiceProvider).GetMethod("GetService")!, Expression.Constant(repositoryType));
-        asyncBlock.AddCommand(Expression.Assign(repositoryVariable, repositoryExpression));
+        asyncBlockBuilder.AddCommand(Expression.Assign(repositoryVariable, repositoryExpression));
 
         // obter a propriedade do model
         var modelProperty = Expression.Property(modelParameter, match.ModelProperty);

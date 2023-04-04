@@ -5,8 +5,11 @@ using System.Reflection;
 
 namespace RoyalCode.Commands.Abstractions.Attributes;
 
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
 public class CreationAttribute : Attribute { }
 
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+public class ContextFactoryAttribute : Attribute { }
 
 public static class Registration // extension methods
 {

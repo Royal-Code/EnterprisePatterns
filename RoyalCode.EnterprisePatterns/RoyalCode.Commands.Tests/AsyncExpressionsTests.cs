@@ -220,10 +220,80 @@ public class AsyncExpressionsTests
         Assert.Equal(expected3, result.Third);
     }
 
+    [Theory]
+    [InlineData(1, 2, 3)]
+    [InlineData(1, 2, null)]
+    [InlineData(1, null, 3)]
+    [InlineData(1, null, null)]
+    [InlineData(null, 2, 3)]
+    [InlineData(null, 2, null)]
+    [InlineData(null, null, 3)]
+    [InlineData(null, null, null)]
+    public void ManualConditionalTaskContinuation3(int? id1, int? id2, int? id3)
+    {
+        var repo = new Repo();
+        string? text1 = null;
+        string? text2 = null;
+        string? text3 = null;
+        string? expected1 = id1.HasValue ? "Hello World!" : null;
+        string? expected2 = id2.HasValue ? "Hello World!" : null;
+        string? expected3 = id3.HasValue ? "Hello World!" : null;
+
+        Task? task = Task.CompletedTask;
+
+        if (id1.HasValue)
+        {
+            task = task.ContinueWith(t =>
+            {
+                var getAsyncTask = repo.GetAsync();
+                return getAsyncTask.ContinueWith(t =>
+                {
+                    text1 = t.Result;
+                });
+            }).Unwrap();
+        }
+
+        if (id2.HasValue)
+        {
+            task = task.ContinueWith(t =>
+            {
+                var getAsyncTask = repo.GetAsync();
+                return getAsyncTask.ContinueWith(t =>
+                {
+                    text2 = t.Result;
+                });
+            }).Unwrap();
+        }
+
+        if (id3.HasValue)
+        {
+            task = task.ContinueWith(t =>
+            {
+                var getAsyncTask = repo.GetAsync();
+                return getAsyncTask.ContinueWith(t =>
+                {
+                    text3 = t.Result;
+                });
+            }).Unwrap();
+        }
+
+        var finalTask = task.ContinueWith(t => new Values()
+        {
+            First = text1,
+            Second = text2,
+            Third = text3
+        });
+
+        var result = finalTask.Result;
+        Assert.Equal(expected1, result.First);
+        Assert.Equal(expected2, result.Second);
+        Assert.Equal(expected3, result.Third);
+    }
+
     [Fact]
     public void Task_WithoutResult_NoContinuation()
     {
-        var asyncBuilder = new AsyncExpressionBlockBuilder();
+        var asyncBuilder = new AsyncBlockBuilder();
 
         var textVar = Expression.Variable(typeof(string), "text");
         var assign = Expression.Assign(textVar, Expression.Constant("Hello", typeof(string)));
@@ -242,7 +312,7 @@ public class AsyncExpressionsTests
     [Fact]
     public void Task_Result_NoContinuation()
     {
-        var asyncBuilder = new AsyncExpressionBlockBuilder();
+        var asyncBuilder = new AsyncBlockBuilder();
 
         var textVar = Expression.Variable(typeof(string), "text");
         var assign = Expression.Assign(textVar, Expression.Constant("Hello", typeof(string)));
@@ -262,7 +332,7 @@ public class AsyncExpressionsTests
     [Fact]
     public void Task_WithoutResult_OneContinuation()
     {
-        var asyncBuilder = new AsyncExpressionBlockBuilder();
+        var asyncBuilder = new AsyncBlockBuilder();
 
         var repoVar = Expression.Variable(typeof(Repo), "repo");
         var assignRepo = Expression.Assign(repoVar, Expression.New(typeof(Repo)));
@@ -290,7 +360,7 @@ public class AsyncExpressionsTests
     [Fact]
     public void Task_Result_OneContinuation()
     {
-        var asyncBuilder = new AsyncExpressionBlockBuilder();
+        var asyncBuilder = new AsyncBlockBuilder();
 
         var repoVar = Expression.Variable(typeof(Repo), "repo");
         var assignRepo = Expression.Assign(repoVar, Expression.New(typeof(Repo)));
@@ -319,7 +389,7 @@ public class AsyncExpressionsTests
     [Fact]
     public void Task_Result_ThreeContinuation()
     {
-        var asyncBuilder = new AsyncExpressionBlockBuilder();
+        var asyncBuilder = new AsyncBlockBuilder();
 
         var repoVar = Expression.Variable(typeof(Repo), "repo");
         var assignRepo = Expression.Assign(repoVar, Expression.New(typeof(Repo)));
