@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Project="..\lib-versions.targets" />
 
@@ -21,9 +21,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\RoyalCode.OperationResult.Abstractions\RoyalCode.OperationResult.Abstractions.csproj" />
-		<ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
-		<ProjectReference Include="..\RoyalCode.WorkContext.Abstractions\RoyalCode.WorkContext.Abstractions.csproj" />
+	  <ProjectReference Include="..\RoyalCode.Commands.Abstractions\RoyalCode.Commands.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -437,6 +437,103 @@ public class AsyncExpressionsTests
         Assert.Equal("Hello World!", values.Second);
         Assert.Equal("Hello World!", values.Third);
     }
+
+    [Theory]
+    [InlineData(1, 2, 3)]
+    [InlineData(1, 2, null)]
+    [InlineData(1, null, 3)]
+    [InlineData(1, null, null)]
+    [InlineData(null, 2, 3)]
+    [InlineData(null, 2, null)]
+    [InlineData(null, null, 3)]
+    [InlineData(null, null, null)]
+    public void Task_ConditionalTaskContinuation(int? id1, int? id2, int? id3)
+    {
+        var scopeBuilder = new AsyncScopeBuilder();
+
+        var repoVar = Expression.Variable(typeof(Repo), "repo");
+        var assignRepo = Expression.Assign(repoVar, Expression.New(typeof(Repo)));
+        scopeBuilder.AddVariable(repoVar);
+        scopeBuilder.AddCommand(assignRepo);
+
+        var textVar1 = Expression.Variable(typeof(string), "text1");
+        var textVar2 = Expression.Variable(typeof(string), "text2");
+        var textVar3 = Expression.Variable(typeof(string), "text3");
+        scopeBuilder.AddVariable(textVar1);
+        scopeBuilder.AddVariable(textVar2);
+        scopeBuilder.AddVariable(textVar3);
+
+        var getAsyncMethod = typeof(Repo).GetMethod(nameof(Repo.GetAsync))!;
+
+
+        var idVar1 = Expression.Variable(typeof(int?), "id1");
+        var assignId = Expression.Assign(idVar1, Expression.Constant(id1, typeof(int?)));
+        scopeBuilder.AddVariable(idVar1);
+        scopeBuilder.AddCommand(assignId);
+
+        var asyncBuilder = new AsyncBlockBuilder();
+        var getAsyncCall = Expression.Call(repoVar, getAsyncMethod);
+        var getResult = asyncBuilder.AwaitResult(getAsyncCall, typeof(string));
+        var assignText1 = Expression.Assign(textVar1, getResult);
+        asyncBuilder.AddCommand(assignText1);
+
+        var condition1 = Expression.IfThen(
+            Expression.NotEqual(idVar1, Expression.Constant(null)), 
+            scopeBuilder.AwaitScopedBlock(asyncBuilder));
+        scopeBuilder.AddCommand(condition1);
+
+
+        var idVar2 = Expression.Variable(typeof(int?), "id2");
+        assignId = Expression.Assign(idVar2, Expression.Constant(id2, typeof(int?)));
+        scopeBuilder.AddVariable(idVar2);
+        scopeBuilder.AddCommand(assignId);
+
+        asyncBuilder = new AsyncBlockBuilder();
+        getAsyncCall = Expression.Call(repoVar, getAsyncMethod);
+        getResult = asyncBuilder.AwaitResult(getAsyncCall, typeof(string));
+        var assignText2 = Expression.Assign(textVar2, getResult);
+        asyncBuilder.AddCommand(assignText2);
+
+        var condition2 = Expression.IfThen(
+            Expression.NotEqual(idVar2, Expression.Constant(null)),
+            scopeBuilder.AwaitScopedBlock(asyncBuilder));
+        scopeBuilder.AddCommand(condition2);
+
+
+        var idVar3 = Expression.Variable(typeof(int?), "id3");
+        assignId = Expression.Assign(idVar3, Expression.Constant(id3, typeof(int?)));
+        scopeBuilder.AddVariable(idVar3);
+        scopeBuilder.AddCommand(assignId);
+
+        asyncBuilder = new AsyncBlockBuilder();
+        getAsyncCall = Expression.Call(repoVar, getAsyncMethod);
+        getResult = asyncBuilder.AwaitResult(getAsyncCall, typeof(string));
+        var assignText3 = Expression.Assign(textVar3, getResult);
+        asyncBuilder.AddCommand(assignText3);
+
+        var condition3 = Expression.IfThen(
+            Expression.NotEqual(idVar3, Expression.Constant(null)),
+            scopeBuilder.AwaitScopedBlock(asyncBuilder));
+        scopeBuilder.AddCommand(condition3);
+
+
+        var valuesCtor = typeof(Values).GetConstructor(new[] { typeof(string), typeof(string), typeof(string) })!;
+        var valuesNew = Expression.New(valuesCtor, textVar1, textVar2, textVar3);
+
+        var taskBlock = scopeBuilder.Build(valuesNew, typeof(Values));
+
+        var lambda = Expression.Lambda<Func<Task<Values>>>(taskBlock);
+        var func = lambda.Compile();
+        var task = func();
+        var values = task.GetAwaiter().GetResult();
+
+        string? expected1 = id1.HasValue ? "Hello World!" : null;
+        string? expected2 = id2.HasValue ? "Hello World!" : null;
+        string? expected3 = id3.HasValue ? "Hello World!" : null;
+        Assert.Equal(expected1, values.First);
+        Assert.Equal(expected2, values.Second);
+        Assert.Equal(expected3, values.Third);
+    }
 }
 
 public class Repo

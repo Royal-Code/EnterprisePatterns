@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Commands.Abstractions.Expressions;
 using RoyalCode.OperationResult;
 using RoyalCode.Repositories.Abstractions;
-using RoyalCode.WorkContext.Abstractions;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -183,7 +182,7 @@ internal sealed class ContextBuilderGenerator
         var ctParameter = Expression.Parameter(typeof(CancellationToken), "ct");
 
         // async body expressions builder
-        var asyncBlockBuilder = new AsyncBlockBuilder();
+        var asyncScopeBuilder = new AsyncScopeBuilder();
 
         // expression da variável result do tipo BaseResult
         var resultVariable = Expression.Variable(typeof(BaseResult), "result");
@@ -191,7 +190,7 @@ internal sealed class ContextBuilderGenerator
         // para cada match, deve ser gerado um bloco de código que faz a busca da entidade no repositório.
         foreach (var match in resolution.PropertyMatches)
         {
-            GenerateFindExpressions(match, modelParameter, spParameter, ctParameter, resultVariable, asyncBlockBuilder);
+            GenerateFindExpressions(match, modelParameter, spParameter, ctParameter, resultVariable, asyncScopeBuilder);
         }
 
         throw new NotImplementedException();
@@ -241,11 +240,13 @@ internal sealed class ContextBuilderGenerator
         ParameterExpression spParameter,
         ParameterExpression ctParameter,
         ParameterExpression resultVariable,
-        AsyncBlockBuilder asyncBlockBuilder)
+        AsyncScopeBuilder asyncScopeBuilder)
     {
+        var asyncBlockBuilder = new AsyncBlockBuilder();
+
         // declaração da variável da entidade
         var entityVariable = Expression.Variable(match.ContextProperty.PropertyType, "entity");
-        asyncBlockBuilder.AddVariable(entityVariable);
+        asyncScopeBuilder.AddVariable(entityVariable);
 
         // obter IRepository do service provider
         var repositoryType = typeof(IRepository<>).MakeGenericType(match.ContextProperty.PropertyType);
