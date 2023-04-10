@@ -22,7 +22,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
-		
 	</ItemGroup>
 
 </Project>

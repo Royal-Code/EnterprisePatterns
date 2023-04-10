@@ -127,7 +127,7 @@ public sealed class CreateCommandHandler<TEntity, TModel, TContext>
                 return result.ToValue<TEntity>();
         }
 
-        var creationContextResult = await creationHandler.CreateContextAsync(model, token);
+        var creationContextResult = await creationHandler.CreateContextAsync(context, model, token);
         if (!creationContextResult.Success)
             return creationContextResult.ToValue<TEntity>();
 
@@ -214,7 +214,7 @@ public sealed class CreateCommandHandler<TRootEntity, TRootId, TEntity, TModel, 
         if (rootEntity is null)
             return ValueResult.NotFound<TEntity>(CommandsErrorMessages.CreateNotFoundMessage<TRootEntity>(id), nameof(id));
 
-        var creationContextResult = await creationHandler.CreateContextAsync(model, rootEntity, token);
+        var creationContextResult = await creationHandler.CreateContextAsync(context, model, rootEntity, token);
         if (!creationContextResult.Success)
             return creationContextResult.ToValue<TEntity>();
 

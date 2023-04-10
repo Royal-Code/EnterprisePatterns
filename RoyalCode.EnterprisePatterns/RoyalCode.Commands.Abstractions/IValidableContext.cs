@@ -4,8 +4,12 @@ using RoyalCode.OperationResult;
 namespace RoyalCode.Commands.Abstractions;
 
 /// <summary>
-/// Used with <see cref="ICommandContext{TModel}"/> or <see cref="ICommandContext{TRootEntity, TModel}"/>
-/// when the context values must be validated for the <see cref="IContextBuilder{TContext, TModel}"/>.
+/// <para>
+///     When a command is executed from a context, the context can be validated before the command is executed.
+/// </para>
+/// <para>
+///     To validate the context before command execution, the context must implement this interface.
+/// </para>
 /// </summary>
 public interface IValidableContext
 {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Commands.Abstractions.Defaults;
+using RoyalCode.Commands.AspNetCore;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -66,19 +67,11 @@ public static class Registration // extension methods
         CreateCommandDescription description)
     {
         // registrar:
-        //   CreateCommandHandler<TEntity, TModel> : ICreateCommandHandler<TEntity, TModel>
         //   DefaultCreationHandler<TService, TEntity, TModel> : ICreationHandler<TEntity, TModel>
         //   Func<TService, TModel, TEntity>
 
-        var commandHandlerServiceType = typeof(ICreateCommandHandler<,>)
-            .MakeGenericType(description.EntityType, description.ModelDescription.ModelType);
-        var commandHandlerImplType = typeof(CreateCommandHandler<,>)
-            .MakeGenericType(description.EntityType, description.ModelDescription.ModelType);
-
-        var creationHandlerServiceType = typeof(ICreationHandler<,>)
-            .MakeGenericType(description.EntityType, description.ModelDescription.ModelType);
         var creationHandlerImplType = typeof(DefaultCreationHandler<,,>)
-            .MakeGenericType(description.ServiceType, description.EntityType, description.ModelDescription.ModelType);
+            .MakeGenericType(description.ServiceType, description.ModelDescription.ModelType, description.EntityType);
 
         var functionServiceType = typeof(Func<,,>)
             .MakeGenericType(description.ServiceType, description.ModelDescription.ModelType, description.EntityType);
@@ -92,8 +85,7 @@ public static class Registration // extension methods
         var functionServiceInstance = lambdaExpression.Compile();
 
         // add services
-        services.AddTransient(commandHandlerServiceType, commandHandlerImplType);
-        services.AddTransient(creationHandlerServiceType, creationHandlerImplType);
+        services.AddCreationCommand(creationHandlerImplType);
         services.AddSingleton(functionServiceType, functionServiceInstance);
     }
 
@@ -101,20 +93,11 @@ public static class Registration // extension methods
         CreateCommandDescription description)
     {
         // registrar:
-        //   CreateCommandHandler<TEntity, TContext, TModel> : ICreateCommandHandler<TEntity, TModel>
         //   DefaultCreationHandler<TService, TEntity, TModel> : ICreationHandler<TEntity, TModel>
         //   Func<TService, TContext, TEntity>
 
-        var commandHandlerServiceType = typeof(ICreateCommandHandler<,>)
-            .MakeGenericType(description.EntityType, description.ModelDescription.ModelType);
-        var commandHandlerImplType = typeof(CreateCommandHandler<,,>)
-            .MakeGenericType(description.EntityType, 
-                description.ModelDescription.ContextType!, description.ModelDescription.ModelType);
-
-        var creationHandlerServiceType = typeof(ICreationHandler<,>)
-            .MakeGenericType(description.EntityType, description.ModelDescription.ContextType!);
         var creationHandlerImplType = typeof(DefaultCreationHandler<,,>)
-            .MakeGenericType(description.ServiceType, description.EntityType, description.ModelDescription.ContextType!);
+            .MakeGenericType(description.ServiceType, description.ModelDescription.ContextType!, description.EntityType);
 
         var functionServiceType = typeof(Func<,,>)
             .MakeGenericType(description.ServiceType, description.ModelDescription.ContextType!, description.EntityType);
@@ -128,8 +111,7 @@ public static class Registration // extension methods
         var functionServiceInstance = lambdaExpression.Compile();
 
         // add services
-        services.AddTransient(commandHandlerServiceType, commandHandlerImplType);
-        services.AddTransient(creationHandlerServiceType, creationHandlerImplType);
+        services.AddCreationCommand(creationHandlerImplType);
         services.AddSingleton(functionServiceType, functionServiceInstance);
     }
 
@@ -227,14 +209,14 @@ public class CommandModelDescription
         var interfaces = type.GetInterfaces().Where(i => i.IsGenericType).Select(i => i.GetGenericTypeDefinition());
         foreach (var i in interfaces)
         {
-            if (i == typeof(ICommandContext<>))
+            if (i == typeof(ICreationContext<>))
             {
                 commandType = CommandModelType.ContextModel;
                 contextType = type;
                 modelType = type.GetGenericArguments()[0];
                 break;
             }
-            else if (i == typeof(ICommandContext<,>))
+            else if (i == typeof(ICreationContext<,>))
             {
                 commandType = CommandModelType.ContextEntityModel;
                 contextType = type;

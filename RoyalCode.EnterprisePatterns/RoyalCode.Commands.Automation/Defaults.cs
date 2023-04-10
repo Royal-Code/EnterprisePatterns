@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.Commands.Abstractions.Expressions;
+using RoyalCode.Extensions.AsyncExpressionsBuilders;
 using RoyalCode.OperationResult;
 using RoyalCode.Repositories.Abstractions;
 using System.Diagnostics.CodeAnalysis;
@@ -10,14 +10,28 @@ using System.Runtime.CompilerServices;
 
 namespace RoyalCode.Commands.Abstractions.Defaults;
 
+public interface ICommandContextFactory
+{
+    Task<IOperationResult<TContext>> CreateCreationContextAsync<TContext, TModel>(TModel model)
+        where TContext : ICreationContext<TModel>
+        where TModel : class;
+}
+
+public interface ICreationContextBuilder<TContext, TModel>
+    where TContext : ICreationContext<TModel>
+    where TModel : class
+{
+    Task<IOperationResult<TContext>> BuildAsync(TModel model);
+}
+
 internal class DefaultCommandContextFactory : ICommandContextFactory
 {
     private readonly CommandContextFactoryMap map;
     private readonly IServiceProvider serviceProvider;
     private readonly ContextBuilderGenerator generator;
 
-    public async Task<IOperationResult<TContext>> CreateAsync<TContext, TModel>(TModel model)
-        where TContext : ICommandContext<TModel>
+    public async Task<IOperationResult<TContext>> CreateCreationContextAsync<TContext, TModel>(TModel model)
+        where TContext : ICreationContext<TModel>
         where TModel : class
     {
         // tenta obter o tipo do context builder.
@@ -29,16 +43,18 @@ internal class DefaultCommandContextFactory : ICommandContextFactory
                 throw new InvalidOperationException($"Context builder for {typeof(TContext)} not found.");
         }
 
-        var builder = (IContextBuilder<TContext, TModel>)serviceProvider.GetRequiredService(contextBuilderType);
-        return await builder.BuildAsync(model);
+        return serviceProvider.GetService(contextBuilderType) is ICreationContextBuilder<TContext, TModel> builder
+            ? await builder.BuildAsync(model)
+            : throw new InvalidOperationException(
+                $"Command Context Factory can find the Creation Context Builder as a service ({contextBuilderType.FullName})");
     }
 
     private bool TryGetContextBuilderType<TContext, TModel>([NotNullWhen(true)] out Type? contextBuilderType)
-        where TContext : ICommandContext<TModel>
+        where TContext : ICreationContext<TModel>
         where TModel : class
     {
-        var type = typeof(IContextBuilder<TContext, TModel>);
-        if(serviceProvider.GetService<IServiceProviderIsService>()?.IsService(type) ?? false)
+        var type = typeof(ICreationContextBuilder<TContext, TModel>);
+        if (serviceProvider.GetService<IServiceProviderIsService>()?.IsService(type) ?? false)
         {
             contextBuilderType = type;
             return true;
@@ -49,7 +65,7 @@ internal class DefaultCommandContextFactory : ICommandContextFactory
     }
 
     public Task<IOperationResult<TContext>> CreateAsync<TContext, TRootEntity, TModel>(TRootEntity entity, TModel model)
-        where TContext : ICommandContext<TRootEntity, TModel>
+        where TContext : ICreationContext<TRootEntity, TModel>
         where TRootEntity : class
         where TModel : class
     {
@@ -73,7 +89,7 @@ internal sealed class CommandContextFactoryMap
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal void Add((Type, Type) key, Type contextBuilderType)
     {
-        lock(contextFactoriesTypes)
+        lock (contextFactoriesTypes)
         {
             contextFactoriesTypes[key] = contextBuilderType;
         }
@@ -91,7 +107,7 @@ internal sealed class ContextBuilderGenerator
     }
 
     internal Type? TryGenerate<TContext, TModel>()
-        where TContext : ICommandContext<TModel>
+        where TContext : ICreationContext<TModel>
         where TModel : class
     {
         var contextType = typeof(TContext);
@@ -101,7 +117,7 @@ internal sealed class ContextBuilderGenerator
         var contextProperties = contextType.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToList();
 
         // separar das propriedades a propriedade do model
-        var modelProperty = contextProperties.FirstOrDefault(p => p.Name == nameof(ICommandContext<TModel>.Model))!;
+        var modelProperty = contextProperties.FirstOrDefault(p => p.Name == nameof(ICreationContext<TModel>.RequestData))!;
         contextProperties.Remove(modelProperty);
 
         // obter todas propriedades do model
@@ -116,7 +132,7 @@ internal sealed class ContextBuilderGenerator
                 modelProperty => modelProperty.Name + "Id",
                 (contextProperty, modelProperty) => new ContextModelPropertyMatch(contextProperty, modelProperty))
             .ToList();
-        
+
         // verificar se os tipos das propriedades do contexto possuem uma propriedade Id
         // que é do mesmo tipo da propriedade do model.
         // se alguma é inválida, então não é possível gerar o builder.
@@ -263,7 +279,7 @@ internal sealed class ContextBuilderGenerator
             : modelProperty;
 
         // expressão para obter a entidade do repositório
-        var findExpression = Expression.Call(repositoryVariable, 
+        var findExpression = Expression.Call(repositoryVariable,
             repositoryType.GetMethod("FindAsync")!, modelPropertyValue, ctParameter);
 
         // atribuir a entidade para a variável
@@ -281,8 +297,8 @@ internal sealed class ContextBuilderGenerator
 internal record GeneratorPropertiesResolution(
     Type ModelType,
     Type ContextType,
-    PropertyInfo ModelProperty, 
-    IEnumerable<ContextModelPropertyMatch> PropertyMatches, 
+    PropertyInfo ModelProperty,
+    IEnumerable<ContextModelPropertyMatch> PropertyMatches,
     IEnumerable<PropertyInfo> ServiceProperties);
 
 internal record ContextModelPropertyMatch(PropertyInfo ContextProperty, PropertyInfo ModelProperty)
@@ -319,7 +335,7 @@ internal sealed class ContextBuilderMap
     private readonly Dictionary<(Type, Type), object> modelBuilders = new();
 
     public Func<TModel, IServiceProvider, Task<IOperationResult<TContext>>>? GetBuilder<TContext, TModel>()
-        where TContext : ICommandContext<TModel>
+        where TContext : ICreationContext<TModel>
         where TModel : class
     {
         return modelBuilders.TryGetValue((typeof(TContext), typeof(TModel)), out var builder)
@@ -329,18 +345,18 @@ internal sealed class ContextBuilderMap
 
     // add builder
     public void AddBuilder<TContext, TModel>(Func<TModel, IServiceProvider, Task<IOperationResult<TContext>>> builder)
-        where TContext : ICommandContext<TModel>
+        where TContext : ICreationContext<TModel>
         where TModel : class
     {
-        lock(modelBuilders)
+        lock (modelBuilders)
         {
             modelBuilders[(typeof(TContext), typeof(TModel))] = builder;
         }
     }
 }
 
-internal sealed class DefaultContextBuilder<TContext, TModel> : IContextBuilder<TContext, TModel>
-    where TContext : ICommandContext<TModel>
+internal sealed class DefaultContextBuilder<TContext, TModel> : ICreationContextBuilder<TContext, TModel>
+    where TContext : ICreationContext<TModel>
     where TModel : class
 {
     private readonly IServiceProvider serviceProvider;
@@ -362,8 +378,8 @@ internal sealed class DefaultContextBuilder<TContext, TModel> : IContextBuilder<
     }
 }
 
-internal sealed class DefaultValidableContextBuilder<TContext, TModel> : IContextBuilder<TContext, TModel>
-    where TContext : ICommandContext<TModel>, IValidableContext
+internal sealed class DefaultValidableContextBuilder<TContext, TModel> : ICreationContextBuilder<TContext, TModel>
+    where TContext : ICreationContext<TModel>, IValidableContext
     where TModel : class
 {
 

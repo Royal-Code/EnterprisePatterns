@@ -2,7 +2,7 @@
 
 namespace RoyalCode.Commands.Abstractions.Defaults;
 
-internal sealed class DefaultCreationHandler<TService, TEntity, TModel> : ICreationHandler<TEntity, TModel>
+internal sealed class DefaultCreationHandler<TService, TModel, TEntity> : ICreationHandler<TModel, TEntity>
     where TEntity : class
     where TModel : class
 {
@@ -16,5 +16,5 @@ internal sealed class DefaultCreationHandler<TService, TEntity, TModel> : ICreat
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TEntity Create(TModel model) => createAction(service, model);
+    public TEntity Create(TModel request) => createAction(service, request);
 }

@@ -13,8 +13,8 @@
 			Commands are operations that change the state of the system, unlike queries that only return information.
 			The commands have the following characteristics:
 			- Create entities,
-			- Change entity data (change the state externally),
-			- Execute operations (call methods of an entity where the state is altered internally),
+			- Change entity data (change the state externally [Set Values]),
+			- Execute operations (call the methods of the entities where the state is changed internally),
 			- Delete entities.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns CQRS Command-Pattern</PackageTags>

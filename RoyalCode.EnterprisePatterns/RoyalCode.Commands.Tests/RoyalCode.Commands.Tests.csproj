@@ -7,6 +7,12 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0" />
 		
 		<ProjectReference Include="..\RoyalCode.Commands.Abstractions\RoyalCode.Commands.Abstractions.csproj" />
+		
+		<ProjectReference Include="..\RoyalCode.Commands.AspNetCore\RoyalCode.Commands.AspNetCore.csproj" />
+		
+		<ProjectReference Include="..\RoyalCode.Commands.Automation\RoyalCode.Commands.Automation.csproj" />
+		
+		<ProjectReference Include="..\RoyalCode.Commands.Handlers\RoyalCode.Commands.Handlers.csproj" />
 		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.WorkContext\RoyalCode.Persistence.EntityFramework.WorkContext.csproj" />
 	</ItemGroup>
 

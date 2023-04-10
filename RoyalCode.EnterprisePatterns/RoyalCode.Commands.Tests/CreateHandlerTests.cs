@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RoyalCode.Commands.Abstractions;
 using RoyalCode.Commands.Abstractions.Attributes;
+using RoyalCode.Commands.Handlers;
 using RoyalCode.Entities;
 using System.Data.Common;
 
@@ -26,7 +27,7 @@ public class CreateHandlerTests
         // act
         var scope = provider.CreateScope();
         var sp = scope.ServiceProvider;
-        var handler = sp.GetRequiredService<ICreateCommandHandler<SimpleEntity, SimpleDto>>();
+        var handler = sp.GetRequiredService<CreateCommandHandler<SimpleEntity, SimpleDto>>();
 
         // assert
         Assert.NotNull(handler);
@@ -45,7 +46,7 @@ public class CreateHandlerTests
         // act
         var scope = provider.CreateScope();
         var sp = scope.ServiceProvider;
-        var handler = sp.GetRequiredService<ICreateCommandHandler<SimpleEntity, SimpleDto>>();
+        var handler = sp.GetRequiredService<CreateCommandHandler<SimpleEntity, SimpleDto>>();
         var dto = new SimpleDto { Name = "Test" };
         var result = await handler.HandleAsync(dto, default);
         scope.Dispose();

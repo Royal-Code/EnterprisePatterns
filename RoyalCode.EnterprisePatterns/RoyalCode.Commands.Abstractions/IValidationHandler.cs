@@ -7,7 +7,7 @@ namespace RoyalCode.Commands.Abstractions;
 /// Interface for handlers that validate the command data.
 /// </summary>
 /// <typeparam name="TModel">The type of the command data.</typeparam>
-public interface IValidationHandler<TModel>
+public interface IValidationHandler<in TModel>
 {
     /// <summary>
     /// Execute the validation of the command data.
