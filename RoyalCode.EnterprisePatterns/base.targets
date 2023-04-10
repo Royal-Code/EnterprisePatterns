@@ -21,5 +21,7 @@
 		<OpResPreview>-preview-1</OpResPreview>
 		<PersistVer>1.0.0</PersistVer>
 		<PersistPreview>-preview3.7</PersistPreview>
+		<CommandVer>0.1.0</CommandVer>
+		<CommandPreview>-preview-1</CommandPreview>
 	</PropertyGroup>
 </Project>

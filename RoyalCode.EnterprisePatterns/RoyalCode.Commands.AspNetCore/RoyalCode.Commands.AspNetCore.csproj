@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\aspnet-versions.targets" />
+
+	<PropertyGroup>
+		<Version>$(CommandVer)$(CommandPreview)</Version>
+		<AssemblyVersion>$(CommandVer)</AssemblyVersion>
+		<FileVersion>$(CommandVer)</FileVersion>
+		<Description>
+			Extensions for bind Commands to AspNetCore Minimal API.
+			These components are not designed to be executed through a mediator or chain-of-responsibility,
+			but rather to be executed directly.
+			Commands are operations that change the state of the system, unlike queries that only return information.
+			The commands have the following characteristics:
+			- Create entities,
+			- Change entity data (change the state externally),
+			- Execute operations (call methods of an entity where the state is altered internally),
+			- Delete entities.
+		</Description>
+		<PackageTags>RoyalCode Enterprise-Patterns CQRS Command-Pattern AspNetCore</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<ProjectReference Include="..\RoyalCode.Commands.Handlers\RoyalCode.Commands.Handlers.csproj" />
+		<ProjectReference Include="..\RoyalCode.OperationResult.ApiResults\RoyalCode.OperationResult.ApiResults.csproj" />
+	</ItemGroup>
+
+</Project>

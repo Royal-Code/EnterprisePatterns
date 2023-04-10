@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\lib-versions.targets" />
+
+	<PropertyGroup>
+		<Version>$(CommandVer)$(CommandPreview)</Version>
+		<AssemblyVersion>$(CommandVer)</AssemblyVersion>
+		<FileVersion>$(CommandVer)</FileVersion>
+		<Description>
+			Abstract components for the Command Pattern.
+			These components are not designed to be executed through a mediator or chain-of-responsibility,
+			but rather to be executed directly.
+			Commands are operations that change the state of the system, unlike queries that only return information.
+			The commands have the following characteristics:
+			- Create entities,
+			- Change entity data (change the state externally),
+			- Execute operations (call methods of an entity where the state is altered internally),
+			- Delete entities.
+		</Description>
+		<PackageTags>RoyalCode Enterprise-Patterns CQRS Command-Pattern</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\RoyalCode.Commands.Abstractions\RoyalCode.Commands.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>

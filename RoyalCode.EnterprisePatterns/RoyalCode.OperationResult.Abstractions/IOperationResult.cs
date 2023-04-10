@@ -16,6 +16,12 @@ public interface IOperationResult
     bool Success { get; }
 
     /// <summary>
+    /// Determines whether the result of the operation was success or failure.
+    /// </summary>
+    [JsonIgnore]
+    bool Failure => !Success;
+
+    /// <summary>
     /// Count of the error messages of the result.
     /// </summary>
     [JsonIgnore]
@@ -37,7 +43,7 @@ public interface IOperationResult
 /// </para>
 /// </summary>
 /// <typeparam name="TValue">The result type of the value returned by the operation.</typeparam>
-public interface IOperationResult<TValue> : IOperationResult, IResultHasValue
+public interface IOperationResult<out TValue> : IOperationResult, IResultHasValue
 {
     /// <summary>
     /// The value returned by the operation.

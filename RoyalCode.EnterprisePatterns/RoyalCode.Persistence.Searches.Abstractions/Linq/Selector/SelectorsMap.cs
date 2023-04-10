@@ -12,13 +12,13 @@ internal class SelectorsMap
 
     private readonly Dictionary<(Type, Type), object> selectors = new();
 
+    public object this[(Type, Type) key] => selectors[key];
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool ContainsKey((Type, Type) key) => selectors.ContainsKey(key);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Add((Type, Type) key, object value) => selectors.Add(key, value);
-
-    public object this[(Type, Type) key] => selectors[key];
 
     public void Add<TEntity, TDto>(ISelector<TEntity, TDto> selector)
         where TEntity : class
