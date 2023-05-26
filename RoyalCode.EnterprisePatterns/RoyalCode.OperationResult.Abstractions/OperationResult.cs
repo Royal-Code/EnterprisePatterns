@@ -10,14 +10,6 @@ namespace RoyalCode.OperationResult;
 /// </para>
 /// <para>
 ///     The operation result can be either successful or a failure.
-///     When the operation result is successful, the value of <see cref="Value"/> is not <see langword="null"/>.
-///     When the operation result is a failure, the value of <see cref="Value"/> is <see langword="null"/>.
-/// </para>
-/// <para>
-///     The operation result can be implicitly converted from a value or an error.
-///     The operation result can be matched using the <see cref="Match{TResult}(Func{TValue, TResult}, Func{TError, TResult})"/> method.
-///     The operation result can be matched using the <see cref="Match{TResult, TParam}(Func{TValue, TParam, TResult}, Func{TError, TParam, TResult}, TParam)"/> method.
-///     The operation result can be converted to a string using the <see cref="ToString"/> method.
 /// </para>
 /// </summary>
 /// <typeparam name="TValue">The type of the value of the operation result.</typeparam>
@@ -97,7 +89,7 @@ public readonly struct OperationResult<TValue, TError>
 
     /// <summary>
     /// <para>
-    ///     Check if the operation result is failure, the return true,
+    ///     Check if the operation result is failure, then return true,
     ///     otherwise set the value of the operation result, because it is successful.
     /// </para>
     /// </summary>
@@ -107,6 +99,34 @@ public readonly struct OperationResult<TValue, TError>
     {
         value = this.value;
         return Failure;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Check if the operation result is failure, 
+    ///     then return true and set the error of the operation result.
+    /// </para>
+    /// </summary>
+    /// <param name="error">The error of the operation result.</param>
+    /// <returns>Whether the operation result is failure.</returns>
+    public readonly bool TryGetError([NotNullWhen(true)] out TError? error)
+    {
+        error = this.error;
+        return Failure;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Check if the operation result is successful, then return true,
+    ///     otherwise set the error of the operation result, because it is failure.
+    /// </para>
+    /// </summary>
+    /// <param name="error">The error of the operation result.</param>
+    /// <returns>Whether the operation result is successful.</returns>
+    public readonly bool IsSuccessOrGetError([NotNullWhen(false)] out TError? error)
+    {
+        error = this.error;
+        return !Failure;
     }
 
     /// <summary>
