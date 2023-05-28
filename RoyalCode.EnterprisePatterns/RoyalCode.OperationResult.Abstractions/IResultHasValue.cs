@@ -1,4 +1,4 @@
-﻿namespace RoyalCode.OperationResult;
+﻿namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// Interface to results that have a value.

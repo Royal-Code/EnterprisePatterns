@@ -1,5 +1,5 @@
 ﻿
-namespace RoyalCode.OperationResult;
+namespace RoyalCode.OperationResults;
 
 /// <inheritdoc />
 public class AggregateResult : IAggregateResult

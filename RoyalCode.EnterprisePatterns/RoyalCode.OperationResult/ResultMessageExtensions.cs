@@ -1,7 +1,7 @@
 
 using System.Net;
 
-namespace RoyalCode.OperationResult;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// Extension methods for results and messages.

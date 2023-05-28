@@ -3,7 +3,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
-namespace RoyalCode.OperationResult;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// Component for the message of an operation result.
@@ -15,7 +15,7 @@ public class ResultMessage : IResultMessage
     /// </summary>
     /// <param name="error"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator MessageCollection(ResultMessage error) => new MessageCollection().With(error);
+    public static implicit operator ResultCollection(ResultMessage error) => new ResultCollection().With(error);
 
     /// <summary>
     /// <para>

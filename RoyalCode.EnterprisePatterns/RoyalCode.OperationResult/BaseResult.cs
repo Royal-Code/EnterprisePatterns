@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json.Serialization;
 
-namespace RoyalCode.OperationResult;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// The default implementation of <see cref="IOperationResult"/>.

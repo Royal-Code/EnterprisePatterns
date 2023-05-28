@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text.Json.Serialization;
 
-namespace RoyalCode.OperationResult;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// Method factories for <see cref="ValueResult{TValue}"/>.
