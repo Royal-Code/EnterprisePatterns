@@ -110,12 +110,17 @@ file static class UsageSamples
         if (result.IsFailureOrGetValue(out var value))
             return result;
 
+        Console.WriteLine($"Value: {value}");
+
         // retornando um erro de operação a partir de outro outro resultado (de tipo diferente) gerado por algum método
         var otherResult = arg.DoOtherthing();
         if (otherResult.TryGetError(out var error))
             return error;
 
-
+        // retornando um resultado com outro tipo de erro, tenta converter (para string) se é falha.
+        var resultWithMessage = arg.DoSomethingWithMessage();
+        if (resultWithMessage.TryConvertError(rm => rm.Text, out error))
+            return error;
 
 
         return arg;
@@ -134,6 +139,11 @@ file sealed class UsageArguments
     public OperationResult<bool, string> DoOtherthing()
     {
         return true;
+    }
+
+    public OperationResult<object, IResultMessage> DoSomethingWithMessage()
+    {
+        return new object();
     }
 }
 

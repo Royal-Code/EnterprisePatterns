@@ -4,6 +4,10 @@ using System.Runtime.CompilerServices;
 
 namespace RoyalCode.OperationResult;
 
+#if NETSTANDARD2_1
+#pragma warning disable CS8604 // Possible null reference argument.
+#endif
+
 /// <summary>
 /// <para>
 ///     Represents the result of an operation.
@@ -95,9 +99,35 @@ public readonly struct OperationResult<TValue, TError>
     /// </summary>
     /// <param name="value">The value of the operation result.</param>
     /// <returns>Whether the operation result is failure.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool IsFailureOrGetValue([NotNullWhen(false)] out TValue? value)
     {
         value = this.value;
+        return Failure;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Check if the operation result is failure, then return true,
+    ///     otherwise set the value of the operation result with the converted value, because it is successful.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TOther">The type of the converted value.</typeparam>
+    /// <param name="converter">The converter to convert the value.</param>
+    /// <param name="value">The converted value of the operation result.</param>
+    /// <returns>Whether the operation result is failure.</returns> 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool IsFailureOrConvertValue<TOther>(
+        Func<TValue, TOther> converter, [NotNullWhen(false)] out TOther? value)
+        where TOther : notnull
+    {
+        if (Failure)
+        {
+            value = default;
+            return true;
+        }
+
+        value = converter(this.value);
         return Failure;
     }
 
@@ -109,10 +139,39 @@ public readonly struct OperationResult<TValue, TError>
     /// </summary>
     /// <param name="error">The error of the operation result.</param>
     /// <returns>Whether the operation result is failure.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool TryGetError([NotNullWhen(true)] out TError? error)
     {
         error = this.error;
         return Failure;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Check if the operation result is failure,
+    ///     then return true and set the error of the operation result with the converted error.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TOtherError">The type of the converted error.</typeparam>
+    /// <param name="converter">The converter to convert the error.</param>
+    /// <param name="error">The converted error of the operation result.</param>
+    /// <returns>Whether the operation result is failure.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool TryConvertError<TOtherError>(
+        Func<TError, TOtherError> converter, 
+        [NotNullWhen(true)] out TOtherError? error)
+        where TOtherError : notnull
+    {
+        if (Failure)
+        {
+            error = converter(this.error);
+            return true;
+        }
+        else
+        {
+            error = default;
+            return false;
+        }
     }
 
     /// <summary>
@@ -123,10 +182,82 @@ public readonly struct OperationResult<TValue, TError>
     /// </summary>
     /// <param name="error">The error of the operation result.</param>
     /// <returns>Whether the operation result is successful.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool IsSuccessOrGetError([NotNullWhen(false)] out TError? error)
     {
         error = this.error;
         return !Failure;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Check if the operation result is successful, then return true,
+    ///     otherwise set the error of the operation result with the converted error, because it is failure.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TOtherError">The type of the converted error.</typeparam>
+    /// <param name="converter">The converter to convert the error.</param>
+    /// <param name="error">The converted error of the operation result.</param>
+    /// <returns>Whether the operation result is successful.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool IsSuccessOrConvertError<TOtherError>(
+        Func<TError, TOtherError> converter,
+        [NotNullWhen(false)] out TOtherError? error)
+        where TOtherError : notnull
+    {
+        if (Failure)
+        {
+            error = converter(this.error);
+            return false;
+        }
+        else
+        {
+            error = default;
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Check if the operation result is successful,
+    ///     then return true and set the value of the operation result.
+    /// </para>
+    /// </summary>
+    /// <param name="value">The value of the operation result.</param>
+    /// <returns>Whether the operation result is successful.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool TryGetValue([NotNullWhen(true)] out TValue? value)
+    {
+        value = this.value;
+        return Success;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Check if the operation result is successful,
+    ///     then return true and set the value of the operation result with the converted value.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TOther">The type of the converted value.</typeparam>
+    /// <param name="converter">The converter to convert the value.</param>
+    /// <param name="value">The converted value of the operation result.</param>
+    /// <returns>Whether the operation result is successful.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool TryConvertValue<TOther>(
+        Func<TValue, TOther> converter,
+        [NotNullWhen(true)] out TOther? value)
+        where TOther : notnull
+    {
+        if (Success)
+        {
+            value = converter(this.value);
+            return true;
+        }
+        else
+        {
+            value = default;
+            return false;
+        }
     }
 
     /// <summary>
@@ -141,31 +272,30 @@ public readonly struct OperationResult<TValue, TError>
     /// <typeparam name="TOther">The other type of the result, after the conversion.</typeparam>
     /// <param name="map">The function to convert the value.</param>
     /// <returns>The new operation result.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly OperationResult<TOther, TError> Convert<TOther>(Func<TValue, TOther> map)
-        => Failure ? error : map(value!);
+        => Failure ? error : map(value);
 
     /// <summary>
     /// <para>
-    ///     Check if the operation result is failure, the return true,
-    ///     otherwise set the coverted value of the operation result, because it is successful.
+    ///     Create a new operation result with a new value, converted from the current value.
+    ///     This method also takes a parameter for the conversion.
+    /// </para>
+    /// <para>
+    ///     When the operation result is a failure, the new operation result is also a failure.
+    ///     When the operation result is successful, the new value is the result of the conversion.
     /// </para>
     /// </summary>
     /// <typeparam name="TOther">The other type of the result, after the conversion.</typeparam>
+    /// <typeparam name="TParam">The type of the parameter for the conversion.</typeparam>
     /// <param name="map">The function to convert the value.</param>
-    /// <param name="value">The converted value of the operation result.</param>
-    /// <returns>Whether the operation result is failure.</returns>
-    public readonly bool IsFailureOrConvert<TOther>(Func<TValue, TOther> map, [NotNullWhen(false)] out TOther? value)
-        where TOther : notnull
-    {
-        if (Failure)
-        {
-            value = default;
-            return true;
-        }
-
-        value = map(this.value);
-        return false;
-    }
+    /// <param name="param">The parameter for the conversion.</param>
+    /// <returns>The new operation result.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly OperationResult<TOther, TError> Convert<TOther, TParam>(
+        Func<TValue, TParam, TOther> map,
+        TParam param)
+        => Failure ? error : map(value, param);
 
     /// <summary>
     /// <para>
@@ -193,8 +323,8 @@ public readonly struct OperationResult<TValue, TError>
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TResult Match<TResult, TParam>(
-        Func<TValue, TParam, TResult> match, 
-        Func<TError, TParam, TResult> error, 
+        Func<TValue, TParam, TResult> match,
+        Func<TError, TParam, TResult> error,
         TParam param)
         => Failure ? error(this.error!, param) : match(value!, param);
 
