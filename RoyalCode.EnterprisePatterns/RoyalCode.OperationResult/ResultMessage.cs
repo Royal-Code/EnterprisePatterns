@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResult;
@@ -9,6 +10,13 @@ namespace RoyalCode.OperationResult;
 /// </summary>
 public class ResultMessage : IResultMessage
 {
+    /// <summary>
+    /// Implicitly convert an error to a failure operation result.
+    /// </summary>
+    /// <param name="error"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator MessageCollection(ResultMessage error) => new MessageCollection().With(error);
+
     /// <summary>
     /// <para>
     ///     Creates a new message of error.
