@@ -8,6 +8,15 @@ namespace RoyalCode.OperationResult;
 #pragma warning disable CS8604 // Possible null reference argument.
 #endif
 
+public readonly struct Outcome<TError> { }
+
+public readonly struct Outcome<TValue, TError> { }
+
+// Modificações a fazer:
+// O OperationResult deve ter o tipo do erro fixo, sendo algum tipo de coleção de IResultMessage.
+// Já o Outcome deve ter o tipo do erro genérico, para que possa ser retornado qualquer tipo de erro.
+// Ainda é possível pensar em um tipo de resultado onde o tipo do erro é uma exception.
+
 /// <summary>
 /// <para>
 ///     Represents the result of an operation.
@@ -34,6 +43,20 @@ public readonly struct OperationResult<TValue, TError>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator OperationResult<TValue, TError>(TError error) => new(error);
 
+    /// <summary>
+    /// Extracts actual result value.
+    /// </summary>
+    /// <param name="result">The result object.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static explicit operator TValue?(in OperationResult<TValue, TError> result) => result.value;
+
+    /// <summary>
+    /// Extracts actual result error.
+    /// </summary>
+    /// <param name="result">The result object.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static explicit operator TError?(in OperationResult<TValue, TError> result) => result.error;
+
     private readonly TValue? value;
     private readonly TError? error;
 
@@ -42,7 +65,7 @@ public readonly struct OperationResult<TValue, TError>
     /// </summary>
     /// <param name="value">The value of the operation result.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public OperationResult(TValue? value)
+    public OperationResult(TValue value)
     {
         this.value = value;
         error = default;
@@ -54,7 +77,7 @@ public readonly struct OperationResult<TValue, TError>
     /// </summary>
     /// <param name="error">The error of the operation result.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public OperationResult(TError? error)
+    public OperationResult(TError error)
     {
         value = default;
         this.error = error;
