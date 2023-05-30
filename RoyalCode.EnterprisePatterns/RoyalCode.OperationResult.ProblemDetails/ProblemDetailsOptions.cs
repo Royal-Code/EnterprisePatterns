@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace RoyalCode.OperationResult.ProblemDetails;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// Options for convert Operation Results to Problem Details.

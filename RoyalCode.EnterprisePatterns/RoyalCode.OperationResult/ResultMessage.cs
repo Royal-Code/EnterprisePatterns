@@ -15,7 +15,7 @@ public class ResultMessage : IResultMessage
     /// </summary>
     /// <param name="error"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ResultCollection(ResultMessage error) => new ResultCollection().With(error);
+    public static implicit operator ResultsCollection(ResultMessage error) => new ResultsCollection().With(error);
 
     /// <summary>
     /// <para>

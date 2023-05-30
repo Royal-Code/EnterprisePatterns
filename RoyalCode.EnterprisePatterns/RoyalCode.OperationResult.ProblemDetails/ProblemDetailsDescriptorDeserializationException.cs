@@ -1,9 +1,9 @@
-﻿namespace RoyalCode.OperationResult.ProblemDetails;
+﻿namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// Exception thrown when a collection of <see cref="ProblemDetailsDescription"/> cannot be deserialized.
 /// </summary>
-public class ProblemDetailsDescriptorDeserializationException : Exception
+public sealed class ProblemDetailsDescriptorDeserializationException : Exception
 {
     private const string MessagePattern = 
         "Failed to deserialize a collection of ProblemDetailsDescription, JSON:\n{0}";

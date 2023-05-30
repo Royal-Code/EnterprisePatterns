@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace RoyalCode.OperationResult.ProblemDetails;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// A class that contains all the information about a problem details.

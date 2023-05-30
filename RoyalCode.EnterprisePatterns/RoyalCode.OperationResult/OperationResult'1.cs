@@ -23,11 +23,34 @@ public readonly struct OperationResult<TValue>
     public static implicit operator OperationResult<TValue>(TValue value) => new(value);
 
     /// <summary>
-    /// Implicitly convert an error to a failure operation result.
+    /// Implicitly convert a <see cref="ResultsCollection"/> error to a failure operation result.
     /// </summary>
     /// <param name="error"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator OperationResult<TValue>(ResultCollection error) => new(error);
+    public static implicit operator OperationResult<TValue>(ResultsCollection error) => new(error);
+
+    /// <summary>
+    /// Implicitly convert a <see cref="ResultMessage"/> error to a failure operation result.
+    /// </summary>
+    /// <param name="error"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator OperationResult<TValue>(ResultMessage error) => new(error);
+
+    /// <summary>
+    /// Adds a new message to the result collection if the result is a failure.
+    /// </summary>
+    /// <param name="result">The result to add the message to</param>
+    /// <param name="message">The new message to add</param>
+    /// <returns>The same instance of the collection</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static OperationResult<TValue> operator +(OperationResult<TValue> result, IResultMessage message)
+    {
+        if (!result.Failure)
+            throw new InvalidOperationException("Cannot add a message to a successful operation result.");
+
+        result.error.Add(message);
+        return result;
+    }
 
     /// <summary>
     /// Extracts actual result value.
@@ -37,7 +60,7 @@ public readonly struct OperationResult<TValue>
     public static explicit operator TValue?(in OperationResult<TValue> result) => result.value;
 
     private readonly TValue? value;
-    private readonly ResultCollection? error;
+    private readonly ResultsCollection? error;
 
     /// <summary>
     /// Creates a successful operation result.
@@ -56,7 +79,7 @@ public readonly struct OperationResult<TValue>
     /// </summary>
     /// <param name="error">The error of the operation result.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public OperationResult(ResultCollection error)
+    public OperationResult(ResultsCollection error)
     {
         value = default;
         this.error = error;
@@ -142,7 +165,7 @@ public readonly struct OperationResult<TValue>
     /// <param name="error">The error of the operation result.</param>
     /// <returns>Whether the operation result is failure.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool TryGetError([NotNullWhen(true)] out ResultCollection? error)
+    public readonly bool TryGetError([NotNullWhen(true)] out ResultsCollection? error)
     {
         error = this.error;
         return Failure;
@@ -160,7 +183,7 @@ public readonly struct OperationResult<TValue>
     /// <returns>Whether the operation result is failure.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool TryConvertError<TOtherError>(
-        Func<ResultCollection, TOtherError> converter,
+        Func<ResultsCollection, TOtherError> converter,
         [NotNullWhen(true)] out TOtherError? error)
         where TOtherError : notnull
     {
@@ -185,7 +208,7 @@ public readonly struct OperationResult<TValue>
     /// <param name="error">The error of the operation result.</param>
     /// <returns>Whether the operation result is successful.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool IsSuccessOrGetError([NotNullWhen(false)] out ResultCollection? error)
+    public readonly bool IsSuccessOrGetError([NotNullWhen(false)] out ResultsCollection? error)
     {
         error = this.error;
         return !Failure;
@@ -203,7 +226,7 @@ public readonly struct OperationResult<TValue>
     /// <returns>Whether the operation result is successful.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool IsSuccessOrConvertError<TOtherError>(
-        Func<ResultCollection, TOtherError> converter,
+        Func<ResultsCollection, TOtherError> converter,
         [NotNullWhen(false)] out TOtherError? error)
         where TOtherError : notnull
     {
@@ -275,7 +298,7 @@ public readonly struct OperationResult<TValue>
     /// <param name="map">The function to convert the value.</param>
     /// <returns>The new operation result.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly OperationResult<TOther, ResultCollection> Convert<TOther>(Func<TValue, TOther> map)
+    public readonly OperationResult<TOther, ResultsCollection> Convert<TOther>(Func<TValue, TOther> map)
         => Failure ? error : map(value);
 
     /// <summary>
@@ -294,7 +317,7 @@ public readonly struct OperationResult<TValue>
     /// <param name="param">The parameter for the conversion.</param>
     /// <returns>The new operation result.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly OperationResult<TOther, ResultCollection> Convert<TOther, TParam>(
+    public readonly OperationResult<TOther, ResultsCollection> Convert<TOther, TParam>(
         Func<TValue, TParam, TOther> map,
         TParam param)
         => Failure ? error : map(value, param);
@@ -309,7 +332,7 @@ public readonly struct OperationResult<TValue>
     /// <param name="error">The function to execute if the operation result is a failure.</param>
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TResult Match<TResult>(Func<TValue, TResult> match, Func<ResultCollection, TResult> error)
+    public TResult Match<TResult>(Func<TValue, TResult> match, Func<ResultsCollection, TResult> error)
         => Failure ? error(this.error) : match(value);
 
     /// <summary>
@@ -326,7 +349,7 @@ public readonly struct OperationResult<TValue>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TResult Match<TResult, TParam>(
         Func<TValue, TParam, TResult> match,
-        Func<ResultCollection, TParam, TResult> error,
+        Func<ResultsCollection, TParam, TResult> error,
         TParam param)
         => Failure ? error(this.error, param) : match(value, param);
 

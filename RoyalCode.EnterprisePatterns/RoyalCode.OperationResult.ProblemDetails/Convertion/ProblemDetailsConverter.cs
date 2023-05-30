@@ -1,4 +1,6 @@
-﻿namespace RoyalCode.OperationResult.ProblemDetails.Convertion;
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace RoyalCode.OperationResults.Convertion;
 
 /// <summary>
 /// Converts the <see cref="IOperationResult"/> to <see cref="ProblemDetails"/>.
@@ -11,7 +13,7 @@ public static class ProblemDetailsConverter
     /// <param name="result">The result to be converted.</param>
     /// <param name="options">The options to be used in the conversion.</param>
     /// <returns>A new instance of <see cref="ProblemDetails"/>.</returns>
-    public static Microsoft.AspNetCore.Mvc.ProblemDetails ToProblemDetails(
+    public static ProblemDetails ToProblemDetails(
        this IOperationResult result, ProblemDetailsOptions options)
     {
         if (result.Success || result.ErrorsCount == 0)
@@ -54,6 +56,41 @@ public static class ProblemDetailsConverter
         return problemDetails;
     }
 
+    
+
+    /// <summary>
+    /// Convert one message to a problem details.
+    /// </summary>
+    /// <param name="message">The result message</param>
+    /// <param name="options">The options for the conversion.</param>
+    /// <returns>A new instance of <see cref="Microsoft.AspNetCore.Mvc.ProblemDetails"/>.</returns>
+    public static Microsoft.AspNetCore.Mvc.ProblemDetails ToProblemDetails(
+       this IResultMessage message, ProblemDetailsOptions options)
+    {
+        var code = message.Code ?? GenericErrorCodes.InvalidParameters;
+
+        // get the description
+        options.Descriptor.TryGetDescription(code, out var description);
+
+        int? status = description?.Status.HasValue ?? false
+            ? (int)description.Status.Value
+            : null;
+
+        var problem = new Microsoft.AspNetCore.Mvc.ProblemDetails()
+        {
+            Type = description?.Type ?? code.ToProblemDetailsType(options),
+            Title = description?.Title ?? code,
+            Detail = message.Text,
+            Status = status
+        };
+
+        if (message.AdditionalInformation is not null)
+            foreach (var (key, value) in message.AdditionalInformation)
+                problem.Extensions.Add(key, value);
+
+        return problem;
+    }
+
     private static void AddMessage(IResultMessage message, ProblemDetailsBuilder builder)
     {
         bool isGenericError = message.Code is null || GenericErrorCodes.Contains(message.Code);
@@ -94,39 +131,6 @@ public static class ProblemDetailsConverter
         {
             builder.AddCustomProblem(message);
         }
-    }
-
-    /// <summary>
-    /// Convert one message to a problem details.
-    /// </summary>
-    /// <param name="message">The result message</param>
-    /// <param name="options">The options for the conversion.</param>
-    /// <returns>A new instance of <see cref="Microsoft.AspNetCore.Mvc.ProblemDetails"/>.</returns>
-    public static Microsoft.AspNetCore.Mvc.ProblemDetails ToProblemDetails(
-       this IResultMessage message, ProblemDetailsOptions options)
-    {
-        var code = message.Code ?? GenericErrorCodes.InvalidParameters;
-
-        // get the description
-        options.Descriptor.TryGetDescription(code, out var description);
-
-        int? status = description?.Status.HasValue ?? false
-            ? (int)description.Status.Value
-            : null;
-
-        var problem = new Microsoft.AspNetCore.Mvc.ProblemDetails()
-        {
-            Type = description?.Type ?? code.ToProblemDetailsType(options),
-            Title = description?.Title ?? code,
-            Detail = message.Text,
-            Status = status
-        };
-
-        if (message.AdditionalInformation is not null)
-            foreach (var (key, value) in message.AdditionalInformation)
-                problem.Extensions.Add(key, value);
-
-        return problem;
     }
 
     /// <summary>

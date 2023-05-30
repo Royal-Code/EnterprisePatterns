@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace RoyalCode.OperationResult.ProblemDetails;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// A descriptions of a specific type of problem details.

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using RoyalCode.OperationResult.ProblemDetails;
+using RoyalCode.OperationResults;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

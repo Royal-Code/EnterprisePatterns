@@ -4,19 +4,32 @@ namespace RoyalCode.OperationResults;
 /// <summary>
 /// A collection of <see cref="IResultMessage"/>s.
 /// </summary>
-public class ResultCollection : List<IResultMessage>
+public class ResultsCollection
+    : List<IResultMessage>
 {
     /// <summary>
-    /// Creates a new instance of <see cref="ResultCollection"/>
+    /// Adds a new message to the collection and returns the collection.
     /// </summary>
-    public ResultCollection() : base (1) { }
+    /// <param name="collection">The collection to add the message to</param>
+    /// <param name="message">The new message to add</param>
+    /// <returns>The same instance of the collection</returns>
+    public static ResultsCollection operator +(ResultsCollection collection, IResultMessage message)
+    {
+        collection.Add(message);
+        return collection;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="ResultsCollection"/>
+    /// </summary>
+    public ResultsCollection() : base (1) { }
 
     /// <summary>
     /// Adds a new message to the collection and returns the collection.
     /// </summary>
     /// <param name="message">The new message to add</param>
     /// <returns>The same instance of the collection</returns>
-    public ResultCollection With(IResultMessage message)
+    public ResultsCollection With(IResultMessage message)
     {
         Add(message);
         return this;
@@ -27,7 +40,7 @@ public class ResultCollection : List<IResultMessage>
     /// </summary>
     /// <param name="messages">The messages to add</param>
     /// <returns>The same instance of the collection</returns>
-    public ResultCollection With(IEnumerable<IResultMessage> messages)
+    public ResultsCollection With(IEnumerable<IResultMessage> messages)
     {
         AddRange(messages);
         return this;

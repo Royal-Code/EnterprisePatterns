@@ -1,4 +1,4 @@
-﻿namespace RoyalCode.OperationResult.ProblemDetails.Convertion;
+﻿namespace RoyalCode.OperationResults.Convertion;
 
 /// <summary>
 /// Builder for <see cref="Microsoft.AspNetCore.Mvc.ProblemDetails"/> used by <see cref="ProblemDetailsConverter"/>.
