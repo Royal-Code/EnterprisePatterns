@@ -1,5 +1,4 @@
-﻿using RoyalCode.OperationResult;
-using RoyalCode.OperationResult.Serialization;
+﻿using RoyalCode.OperationResults;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -121,6 +120,11 @@ public static class HttpOperationResultExtensions
         }
     }
 
+#if NETSTANDARD2_1
+    [Diagnostics.CodeAnalysis.SuppressMessage(
+        "Major Code Smell", "S1172:Unused method parameters should be removed",
+        Justification = "Used when target is net6+")]
+#endif
     private static async Task<BaseResult> ReadNonJsonContent(
         this HttpResponseMessage response, CancellationToken token = default)
     {

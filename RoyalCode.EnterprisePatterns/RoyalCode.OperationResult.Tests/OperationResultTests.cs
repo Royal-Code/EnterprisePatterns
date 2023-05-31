@@ -1,4 +1,5 @@
 ﻿
+using RoyalCode.OperationResults;
 using System.Diagnostics.CodeAnalysis;
 
 namespace RoyalCode.OperationResult.Tests;

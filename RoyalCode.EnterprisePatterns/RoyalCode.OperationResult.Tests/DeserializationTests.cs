@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using RoyalCode.OperationResult.Serialization;
+using RoyalCode.OperationResults;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

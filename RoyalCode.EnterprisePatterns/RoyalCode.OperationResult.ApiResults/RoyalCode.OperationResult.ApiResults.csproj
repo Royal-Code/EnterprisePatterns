@@ -10,6 +10,7 @@
 			Extensions methods for adapt operations results objects to minimal api http results.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern</PackageTags>
+		<RootNamespace>RoyalCode.OperationResults</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>

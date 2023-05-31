@@ -1,5 +1,5 @@
 ﻿
-namespace RoyalCode.OperationResult;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// Extension methods for serialize and deserialize <see cref="IOperationResult"/>.

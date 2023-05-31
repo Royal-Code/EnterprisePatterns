@@ -11,6 +11,7 @@
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern</PackageTags>
 		<NoWarn>$(NoWarn);SYSLIB0012;SYSLIB0005</NoWarn>
+		<RootNamespace>RoyalCode.OperationResults</RootNamespace>
 	</PropertyGroup>
 
 	<!-- when target is netstandard2.1 then add the System.Text.Json package -->

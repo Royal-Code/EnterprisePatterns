@@ -1,6 +1,5 @@
 ﻿
-using RoyalCode.OperationResult;
-using RoyalCode.OperationResult.ApiResults;
+using RoyalCode.OperationResults;
 
 namespace Microsoft.AspNetCore.Http;
 

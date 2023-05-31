@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
-namespace RoyalCode.OperationResult.Serialization;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// A result that can be deserialized.

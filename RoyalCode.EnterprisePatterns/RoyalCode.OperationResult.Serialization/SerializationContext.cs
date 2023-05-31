@@ -1,8 +1,7 @@
-﻿using RoyalCode.OperationResult.Serialization;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace RoyalCode.OperationResult;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// Serialization context for <see cref="IOperationResult"/>.
@@ -70,9 +69,9 @@ internal partial class SerializationContext : JsonSerializerContext
         => JsonSerializer.Serialize(result, JsonSerializerOptions);
 
     /// <summary>
-    /// Serialize a <see cref="RoyalCode.OperationResult.BaseResult"/> to a JSON string.
+    /// Serialize a <see cref="RoyalCode.OperationResults.BaseResult"/> to a JSON string.
     /// </summary>
-    /// <param name="result">The <see cref="RoyalCode.OperationResult.BaseResult"/> to be serialized.</param>
+    /// <param name="result">The <see cref="RoyalCode.OperationResults.BaseResult"/> to be serialized.</param>
     /// <returns>The JSON string.</returns>
     public static string Serialize(BaseResult result)
         => JsonSerializer.Serialize(result, Default.BaseResult);

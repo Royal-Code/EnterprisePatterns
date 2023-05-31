@@ -2,7 +2,7 @@
 using FluentValidation;
 using System.Net;
 
-namespace RoyalCode.OperationResult;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// Extensions methods for <see cref="IOperationResult"/> and <see cref="ValidationResult"/>.
@@ -31,16 +31,8 @@ public static class ValidationsOperationResultExtensions
     /// <param name="result">FluentValidation result</param>
     /// <param name="value">A value to be included into the result</param>
     /// <returns>Operation Result.</returns>
-    public static IOperationResult ToOperationResult<TValue>(this ValidationResult result, TValue value)
-    {
-        var operationResult = new ValueResult<TValue>(value);
-
-        if (result.IsValid)
-            return operationResult;
-
-        result.Errors.AddErrorsTo(operationResult);
-        return operationResult;
-    }
+    public static IOperationResult<TValue> ToOperationResult<TValue>(this ValidationResult result, TValue value)
+        => ToValueResult(result, value);
 
     /// <summary>
     /// Converts to a <see cref="BaseResult"/>.
