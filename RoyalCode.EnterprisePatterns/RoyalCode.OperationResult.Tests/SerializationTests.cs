@@ -3,7 +3,7 @@ using RoyalCode.OperationResults;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace RoyalCode.OperationResult.Tests;
+namespace RoyalCode.OperationResults.Tests;
 
 public class SerializationTests
 {
@@ -118,6 +118,58 @@ public class SerializationTests
 
         // assert
         json.Should().Be("""{"messages":[{"text":"Error message 1","property":"Property1","code":"error-code-1"},{"text":"Error message 2","property":"Property2","code":"error-code-2"}]}""");
+    }
+
+    [Fact]
+    public void Serialize_OperationResult_Failure()
+    {
+        // arrange
+        OperationResult result = ResultMessage.Error("Error message");
+
+        // act
+        var json = result.Serialize();
+
+        // assert
+        json.Should().Be("""{"messages":[{"text":"Error message"}]}""");
+    }
+
+    [Fact]
+    public void Serialize_OperationResult_Success()
+    {
+        // arrange
+        OperationResult result = new();
+
+        // act
+        var json = result.Serialize();
+
+        // assert
+        json.Should().Be("{}");
+    }
+
+    [Fact]
+    public void Serialize_OperationResultWithValue_Failure()
+    {
+        // arrange
+        OperationResult<string> result = ResultMessage.Error("Error message");
+
+        // act
+        var json = result.Serialize();
+
+        // assert
+        json.Should().Be("""{"messages":[{"text":"Error message"}]}""");
+    }
+
+    [Fact]
+    public void Serialize_OperationResultWithValue_Success()
+    {
+        // arrange
+        OperationResult<string> result = "Some value";
+
+        // act
+        var json = result.Serialize();
+
+        // assert
+        json.Should().Be("\"Some value\"");
     }
 }
 

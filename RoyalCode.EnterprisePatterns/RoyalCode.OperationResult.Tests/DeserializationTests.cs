@@ -3,7 +3,7 @@ using RoyalCode.OperationResults;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace RoyalCode.OperationResult.Tests;
+namespace RoyalCode.OperationResults.Tests;
 
 public class DeserializationTests
 {
