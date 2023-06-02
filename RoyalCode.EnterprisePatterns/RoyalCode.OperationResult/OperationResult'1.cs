@@ -71,7 +71,6 @@ public readonly struct OperationResult<TValue>
     {
         this.value = value;
         error = default;
-        Failure = false;
     }
 
     /// <summary>
@@ -83,7 +82,6 @@ public readonly struct OperationResult<TValue>
     {
         value = default;
         this.error = error;
-        Failure = true;
     }
 
     /// <summary>
@@ -99,7 +97,7 @@ public readonly struct OperationResult<TValue>
     [MemberNotNullWhen(true, nameof(value))]
     [MemberNotNullWhen(false, nameof(error))]
 #endif
-    public readonly bool Success { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => !Failure; }
+    public readonly bool Success { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => error is null; }
 
     /// <summary>
     /// <para>
@@ -114,7 +112,7 @@ public readonly struct OperationResult<TValue>
     [MemberNotNullWhen(true, nameof(error))]
     [MemberNotNullWhen(false, nameof(value))]
 #endif
-    public readonly bool Failure { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
+    public readonly bool Failure { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => error is not null; }
 
     /// <summary>
     /// <para>

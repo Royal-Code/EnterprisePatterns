@@ -52,7 +52,6 @@ public readonly struct OperationResult
     public OperationResult()
     {
         error = default;
-        Failure = false;
     }
 
     /// <summary>
@@ -63,7 +62,6 @@ public readonly struct OperationResult
     public OperationResult(ResultsCollection error)
     {
         this.error = error;
-        Failure = true;
     }
 
     /// <summary>
@@ -78,7 +76,7 @@ public readonly struct OperationResult
 #if NET6_0_OR_GREATER
     [MemberNotNullWhen(false, nameof(error))]
 #endif
-    public readonly bool Success { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => !Failure; }
+    public readonly bool Success { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => error is null; }
 
     /// <summary>
     /// <para>
@@ -92,7 +90,7 @@ public readonly struct OperationResult
 #if NET6_0_OR_GREATER
     [MemberNotNullWhen(true, nameof(error))]
 #endif
-    public readonly bool Failure { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
+    public readonly bool Failure { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => error is not null ; }
 
     /// <summary>
     /// <para>

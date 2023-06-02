@@ -15,21 +15,21 @@ namespace RoyalCode.OperationResults;
 /// </para>
 /// </summary>
 /// <typeparam name="TError">The type of the error.</typeparam>
-public readonly struct Outcome<TError> 
+public readonly struct ValidableResult<TError> 
 {
     /// <summary>
     /// Implicitly convert an error to a failure operation result.
     /// </summary>
     /// <param name="error"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator Outcome<TError>(TError error) => new(error);
+    public static implicit operator ValidableResult<TError>(TError error) => new(error);
 
     /// <summary>
     /// Extracts actual result error.
     /// </summary>
     /// <param name="result">The result object.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static explicit operator TError?(in Outcome<TError> result) => result.error;
+    public static explicit operator TError?(in ValidableResult<TError> result) => result.error;
 
     private readonly TError? error;
 
@@ -37,7 +37,7 @@ public readonly struct Outcome<TError>
     /// Creates a successful operation result.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Outcome()
+    public ValidableResult()
     {
         Failure = false;
     }
@@ -47,7 +47,7 @@ public readonly struct Outcome<TError>
     /// </summary>
     /// <param name="error">The error of the operation result.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Outcome(TError error)
+    public ValidableResult(TError error)
     {
         this.error = error;
         Failure = true;
