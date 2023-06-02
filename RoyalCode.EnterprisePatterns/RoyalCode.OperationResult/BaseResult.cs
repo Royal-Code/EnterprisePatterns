@@ -289,8 +289,6 @@ public class BaseResult : IOperationResult
         return this;
     }
 
-
-
     private static class Immutable
     {
         /// <summary>

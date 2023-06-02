@@ -4,8 +4,7 @@ namespace RoyalCode.OperationResults;
 /// <summary>
 /// A collection of <see cref="IResultMessage"/>s.
 /// </summary>
-public class ResultsCollection
-    : List<IResultMessage>
+public class ResultsCollection : List<IResultMessage>, IOperationResult
 {
     /// <summary>
     /// Adds a new message to the collection and returns the collection.
@@ -23,6 +22,15 @@ public class ResultsCollection
     /// Creates a new instance of <see cref="ResultsCollection"/>
     /// </summary>
     public ResultsCollection() : base (1) { }
+
+    /// <inheritdoc />
+    public bool Success => false;
+
+    /// <inheritdoc />
+    public int ErrorsCount => Count;
+
+    /// <inheritdoc />
+    public IEnumerable<IResultMessage> Messages => this;
 
     /// <summary>
     /// Adds a new message to the collection and returns the collection.

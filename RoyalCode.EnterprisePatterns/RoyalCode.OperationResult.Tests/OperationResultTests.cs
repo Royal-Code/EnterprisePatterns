@@ -2,7 +2,7 @@
 using RoyalCode.OperationResults;
 using System.Diagnostics.CodeAnalysis;
 
-namespace RoyalCode.OperationResult.Tests;
+namespace RoyalCode.OperationResults.Tests;
 
 public class OperationResultTests
 {
