@@ -13,20 +13,20 @@ public static class HttpOperationResultExtensions
 {
     /// <summary>
     /// <para>
-    ///     Get <see cref="IOperationResult" /> from <see cref="HttpResponseMessage"/>.
+    ///     Get <see cref="OperationResult" /> from <see cref="HttpResponseMessage"/>.
     /// </para>
     /// </summary>
     /// <param name="response">The <see cref="HttpResponseMessage"/>.</param>
     /// <param name="token">The <see cref="CancellationToken"/>.</param>
     /// <returns>The <see cref="IOperationResult"/>.</returns>
-    public static async Task<IOperationResult> ToOperationResultAsync(
+    public static async Task<OperationResult> ToOperationResultAsync(
         this HttpResponseMessage response, CancellationToken token = default)
     {
         if (response.IsSuccessStatusCode)
         {
             // on success, when there is no value,
             // returns a success OperationResult with no message
-            return BaseResult.ImmutableSuccess;
+            return new();
         }
         else
         {
@@ -36,24 +36,24 @@ public static class HttpOperationResultExtensions
                 return await response.ReadNonJsonContent(token);
             }
 
-            // in case of errors, the OperationResult must be deserialised
-            var result = await response.Content.ReadFromJsonAsync(
-                DeserializableResult.JsonTypeInfo,
-                token) ?? new DeserializableResult();
+            // in case of errors, the ResultsCollection must be deserialised
+            var deserializable = await response.Content.ReadFromJsonAsync(
+                DeserializableResultsCollection.JsonTypeInfo,
+                token);
 
-            result.Messages ??= new List<ResultMessage>();
+            var result = deserializable.Messages ?? new ResultsCollection();
 
-            if (result.Messages.Count == 0)
+            if (result.Count == 0)
             {
                 // if there is no message, add a default message
-                result.Messages.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(),
+                result.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(),
                     null, null, response.StatusCode));
             }
             else
             {
                 var status = response.StatusCode;
                 // provides the status code of the response for each message
-                foreach (var message in result.Messages)
+                foreach (var message in result)
                 {
                     message.Status = status;
                 }
@@ -76,7 +76,7 @@ public static class HttpOperationResultExtensions
     /// </param>
     /// <param name="token">The <see cref="CancellationToken"/>.</param>
     /// <returns>The <see cref="IOperationResult{TValue}"/>.</returns>
-    public static async Task<IOperationResult<TValue>> ToOperationResultAsync<TValue>(
+    public static async Task<OperationResult<TValue>> ToOperationResultAsync<TValue>(
         this HttpResponseMessage response, JsonSerializerOptions? options = null, CancellationToken token = default)
     {
         if (response.IsSuccessStatusCode)
@@ -84,33 +84,34 @@ public static class HttpOperationResultExtensions
             // on success, with value, the value must be deserialized
             var value = await response.Content.ReadFromJsonAsync<TValue>(options, token);
 
-            return ValueResult.Create(value!);
+            return value!;
         }
         else
         {
             // check if the content is not json
             if (response.Content.Headers.ContentType?.MediaType != "application/json")
             {
-                return (await response.ReadNonJsonContent(token)).ToValue<TValue>();
+                return await response.ReadNonJsonContent(token);
             }
 
-            // in case of errors, the OperationResult must be deserialised
-            var result = await response.Content.ReadFromJsonAsync<DeserializableResult<TValue>>(
-                cancellationToken: token) ?? new DeserializableResult<TValue>();
+            // in case of errors, the ResultsCollection must be deserialised
+            var deserializable = await response.Content.ReadFromJsonAsync(
+                DeserializableResultsCollection.JsonTypeInfo,
+                token);
 
-            result.Messages ??= new List<ResultMessage>();
+            var result = deserializable.Messages ?? new ResultsCollection();
 
-            if (result.Messages.Count == 0)
+            if (result.Count == 0)
             {
                 // if there is no message, add a default message
-                result.Messages.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(), 
+                result.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(), 
                     null, null, response.StatusCode));
             }
             else
             {
                 var status = response.StatusCode;
                 // provides the status code of the response for each message
-                foreach (var message in result.Messages)
+                foreach (var message in result)
                 {
                     message.Status = status;
                 }
@@ -125,7 +126,7 @@ public static class HttpOperationResultExtensions
         "Major Code Smell", "S1172:Unused method parameters should be removed",
         Justification = "Used when target is net6+")]
 #endif
-    private static async Task<BaseResult> ReadNonJsonContent(
+    private static async Task<ResultMessage> ReadNonJsonContent(
         this HttpResponseMessage response, CancellationToken token = default)
     {
         // when is not json, try reads the content as string, if the response has content
@@ -139,13 +140,10 @@ public static class HttpOperationResultExtensions
 #endif
         }
 
-        // create a BaseResult with the status code and the content as message
-        var failureResult = BaseResult.Create();
+        // create a message with the status code and the content as message
         if (text is not null)
-            failureResult.WithError(text, response.StatusCode);
+            return ResultMessage.Error(text, response.StatusCode);
         else
-            failureResult.WithError(response.ReasonPhrase ?? response.StatusCode.ToString(), response.StatusCode);
-
-        return failureResult;
+            return ResultMessage.Error(response.ReasonPhrase ?? response.StatusCode.ToString(), response.StatusCode);
     }
 }

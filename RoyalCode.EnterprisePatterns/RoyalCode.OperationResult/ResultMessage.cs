@@ -347,7 +347,7 @@ public class ResultMessage : IResultMessage
 
     /// <inheritdoc/>
     [JsonIgnore]
-    public HttpStatusCode? Status { get; internal set; }
+    public HttpStatusCode? Status { get; set; }
 
     /// <inheritdoc/>
     [JsonExtensionData]

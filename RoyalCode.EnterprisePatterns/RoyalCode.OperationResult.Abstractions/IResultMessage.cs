@@ -37,9 +37,13 @@ public interface IResultMessage
     /// <para>
     ///     Used to help convert operation results into webapi's responses.
     /// </para>
+    /// <para>
+    ///     It can be used to return the status code of the response to the client,
+    ///     and can be assigned from the status code of the response.
+    /// </para>
     /// </summary>
     [JsonIgnore] 
-    HttpStatusCode? Status { get; }
+    HttpStatusCode? Status { get; set; }
 
     /// <summary>
     /// Exception related to the message.

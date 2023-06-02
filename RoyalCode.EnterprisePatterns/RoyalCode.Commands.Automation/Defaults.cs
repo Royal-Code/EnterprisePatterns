@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Extensions.AsyncExpressionsBuilders;
-using RoyalCode.OperationResult;
+using RoyalCode.OperationResults;
 using RoyalCode.Repositories.Abstractions;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
@@ -30,6 +30,7 @@ internal class DefaultCommandContextFactory : ICommandContextFactory
     private readonly IServiceProvider serviceProvider;
     private readonly ContextBuilderGenerator generator;
 
+    // TODO: Usar OperationResult
     public async Task<IOperationResult<TContext>> CreateCreationContextAsync<TContext, TModel>(TModel model)
         where TContext : ICreationContext<TModel>
         where TModel : class

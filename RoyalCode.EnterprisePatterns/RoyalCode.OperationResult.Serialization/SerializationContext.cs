@@ -13,8 +13,10 @@ namespace RoyalCode.OperationResults;
 [JsonSerializable(typeof(IResultMessage), TypeInfoPropertyName = "AbstractResultMessage")]
 [JsonSerializable(typeof(BaseResult))]
 [JsonSerializable(typeof(DeserializableResult))]
+
 [JsonSerializable(typeof(ResultMessage))]
 [JsonSerializable(typeof(ResultsCollection))]
+[JsonSerializable(typeof(DeserializableResultsCollection))]
 internal partial class SerializationContext : JsonSerializerContext
 {
     /// <summary>

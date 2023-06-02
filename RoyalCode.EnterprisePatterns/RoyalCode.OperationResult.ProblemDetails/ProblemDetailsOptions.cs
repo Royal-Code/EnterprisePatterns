@@ -58,8 +58,7 @@ public class ProblemDetailsOptions
             // try load the file
             try
             {
-                var json = File.ReadAllText(file);
-                Descriptor.AddFromJson(json);
+                Descriptor.AddFromJsonFile(file);
                 // log info of success loaded file
                 logger.LogInformation("Loaded problem details from file '{file}'.", file);
             }

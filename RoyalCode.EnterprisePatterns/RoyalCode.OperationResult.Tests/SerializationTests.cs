@@ -160,7 +160,7 @@ public class SerializationTests
     }
 
     [Fact]
-    public void Serialize_OperationResultWithValue_Success()
+    public void Serialize_Must_BeTheValue_When_OperationResultWithValue_Success()
     {
         // arrange
         OperationResult<string> result = "Some value";

@@ -1,4 +1,4 @@
-﻿using RoyalCode.OperationResult;
+﻿using RoyalCode.OperationResults;
 using RoyalCode.WorkContext.Abstractions;
 
 namespace RoyalCode.Commands.Abstractions;

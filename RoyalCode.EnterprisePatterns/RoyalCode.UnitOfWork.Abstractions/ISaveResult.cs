@@ -1,4 +1,4 @@
-using RoyalCode.OperationResult;
+using RoyalCode.OperationResults;
 
 namespace RoyalCode.UnitOfWork.Abstractions;
 
@@ -7,6 +7,7 @@ namespace RoyalCode.UnitOfWork.Abstractions;
 ///     Result of the save operation, or result of the unit of work.
 /// </para>
 /// </summary>
+[Obsolete("Something like the OperationResult struct must be created")]
 public interface ISaveResult : IOperationResult
 {
     /// <summary>

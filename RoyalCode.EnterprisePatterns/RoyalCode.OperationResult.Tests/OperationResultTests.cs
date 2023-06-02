@@ -1,5 +1,4 @@
 ﻿
-using RoyalCode.OperationResults;
 using System.Diagnostics.CodeAnalysis;
 
 namespace RoyalCode.OperationResults.Tests;
@@ -85,6 +84,17 @@ public class OperationResultTests
 
         Assert.False(operationResult.IsSuccessOrGetError(out var gettedError));
         Assert.Equal(error, gettedError);
+    }
+
+    [Fact]
+    public void AddMoreErrorUsingPlusOperator()
+    {
+        OperationResult result = ResultMessage.Error("Error message 1");
+        result += ResultMessage.Error("Error message 2");
+
+        Assert.False(result.IsSuccessOrGetError(out var gettedError));
+        Assert.Equal("Error message 1", gettedError.Messages.First().Text);
+        Assert.Equal("Error message 2", gettedError.Messages.Last().Text);
     }
 }
 

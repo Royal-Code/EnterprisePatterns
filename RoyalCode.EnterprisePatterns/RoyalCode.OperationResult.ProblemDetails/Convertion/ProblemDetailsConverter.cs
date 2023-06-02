@@ -42,7 +42,7 @@ public static class ProblemDetailsConverter
             : builder.GetStatusCode();
 
         // crete the problem details
-        var problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
+        var problemDetails = new ProblemDetails
         {
             Type = description?.Type ?? builder.Code.ToProblemDetailsType(options),
             Title = description?.Title ?? builder.Code,
@@ -64,7 +64,7 @@ public static class ProblemDetailsConverter
     /// <param name="message">The result message</param>
     /// <param name="options">The options for the conversion.</param>
     /// <returns>A new instance of <see cref="Microsoft.AspNetCore.Mvc.ProblemDetails"/>.</returns>
-    public static Microsoft.AspNetCore.Mvc.ProblemDetails ToProblemDetails(
+    public static ProblemDetails ToProblemDetails(
        this IResultMessage message, ProblemDetailsOptions options)
     {
         var code = message.Code ?? GenericErrorCodes.InvalidParameters;
@@ -76,7 +76,7 @@ public static class ProblemDetailsConverter
             ? (int)description.Status.Value
             : null;
 
-        var problem = new Microsoft.AspNetCore.Mvc.ProblemDetails()
+        ProblemDetails problem = new()
         {
             Type = description?.Type ?? code.ToProblemDetailsType(options),
             Title = description?.Title ?? code,
