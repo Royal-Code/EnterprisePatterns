@@ -352,6 +352,26 @@ public readonly struct OperationResult<TValue>
         => Failure ? error(this.error, param) : match(value, param);
 
     /// <summary>
+    /// <para>
+    ///     Match a function depending on the operation result.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The type returned by the match function.</typeparam>
+    /// <typeparam name="TParam1">The type of the parameter passed to the match function when value is present.</typeparam>
+    /// <typeparam name="TParam2">The type of the parameter passed to the match function when error is present.</typeparam>
+    /// <param name="match">The function to execute if the operation result is successful.</param>
+    /// <param name="error">The function to execute if the operation result is a failure.</param>
+    /// <param name="param1">The parameter passed to the match function.</param>
+    /// <param name="param2">The parameter passed to the error function.</param>
+    /// <returns>The result of the executed function.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TResult Match<TResult, TParam1, TParam2>(
+        Func<TValue, TParam1, TResult> match,
+        Func<ResultsCollection, TParam2, TResult> error,
+        TParam1 param1, TParam2 param2)
+        => Failure ? error(this.error, param2) : match(value, param1);
+
+    /// <summary>
     /// Convert the operation result to a string.
     /// When the operation result is successful, the string will be "Success: {value}".
     /// When the operation result is a failure, the string will be "Failure: {error}".
