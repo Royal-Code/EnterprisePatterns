@@ -1,5 +1,6 @@
 ﻿
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace RoyalCode.OperationResults;
 
@@ -43,4 +44,14 @@ public static class SerializationExtensions
        => result.Match(
             value => JsonSerializer.Serialize(value, SerializationContext.JsonSerializerOptions),
             error => JsonSerializer.Serialize(error, SerializationContext.Default.AbstractOperationMessage));
+
+    /// <summary>
+    /// Get the <see cref="JsonTypeInfo"/> for <see cref="ResultsCollection"/>.
+    /// </summary>
+    /// <param name="_">Used for extension methods.</param>
+    /// <returns>
+    ///     The <see cref="JsonTypeInfo"/> for <see cref="ResultsCollection"/>.
+    /// </returns>
+    public static JsonTypeInfo<ResultsCollection> GetJsonTypeInfo(this ResultsCollection _)
+        => SerializationContext.Default.ResultsCollection;
 }

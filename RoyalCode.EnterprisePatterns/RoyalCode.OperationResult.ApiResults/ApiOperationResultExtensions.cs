@@ -1,11 +1,7 @@
-﻿
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Http.Metadata;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using RoyalCode.OperationResults;
 using System.Net.Http;
-using System.Reflection;
 
 namespace Microsoft.AspNetCore.Http;
 
@@ -54,7 +50,7 @@ public static partial class ApiResults
 #else
 
     public static Results<Ok<T>, MatchErrorResult> ToResult<T>(
-        this IResultExtensions extensions, OperationResult<T> result)
+        this IResultExtensions _, OperationResult<T> result)
     {
         return result.Match<Results<Ok<T>, MatchErrorResult>>(value =>
         {
@@ -62,62 +58,25 @@ public static partial class ApiResults
         },
         error =>
         {
-            return Results.Json(error, statusCode: error.GetHttpStatus());
+            return new MatchErrorResult(error);
         });
     }
 
-    public static Results<Results<Ok<T>, Created<T>>, MatchErrorResult> ToResult<T>(this IResultExtensions extensions,
-        OperationResult<T> result,
-        string? createdPath = null, bool formatPathWithValue = false)
+    public static Results<Created<T>, MatchErrorResult> ToResult<T>(this IResultExtensions _,
+        OperationResult<T> result, string createdPath, bool formatPathWithValue = false)
     {
-        return result.Match<Results<Results<Ok<T>, Created<T>>, MatchErrorResult>>(value =>
+        return result.Match<Results<Created<T>, MatchErrorResult>>(value =>
         {
-            if (createdPath is not null)
-            {
-                if (formatPathWithValue)
-                    createdPath = string.Format(createdPath, value);
+            if (formatPathWithValue)
+                createdPath = string.Format(createdPath, value);
 
-                return Results.Created(createdPath, value);
-            }
-
-            return TypedResults.Ok(value);
+            return TypedResults.Created(createdPath, value);
         },
         error =>
         {
-            return Results.Json(error, statusCode: error.GetHttpStatus());
+            return new MatchErrorResult(error);
         });
     }
 
 #endif
 }
-
-#if NET7_0_OR_GREATER
-
-public class MatchErrorResult : IResult, IEndpointMetadataProvider, IStatusCodeHttpResult, IValueHttpResult, IValueHttpResult<ResultsCollection>
-{
-    private readonly ResultsCollection results;
-
-    public MatchErrorResult(ResultsCollection results)
-    {
-        this.results = results ?? throw new ArgumentNullException(nameof(results));
-        StatusCode = results.GetHttpStatus();
-    }
-
-    public int? StatusCode { get; }
-
-    public object? Value => results;
-
-    ResultsCollection? IValueHttpResult<ResultsCollection>.Value => results;
-
-    public static void PopulateMetadata(MethodInfo method, EndpointBuilder builder)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task ExecuteAsync(HttpContext httpContext)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-#endif
