@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Metadata;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RoyalCode.OperationResults.Convertion;
-using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json;
 
@@ -69,9 +69,32 @@ public class MatchErrorResult : IResult, IEndpointMetadataProvider, IStatusCodeH
             httpContext.RequestAborted);
     }
 
+    /// <inheritdoc />
     public static void PopulateMetadata(MethodInfo method, EndpointBuilder builder)
     {
-        throw new NotImplementedException();
+        var type = typeof(IOperationResult);
+        string[] content = { "application/json" };
+
+        builder.Metadata.Add(
+            new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
+        builder.Metadata.Add(
+            new ResponseTypeMetadata(type, StatusCodes.Status404NotFound, content));
+        builder.Metadata.Add(
+            new ResponseTypeMetadata(type, StatusCodes.Status409Conflict, content));
+        builder.Metadata.Add(
+            new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
+
+        type = typeof(ProblemDetails);
+        content = new[] { "application/problem+json" };
+
+        builder.Metadata.Add(
+            new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
+        builder.Metadata.Add(
+            new ResponseTypeMetadata(type, StatusCodes.Status404NotFound, content));
+        builder.Metadata.Add(
+            new ResponseTypeMetadata(type, StatusCodes.Status409Conflict, content));
+        builder.Metadata.Add(
+            new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
     }
 }
 
