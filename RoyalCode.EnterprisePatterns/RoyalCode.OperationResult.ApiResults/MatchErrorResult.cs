@@ -28,7 +28,7 @@ public class MatchErrorResult
     /// <summary>
     /// Determines if the default result is <see cref="OperationResult"/> or <see cref="ProblemDetails"/>.
     /// </summary>
-    public static bool IsProblemDetailsDefault { get; set; } = false;
+    public static bool IsProblemDetailsDefault { get; set; } = true;
 
     private readonly ResultsCollection results;
 
