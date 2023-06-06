@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +10,6 @@ using System.Text.Json;
 
 namespace RoyalCode.OperationResults;
 
-#if NET7_0_OR_GREATER
-
 /// <summary>
 /// <para>
 ///     Minimal API Result for <see cref="ResultsCollection"/>.
@@ -21,8 +18,18 @@ namespace RoyalCode.OperationResults;
 ///     Used for create a result from the <see cref="OperationResult"/> match for the error case.
 /// </para>
 /// </summary>
-public class MatchErrorResult : IResult, IEndpointMetadataProvider, IStatusCodeHttpResult, IValueHttpResult, IValueHttpResult<ResultsCollection>
+public class MatchErrorResult
+#if NET7_0_OR_GREATER
+    : IResult, IEndpointMetadataProvider, IStatusCodeHttpResult, IValueHttpResult, IValueHttpResult<ResultsCollection>
+#else
+    : IResult
+#endif
 {
+    /// <summary>
+    /// Determines if the default result is <see cref="OperationResult"/> or <see cref="ProblemDetails"/>.
+    /// </summary>
+    public static bool IsProblemDetailsDefault { get; set; } = false;
+
     private readonly ResultsCollection results;
 
     /// <summary>
@@ -42,35 +49,82 @@ public class MatchErrorResult : IResult, IEndpointMetadataProvider, IStatusCodeH
     /// <inheritdoc />
     public object? Value => results;
 
+#if NET7_0_OR_GREATER
+
     /// <inheritdoc />
     ResultsCollection? IValueHttpResult<ResultsCollection>.Value => results;
+
+#endif
 
     /// <inheritdoc />
     public Task ExecuteAsync(HttpContext httpContext)
     {
-        if (httpContext.TryGetResultTypeHeader(out var resultType) && resultType == "ProblemDetails")
+        httpContext.TryGetResultTypeHeader(out var resultType);
+        return resultType switch
         {
-            var options = httpContext.RequestServices.GetRequiredService<IOptions<ProblemDetailsOptions>>().Value;
-            var problemDetails = results.ToProblemDetails(options);
-            JsonSerializerOptions? serializerOptions = null;
+            "ProblemDetails" => WriteProblemDetails(httpContext),
+            "OperationResult" => WriteOperationResult(httpContext),
+            _ => WriteDefault(httpContext)
+        };
+    }
 
-            httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status400BadRequest;
-            return httpContext.Response.WriteAsJsonAsync(
-                problemDetails,
-                serializerOptions,
-                "application/problem+json",
-                httpContext.RequestAborted);
-        }
+    /// <summary>
+    /// <para>
+    ///     Check if the default result is <see cref="OperationResult"/> or <see cref="ProblemDetails"/> 
+    ///     and write the result.
+    /// </para>
+    /// <para>
+    ///     For determinate the default result, use <see cref="IsProblemDetailsDefault"/> static property.
+    /// </para>
+    /// </summary>
+    /// <param name="httpContext">The <see cref="HttpContext"/> for the current request.</param>
+    /// <returns>A task that represents the asynchronous execute operation.</returns>
+    public Task WriteDefault(HttpContext httpContext) 
+        => IsProblemDetailsDefault ? WriteProblemDetails(httpContext) : WriteOperationResult(httpContext);
 
+    /// <summary>
+    /// Write the <see cref="ProblemDetails"/> result.
+    /// </summary>
+    /// <param name="httpContext">The <see cref="HttpContext"/> for the current request.</param>
+    /// <returns>A task that represents the asynchronous execute operation.</returns>
+    public Task WriteProblemDetails(HttpContext httpContext)
+    {
+        var options = httpContext.RequestServices.GetRequiredService<IOptions<ProblemDetailsOptions>>().Value;
+        var problemDetails = results.ToProblemDetails(options);
+        JsonSerializerOptions? serializerOptions = null;
+
+        httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status400BadRequest;
         return httpContext.Response.WriteAsJsonAsync(
-            results,
-            results.GetJsonTypeInfo(),
+            problemDetails,
+            serializerOptions,
             "application/problem+json",
             httpContext.RequestAborted);
     }
 
+    /// <summary>
+    /// Write the <see cref="OperationResult"/> result.
+    /// </summary>
+    /// <param name="httpContext">The <see cref="HttpContext"/> for the current request.</param>
+    /// <returns>A task that represents the asynchronous execute operation.</returns>
+    public Task WriteOperationResult(HttpContext httpContext)
+    {
+#if NET7_0_OR_GREATER
+        return httpContext.Response.WriteAsJsonAsync(
+            results,
+            results.GetJsonTypeInfo(),
+            "application/json",
+            httpContext.RequestAborted);
+#else
+        return httpContext.Response.WriteAsJsonAsync(
+            results,
+            results.GetJsonSerializerOptions(),
+            "application/json",
+            httpContext.RequestAborted);
+#endif
+    }
+
     /// <inheritdoc />
-    public static void PopulateMetadata(MethodInfo method, EndpointBuilder builder)
+    public static void PopulateMetadata(MethodInfo _, EndpointBuilder builder)
     {
         var type = typeof(IOperationResult);
         string[] content = { "application/json" };
@@ -97,5 +151,3 @@ public class MatchErrorResult : IResult, IEndpointMetadataProvider, IStatusCodeH
             new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
     }
 }
-
-#endif

@@ -16,5 +16,3 @@ internal sealed class ResponseTypeMetadata : IProducesResponseTypeMetadata
     public int StatusCode { get; }
     public IEnumerable<string> ContentTypes { get; }
 }
-
-#endif

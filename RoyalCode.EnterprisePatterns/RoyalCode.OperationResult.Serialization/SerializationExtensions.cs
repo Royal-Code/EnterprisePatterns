@@ -1,4 +1,5 @@
 ﻿
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 
@@ -52,6 +53,16 @@ public static class SerializationExtensions
     /// <returns>
     ///     The <see cref="JsonTypeInfo"/> for <see cref="ResultsCollection"/>.
     /// </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static JsonTypeInfo<ResultsCollection> GetJsonTypeInfo(this ResultsCollection _)
         => SerializationContext.Default.ResultsCollection;
+
+    /// <summary>
+    /// Get the <see cref="JsonSerializerOptions"/> for <see cref="ResultsCollection"/>.
+    /// </summary>
+    /// <param name="_">Used for extension methods.</param>
+    /// <returns>The <see cref="JsonSerializerOptions"/> for <see cref="ResultsCollection"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static JsonSerializerOptions GetJsonSerializerOptions(this ResultsCollection _)
+        => SerializationContext.JsonSerializerOptions;
 }
