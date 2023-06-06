@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 
 namespace RoyalCode.OperationResults;
 
 /// <summary>
-/// Options for used for <see cref="OperationMatchObjectResult"/> and <see cref="OperationMatchObjectResult{T}"/>.
+/// Used by the <see cref="MatchErrorResult"/> 
+/// to determine if the default result is <see cref="OperationResult"/> or <see cref="ProblemDetails"/>.
 /// </summary>
-public static class MvcOperationResultOptions
+public static class ApiOperationResultOptions
 {
     /// <summary>
     /// Determines if the default result is <see cref="OperationResult"/> or <see cref="ProblemDetails"/>.

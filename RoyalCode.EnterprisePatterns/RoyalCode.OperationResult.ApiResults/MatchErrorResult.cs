@@ -25,11 +25,6 @@ public class MatchErrorResult
     : IResult
 #endif
 {
-    /// <summary>
-    /// Determines if the default result is <see cref="OperationResult"/> or <see cref="ProblemDetails"/>.
-    /// </summary>
-    public static bool IsProblemDetailsDefault { get; set; } = true;
-
     private readonly ResultsCollection results;
 
     /// <summary>
@@ -74,13 +69,16 @@ public class MatchErrorResult
     ///     and write the result.
     /// </para>
     /// <para>
-    ///     For determinate the default result, use <see cref="IsProblemDetailsDefault"/> static property.
+    ///     For determinate the default result, 
+    ///     use <see cref="ApiOperationResultOptions.IsProblemDetailsDefault"/> static property.
     /// </para>
     /// </summary>
     /// <param name="httpContext">The <see cref="HttpContext"/> for the current request.</param>
     /// <returns>A task that represents the asynchronous execute operation.</returns>
     public Task WriteDefault(HttpContext httpContext) 
-        => IsProblemDetailsDefault ? WriteProblemDetails(httpContext) : WriteOperationResult(httpContext);
+        => ApiOperationResultOptions.IsProblemDetailsDefault 
+            ? WriteProblemDetails(httpContext) 
+            : WriteOperationResult(httpContext);
 
     /// <summary>
     /// Write the <see cref="ProblemDetails"/> result.
