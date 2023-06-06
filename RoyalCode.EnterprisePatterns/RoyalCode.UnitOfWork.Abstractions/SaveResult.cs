@@ -1,4 +1,4 @@
-using RoyalCode.OperationResult;
+using RoyalCode.OperationResults;
 
 namespace RoyalCode.UnitOfWork.Abstractions;
 
@@ -7,6 +7,7 @@ namespace RoyalCode.UnitOfWork.Abstractions;
 ///     Default implementation of <see cref="ISaveResult"/>.
 /// </para>
 /// </summary>
+[Obsolete("Something like the OperationResult struct must be created")]
 public class SaveResult : BaseResult, ISaveResult
 {
     /// <inheritdoc />

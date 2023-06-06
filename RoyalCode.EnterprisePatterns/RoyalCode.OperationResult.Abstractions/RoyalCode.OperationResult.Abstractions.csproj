@@ -10,7 +10,7 @@
 			Implementation for the Operation Result Pattern.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern</PackageTags>
-		<RootNamespace>RoyalCode.OperationResult</RootNamespace>
+		<RootNamespace>RoyalCode.OperationResults</RootNamespace>
 	</PropertyGroup>
 
 	<!-- when target is netstandard2.1 then add the System.Text.Json package -->

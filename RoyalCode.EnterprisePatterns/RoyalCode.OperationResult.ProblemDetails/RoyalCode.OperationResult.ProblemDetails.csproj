@@ -10,6 +10,7 @@
 			Extensions methods for adapt operations results objects to problem details.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern ProblemDetails</PackageTags>
+		<RootNamespace>RoyalCode.OperationResults</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>

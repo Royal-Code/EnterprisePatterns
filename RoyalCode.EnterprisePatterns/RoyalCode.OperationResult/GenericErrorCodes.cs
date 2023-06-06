@@ -1,5 +1,5 @@
 ﻿
-namespace RoyalCode.OperationResult;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// <para>
@@ -62,6 +62,13 @@ public static class GenericErrorCodes
     /// <summary>
     /// Check if the new code has more priority than the current code.
     /// </summary>
+    /// <remarks>
+    ///     The priority is:
+    ///     Minimum: NotFound
+    ///     Maximum: ApplicationError
+    ///     Validation have more priority than InvalidParameters
+    ///     Others codes have more priority than Validation, but less than ApplicationError.
+    /// </remarks>
     /// <param name="currentCode">The current code.</param>
     /// <param name="newCode">The new code.</param>
     /// <returns>True if the new code has more priority than the current code.</returns>

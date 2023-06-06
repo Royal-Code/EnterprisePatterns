@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace RoyalCode.OperationResult;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// <para>

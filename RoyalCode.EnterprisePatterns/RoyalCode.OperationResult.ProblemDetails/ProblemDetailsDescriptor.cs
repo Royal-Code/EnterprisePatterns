@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace RoyalCode.OperationResult.ProblemDetails;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// A class that contains all the information about a problem details.
@@ -36,27 +36,27 @@ public class ProblemDetailsDescriptor
     /// <summary>
     /// The Detail field for the an aggregation of problems.
     /// </summary>
-    public static string AggregateMessage = "Multiples problems";
+    public static string AggregateMessage { get; set; } = "Multiples problems";
 
     /// <summary>
     /// The Detail field for the an internal error.
     /// </summary>
-    public static string InternalErrorsMessage = "Internal error";
+    public static string InternalErrorsMessage { get; set; } = "Internal error";
 
     /// <summary>
     /// The Detail field for the an invalid parameters.
     /// </summary>
-    public static string InvalidParametersMessage = "Invalid parameters";
+    public static string InvalidParametersMessage { get; set; } = "Invalid parameters";
 
     /// <summary>
     /// The Detail field for the an entity not found.
     /// </summary>
-    public static string NotFoundMessage = "Entity not found";
+    public static string NotFoundMessage { get; set; } = "Entity not found";
 
     /// <summary>
     /// The Detail field for the an undefined error.
     /// </summary>
-    public static string DefaultMessage = "An error has occurred";
+    public static string DefaultMessage { get; set; } = "An error has occurred";
 
     private readonly Dictionary<string, ProblemDetailsDescription> descriptions = new()
     {
@@ -118,12 +118,12 @@ public class ProblemDetailsDescriptor
 
     /// <summary>
     /// <para>
-    ///     Try to get the descriptions of a problem details by its code.
+    ///     Try to get the descriptionsToAdd of a problem details by its code.
     /// </para>
     /// </summary>
     /// <param name="code">The code of the problem details.</param>
-    /// <param name="description">The descriptions of the problem details.</param>
-    /// <returns>True if the descriptions was found, otherwise false.</returns>
+    /// <param name="description">The descriptionsToAdd of the problem details.</param>
+    /// <returns>True if the descriptionsToAdd was found, otherwise false.</returns>
     public bool TryGetDescription(string code, [NotNullWhen(true)] out ProblemDetailsDescription? description)
     {
         return descriptions.TryGetValue(code, out description);
@@ -144,10 +144,10 @@ public class ProblemDetailsDescriptor
 
     /// <summary>
     /// <para>
-    ///     Adds many problem details descriptions.
+    ///     Adds many problem details descriptionsToAdd.
     /// </para>
     /// </summary>
-    /// <param name="descriptions">A collection of descriptions of problem details.</param>
+    /// <param name="descriptions">A collection of descriptionsToAdd of problem details.</param>
     /// <returns>Same instance of <see cref="ProblemDetailsDescriptor"/>.</returns>
     public ProblemDetailsDescriptor AddMany(IEnumerable<ProblemDetailsDescription> descriptions)
     {
@@ -161,10 +161,10 @@ public class ProblemDetailsDescriptor
 
     /// <summary>
     /// <para>
-    ///     Adds many problem details descriptions.
+    ///     Adds many problem details descriptionsToAdd from a JSON string.
     /// </para>
     /// </summary>
-    /// <param name="json">A JSON string with the descriptions of problem details.</param>
+    /// <param name="json">A JSON string with the descriptionsToAdd of problem details.</param>
     /// <returns>Same instance of <see cref="ProblemDetailsDescriptor"/>.</returns>
     /// <exception cref="ProblemDetailsDescriptorDeserializationException">
     ///     If the JSON string is invalid.
@@ -173,16 +173,43 @@ public class ProblemDetailsDescriptor
     {
         try
         {
-            var descriptions = JsonSerializer.Deserialize<IEnumerable<ProblemDetailsDescription>>(json);
-            if (descriptions is not null)
+            var descriptionsToAdd = JsonSerializer.Deserialize<IEnumerable<ProblemDetailsDescription>>(json);
+            if (descriptionsToAdd is not null)
             {
-                AddMany(descriptions);
+                AddMany(descriptionsToAdd);
             }
             return this;
         }
         catch(Exception ex)
         {
             throw new ProblemDetailsDescriptorDeserializationException(json, ex);
+        }
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Adds many problem details descriptionsToAdd from a JSON file.
+    /// </para>
+    /// </summary>
+    /// <param name="path">The path of the JSON file with the descriptionsToAdd of problem details.</param>
+    /// <returns>Same instance of <see cref="ProblemDetailsDescriptor"/>.</returns>
+    /// <exception cref="ProblemDetailsDescriptorDeserializationException">
+    ///     If the JSON file is invalid.
+    /// </exception>
+    public ProblemDetailsDescriptor AddFromJsonFile(string path)
+    {
+        try
+        {
+            var json = File.ReadAllText(path);
+            return AddFromJson(json);
+        }
+        catch (ProblemDetailsDescriptorDeserializationException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw new ProblemDetailsDescriptorDeserializationException(string.Empty, ex);
         }
     }
 }

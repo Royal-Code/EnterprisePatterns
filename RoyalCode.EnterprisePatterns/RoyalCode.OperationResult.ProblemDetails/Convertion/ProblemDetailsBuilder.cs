@@ -1,7 +1,10 @@
-﻿namespace RoyalCode.OperationResult.ProblemDetails.Convertion;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace RoyalCode.OperationResults.Convertion;
 
 /// <summary>
-/// Builder for <see cref="Microsoft.AspNetCore.Mvc.ProblemDetails"/> used by <see cref="ProblemDetailsConverter"/>.
+/// Builder for <see cref="ProblemDetails"/> used by <see cref="ProblemDetailsConverter"/>.
 /// </summary>
 public class ProblemDetailsBuilder
 {
@@ -13,7 +16,7 @@ public class ProblemDetailsBuilder
     private bool withRulesValidationErrors = false;
 
     /// <summary>
-    /// The Code used to identify the problem and generate the <see cref="Microsoft.AspNetCore.Mvc.ProblemDetails.Type"/>.
+    /// The Code used to identify the problem and generate the <see cref="ProblemDetails.Type"/>.
     /// </summary>
     public string? Code { get; private set; }
 
@@ -38,7 +41,7 @@ public class ProblemDetailsBuilder
             if (customProblems.Count == 1 && customProblems[0].Status.HasValue)
                 return (int)customProblems[0].Status!.Value;
 
-            int status = 400;
+            int status = StatusCodes.Status400BadRequest;
             foreach (var message in customProblems.Where(static m => m.Status.HasValue))
             {
                 var messageStatus = (int)message.Status!.Value;
@@ -49,19 +52,21 @@ public class ProblemDetailsBuilder
         }
 
         if (internalErrors is not null)
-            return 500;
+            return StatusCodes.Status500InternalServerError;
 
         if (invalidParameterErrors is not null)
-            return withRulesValidationErrors ? 422 : 400;
+            return withRulesValidationErrors 
+                ? StatusCodes.Status422UnprocessableEntity 
+                : StatusCodes.Status400BadRequest;
 
         if (notFoundErrors is not null)
-            return 404;
+            return StatusCodes.Status404NotFound;
 
-        return 400;
+        return StatusCodes.Status400BadRequest;
     }
 
     /// <summary>
-    /// Gets the value for the field <see cref="Microsoft.AspNetCore.Mvc.ProblemDetails.Detail"/>.
+    /// Gets the value for the field <see cref="ProblemDetails.Detail"/>.
     /// </summary>
     /// <returns>A string that describes the error</returns>
     public string GetDetail()
@@ -85,11 +90,11 @@ public class ProblemDetailsBuilder
     }
 
     /// <summary>
-    /// Add the extensions fields and values to the <see cref="Microsoft.AspNetCore.Mvc.ProblemDetails"/>.
+    /// Add the extensions fields and values to the <see cref="ProblemDetails"/>.
     /// </summary>
     /// <param name="problemDetails">The problem details to be modified.</param>
     /// <param name="options">The options for the problem details convertion.</param>
-    public void WriteExtensions(Microsoft.AspNetCore.Mvc.ProblemDetails problemDetails,
+    public void WriteExtensions(ProblemDetails problemDetails,
         ProblemDetailsOptions options)
     {
         var pdext = problemDetails.Extensions;

@@ -1,9 +1,8 @@
 ﻿using FluentAssertions;
-using RoyalCode.OperationResult.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace RoyalCode.OperationResult.Tests;
+namespace RoyalCode.OperationResults.Tests;
 
 public class DeserializationTests
 {

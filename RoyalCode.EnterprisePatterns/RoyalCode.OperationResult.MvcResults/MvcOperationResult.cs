@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using RoyalCode.OperationResult.ProblemDetails.Convertion;
+using RoyalCode.OperationResults.Convertion;
 
-namespace RoyalCode.OperationResult.MvcResults;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// MVC <see cref="ObjectResult"/> for <see cref="IOperationResult"/>.
@@ -46,21 +46,11 @@ public class MvcOperationResult : ObjectResult
     public override Task ExecuteResultAsync(ActionContext context)
     {
         var httpContext = context.HttpContext;
-        if (httpContext.TryGetResultTypeHeader(out var resultType))
-        {
-            if (resultType == "ProblemDetails")
-                CreateProblemDetailsResult(httpContext);
-            if (resultType == "OperationResult")
-                CreateOperationResult();
-        }
-        else if (Result.Success)
-        {
-            CreateDefaultSuccessResult(httpContext);
-        }
+
+        if (httpContext.TryGetResultTypeHeader(out var resultType) && resultType == "ProblemDetails")
+            CreateProblemDetailsResult(httpContext);
         else
-        {
-            CreateDefaultFailureResult();
-        }
+            CreateOperationResult(httpContext);
 
         return base.ExecuteResultAsync(context);
     }
@@ -73,21 +63,25 @@ public class MvcOperationResult : ObjectResult
             return;
         }
 
-        var options = httpContext.RequestServices.GetRequiredService<IOptions<ProblemDetails.ProblemDetailsOptions>>().Value;
+        var options = httpContext.RequestServices.GetRequiredService<IOptions<ProblemDetailsOptions>>().Value;
         var problemDetails = Result.ToProblemDetails(options);
 
         Value = problemDetails;
         ContentTypes.Add("application/problem+json");
         StatusCode = problemDetails.Status;
-        DeclaredType = typeof(Microsoft.AspNetCore.Mvc.ProblemDetails);
+        DeclaredType = typeof(ProblemDetails);
     }
 
-    private void CreateOperationResult()
+    private void CreateOperationResult(HttpContext httpContext)
     {
-        Value = Result;
-        ContentTypes.Add("application/json");
-        StatusCode = Result.GetHttpStatus();
-        DeclaredType = Result.GetType();
+        if (Result.Success)
+        {
+            CreateDefaultSuccessResult(httpContext);
+        }
+        else
+        {
+            CreateDefaultFailureResult();
+        }
     }
 
     private void CreateDefaultSuccessResult(HttpContext httpContext)

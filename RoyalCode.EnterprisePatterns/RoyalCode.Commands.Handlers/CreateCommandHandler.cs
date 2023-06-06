@@ -1,6 +1,6 @@
 ﻿using RoyalCode.Commands.Abstractions;
 using RoyalCode.Entities;
-using RoyalCode.OperationResult;
+using RoyalCode.OperationResults;
 using RoyalCode.WorkContext.Abstractions;
 
 namespace RoyalCode.Commands.Handlers;
@@ -45,7 +45,7 @@ public sealed class CreateCommandHandler<TEntity, TModel>
     /// <param name="model">The input model.</param>
     /// <param name="token">The cancellation token.</param>
     /// <returns>The result of the operation with the created entity.</returns>
-    public async Task<IOperationResult<TEntity>> HandleAsync(TModel model, CancellationToken token)
+    public async Task<IOperationResult<TEntity>> HandleAsync(TModel model, CancellationToken token) // TODO: Usar OperationResult
     {
         foreach (var validator in validators)
         {

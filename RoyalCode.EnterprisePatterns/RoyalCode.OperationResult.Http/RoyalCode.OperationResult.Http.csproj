@@ -10,6 +10,7 @@
 			Extension methods for deserialize operations results objects from http responses.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern</PackageTags>
+		<RootNamespace>RoyalCode.OperationResults</RootNamespace>
 	</PropertyGroup>
 
 	<!-- when target is netstandard2.1 then add the System.Net.Http.Json package -->

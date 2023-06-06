@@ -10,11 +10,13 @@
 			Extensions methods for adapt operations results objects to minimal api http results.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern</PackageTags>
+		<RootNamespace>RoyalCode.OperationResults</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<ProjectReference Include="..\RoyalCode.OperationResult.ProblemDetails\RoyalCode.OperationResult.ProblemDetails.csproj" />
+		<ProjectReference Include="..\RoyalCode.OperationResult.Serialization\RoyalCode.OperationResult.Serialization.csproj" />
 	</ItemGroup>
 
 </Project>

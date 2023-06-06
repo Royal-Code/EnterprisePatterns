@@ -1,5 +1,5 @@
 ﻿
-using RoyalCode.OperationResult;
+using RoyalCode.OperationResults;
 
 namespace RoyalCode.Commands.Abstractions;
 
@@ -20,5 +20,5 @@ public interface IValidableContext
     ///     A operation result with the problems messages if the context is invalid,
     ///     or a operation result with success if the context is valid.
     /// </returns>
-    IOperationResult Validate();
+    IOperationResult Validate(); // TODO: Usar OperationResult
 }

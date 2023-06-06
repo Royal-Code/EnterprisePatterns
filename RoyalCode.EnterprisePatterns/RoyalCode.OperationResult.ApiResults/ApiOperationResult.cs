@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using RoyalCode.OperationResult.ProblemDetails.Convertion;
+using RoyalCode.OperationResults.Convertion;
 
-namespace RoyalCode.OperationResult.ApiResults;
+namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// Minimal API Result for <see cref="IOperationResult"/>.
@@ -61,7 +61,7 @@ public class ApiOperationResult : IResult
         if (Result.Success)
             return CreateDefaultSuccessResult(httpContext);
 
-        var options = httpContext.RequestServices.GetRequiredService<IOptions<ProblemDetails.ProblemDetailsOptions>>().Value;
+        var options = httpContext.RequestServices.GetRequiredService<IOptions<ProblemDetailsOptions>>().Value;
         var problemDetails = Result.ToProblemDetails(options);
         return Results.Json(problemDetails,
             contentType: "application/problem+json",

@@ -10,6 +10,7 @@
 			Extension methods for adapt fluent validation results into operation results.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern FluentValidation</PackageTags>
+		<RootNamespace>RoyalCode.OperationResults</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
