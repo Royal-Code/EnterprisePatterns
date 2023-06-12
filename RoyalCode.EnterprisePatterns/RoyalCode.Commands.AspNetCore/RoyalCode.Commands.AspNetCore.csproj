@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\aspnet-versions.targets" />
+	<PropertyGroup>
+		<TargetFrameworks>$(AspTargets)</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="..\base.targets" />
 
 	<PropertyGroup>
 		<Version>$(CommandVer)$(CommandPreview)</Version>

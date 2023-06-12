@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\lib-versions.targets" />
-
 	<PropertyGroup>
+		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
 		<Version>1.0.0-preview1</Version>
 		<AssemblyVersion>1.0.0</AssemblyVersion>
 		<FileVersion>1.0.0</FileVersion>
@@ -11,6 +10,8 @@
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Aggregate Aggregate-Pattern</PackageTags>
 	</PropertyGroup>
+
+	<Import Project="..\base.targets" />
 
 	<ItemGroup>
 		<ProjectReference Include="..\RoyalCode.DomainEvents\RoyalCode.DomainEvents.csproj" />

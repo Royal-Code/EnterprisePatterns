@@ -11,15 +11,11 @@
 		<AssemblyVersion>$(OpResVer)</AssemblyVersion>
 		<FileVersion>$(OpResVer)</FileVersion>
 		<Description>
-			Extensions methods for adapt operations results objects to problem details.
+			Extension methods for deserialize problem details objects from http responses 
+			and adapt to operations results.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern ProblemDetails</PackageTags>
 		<RootNamespace>RoyalCode.OperationResults</RootNamespace>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-		<ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
-	</ItemGroup>
 
 </Project>

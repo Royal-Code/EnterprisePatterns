@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\lib-versions.targets" />
-
 	<PropertyGroup>
+		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
 		<Version>$(PersistVer)$(PersistPreview)</Version>
 		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
 		<FileVersion>$(PersistVer)</FileVersion>
@@ -10,6 +9,12 @@
 			Abstract components for the Entity Pattern.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Entity Entity-Pattern</PackageTags>
+	</PropertyGroup>
+
+	<Import Project="..\base.targets" />
+
+	<PropertyGroup>
+		
 	</PropertyGroup>
 
 </Project>

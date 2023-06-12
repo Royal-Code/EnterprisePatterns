@@ -1,6 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\lib-versions.targets" />
+	<PropertyGroup>
+		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
+	</PropertyGroup>
+	
+	<Import Project="..\base.targets" />
 
 	<PropertyGroup>
 		<Version>$(OpResVer)$(OpResPreview)</Version>

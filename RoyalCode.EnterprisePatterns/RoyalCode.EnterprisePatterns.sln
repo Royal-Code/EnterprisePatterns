@@ -7,9 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Repositories.Abst
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{B6D9A130-5359-4A71-A97B-703364D34B97}"
 	ProjectSection(SolutionItems) = preProject
-		aspnet-versions.targets = aspnet-versions.targets
 		base.targets = base.targets
-		lib-versions.targets = lib-versions.targets
+		Directory.Build.props = Directory.Build.props
 		tests.targets = tests.targets
 	EndProjectSection
 EndProject
@@ -91,9 +90,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Commands.Handlers
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Commands.Automation", "RoyalCode.Commands.Automation\RoyalCode.Commands.Automation.csproj", "{E1FED657-EB01-460E-9AA8-B03761F0F884}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Commands.AspNetCore", "RoyalCode.Commands.AspNetCore\RoyalCode.Commands.AspNetCore.csproj", "{671A631E-884F-4F3F-8435-C6B3A7782F18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Commands.AspNetCore", "RoyalCode.Commands.AspNetCore\RoyalCode.Commands.AspNetCore.csproj", "{671A631E-884F-4F3F-8435-C6B3A7782F18}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Searches", "Searches", "{D155578A-4CEA-4BD7-B566-8D4982AF0B68}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Results", "Results", "{61EA8808-DA44-4352-AB00-DEE7F5988681}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.OperationResult.Http.ProblemDetails", "RoyalCode.OperationResult.Http.ProblemDetails\RoyalCode.OperationResult.Http.ProblemDetails.csproj", "{DC973FC8-EDD9-443D-B5BE-751BA96314C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -221,6 +224,10 @@ Global
 		{671A631E-884F-4F3F-8435-C6B3A7782F18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{671A631E-884F-4F3F-8435-C6B3A7782F18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{671A631E-884F-4F3F-8435-C6B3A7782F18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC973FC8-EDD9-443D-B5BE-751BA96314C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC973FC8-EDD9-443D-B5BE-751BA96314C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC973FC8-EDD9-443D-B5BE-751BA96314C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC973FC8-EDD9-443D-B5BE-751BA96314C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -247,7 +254,7 @@ Global
 		{176C0178-D576-4A66-AD4E-FD44CA75D765} = {D155578A-4CEA-4BD7-B566-8D4982AF0B68}
 		{95E28BC1-E43B-4BB0-8136-B27119509A24} = {8E196618-6DB1-4DB6-AE55-49F003088484}
 		{A851D07A-3480-4505-AEB4-83A5B61092E4} = {8198A8B4-6CCB-4347-97C0-23AFFB879CA1}
-		{98D3C70B-512B-4D83-97F5-0286192E9E5B} = {D91CABB8-AE3F-4FE8-B8E3-DEDBD6C2EDB6}
+		{98D3C70B-512B-4D83-97F5-0286192E9E5B} = {61EA8808-DA44-4352-AB00-DEE7F5988681}
 		{481DBEBD-2137-4153-A6FB-CA2801DFE94C} = {B6B07827-E084-4C89-8ED6-B3F014B7968B}
 		{0067C422-E1DF-425A-94D3-AE662E3F96FA} = {B6B07827-E084-4C89-8ED6-B3F014B7968B}
 		{ABD8C63B-2849-48F1-9479-7758594C9103} = {B6B07827-E084-4C89-8ED6-B3F014B7968B}
@@ -266,6 +273,8 @@ Global
 		{E1FED657-EB01-460E-9AA8-B03761F0F884} = {B5A9FFDD-0C5F-4D1D-9196-56A0E49792C9}
 		{671A631E-884F-4F3F-8435-C6B3A7782F18} = {B5A9FFDD-0C5F-4D1D-9196-56A0E49792C9}
 		{D155578A-4CEA-4BD7-B566-8D4982AF0B68} = {BC2C235F-E382-4286-8BB3-8C8E590D81F2}
+		{61EA8808-DA44-4352-AB00-DEE7F5988681} = {D91CABB8-AE3F-4FE8-B8E3-DEDBD6C2EDB6}
+		{DC973FC8-EDD9-443D-B5BE-751BA96314C8} = {B6B07827-E084-4C89-8ED6-B3F014B7968B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FAC6C2E-62DE-4665-BB16-4E7D445FAB26}

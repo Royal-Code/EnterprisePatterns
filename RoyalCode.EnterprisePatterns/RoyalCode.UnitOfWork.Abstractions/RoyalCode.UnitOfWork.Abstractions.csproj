@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\lib-versions.targets" />
-
 	<PropertyGroup>
+		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
 		<Version>$(PersistVer)$(PersistPreview)</Version>
 		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
 		<FileVersion>$(PersistVer)</FileVersion>
@@ -12,6 +11,8 @@
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns UoW Unit-Of-Work Unit-Of-Work-Pattern</PackageTags>
 	</PropertyGroup>
+	
+	<Import Project="..\base.targets" />
 
 	<ItemGroup>
 		<ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />

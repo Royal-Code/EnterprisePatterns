@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\lib-versions.targets" />
-
 	<PropertyGroup>
+		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
 		<Version>$(PersistVer)$(PersistPreview)</Version>
 		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
 		<FileVersion>$(PersistVer)</FileVersion>
@@ -15,6 +14,8 @@
 			RoyalCode Enterprise-Patterns UoW Unit-Of-Work WorkContext Work-Context
 		</PackageTags>
 	</PropertyGroup>
+
+	<Import Project="..\base.targets" />
 
 	<ItemGroup>
 		<ProjectReference Include="..\RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj" />
