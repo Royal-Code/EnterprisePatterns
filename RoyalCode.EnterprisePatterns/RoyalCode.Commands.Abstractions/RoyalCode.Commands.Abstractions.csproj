@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<Import Project="..\libs.targets" />
+	
 	<PropertyGroup>
-		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
 		<Version>$(CommandVer)$(CommandPreview)</Version>
 		<AssemblyVersion>$(CommandVer)</AssemblyVersion>
 		<FileVersion>$(CommandVer)</FileVersion>
@@ -18,8 +19,6 @@
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns CQRS Command-Pattern</PackageTags>
 	</PropertyGroup>
-	
-	<Import Project="..\base.targets" />
 
 	<ItemGroup>
 		<ProjectReference Include="..\RoyalCode.OperationResult.Abstractions\RoyalCode.OperationResult.Abstractions.csproj" />

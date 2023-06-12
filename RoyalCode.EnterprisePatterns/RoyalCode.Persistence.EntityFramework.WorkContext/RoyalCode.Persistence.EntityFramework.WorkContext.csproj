@@ -1,10 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFrameworks>$(AspTargets)</TargetFrameworks>
-	</PropertyGroup>
-
-	<Import Project="..\base.targets" />
+	<Import Project="..\asp.targets" />
 
 	<PropertyGroup>
 		<Version>$(PersistVer)$(PersistPreview)</Version>

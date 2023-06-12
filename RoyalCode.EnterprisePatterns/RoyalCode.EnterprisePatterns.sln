@@ -7,8 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Repositories.Abst
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{B6D9A130-5359-4A71-A97B-703364D34B97}"
 	ProjectSection(SolutionItems) = preProject
+		asp.targets = asp.targets
 		base.targets = base.targets
 		Directory.Build.props = Directory.Build.props
+		libs.targets = libs.targets
 		tests.targets = tests.targets
 	EndProjectSection
 EndProject
@@ -96,7 +98,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Searches", "Searches", "{D1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Results", "Results", "{61EA8808-DA44-4352-AB00-DEE7F5988681}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.OperationResult.Http.ProblemDetails", "RoyalCode.OperationResult.Http.ProblemDetails\RoyalCode.OperationResult.Http.ProblemDetails.csproj", "{DC973FC8-EDD9-443D-B5BE-751BA96314C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.OperationResult.Http.ProblemDetails", "RoyalCode.OperationResult.Http.ProblemDetails\RoyalCode.OperationResult.Http.ProblemDetails.csproj", "{DC973FC8-EDD9-443D-B5BE-751BA96314C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.OpearationResult.TestApi", "RoyalCode.OpearationResult.TestApi\RoyalCode.OpearationResult.TestApi.csproj", "{72952788-6EE6-4E43-9766-B55BA10AD0EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -228,6 +232,10 @@ Global
 		{DC973FC8-EDD9-443D-B5BE-751BA96314C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC973FC8-EDD9-443D-B5BE-751BA96314C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC973FC8-EDD9-443D-B5BE-751BA96314C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72952788-6EE6-4E43-9766-B55BA10AD0EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72952788-6EE6-4E43-9766-B55BA10AD0EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72952788-6EE6-4E43-9766-B55BA10AD0EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72952788-6EE6-4E43-9766-B55BA10AD0EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -275,6 +283,7 @@ Global
 		{D155578A-4CEA-4BD7-B566-8D4982AF0B68} = {BC2C235F-E382-4286-8BB3-8C8E590D81F2}
 		{61EA8808-DA44-4352-AB00-DEE7F5988681} = {D91CABB8-AE3F-4FE8-B8E3-DEDBD6C2EDB6}
 		{DC973FC8-EDD9-443D-B5BE-751BA96314C8} = {B6B07827-E084-4C89-8ED6-B3F014B7968B}
+		{72952788-6EE6-4E43-9766-B55BA10AD0EE} = {61EA8808-DA44-4352-AB00-DEE7F5988681}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FAC6C2E-62DE-4665-BB16-4E7D445FAB26}
