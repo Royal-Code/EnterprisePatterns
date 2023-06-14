@@ -1,0 +1,25 @@
+﻿namespace RoyalCode.OpearationResult.TestApi.Application.Pizzas;
+
+/// <summary>
+/// Classe base para as entidades
+/// </summary>
+public abstract class BaseEntity
+{
+    /// <summary>
+    /// Construtor padrão que gera um novo identificador único
+    /// </summary>
+    protected BaseEntity()
+    {
+        Id = Guid.NewGuid();
+    }
+
+    /// <summary>
+    /// Identificador único do registro
+    /// </summary>
+    public Guid Id { get; protected set; }
+
+    /// <summary>
+    /// Se o registro está inativo
+    /// </summary>
+    public bool Inativo { get; set; }
+}
