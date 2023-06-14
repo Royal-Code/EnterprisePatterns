@@ -1,16 +1,22 @@
-﻿namespace RoyalCode.OpearationResult.TestApi.Application.Pizzas
+﻿namespace RoyalCode.OpearationResult.TestApi.Application.Pizzas;
+
+/// <summary>
+/// <para>
+///     Sabor de pizza.
+/// </para>
+/// <para>
+///     Um sabor é composto por uma lista de ingredientes.
+/// </para>
+/// </summary>
+public class Sabor : BaseEntity
 {
     /// <summary>
-    /// <para>
-    ///     Sabor de pizza.
-    /// </para>
-    /// <para>
-    ///     Um sabor é composto por uma lista de ingredientes.
-    /// </para>
+    /// Nome do sabor.
     /// </summary>
-    public class Sabor : BaseEntity
-    {
+    public required string Nome { get; set; }
 
-
-    }
+    /// <summary>
+    /// Ingredientes do sabor.
+    /// </summary>
+    public ICollection<Ingrediente> Ingredientes { get; private set; } = new List<Ingrediente>();
 }
