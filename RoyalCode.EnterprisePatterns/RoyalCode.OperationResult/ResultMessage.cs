@@ -23,6 +23,42 @@ public class ResultMessage : IResultMessage
     /// </para>
     /// </summary>
     /// <param name="text">The message text.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <returns>
+    /// <para>
+    ///     New instance of message.
+    /// </para>
+    /// </returns>
+    public static ResultMessage Error(string code, string text)
+    {
+        return new ResultMessage(text, null, code, null, null);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Creates a new message of error.
+    /// </para>
+    /// </summary>
+    /// <param name="text">The message text.</param>
+    /// <param name="code">Some kind of code that can identify the type of message or error.</param>
+    /// <param name="status">The HTTP status code, optional.</param>
+    /// <param name="ex">The exception, optional.</param>
+    /// <returns>
+    /// <para>
+    ///     New instance of message.
+    /// </para>
+    /// </returns>
+    public static ResultMessage Error(string code, string text, HttpStatusCode? status = null, Exception? ex = null)
+    {
+        return new ResultMessage(text, null, code, status, ex);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Creates a new message of error.
+    /// </para>
+    /// </summary>
+    /// <param name="text">The message text.</param>
     /// <param name="property">The property related, optional.</param>
     /// <param name="code">Some kind of code that can identify the type of message or error.</param>
     /// <param name="status">The HTTP status code, optional.</param>
@@ -83,10 +119,12 @@ public class ResultMessage : IResultMessage
             if (status is not null)
                 message.Status = status;
 
+            message.Status ??= HttpStatusCode.InternalServerError;
+
             return message;
         }
         
-        return new ResultMessage(ex.Message, property, code, status, ex);
+        return new ResultMessage(ex.Message, property, code, status ?? HttpStatusCode.InternalServerError, ex);
     }
 
     /// <summary>

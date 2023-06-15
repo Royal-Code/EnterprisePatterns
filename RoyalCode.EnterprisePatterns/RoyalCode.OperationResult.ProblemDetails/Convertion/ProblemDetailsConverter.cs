@@ -67,14 +67,16 @@ public static class ProblemDetailsConverter
     public static ProblemDetails ToProblemDetails(
        this IResultMessage message, ProblemDetailsOptions options)
     {
-        var code = message.Code ?? GenericErrorCodes.InvalidParameters;
+        var code = message.GetCodeForType();
 
         // get the description
         options.Descriptor.TryGetDescription(code, out var description);
 
         int? status = description?.Status.HasValue ?? false
             ? (int)description.Status.Value
-            : null;
+            : message.Status.HasValue
+                ? (int)message.Status
+                : 400;
 
         ProblemDetails problem = new()
         {
@@ -94,7 +96,7 @@ public static class ProblemDetailsConverter
     private static void AddMessage(IResultMessage message, ProblemDetailsBuilder builder)
     {
         bool isGenericError = message.Code is null || GenericErrorCodes.Contains(message.Code);
-        var code = message.Code ?? GenericErrorCodes.InvalidParameters;
+        var code = message.GetCodeForType();
 
         builder.SetCode(code, isGenericError);
 
@@ -140,11 +142,23 @@ public static class ProblemDetailsConverter
     /// <param name="code">The code of the message.</param>
     /// <param name="options">The options for the conversion.</param>
     /// <returns>A string with the value for <see cref="Microsoft.AspNetCore.Mvc.ProblemDetails.Type"/>.</returns>
-    public static string ToProblemDetailsType(this string code, ProblemDetailsOptions options)
+    private static string ToProblemDetailsType(this string code, ProblemDetailsOptions options)
     {
         if (string.IsNullOrEmpty(code))
             return options.BaseAddress;
 
         return $"{options.BaseAddress}{options.TypeComplement}{code}";
+    }
+
+    /// <summary>
+    /// Get the type for the problem details from the message code or get the default code.
+    /// </summary>
+    /// <param name="message">The result message.</param>
+    /// <returns>The type for the problem details.</returns>
+    private static string GetCodeForType(this IResultMessage message)
+    {
+        return message.Code ?? (message.Status is not null
+            ? ((int)message.Status.Value).ToString()
+            : GenericErrorCodes.InvalidParameters);
     }
 }
