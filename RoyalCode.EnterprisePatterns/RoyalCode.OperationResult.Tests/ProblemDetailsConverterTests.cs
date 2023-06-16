@@ -186,4 +186,32 @@ public class ProblemDetailsConverterTests
         Assert.NotNull(problemDetails);
         Assert.Equal(409, problemDetails.Status);
     }
+
+    [Fact]
+    public void ToProblemDetails_Should_HaveInvalidParamsExtraField_When_HaveManyInvalidParametersErrors()
+    {
+        // Arrange
+        OperationResult result = ResultMessage.InvalidParameters("Mensagen 1", "FieldA");
+        result += ResultMessage.InvalidParameters("Mensagen 2", "FieldB");
+        result.TryGetError(out var error);
+
+        // Act
+        var problemDetails = error!.ToProblemDetails(new ProblemDetailsOptions());
+
+        // Assert
+
+        Assert.NotNull(problemDetails);
+        Assert.Equal(ProblemDetailsDescriptor.Defaults.InvalidParametersType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsDescriptor.Defaults.InvalidParametersTitle, problemDetails.Title);
+
+        var extraFields = problemDetails.Extensions[ProblemDetailsDescriptor.InvalidParametersExtensionField] as List<InvalidParameterDetails>;
+        Assert.NotNull(extraFields);
+        Assert.Equal(2, extraFields.Count);
+
+        Assert.Equal("FieldA", extraFields[0].Name);
+        Assert.Equal("Mensagen 1", extraFields[0].Reason);
+
+        Assert.Equal("FieldB", extraFields[1].Name);
+        Assert.Equal("Mensagen 2", extraFields[1].Reason);
+    }
 }
