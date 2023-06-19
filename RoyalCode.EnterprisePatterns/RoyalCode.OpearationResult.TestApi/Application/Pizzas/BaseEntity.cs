@@ -1,9 +1,11 @@
-﻿namespace RoyalCode.OpearationResult.TestApi.Application.Pizzas;
+﻿using RoyalCode.OpearationResult.TestApi.Application.SeedWork;
+
+namespace RoyalCode.OpearationResult.TestApi.Application.Pizzas;
 
 /// <summary>
 /// Classe base para as entidades
 /// </summary>
-public abstract class BaseEntity
+public abstract class BaseEntity : IHasId<Guid>
 {
     /// <summary>
     /// Construtor padrão que gera um novo identificador único

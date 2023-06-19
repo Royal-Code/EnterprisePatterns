@@ -1,6 +1,8 @@
+using RoyalCode.OpearationResult.TestApi.Application.SeedWork;
+
 namespace RoyalCode.OpearationResult.TestApi.Application.WeatherForecasts
 {
-    public class WeatherForecast
+    public class WeatherForecast : IHasId<Guid>
     {
         public DateOnly Date { get; set; }
 
@@ -9,5 +11,7 @@ namespace RoyalCode.OpearationResult.TestApi.Application.WeatherForecasts
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
         public string? Summary { get; set; }
+
+        public Guid Id { get; } = Guid.NewGuid();
     }
 }

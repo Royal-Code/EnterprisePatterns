@@ -41,7 +41,7 @@ public static class ProblemDetailsConverter
             ? (int)description.Status.Value
             : builder.GetStatusCode();
 
-        // crete the problem details
+        // create the problem details
         var problemDetails = new ProblemDetails
         {
             Type = description?.Type ?? builder.Code.ToProblemDetailsType(options),
@@ -55,8 +55,6 @@ public static class ProblemDetailsConverter
 
         return problemDetails;
     }
-
-    
 
     /// <summary>
     /// Convert one message to a problem details.

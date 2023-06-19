@@ -103,6 +103,11 @@ public class ProblemDetailsDescriptor
         /// Default title for the problem details of status code 500, Internal Server Error.
         /// </summary>
         public const string ApplicationErrorTitle = "An error has occurred";
+
+        /// <summary>
+        /// Default title for the problem details of an aggregation of problems.
+        /// </summary>
+        public const string AggregateProblemsDetailsTitle = "Multiples problems";
     }
 
     private readonly Dictionary<string, ProblemDetailsDescription> descriptions = new()
@@ -158,7 +163,7 @@ public class ProblemDetailsDescriptor
         {
             AggregateProblemsDetails,
             new ProblemDetailsDescription(AggregateProblemsDetails,
-                "Multiples problems",
+                Defaults.AggregateProblemsDetailsTitle,
                 """
                 This type of problem describes that there were several problems, and they are of different types. 
                 An additional property, called 'inner-problems' will contain the various problems.

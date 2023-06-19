@@ -1,9 +1,11 @@
+using RoyalCode.OpearationResult.TestApi.Application.SeedWork;
 using RoyalCode.OpearationResult.TestApi.Application.WeatherForecasts;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<WorkContext>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
