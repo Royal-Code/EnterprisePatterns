@@ -1,6 +1,8 @@
 ﻿
 namespace RoyalCode.OperationResults;
 
+// TODO: Rename to ResultErrors
+
 /// <summary>
 /// A collection of <see cref="IResultMessage"/>s.
 /// </summary>

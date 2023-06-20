@@ -8,7 +8,7 @@ namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// <para>
-///     A operation Outcome represents the result of an operation that can be either successful or a failure.
+///     A validable result represents the result of an operation that can be either successful or a failure.
 /// </para>
 /// <para>
 ///     This result type is similar to <see cref="OperationResult{TValue, TError}"/>, but it does not contain a value.
