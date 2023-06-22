@@ -100,7 +100,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Results", "Results", "{61EA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.OperationResult.Http.ProblemDetails", "RoyalCode.OperationResult.Http.ProblemDetails\RoyalCode.OperationResult.Http.ProblemDetails.csproj", "{DC973FC8-EDD9-443D-B5BE-751BA96314C8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.OpearationResult.TestApi", "RoyalCode.OpearationResult.TestApi\RoyalCode.OpearationResult.TestApi.csproj", "{72952788-6EE6-4E43-9766-B55BA10AD0EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.OperationResult.TestApi", "RoyalCode.OpearationResult.TestApi\RoyalCode.OperationResult.TestApi.csproj", "{72952788-6EE6-4E43-9766-B55BA10AD0EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

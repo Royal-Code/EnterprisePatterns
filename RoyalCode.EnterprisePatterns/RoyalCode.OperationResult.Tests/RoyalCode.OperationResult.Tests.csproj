@@ -5,9 +5,9 @@
 	<PropertyGroup>
 		<RootNamespace>RoyalCode.OperationResults.Tests</RootNamespace>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
-	  <ProjectReference Include="..\RoyalCode.OpearationResult.TestApi\RoyalCode.OpearationResult.TestApi.csproj" />
+	  <ProjectReference Include="..\RoyalCode.OpearationResult.TestApi\RoyalCode.OperationResult.TestApi.csproj" />
 	  <ProjectReference Include="..\RoyalCode.OperationResult.ProblemDetails\RoyalCode.OperationResult.ProblemDetails.csproj" />
 	  <ProjectReference Include="..\RoyalCode.OperationResult.Serialization\RoyalCode.OperationResult.Serialization.csproj" />
 	</ItemGroup>

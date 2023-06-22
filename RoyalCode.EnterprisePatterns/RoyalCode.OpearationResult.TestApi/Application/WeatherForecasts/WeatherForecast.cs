@@ -1,6 +1,6 @@
-using RoyalCode.OpearationResult.TestApi.Application.SeedWork;
+using RoyalCode.OperationResults.TestApi.Application.SeedWork;
 
-namespace RoyalCode.OpearationResult.TestApi.Application.WeatherForecasts
+namespace RoyalCode.OperationResults.TestApi.Application.WeatherForecasts
 {
     public class WeatherForecast : IHasId<Guid>
     {

@@ -1,4 +1,4 @@
-﻿namespace RoyalCode.OpearationResult.TestApi.Application.SeedWork;
+﻿namespace RoyalCode.OperationResults.TestApi.Application.SeedWork;
 
 public interface IHasId<out TId>
 {

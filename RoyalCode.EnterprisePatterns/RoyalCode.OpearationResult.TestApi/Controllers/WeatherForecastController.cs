@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using RoyalCode.OpearationResult.TestApi.Application.WeatherForecasts;
+using RoyalCode.OperationResults.TestApi.Application.WeatherForecasts;
 
-namespace RoyalCode.OpearationResult.TestApi.Controllers;
+namespace RoyalCode.OperationResults.TestApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]

@@ -1,6 +1,6 @@
-﻿using RoyalCode.OpearationResult.TestApi.Application.SeedWork;
+﻿using RoyalCode.OperationResults.TestApi.Application.SeedWork;
 
-namespace RoyalCode.OpearationResult.TestApi.Application.Pizzas;
+namespace RoyalCode.OperationResults.TestApi.Application.Pizzas;
 
 /// <summary>
 /// Classe base para as entidades

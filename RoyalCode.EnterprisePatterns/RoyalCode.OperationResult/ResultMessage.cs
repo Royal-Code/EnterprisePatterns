@@ -384,11 +384,9 @@ public class ResultMessage : IResultMessage
     public Exception? Exception { get; internal set; }
 
     /// <inheritdoc/>
-    [JsonIgnore]
     public HttpStatusCode? Status { get; set; }
 
     /// <inheritdoc/>
-    [JsonExtensionData]
     public IDictionary<string, object>? AdditionalInformation
         => additionalInformation?.ToImmutableDictionary();
 

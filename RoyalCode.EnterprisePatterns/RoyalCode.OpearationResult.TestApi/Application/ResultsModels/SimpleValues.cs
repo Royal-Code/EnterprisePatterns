@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace RoyalCode.OpearationResult.TestApi.Application.ResultsModels;
+namespace RoyalCode.OperationResults.TestApi.Application.ResultsModels;
 
 public class SimpleValues
 {

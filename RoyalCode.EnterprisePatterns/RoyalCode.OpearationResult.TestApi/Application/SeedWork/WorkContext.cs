@@ -1,9 +1,9 @@
-﻿using RoyalCode.OpearationResult.TestApi.Application.Pizzas;
-using RoyalCode.OpearationResult.TestApi.Application.WeatherForecasts;
+﻿using RoyalCode.OperationResults.TestApi.Application.Pizzas;
+using RoyalCode.OperationResults.TestApi.Application.WeatherForecasts;
 using System.Collections.Concurrent;
 using System.Text.Json;
 
-namespace RoyalCode.OpearationResult.TestApi.Application.SeedWork;
+namespace RoyalCode.OperationResults.TestApi.Application.SeedWork;
 
 public class WorkContext
 {

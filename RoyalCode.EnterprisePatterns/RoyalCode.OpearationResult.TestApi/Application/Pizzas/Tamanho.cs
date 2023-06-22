@@ -1,4 +1,4 @@
-﻿namespace RoyalCode.OpearationResult.TestApi.Application.Pizzas;
+﻿namespace RoyalCode.OperationResults.TestApi.Application.Pizzas;
 
 /// <summary>
 /// Tamanho da pizza;

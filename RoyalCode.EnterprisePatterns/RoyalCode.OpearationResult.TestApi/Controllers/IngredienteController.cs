@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace RoyalCode.OpearationResult.TestApi.Controllers;
+namespace RoyalCode.OperationResults.TestApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]

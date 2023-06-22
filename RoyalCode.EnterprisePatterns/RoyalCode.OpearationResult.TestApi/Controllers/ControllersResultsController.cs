@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RoyalCode.OpearationResult.TestApi.Application.ResultsModels;
+using RoyalCode.OperationResults.TestApi.Application.ResultsModels;
 using RoyalCode.OperationResults;
 
-namespace RoyalCode.OpearationResult.TestApi.Controllers;
+namespace RoyalCode.OperationResults.TestApi.Controllers;
 
 [ApiController]
 [Route("[controller]/[Action]")]
@@ -68,7 +68,7 @@ public class ControllersResultsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetSimpleValuesIfValidInput([FromQuery] string error)
+    public async Task<IActionResult> GetSimpleValuesIfValidInput([FromQuery] string? error)
     {
         ValidableResult result = new();
 

@@ -1,6 +1,6 @@
 ﻿using RoyalCode.OperationResults;
 
-namespace RoyalCode.OpearationResult.TestApi.Application.WeatherForecasts;
+namespace RoyalCode.OperationResults.TestApi.Application.WeatherForecasts;
 
 public class WeatherForecastService
 {

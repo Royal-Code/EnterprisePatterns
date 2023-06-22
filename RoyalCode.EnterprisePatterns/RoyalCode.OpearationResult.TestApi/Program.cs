@@ -1,5 +1,5 @@
-using RoyalCode.OpearationResult.TestApi.Application.SeedWork;
-using RoyalCode.OpearationResult.TestApi.Application.WeatherForecasts;
+using RoyalCode.OperationResults.TestApi.Application.SeedWork;
+using RoyalCode.OperationResults.TestApi.Application.WeatherForecasts;
 
 var builder = WebApplication.CreateBuilder(args);
 

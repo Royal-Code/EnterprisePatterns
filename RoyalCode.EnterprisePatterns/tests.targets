@@ -23,5 +23,8 @@
 
 		<PackageReference Include="FluentAssertions" Version="6.10.0" />
 		<PackageReference Include="Moq" Version="4.16.1" />
+
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(DotNetCoreVersion)" />
+		<PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(DotNetCoreVersion)" />
 	</ItemGroup>
 </Project>
