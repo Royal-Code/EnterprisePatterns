@@ -35,11 +35,10 @@ public class MatchErrorResult
     public MatchErrorResult(ResultsCollection results)
     {
         this.results = results ?? throw new ArgumentNullException(nameof(results));
-        StatusCode = results.GetHttpStatus();
     }
 
     /// <inheritdoc />
-    public int? StatusCode { get; }
+    public int? StatusCode => results.GetHttpStatus();
 
     /// <inheritdoc />
     public object? Value => results;
@@ -106,6 +105,8 @@ public class MatchErrorResult
     /// <returns>A task that represents the asynchronous execute operation.</returns>
     public Task WriteOperationResult(HttpContext httpContext)
     {
+        httpContext.Response.StatusCode = results.GetHttpStatus();
+
 #if NET7_0_OR_GREATER
         return httpContext.Response.WriteAsJsonAsync(
             results,

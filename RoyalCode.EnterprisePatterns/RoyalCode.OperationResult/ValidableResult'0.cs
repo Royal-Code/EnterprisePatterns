@@ -126,4 +126,44 @@ public readonly struct ValidableResult
         Func<TParam, TValue> map,
         TParam param)
         => Failure ? error : map(param);
+
+    /// <summary>
+    /// <para>
+    ///     Match a function depending on the operation result.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The type returned by the match function.</typeparam>
+    /// <param name="match">The function to execute if the operation result is successful.</param>
+    /// <param name="error">The function to execute if the operation result is a failure.</param>
+    /// <returns>The result of the executed function.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TResult Match<TResult>(Func<TResult> match, Func<ResultsCollection, TResult> error)
+        => Failure ? error(this.error) : match();
+
+    /// <summary>
+    /// <para>
+    ///     Match a function depending on the operation result.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The type returned by the match function.</typeparam>
+    /// <typeparam name="TParam">The type of the parameter passed to the match function.</typeparam>
+    /// <param name="match">The function to execute if the operation result is successful.</param>
+    /// <param name="error">The function to execute if the operation result is a failure.</param>
+    /// <param name="param">The parameter passed to the match function.</param>
+    /// <returns>The result of the executed function.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TResult Match<TResult, TParam>(
+        Func<TParam, TResult> match,
+        Func<ResultsCollection, TParam, TResult> error,
+        TParam param)
+        => Failure ? error(this.error, param) : match(param);
+
+    /// <summary>
+    /// Convert the operation result to a string.
+    /// When the operation result is successful, the string will be "Success: {value}".
+    /// When the operation result is a failure, the string will be "Failure: {error}".
+    /// </summary>
+    /// <returns>The string representation of the operation result.</returns>
+    public override readonly string ToString()
+        => Failure ? $"Failure: {error}" : $"Success";
 }

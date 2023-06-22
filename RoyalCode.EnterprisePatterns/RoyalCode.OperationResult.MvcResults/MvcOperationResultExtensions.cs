@@ -63,4 +63,13 @@ public static class MvcResults
     public static OperationMatchObjectResult<TValue> ToResult<TValue>(this OperationResult<TValue> result,
         string createdPath, bool formatPathWithValue = false)
         => new(result, createdPath, formatPathWithValue);
+
+    /// <summary>
+    /// Convert a <see cref="ValidableResult"/> to an <see cref="ValidableMatchObjectResult"/>
+    /// to be used in a MVC controller as a return type.
+    /// </summary>
+    /// <param name="result">The <see cref="ValidableResult"/> to be converted.</param>
+    /// <returns>The <see cref="ValidableMatchObjectResult"/> for the response.</returns>
+    public static ValidableMatchObjectResult ToResult(this ValidableResult result)
+        => new(result);
 }

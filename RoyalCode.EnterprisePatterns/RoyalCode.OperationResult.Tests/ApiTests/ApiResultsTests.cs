@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 
 namespace RoyalCode.OperationResults.Tests.ApiTests;
 
-public class ControllersResultsTests : IClassFixture<AppFixture>
+public class ApiResultsTests : IClassFixture<AppFixture>
 {
     private readonly HttpClient client;
 
-    public ControllersResultsTests(AppFixture app)
+    public ApiResultsTests(AppFixture app)
     {
         client = app.CreateDefaultClient();
     }
@@ -17,16 +19,15 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
     public async Task GetSimpleValues_Returns_Ok()
     {
         // Act
-        var response = await client.GetAsync("/ControllersResults/GetSimpleValues");
-        
+        var response = await client.GetAsync("/api/results/GetSimpleValues");
+        var json = await response.Content.ReadAsStringAsync();
+
         // Assert StatusCode
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        // Act
-        var json = await response.Content.ReadAsStringAsync();
-        var dictionary = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
-        
         // Assert Values
+        var dictionary = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+
         Assert.NotNull(dictionary);
         Assert.Equal(2, dictionary.Count);
         Assert.True(dictionary.ContainsKey("number"));
@@ -39,16 +40,15 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
     public async Task GetSimpleValuesWithCreatedPath_Returns_Created()
     {
         // Act
-        var response = await client.GetAsync("/ControllersResults/GetSimpleValuesWithCreatedPath");
-        
+        var response = await client.GetAsync("/api/results/GetSimpleValuesWithCreatedPath");
+        var json = await response.Content.ReadAsStringAsync();
+
         // Assert StatusCode
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-        // Act
-        var json = await response.Content.ReadAsStringAsync();
-        var dictionary = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
-        
         // Assert Values
+        var dictionary = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+
         Assert.NotNull(dictionary);
         Assert.Equal(2, dictionary.Count);
         Assert.True(dictionary.ContainsKey("number"));
@@ -68,16 +68,15 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
     public async Task GetSimpleValuesWithError_Returns_BadRequest()
     {
         // Act
-        var response = await client.GetAsync("/ControllersResults/GetSimpleValuesWithError");
-        
+        var response = await client.GetAsync("/api/results/GetSimpleValuesWithError");
+        var json = await response.Content.ReadAsStringAsync();
+
         // Assert StatusCode
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-        // Act
-        var json = await response.Content.ReadAsStringAsync();
-        var collection = JsonSerializer.Deserialize<List<Dictionary<string, JsonElement>>>(json);
-        
         // Assert Values
+        var collection = JsonSerializer.Deserialize<List<Dictionary<string, JsonElement>>>(json);
+
         Assert.NotNull(collection);
         Assert.Single(collection);
 
@@ -91,16 +90,15 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
     public async Task GetSimpleValuesWithErrorWithCreatedPath_Returns_BadRequest()
     {
         // Act
-        var response = await client.GetAsync("/ControllersResults/GetSimpleValuesWithErrorWithCreatedPath");
-        
+        var response = await client.GetAsync("/api/results/GetSimpleValuesWithErrorWithCreatedPath");
+        var json = await response.Content.ReadAsStringAsync();
+
         // Assert StatusCode
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-        // Act
-        var json = await response.Content.ReadAsStringAsync();
-        var collection = JsonSerializer.Deserialize<List<Dictionary<string, JsonElement>>>(json);
-        
         // Assert Values
+        var collection = JsonSerializer.Deserialize<List<Dictionary<string, JsonElement>>>(json);
+
         Assert.NotNull(collection);
         Assert.Single(collection);
 
@@ -114,16 +112,14 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
     public async Task GetSimpleValuesWithCreatedPathAndFormat_Returns_Created()
     {
         // Act
-        var response = await client.GetAsync("/ControllersResults/GetSimpleValuesWithCreatedPathAndFormat");
-        
+        var response = await client.GetAsync("/api/results/GetSimpleValuesWithCreatedPathAndFormat");
+        var json = await response.Content.ReadAsStringAsync();
+
         // Assert StatusCode
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-        // Act
-        var json = await response.Content.ReadAsStringAsync();
-        var number = JsonSerializer.Deserialize<JsonElement>(json);
-        
         // Assert Values
+        var number = JsonSerializer.Deserialize<JsonElement>(json);
         Assert.Equal(JsonValueKind.Number, number.ValueKind);
 
         // Act
@@ -139,16 +135,15 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
     public async Task GetSimpleValuesWithErrorWithCreatedPathAndFormat_Returns_BadRequest()
     {
         // Act
-        var response = await client.GetAsync("/ControllersResults/GetSimpleValuesWithErrorWithCreatedPathAndFormat");
-        
+        var response = await client.GetAsync("/api/results/GetSimpleValuesWithErrorWithCreatedPathAndFormat");
+        var json = await response.Content.ReadAsStringAsync();
+
         // Assert StatusCode
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-        // Act
-        var json = await response.Content.ReadAsStringAsync();
-        var collection = JsonSerializer.Deserialize<List<Dictionary<string, JsonElement>>>(json);
-        
         // Assert Values
+        var collection = JsonSerializer.Deserialize<List<Dictionary<string, JsonElement>>>(json);
+
         Assert.NotNull(collection);
         Assert.Single(collection);
 
@@ -169,12 +164,12 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
         var queryString = input is null ? "" : $"?error={input}";
 
         // Act
-        var response = await client.GetAsync($"/ControllersResults/GetSimpleValuesIfValidInput{queryString}");
+        var response = await client.GetAsync($"/api/results/GetSimpleValuesIfValidInput{queryString}");
         var json = await response.Content.ReadAsStringAsync();
 
         // Assert StatusCode
         Assert.Equal(expected, response.StatusCode);
-        
+
         // Assert Values
         if (valid)
         {
@@ -217,7 +212,7 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
         var queryString = input is null ? "" : $"?input={Uri.EscapeDataString(input)}";
 
         // Act
-        var response = await client.GetAsync($"/ControllersResults/ValidableResult{queryString}");
+        var response = await client.GetAsync($"/api/results/ValidableResult{queryString}");
         var json = await response.Content.ReadAsStringAsync();
 
         // Assert StatusCode
@@ -246,7 +241,7 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
     public async Task GetSimpleValues_Returns_Ok_WithProblemDetails()
     {
         // Prepare
-        var message = new HttpRequestMessage(HttpMethod.Get, "/ControllersResults/GetSimpleValues");
+        var message = new HttpRequestMessage(HttpMethod.Get, "/api/results/GetSimpleValues");
         message.Headers.Add("X-Result", "ProblemDetails");
 
         // Act
@@ -270,7 +265,7 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
     public async Task GetSimpleValuesWithError_Returns_BadRequest_WithProblemDetails()
     {
         // Prepare
-        var message = new HttpRequestMessage(HttpMethod.Get, "/ControllersResults/GetSimpleValuesWithError");
+        var message = new HttpRequestMessage(HttpMethod.Get, "/api/results/GetSimpleValuesWithError");
         message.Headers.Add("X-Result", "ProblemDetails");
 
         // Act

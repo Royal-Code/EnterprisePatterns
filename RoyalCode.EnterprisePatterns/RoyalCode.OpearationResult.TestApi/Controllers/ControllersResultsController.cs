@@ -81,4 +81,17 @@ public class ControllersResultsController : ControllerBase
 
         return simpleResult.ToResult();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> ValidableResult([FromQuery] string? input)
+    {
+        ValidableResult result = new();
+
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            result += ResultMessage.InvalidParameters("Input inválido.", nameof(input));
+        }
+
+        return result.ToResult();
+    }
 }

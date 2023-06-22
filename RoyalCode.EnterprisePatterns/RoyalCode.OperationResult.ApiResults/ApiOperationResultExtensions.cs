@@ -83,6 +83,19 @@ public static partial class ApiResults
             error => new MatchErrorResult(error));
     }
 
+    /// <summary>
+    /// Convert the <see cref="OperationResult{T}"/> to <see cref="IResult"/>.
+    /// </summary>
+    /// <param name="_">Used for extension.</param>
+    /// <param name="result">The operation result.</param>
+    /// <returns>The <see cref="IResult"/> for the response.</returns>
+    public static IResult ToResult(this IResultExtensions _, ValidableResult result)
+    {
+        return result.Match(
+            Results.NoContent,
+            error => new MatchErrorResult(error));
+    }
+
 #else
 
     /// <summary>
@@ -141,6 +154,19 @@ public static partial class ApiResults
     {
         return result.Match<Results<Created<T>, MatchErrorResult>>(
             value => TypedResults.Created(formatPathWithValue ? string.Format(createdPath, value) : createdPath, value),
+            error => new MatchErrorResult(error));
+    }
+
+    /// <summary>
+    /// Convert the <see cref="ValidableResult{T}"/> to <see cref="NoContent"/> or <see cref="MatchErrorResult"/>.
+    /// </summary>
+    /// <param name="_">Used for extension.</param>
+    /// <param name="result">The operation result.</param>
+    /// <returns>The <see cref="IResult"/> for the response.</returns>
+    public static Results<NoContent, MatchErrorResult> ToResult(this IResultExtensions _, ValidableResult result)
+    {
+        return result.Match<Results<NoContent, MatchErrorResult>>(
+            () => TypedResults.NoContent(),
             error => new MatchErrorResult(error));
     }
 
