@@ -1,4 +1,5 @@
-﻿
+﻿using System.Text.Json.Serialization;
+
 namespace RoyalCode.OperationResults;
 
 // TODO: Rename to ResultErrors
@@ -24,6 +25,9 @@ public class ResultsCollection : List<IResultMessage>, IOperationResult
     /// Creates a new instance of <see cref="ResultsCollection"/>
     /// </summary>
     public ResultsCollection() : base (1) { }
+
+    [JsonConstructor]
+    public ResultsCollection(IEnumerable<ResultMessage> messages) : base(messages) { }
 
     /// <inheritdoc />
     public bool Success => false;
