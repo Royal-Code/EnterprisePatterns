@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RoyalCode.OperationResults.TestApi.Application.ResultsModels;
-using RoyalCode.OperationResults;
 
 namespace RoyalCode.OperationResults.TestApi.Controllers;
 

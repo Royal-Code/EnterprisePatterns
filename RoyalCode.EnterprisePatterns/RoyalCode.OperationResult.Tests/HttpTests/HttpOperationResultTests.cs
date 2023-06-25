@@ -65,4 +65,74 @@ public class HttpOperationResultTests : IClassFixture<AppFixture>
         Assert.Single(error);
         Assert.Equal("Erro ao obter valores simples.", error.First().Text);
     }
+
+    [Fact]
+    public async Task ToOperationResultAsync_ShouldReturnSuccessResult_GetSimpleValuesWithCreatedPathAndFormat()
+    {
+        // Arrange
+        var request = new HttpRequestMessage(HttpMethod.Get, "/api/results/GetSimpleValuesWithCreatedPathAndFormat");
+
+        // Act
+        var response = await client.SendAsync(request);
+        var result = await response.ToOperationResultAsync();
+        var success = result.IsSuccessOrGetError(out var error);
+
+        // Assert
+        Assert.True(success);
+        Assert.Null(error);
+    }
+
+    [Fact]
+    public async Task ToOperationResultAsync_ShouldReturnErrorResult_WhenGetSimpleValuesWithErrorWithCreatedPath()
+    {
+        // Arrange
+        var request = new HttpRequestMessage(HttpMethod.Get, "/api/results/GetSimpleValuesWithErrorWithCreatedPath");
+
+        // Act
+        var response = await client.SendAsync(request);
+        var result = await response.ToOperationResultAsync<SimpleValues>();
+        var failure = result.TryGetError(out var error);
+
+        // Assert
+        Assert.True(failure);
+        Assert.NotNull(error);
+        Assert.Single(error);
+        Assert.Equal("Erro ao obter valores simples.", error.First().Text);
+    }
+
+    [Fact]
+    public async Task ToOperationResultAsync_ShouldReturnErrorResult_WhenGetTextBadRequest()
+    {
+        // Arrange
+        var request = new HttpRequestMessage(HttpMethod.Get, "/HttpTests/GetTextBadRequest");
+
+        // Act
+        var response = await client.SendAsync(request);
+        var result = await response.ToOperationResultAsync();
+        var failure = result.TryGetError(out var error);
+
+        // Assert
+        Assert.True(failure);
+        Assert.NotNull(error);
+        Assert.Single(error);
+        Assert.Equal("Erro ao obter valores simples.", error.First().Text);
+    }
+
+    [Fact]
+    public async Task ToOperationResultAsync_WithSimpleValue_ShouldReturnErrorResult_WhenGetTextBadRequest()
+    {
+        // Arrange
+        var request = new HttpRequestMessage(HttpMethod.Get, "/HttpTests/GetTextBadRequest");
+
+        // Act
+        var response = await client.SendAsync(request);
+        var result = await response.ToOperationResultAsync<SimpleValues>();
+        var failure = result.TryGetError(out var error);
+
+        // Assert
+        Assert.True(failure);
+        Assert.NotNull(error);
+        Assert.Single(error);
+        Assert.Equal("Erro ao obter valores simples.", error.First().Text);
+    }
 }
