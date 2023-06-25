@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\aspnet-versions.targets" />
+	<Import Project="..\asp.targets" />
 
 	<PropertyGroup>
 		<Version>1.0.0-preview1</Version>

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text.Json;
 
 namespace RoyalCode.OperationResults;
@@ -58,34 +59,86 @@ public class ProblemDetailsDescriptor
     /// </summary>
     public static string DefaultMessage { get; set; } = "An error has occurred";
 
+    /// <summary>
+    /// Constants for the defaults values of the problem details.
+    /// </summary>
+    public static class Defaults
+    {
+        /// <summary>
+        /// Default type for the problem details of status code 404, Not Found.
+        /// </summary>
+        public const string NotFoundType = "https://www.rfc-editor.org/rfc/rfc9110.html#name-404-not-found";
+
+        /// <summary>
+        /// Default type for the problem details of status code 400, Bad Request.
+        /// </summary>
+        public const string InvalidParametersType = "https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request";
+
+        /// <summary>
+        /// Default type for the problem details of status code 422, Unprocessable Content.
+        /// </summary>
+        public const string ValidationType = "https://www.rfc-editor.org/rfc/rfc9110.html#name-422-unprocessable-content";
+
+        /// <summary>
+        /// Default type for the problem details of status code 500, Internal Server Error.
+        /// </summary>
+        public const string ApplicationErrorType = "https://www.rfc-editor.org/rfc/rfc9110.html#name-500-internal-server-error";
+
+        /// <summary>
+        /// Default title for the problem details of status code 404, Not Found.
+        /// </summary>
+        public const string NotFoundTitle = "Entity not found";
+
+        /// <summary>
+        /// Default title for the problem details of status code 400, Bad Request.
+        /// </summary>
+        public const string InvalidParametersTitle = "The input parameters are invalid";
+
+        /// <summary>
+        /// Default title for the problem details of status code 422, Unprocessable Content.
+        /// </summary>
+        public const string ValidationTitle = "Errors have occurred in the validation of the input parameters.";
+
+        /// <summary>
+        /// Default title for the problem details of status code 500, Internal Server Error.
+        /// </summary>
+        public const string ApplicationErrorTitle = "An error has occurred";
+
+        /// <summary>
+        /// Default title for the problem details of an aggregation of problems.
+        /// </summary>
+        public const string AggregateProblemsDetailsTitle = "Multiples problems";
+    }
+
     private readonly Dictionary<string, ProblemDetailsDescription> descriptions = new()
     {
         {
             GenericErrorCodes.NotFound,
             new ProblemDetailsDescription(GenericErrorCodes.NotFound,
-                "https://www.rfc-editor.org/rfc/rfc9110.html#name-404-not-found",
-                "Entity not found",
+                Defaults.NotFoundType,
+                Defaults.NotFoundTitle,
                 """
                 The 404 (Not Found) status code indicates that the origin server did not find a current representation
                 for the target resource or is not willing to disclose that one exists. 
-                """)
+                """,
+                HttpStatusCode.NotFound)
         },
         {
             GenericErrorCodes.InvalidParameters,
             new ProblemDetailsDescription(GenericErrorCodes.InvalidParameters,
-                "https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request",
-                "The input parameters are invalid",
+                Defaults.InvalidParametersType,
+                Defaults.InvalidParametersTitle,
                 """
                 The 400 (Bad Request) status code indicates that the server cannot or will not process the request
                 due to something that is perceived to be a client error.
                 This particular error occurs because the parameters sent in by the client are invalid.
-                """
-                    )
+                """,
+                HttpStatusCode.BadRequest)
         },
         {
             GenericErrorCodes.Validation,
             new ProblemDetailsDescription(GenericErrorCodes.Validation,
-                "https://www.rfc-editor.org/rfc/rfc9110.html#name-422-unprocessable-content",
+                Defaults.ValidationType,
                 "Errors have occurred in the validation of the input parameters.",
                 """
                 The 422 (Unprocessable Content) status code indicates that the server understands the content type 
@@ -93,22 +146,24 @@ public class ProblemDetailsDescriptor
                 but it was unable to process the contained instructions.
                 This occurs because of validations on the input parameters,
                 where application or business rules are violated.
-                """)
+                """,
+                HttpStatusCode.UnprocessableEntity)
         },
         {
             GenericErrorCodes.ApplicationError,
             new ProblemDetailsDescription(GenericErrorCodes.ApplicationError,
-                "https://www.rfc-editor.org/rfc/rfc9110.html#name-500-internal-server-error",
-                "Internal server error",
+                Defaults.ApplicationErrorType,
+                Defaults.ApplicationErrorTitle,
                 """
                 The 500 (Internal Server Error) status code indicates that the server 
                 encountered an unexpected condition that prevented it from fulfilling the request.
-                """)
+                """,
+                HttpStatusCode.InternalServerError)
         },
         {
             AggregateProblemsDetails,
             new ProblemDetailsDescription(AggregateProblemsDetails,
-                "Multiples problems",
+                Defaults.AggregateProblemsDetailsTitle,
                 """
                 This type of problem describes that there were several problems, and they are of different types. 
                 An additional property, called 'inner-problems' will contain the various problems.

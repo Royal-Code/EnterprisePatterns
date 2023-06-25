@@ -97,7 +97,7 @@ public abstract class OperationMatchObjectResultBase<TResult> : ObjectResult
 
     private Task ExecuteOperationResultAsync(ResultsCollection error, ActionContext context)
     {
-        Value = Result;
+        Value = error;
         ContentTypes.Add("application/json");
         StatusCode = error.GetHttpStatus();
         DeclaredType = typeof(IOperationResult);

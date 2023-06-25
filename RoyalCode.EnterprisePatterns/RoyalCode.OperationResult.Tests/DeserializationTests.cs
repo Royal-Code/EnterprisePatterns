@@ -36,7 +36,9 @@ public class DeserializationTests
         // assert
         newResult.Should().BeEquivalentTo<IOperationResult>(result, o =>
         {
-            return o.ExcludingMissingMembers().For(r => r.Messages).Exclude(m => m.Exception);
+            return o.ExcludingMissingMembers()
+                .For(r => r.Messages).Exclude(m => m.Status)
+                .For(r => r.Messages).Exclude(m => m.Exception);
         });
     }
 

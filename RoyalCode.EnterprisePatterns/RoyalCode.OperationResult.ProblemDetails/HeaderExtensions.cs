@@ -31,7 +31,7 @@ public static class HeaderExtensions
             headerName = configuration.GetValue<string>(OperationResultHeaderKey) ?? OperationResultHeaderDefaultValue;
         }
 
-        if(httpContext.Request.Headers.TryGetValue(headerName, out var resultHeader))
+        if (httpContext.Request.Headers.TryGetValue(headerName, out var resultHeader))
         {
             resultType = resultHeader!;
             return true;

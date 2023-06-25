@@ -9,14 +9,14 @@ namespace RoyalCode.OperationResults;
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
+
 [JsonSerializable(typeof(IOperationResult), TypeInfoPropertyName = "AbstractOperationMessage")]
 [JsonSerializable(typeof(IResultMessage), TypeInfoPropertyName = "AbstractResultMessage")]
 [JsonSerializable(typeof(BaseResult))]
 [JsonSerializable(typeof(DeserializableResult))]
 
-[JsonSerializable(typeof(ResultMessage))]
+[JsonSerializable(typeof(IEnumerable<ResultMessage>), TypeInfoPropertyName = "ResultMessageCollection")]
 [JsonSerializable(typeof(ResultsCollection))]
-[JsonSerializable(typeof(DeserializableResultsCollection))]
 internal partial class SerializationContext : JsonSerializerContext
 {
     /// <summary>

@@ -191,7 +191,7 @@ public readonly struct OperationResult
     /// <param name="map">The function to convert the value.</param>
     /// <returns>The new operation result.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly OperationResult<TValue, ResultsCollection> Convert<TValue>(Func<TValue> map)
+    public readonly OperationResult<TValue> Convert<TValue>(Func<TValue> map)
         => Failure ? error : map();
 
     /// <summary>
@@ -210,7 +210,7 @@ public readonly struct OperationResult
     /// <param name="param">The parameter for the conversion.</param>
     /// <returns>The new operation result.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly OperationResult<TValue, ResultsCollection> Convert<TValue, TParam>(
+    public readonly OperationResult<TValue> Convert<TValue, TParam>(
         Func<TParam, TValue> map,
         TParam param)
         => Failure ? error : map(param);

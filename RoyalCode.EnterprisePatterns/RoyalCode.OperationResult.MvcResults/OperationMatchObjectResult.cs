@@ -101,3 +101,52 @@ public sealed class OperationMatchObjectResult<TValue> : OperationMatchObjectRes
         return BaseExecuteResultAsync(context);
     }
 }
+
+/// <summary>
+/// A Mvc <see cref="ObjectResult"/> for <see cref="OperationResult"/>.
+/// </summary>
+public sealed class ValidableMatchObjectResult : OperationMatchObjectResultBase<ValidableResult>
+{
+    /// <summary>
+    /// Determines if the default result is <see cref="OperationResult"/> or <see cref="ProblemDetails"/>.
+    /// </summary>
+    public static bool IsProblemDetailsDefault { get; set; } = false;
+
+    /// <summary>
+    /// Creates a new instance of <see cref="OperationMatchObjectResult"/>.
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="createdPath">Optional, the path created by the operation.</param>
+    /// <param name="formatPathWithValue">If true, the <paramref name="createdPath"/> will be formatted with the value of the result.</param>
+    public ValidableMatchObjectResult(
+        ValidableResult result,
+        string? createdPath = null,
+        bool formatPathWithValue = false) : base(result, createdPath, formatPathWithValue)
+    { }
+
+    /// <inheritdoc />
+    protected override Task ExecuteMatchAsync(ActionContext context)
+    {
+        return Result.Match(
+            ExecuteSuccessResultAsync,
+            ExecuteErrorResultAsync,
+            context);
+    }
+
+    private Task ExecuteSuccessResultAsync(ActionContext context)
+    {
+        Value = null;
+
+        if (CreatedPath is not null)
+        {
+            StatusCode = StatusCodes.Status201Created;
+            context.HttpContext.Response.Headers.Add("Location", CreatedPath);
+        }
+        else
+        {
+            StatusCode = StatusCodes.Status204NoContent;
+        }
+
+        return BaseExecuteResultAsync(context);
+    }
+}

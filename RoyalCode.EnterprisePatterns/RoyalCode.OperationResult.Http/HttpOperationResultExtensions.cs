@@ -36,12 +36,12 @@ public static class HttpOperationResultExtensions
                 return await response.ReadNonJsonContent(token);
             }
 
-            // in case of errors, the ResultsCollection must be deserialised
-            var deserializable = await response.Content.ReadFromJsonAsync(
-                DeserializableResultsCollection.JsonTypeInfo,
+            // in case of errors, a collection of messages must be deserialized
+            var messages = await response.Content.ReadFromJsonAsync(
+                DeserializableResultsCollection.ResultMessagesTypeInfo,
                 token);
 
-            var result = deserializable.Messages ?? new ResultsCollection();
+            var result = new ResultsCollection(messages ?? Enumerable.Empty<ResultMessage>());
 
             if (result.Count == 0)
             {
@@ -94,12 +94,12 @@ public static class HttpOperationResultExtensions
                 return await response.ReadNonJsonContent(token);
             }
 
-            // in case of errors, the ResultsCollection must be deserialised
-            var deserializable = await response.Content.ReadFromJsonAsync(
-                DeserializableResultsCollection.JsonTypeInfo,
+            // in case of errors, a collection of messages must be deserialized
+            var messages = await response.Content.ReadFromJsonAsync(
+                DeserializableResultsCollection.ResultMessagesTypeInfo,
                 token);
 
-            var result = deserializable.Messages ?? new ResultsCollection();
+            var result = new ResultsCollection(messages ?? Enumerable.Empty<ResultMessage>());
 
             if (result.Count == 0)
             {

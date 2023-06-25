@@ -296,7 +296,7 @@ public readonly struct OperationResult<TValue>
     /// <param name="map">The function to convert the value.</param>
     /// <returns>The new operation result.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly OperationResult<TOther, ResultsCollection> Convert<TOther>(Func<TValue, TOther> map)
+    public readonly OperationResult<TOther> Convert<TOther>(Func<TValue, TOther> map)
         => Failure ? error : map(value);
 
     /// <summary>

@@ -20,11 +20,13 @@ public interface IResultMessage
     /// or property that is intended for the message. 
     /// When not linked to any property, it will be null.
     /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
     string? Property { get; }
 
     /// <summary>
     /// Some kind of code that can identify the type of message, error, validation, rule.
     /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     string? Code { get; }
 
     /// <summary>
