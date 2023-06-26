@@ -15,7 +15,7 @@ public class ResultMessage : IResultMessage
     /// </summary>
     /// <param name="error"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ResultsCollection(ResultMessage error) => new ResultsCollection().With(error);
+    public static implicit operator ResultErrors(ResultMessage error) => new ResultErrors().With(error);
 
     /// <summary>
     /// <para>
@@ -322,6 +322,27 @@ public class ResultMessage : IResultMessage
             GenericErrorCodes.ApplicationError, 
             HttpStatusCode.InternalServerError,
             ex);
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Creates a error message with the code from <see cref="GenericErrorCodes.ApplicationError"/>
+    ///     and HTTP status InternalServerError 500.
+    /// </para>
+    /// </summary>
+    /// <param name="message">The message text.</param>
+    /// <returns>
+    ///     New instance of message.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    ///     <paramref name="message"/> is null or whitespace.
+    /// </exception>
+    public static ResultMessage ApplicationError(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            throw new ArgumentException($"'{nameof(message)}' cannot be null or whitespace.", nameof(message));
+
+        return new ResultMessage(message, null, GenericErrorCodes.ApplicationError, HttpStatusCode.InternalServerError);
     }
 
     private LinkedList<KeyValuePair<string, object>>? additionalInformation;

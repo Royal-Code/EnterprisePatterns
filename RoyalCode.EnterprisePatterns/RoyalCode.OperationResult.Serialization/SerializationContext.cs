@@ -16,7 +16,7 @@ namespace RoyalCode.OperationResults;
 [JsonSerializable(typeof(DeserializableResult))]
 
 [JsonSerializable(typeof(IEnumerable<ResultMessage>), TypeInfoPropertyName = "ResultMessageCollection")]
-[JsonSerializable(typeof(ResultsCollection))]
+[JsonSerializable(typeof(ResultErrors))]
 internal partial class SerializationContext : JsonSerializerContext
 {
     /// <summary>

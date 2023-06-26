@@ -393,4 +393,75 @@ public class ProblemDetailsConverterTests
         Assert.Equal(ProblemDetailsDescriptor.Defaults.ApplicationErrorTitle, problemDetails.Title);
         Assert.Equal(ProblemDetailsDescriptor.InternalErrorsMessage, problemDetails.Detail);
     }
+
+    [Fact]
+    public void ToProblemDetails_Should_AddExtraFieldsInInvalidParameterDetails_When_HaveManyInvalidParameters()
+    {
+        //arrange
+        OperationResult result = ResultMessage.InvalidParameters("Error message 1", "Property1")
+            .WithAdditionInfo("info", "info 1");
+        result += ResultMessage.InvalidParameters("Error message 2", "Property2")
+            .WithAdditionInfo("info", "info 2");
+        result.TryGetError(out var error);
+
+        var options = new ProblemDetailsOptions();
+
+        //act
+        var problemDetails = error!.ToProblemDetails(options);
+
+        //assert
+        Assert.NotNull(problemDetails);
+
+        var extraFields = problemDetails.Extensions[ProblemDetailsDescriptor.InvalidParametersExtensionField] as List<InvalidParameterDetails>;
+        Assert.NotNull(extraFields);
+        Assert.Equal(2, extraFields.Count);
+
+        var details1 = extraFields[0];
+        Assert.Equal("Property1", details1.Name);
+        Assert.Equal("Error message 1", details1.Reason);
+        Assert.NotNull(details1.Extensions);
+        Assert.Equal("info 1", details1.Extensions["info"]);
+
+        var details2 = extraFields[1];
+        Assert.Equal("Property2", details2.Name);
+        Assert.Equal("Error message 2", details2.Reason);
+        Assert.NotNull(details2.Extensions);
+        Assert.Equal("info 2", details2.Extensions["info"]);
+    }
+
+    [Fact]
+    public void ToProblemDetails_Should_AddExtraFieldsInNotFoundDetails_When_HavanManyNotFound()
+    {
+        //arrange
+        OperationResult result = ResultMessage.NotFound("Error message 1", "Property1")
+            .WithAdditionInfo("info", "info 1");
+        result += ResultMessage.NotFound("Error message 2", "Property2")
+            .WithAdditionInfo("info", "info 2");
+        result.TryGetError(out var error);
+
+        var options = new ProblemDetailsOptions();
+
+        //act
+        var problemDetails = error!.ToProblemDetails(options);
+
+        //assert
+        Assert.NotNull(problemDetails);
+
+        var extraFields = problemDetails.Extensions[ProblemDetailsDescriptor.NotFoundExtensionField] as List<NotFoundDetails>;
+
+        Assert.NotNull(extraFields);
+        Assert.Equal(2, extraFields.Count);
+
+        var details1 = extraFields[0];
+        Assert.Equal("Property1", details1.Property);
+        Assert.Equal("Error message 1", details1.Message);
+        Assert.NotNull(details1.Extensions);
+        Assert.Equal("info 1", details1.Extensions["info"]);
+
+        var details2 = extraFields[1];
+        Assert.Equal("Property2", details2.Property);
+        Assert.Equal("Error message 2", details2.Message);
+        Assert.NotNull(details2.Extensions);
+        Assert.Equal("info 2", details2.Extensions["info"]);
+    }
 }

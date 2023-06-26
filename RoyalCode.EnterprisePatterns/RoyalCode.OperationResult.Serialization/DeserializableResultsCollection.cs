@@ -6,7 +6,7 @@ namespace RoyalCode.OperationResults;
 /// <summary>
 /// A collection of results that can be deserialized.
 /// </summary>
-public static class DeserializableResultsCollection
+public static class DeserializableResultErrors
 {
     /// <summary>
     /// The <see cref="JsonTypeInfo"/> for <see cref="IEnumerable{ResultMessage}"/>.

@@ -2,32 +2,39 @@
 
 namespace RoyalCode.OperationResults;
 
-// TODO: Rename to ResultErrors
-
 /// <summary>
 /// A collection of <see cref="IResultMessage"/>s.
 /// </summary>
-public class ResultsCollection : List<IResultMessage>, IOperationResult
+public class ResultErrors : List<IResultMessage>, IOperationResult
 {
+    /// <summary>
+    /// Default capacity of the collection.
+    /// </summary>
+    public static int DefaultCapacity { get; set; } = 1;
+
     /// <summary>
     /// Adds a new message to the collection and returns the collection.
     /// </summary>
     /// <param name="collection">The collection to add the message to</param>
     /// <param name="message">The new message to add</param>
     /// <returns>The same instance of the collection</returns>
-    public static ResultsCollection operator +(ResultsCollection collection, IResultMessage message)
+    public static ResultErrors operator +(ResultErrors collection, IResultMessage message)
     {
         collection.Add(message);
         return collection;
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="ResultsCollection"/>
+    /// Creates a new instance of <see cref="ResultErrors"/>
     /// </summary>
-    public ResultsCollection() : base (1) { }
+    public ResultErrors() : base (DefaultCapacity) { }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="ResultErrors"/> with the messages provided.
+    /// </summary>
+    /// <param name="messages">The collection of messages to add to the new instance.</param>
     [JsonConstructor]
-    public ResultsCollection(IEnumerable<ResultMessage> messages) : base(messages) { }
+    public ResultErrors(IEnumerable<ResultMessage> messages) : base(messages) { }
 
     /// <inheritdoc />
     public bool Success => false;
@@ -43,7 +50,7 @@ public class ResultsCollection : List<IResultMessage>, IOperationResult
     /// </summary>
     /// <param name="message">The new message to add</param>
     /// <returns>The same instance of the collection</returns>
-    public ResultsCollection With(IResultMessage message)
+    public ResultErrors With(IResultMessage message)
     {
         Add(message);
         return this;
@@ -54,7 +61,7 @@ public class ResultsCollection : List<IResultMessage>, IOperationResult
     /// </summary>
     /// <param name="messages">The messages to add</param>
     /// <returns>The same instance of the collection</returns>
-    public ResultsCollection With(IEnumerable<IResultMessage> messages)
+    public ResultErrors With(IEnumerable<IResultMessage> messages)
     {
         AddRange(messages);
         return this;

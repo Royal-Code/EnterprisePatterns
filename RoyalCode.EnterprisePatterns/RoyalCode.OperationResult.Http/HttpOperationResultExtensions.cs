@@ -38,10 +38,10 @@ public static class HttpOperationResultExtensions
 
             // in case of errors, a collection of messages must be deserialized
             var messages = await response.Content.ReadFromJsonAsync(
-                DeserializableResultsCollection.ResultMessagesTypeInfo,
+                DeserializableResultErrors.ResultMessagesTypeInfo,
                 token);
 
-            var result = new ResultsCollection(messages ?? Enumerable.Empty<ResultMessage>());
+            var result = new ResultErrors(messages ?? Enumerable.Empty<ResultMessage>());
 
             if (result.Count == 0)
             {
@@ -96,10 +96,10 @@ public static class HttpOperationResultExtensions
 
             // in case of errors, a collection of messages must be deserialized
             var messages = await response.Content.ReadFromJsonAsync(
-                DeserializableResultsCollection.ResultMessagesTypeInfo,
+                DeserializableResultErrors.ResultMessagesTypeInfo,
                 token);
 
-            var result = new ResultsCollection(messages ?? Enumerable.Empty<ResultMessage>());
+            var result = new ResultErrors(messages ?? Enumerable.Empty<ResultMessage>());
 
             if (result.Count == 0)
             {
