@@ -446,6 +446,9 @@ public class ResultMessage : IResultMessage
 
         additionalInformation ??= new();
 
+        if (key.Equals("property", StringComparison.OrdinalIgnoreCase))
+            Property = value.ToString();
+
         var kvp = additionalInformation.FirstOrDefault(i => i.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
         if (kvp.Key is not null)
             additionalInformation.Remove(kvp);

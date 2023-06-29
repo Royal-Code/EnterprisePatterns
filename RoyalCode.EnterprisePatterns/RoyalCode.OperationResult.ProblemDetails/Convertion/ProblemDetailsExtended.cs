@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using RoyalCode.OperationResults.Convertion.Internals;
 using System.Net;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace RoyalCode.OperationResults.Convertion;
 
@@ -78,6 +80,7 @@ public class ProblemDetailsExtended : ProblemDetails
     ///     is <see cref="ProblemDetailsDescriptor.AggregateProblemsDetails"/>.
     /// </para>
     /// </summary>
+    [JsonIgnore]
     public bool IsAggregate => Type == ProblemDetailsDescriptor.AggregateProblemsDetails;
 
     /// <summary>
@@ -172,4 +175,21 @@ public class ProblemDetailsExtended : ProblemDetails
 
         return message;
     }
+}
+
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
+[JsonSerializable(typeof(ProblemDetailsExtended))]
+[JsonSerializable(typeof(InvalidParameterDetails))]
+[JsonSerializable(typeof(NotFoundDetails))]
+[JsonSerializable(typeof(ProblemDetails))]
+public partial class ProblemDetailsSerializer : JsonSerializerContext
+{
+    private static readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+
+    public static JsonTypeInfo<ProblemDetailsExtended> DefaultProblemDetailsExtended 
+        => Default.ProblemDetailsExtended;
+
+    public static JsonSerializerOptions JsonSerializerOptions => jsonSerializerOptions;
 }
