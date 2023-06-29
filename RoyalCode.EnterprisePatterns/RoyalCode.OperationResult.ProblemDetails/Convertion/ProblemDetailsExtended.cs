@@ -1,8 +1,9 @@
 ﻿using RoyalCode.OperationResults.Convertion.Internals;
+using System.Dynamic;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
+using static System.Text.Json.JsonElement;
 
 namespace RoyalCode.OperationResults.Convertion;
 
@@ -57,7 +58,7 @@ public class ProblemDetailsExtended : ProblemDetails
     /// </para>
     /// </summary>
     [JsonPropertyName(ProblemDetailsDescriptor.ErrorsExtensionField)]
-    public IEnumerable<string>? InternalErrors { get; set; }
+    public IEnumerable<string>? Errors { get; set; }
 
     /// <summary>
     /// <para>
@@ -99,12 +100,17 @@ public class ProblemDetailsExtended : ProblemDetails
 
         if (InvalidParameters is not null)
         {
+            // if status is 400 then use invalid parameters, otherwise use validation
+            var useValidation = Status != 400;
+
             foreach (var invalidParameter in InvalidParameters)
             {
-                var message = ResultMessage.InvalidParameters(invalidParameter.Reason, invalidParameter.Name ?? string.Empty);
+                var message = useValidation
+                    ? ResultMessage.ValidationError(invalidParameter.Reason, invalidParameter.Name ?? string.Empty)
+                    : ResultMessage.InvalidParameter(invalidParameter.Reason, invalidParameter.Name ?? string.Empty);
                 if (invalidParameter.Extensions is not null)
                     foreach(var extension in invalidParameter.Extensions)
-                        message.WithAdditionInfo(extension.Key, extension.Value);
+                        message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
 
                 erros += message;
             }
@@ -123,7 +129,7 @@ public class ProblemDetailsExtended : ProblemDetails
                 var message = ResultMessage.NotFound(notFoundDetail.Message, notFoundDetail.Property ?? string.Empty);
                 if (notFoundDetail.Extensions is not null)
                     foreach(var extension in notFoundDetail.Extensions)
-                        message.WithAdditionInfo(extension.Key, extension.Value);
+                        message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
 
                 erros += message;
             }
@@ -132,14 +138,19 @@ public class ProblemDetailsExtended : ProblemDetails
                 ignoreDetails = true;
         }
 
-        if (InternalErrors is not null)
+        if (Errors is not null)
         {
-            foreach (var internalError in InternalErrors)
+            bool isInternalError = Status == 500;
+
+            foreach (var error in Errors)
             {
-                erros += ResultMessage.ApplicationError(internalError);
+                erros += isInternalError
+                    ? ResultMessage.ApplicationError(error)
+                    : ResultMessage.Error(GenericErrorCodes.GenericError, error, HttpStatusCode.BadRequest);
             }
 
-            if (Title == ProblemDetailsDescriptor.Defaults.ApplicationErrorTitle)
+            if (Title == ProblemDetailsDescriptor.Defaults.ApplicationErrorTitle
+                || Title == ProblemDetailsDescriptor.Defaults.GenericErrorTitle)
                 ignoreDetails = true;
         }
 
@@ -153,8 +164,19 @@ public class ProblemDetailsExtended : ProblemDetails
             ignoreDetails = true;
         }
 
-        if (!ignoreDetails)
+        if (ignoreDetails)
+        {
+            if (Extensions?.Count > 0)
+            {
+                var message = (ResultMessage)erros.First();
+                foreach (var extension in Extensions)
+                    message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
+            }
+        }
+        else
+        {
             erros += ToResultMessage(this);
+        }
 
         return erros;
     }
@@ -171,25 +193,47 @@ public class ProblemDetailsExtended : ProblemDetails
         // add the additional information
         if (details.Extensions is not null)
             foreach(var extension in details.Extensions)
-                message.WithAdditionInfo(extension.Key, extension.Value ?? string.Empty);
+                message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
 
         return message;
     }
-}
 
-[JsonSourceGenerationOptions(
-    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
-[JsonSerializable(typeof(ProblemDetailsExtended))]
-[JsonSerializable(typeof(InvalidParameterDetails))]
-[JsonSerializable(typeof(NotFoundDetails))]
-[JsonSerializable(typeof(ProblemDetails))]
-public partial class ProblemDetailsSerializer : JsonSerializerContext
-{
-    private static readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+    private static object? ReadJsonValue(object? obj)
+    {
+        if (obj is null)
+            return null;
 
-    public static JsonTypeInfo<ProblemDetailsExtended> DefaultProblemDetailsExtended 
-        => Default.ProblemDetailsExtended;
+        if (obj is JsonElement jsonElement)
+            return ReadJsonElement(jsonElement);
 
-    public static JsonSerializerOptions JsonSerializerOptions => jsonSerializerOptions;
+        return obj;
+    }
+
+    private static object? ReadJsonElement(JsonElement jsonElement)
+    {
+        // convert the json element to a object of the correct type
+        return jsonElement.ValueKind switch
+        {
+            JsonValueKind.String => jsonElement.GetString(),
+            JsonValueKind.Number => jsonElement.GetDecimal(),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.Null => null,
+            JsonValueKind.Array => jsonElement.EnumerateArray().Select(ReadJsonElement).ToArray(),
+            JsonValueKind.Object => ReadJsonObject(jsonElement),
+            _ => jsonElement.GetRawText(),
+        };
+    }
+
+    private static object ReadJsonObject(JsonElement jsonElement)
+    {
+        // convert the json element to a object of the correct type
+        var obj = new Dictionary<string, object?>();
+        foreach (var property in jsonElement.EnumerateObject())
+        {
+            obj.Add(property.Name, ReadJsonElement(property.Value));
+        }
+
+        return obj;
+    }
 }

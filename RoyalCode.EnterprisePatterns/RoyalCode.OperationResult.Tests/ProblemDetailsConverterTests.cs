@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using RoyalCode.OperationResults.Convertion;
 using System.Net;
 
@@ -8,10 +7,28 @@ namespace RoyalCode.OperationResults.Tests;
 public class ProblemDetailsConverterTests
 {
     [Fact]
-    public void ToProblemDetails_Should_ReturnProblemDetails_With_Status400_When_Error_WithoutStatus_And_WithoutCode()
+    public void ToProblemDetails_Should_ReturnProblemDetails_With_Status400_When_Error_WithoutStatus_And_WithoutCode_And_WithoutProperty()
     {
         // Arrange
         OperationResult result = ResultMessage.Error("Error message");
+        result.TryGetError(out var error);
+
+        // Act
+        var problemDetails = error!.ToProblemDetails(new ProblemDetailsOptions());
+
+        // Assert
+        Assert.NotNull(problemDetails);
+        Assert.Equal(ProblemDetailsDescriptor.Defaults.GenericErrorType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsDescriptor.Defaults.GenericErrorTitle, problemDetails.Title);
+        Assert.Equal("Error message", problemDetails.Detail);
+        Assert.Equal(400, problemDetails.Status);
+    }
+
+    [Fact]
+    public void ToProblemDetails_Should_ReturnProblemDetails_With_Status400_When_Error_WithoutStatus_And_WithoutCode_And_WithProperty()
+    {
+        // Arrange
+        OperationResult result = ResultMessage.Error(code: null, "Error message", "Property");
         result.TryGetError(out var error);
 
         // Act
@@ -193,8 +210,8 @@ public class ProblemDetailsConverterTests
     public void ToProblemDetails_Should_HaveInvalidParamsExtraField_When_HaveManyInvalidParametersErrors()
     {
         // Arrange
-        OperationResult result = ResultMessage.InvalidParameters("Mensagen 1", "FieldA");
-        result += ResultMessage.InvalidParameters("Mensagen 2", "FieldB");
+        OperationResult result = ResultMessage.InvalidParameter("Mensagen 1", "FieldA");
+        result += ResultMessage.InvalidParameter("Mensagen 2", "FieldB");
         result.TryGetError(out var error);
 
         // Act
@@ -313,7 +330,7 @@ public class ProblemDetailsConverterTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Mensagen 1", "FieldA");
-        result += ResultMessage.InvalidParameters("Mensagen 2", "FieldB");
+        result += ResultMessage.InvalidParameter("Mensagen 2", "FieldB");
         result.TryGetError(out var error);
 
         // Act
@@ -332,7 +349,7 @@ public class ProblemDetailsConverterTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Mensagen 1", "FieldA");
-        result += ResultMessage.InvalidParameters("Mensagen 2", "FieldB");
+        result += ResultMessage.InvalidParameter("Mensagen 2", "FieldB");
         result += ResultMessage.ValidationError("Mensagen 3", "FieldC");
         result.TryGetError(out var error);
 
@@ -352,7 +369,7 @@ public class ProblemDetailsConverterTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Mensagen 1", "FieldA");
-        result += ResultMessage.InvalidParameters("Mensagen 2", "FieldB");
+        result += ResultMessage.InvalidParameter("Mensagen 2", "FieldB");
         result += ResultMessage.ValidationError("Mensagen 3", "FieldC");
         result += ResultMessage.Error("error-code-4", "Error message 4", HttpStatusCode.Conflict);
         result += ResultMessage.ApplicationError(new Exception("Mensagen 5"));
@@ -377,7 +394,7 @@ public class ProblemDetailsConverterTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Mensagen 1", "FieldA");
-        result += ResultMessage.InvalidParameters("Mensagen 2", "FieldB");
+        result += ResultMessage.InvalidParameter("Mensagen 2", "FieldB");
         result += ResultMessage.ValidationError("Mensagen 3", "FieldC");
         result += ResultMessage.ApplicationError(new Exception("Mensagen 4"));
 
@@ -398,9 +415,9 @@ public class ProblemDetailsConverterTests
     public void ToProblemDetails_Should_AddExtraFieldsInInvalidParameterDetails_When_HaveManyInvalidParameters()
     {
         //arrange
-        OperationResult result = ResultMessage.InvalidParameters("Error message 1", "Property1")
+        OperationResult result = ResultMessage.InvalidParameter("Error message 1", "Property1")
             .WithAdditionInfo("info", "info 1");
-        result += ResultMessage.InvalidParameters("Error message 2", "Property2")
+        result += ResultMessage.InvalidParameter("Error message 2", "Property2")
             .WithAdditionInfo("info", "info 2");
         result.TryGetError(out var error);
 

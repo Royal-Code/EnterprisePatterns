@@ -213,7 +213,7 @@ public class ResultMessage : IResultMessage
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage InvalidParameters(string text, string property)
+    public static ResultMessage InvalidParameter(string text, string property)
     {
         return new ResultMessage(text, property, GenericErrorCodes.InvalidParameters, HttpStatusCode.BadRequest);
     }

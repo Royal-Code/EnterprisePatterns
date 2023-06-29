@@ -152,7 +152,7 @@ public static class ValueResult
     /// <param name="property">The related property.</param>
     /// <returns>New instance.</returns>
     public static ValueResult<TValue> InvalidParameters<TValue>(string text, string property)
-        => new(default, ResultMessage.InvalidParameters(text, property));
+        => new(default, ResultMessage.InvalidParameter(text, property));
 
     /// <summary>
     /// Creates a new operation result with the value of the operation and with a error message 

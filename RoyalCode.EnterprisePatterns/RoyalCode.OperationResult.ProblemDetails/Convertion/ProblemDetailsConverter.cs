@@ -122,10 +122,10 @@ public static class ProblemDetailsConverter
                     Extensions = message.AdditionalInformation
                 });
             }
-            // if not, add internal error
+            // if not, add error, it can be a generic error or a application error (internal error)
             else
             {
-                builder.AddInternalErrorMessage(message.Text);
+                builder.AddErrorMessage(message.Text);
                 if (message.AdditionalInformation is not null)
                     builder.AddExtension(message.AdditionalInformation);
             }
@@ -160,6 +160,8 @@ public static class ProblemDetailsConverter
     {
         return message.Code ?? (message.Status is not null
             ? ((int)message.Status.Value).ToString()
-            : GenericErrorCodes.InvalidParameters);
+            : message.Property is null
+                ? GenericErrorCodes.GenericError
+                : GenericErrorCodes.InvalidParameters);
     }
 }
