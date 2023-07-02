@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\asp.targets" />
+	<Import Project="..\libs.targets" />
 
 	<PropertyGroup>
 		<Version>$(OpResVer)$(OpResPreview)</Version>
@@ -14,7 +14,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<FrameworkReference Include="Microsoft.AspNetCore.App"
+							Condition="'$(TargetFramework)' == 'net6'"/>
+		<FrameworkReference Include="Microsoft.AspNetCore.App"
+							Condition="'$(TargetFramework)' == 'net7'"/>
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" 
+						  Condition="'$(TargetFramework)' == 'netstandard2.1'"/>
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
 	</ItemGroup>
 

@@ -1,4 +1,5 @@
 ﻿using RoyalCode.OperationResults;
+using RoyalCode.OperationResults.Convertion;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -30,37 +31,52 @@ public static class HttpOperationResultExtensions
         }
         else
         {
-            // check if the content is not json
-            if (response.Content.Headers.ContentType?.MediaType != "application/json")
-            {
-                return await response.ReadNonJsonContent(token);
-            }
-
-            // in case of errors, a collection of messages must be deserialized
-            var messages = await response.Content.ReadFromJsonAsync(
-                DeserializableResultErrors.ResultMessagesTypeInfo,
-                token);
-
-            var result = new ResultErrors(messages ?? Enumerable.Empty<ResultMessage>());
-
-            if (result.Count == 0)
-            {
-                // if there is no message, add a default message
-                result.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(),
-                    null, null, response.StatusCode));
-            }
+            var mediaType = response.Content.Headers.ContentType?.MediaType;
+            // check if the content
+            if (mediaType == "application/json")
+                return await response.ReadOperationResult(token);
+            else if(mediaType == "application/problem+json")
+                return await response.ReadProblemDetails(token);
             else
-            {
-                var status = response.StatusCode;
-                // provides the status code of the response for each message
-                foreach (var message in result)
-                {
-                    message.Status = status;
-                }
-            }
-
-            return result;
+                return await response.ReadNonJsonContent(token);
         }
+    }
+
+    private static async Task<OperationResult> ReadOperationResult(
+        this HttpResponseMessage response, CancellationToken token)
+    {
+        // in case of errors, a collection of messages must be deserialized
+        var messages = await response.Content.ReadFromJsonAsync(
+            DeserializableResultErrors.ResultMessagesTypeInfo,
+            token);
+
+        var result = new ResultErrors(messages ?? Enumerable.Empty<ResultMessage>());
+
+        if (result.Count == 0)
+        {
+            // if there is no message, add a default message
+            result.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(),
+                null, null, response.StatusCode));
+        }
+        else
+        {
+            var status = response.StatusCode;
+            // provides the status code of the response for each message
+            foreach (var message in result)
+            {
+                message.Status = status;
+            }
+        }
+
+        return result;
+    }
+
+    private static async Task<OperationResult> ReadProblemDetails(
+        this HttpResponseMessage response, CancellationToken token)
+    {
+        var problemDetails = await response.Content.ReadFromJsonAsync(
+            ProblemDetailsSerializer.DefaultProblemDetailsExtended,
+            token);
     }
 
     /// <summary>
@@ -104,7 +120,7 @@ public static class HttpOperationResultExtensions
             if (result.Count == 0)
             {
                 // if there is no message, add a default message
-                result.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(), 
+                result.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(),
                     null, null, response.StatusCode));
             }
             else

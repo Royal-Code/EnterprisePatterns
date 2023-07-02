@@ -1,7 +1,4 @@
-﻿
-#if NET7_0 || NET6_0
-
-// this is a .Net 8.0 feature
+﻿// this is a .Net 8.0 feature
 // the current ProblemDatails.cs has a bug that is fixed in .Net 8.0
 
 using System.Text.Json.Serialization;
@@ -68,4 +65,3 @@ public class ProblemDetails
     [JsonExtensionData]
     public IDictionary<string, object?> Extensions { get; set; } = new Dictionary<string, object?>(StringComparer.Ordinal);
 }
-#endif
