@@ -135,4 +135,44 @@ public class HttpOperationResultTests : IClassFixture<AppFixture>
         Assert.Single(error);
         Assert.Equal("Erro ao obter valores simples.", error.First().Text);
     }
+
+    [Fact]
+    public async Task ToOperationResultAsync_ShouldReturnErrorResult_WhenGetSimpleValuesWithError_WithProblemDetails()
+    {
+        // Arrange
+        var message = new HttpRequestMessage(HttpMethod.Get, "/api/results/GetSimpleValuesWithError");
+        message.Headers.Add("X-Result", "ProblemDetails");
+
+        // Act
+        var response = await client.SendAsync(message);
+        var result = await response.ToOperationResultAsync<SimpleValues>();
+        var failure = result.TryGetError(out var error);
+
+        // Assert
+        Assert.True(failure);
+        Assert.NotNull(error);
+        Assert.Single(error);
+        Assert.Equal("Erro ao obter valores simples.", error.First().Text);
+        Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+    }
+
+    [Fact]
+    public async Task ToOperationResultAsync_ShouldReturnErrorResult_WhenGetWithError_WithProblemDetails()
+    {
+        // Arrange
+        var message = new HttpRequestMessage(HttpMethod.Get, "/api/results/GetSimpleValuesWithError");
+        message.Headers.Add("X-Result", "ProblemDetails");
+
+        // Act
+        var response = await client.SendAsync(message);
+        var result = await response.ToOperationResultAsync();
+        var failure = result.TryGetError(out var error);
+
+        // Assert
+        Assert.True(failure);
+        Assert.NotNull(error);
+        Assert.Single(error);
+        Assert.Equal("Erro ao obter valores simples.", error.First().Text);
+        Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+    }
 }
