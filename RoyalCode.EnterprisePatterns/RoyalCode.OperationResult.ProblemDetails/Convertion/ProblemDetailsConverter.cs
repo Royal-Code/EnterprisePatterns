@@ -88,6 +88,9 @@ public static class ProblemDetailsConverter
             foreach (var (key, value) in message.AdditionalInformation)
                 problem.Extensions.Add(key, value);
 
+        if (message.Property is not null)
+            problem.Extensions.Add("property", message.Property);
+
         return problem;
     }
 
@@ -119,10 +122,10 @@ public static class ProblemDetailsConverter
                     Extensions = message.AdditionalInformation
                 });
             }
-            // if not, add internal error
+            // if not, add error, it can be a generic error or a application error (internal error)
             else
             {
-                builder.AddInternalErrorMessage(message.Text);
+                builder.AddErrorMessage(message.Text);
                 if (message.AdditionalInformation is not null)
                     builder.AddExtension(message.AdditionalInformation);
             }
@@ -139,7 +142,7 @@ public static class ProblemDetailsConverter
     /// </summary>
     /// <param name="code">The code of the message.</param>
     /// <param name="options">The options for the conversion.</param>
-    /// <returns>A string with the value for <see cref="Microsoft.AspNetCore.Mvc.ProblemDetails.Type"/>.</returns>
+    /// <returns>A string with the value for <see cref="ProblemDetails.Type"/>.</returns>
     private static string ToProblemDetailsType(this string code, ProblemDetailsOptions options)
     {
         if (string.IsNullOrEmpty(code))
@@ -157,6 +160,8 @@ public static class ProblemDetailsConverter
     {
         return message.Code ?? (message.Status is not null
             ? ((int)message.Status.Value).ToString()
-            : GenericErrorCodes.InvalidParameters);
+            : message.Property is null
+                ? GenericErrorCodes.GenericError
+                : GenericErrorCodes.InvalidParameters);
     }
 }

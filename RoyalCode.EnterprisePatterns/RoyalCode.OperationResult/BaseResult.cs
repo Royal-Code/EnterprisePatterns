@@ -208,7 +208,7 @@ public class BaseResult : IOperationResult
     /// <returns>New instance.</returns>
     public static BaseResult InvalidParameters(string text, string property)
     {
-        return new BaseResult(ResultMessage.InvalidParameters(text, property));
+        return new BaseResult(ResultMessage.InvalidParameter(text, property));
     }
 
     /// <summary>

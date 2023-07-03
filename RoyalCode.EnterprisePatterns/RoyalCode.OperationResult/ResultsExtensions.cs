@@ -220,7 +220,7 @@ public static class ResultsExtensions
     /// </returns>
     public static ResultMessage AddInvalidParameters(this BaseResult result, string text, string property)
     {
-        return result.AddMessage(ResultMessage.InvalidParameters(text, property));
+        return result.AddMessage(ResultMessage.InvalidParameter(text, property));
     }
 
     /// <summary>
@@ -459,7 +459,7 @@ public static class ResultsExtensions
     public static TResult WithInvalidParameters<TResult>(this TResult result, string text, string property)
         where TResult : BaseResult
     {
-        result.Add(ResultMessage.InvalidParameters(text, property));
+        result.Add(ResultMessage.InvalidParameter(text, property));
         return result;
     }
 
@@ -544,11 +544,11 @@ public static class ResultsExtensions
 
     /// <summary>
     /// <para>
-    ///     Checks if the result has a message with the InvalidParameters error code.
+    ///     Checks if the result has a message with the InvalidParameter error code.
     /// </para>
     /// </summary>
     /// <param name="result">The operation result.</param>
-    /// <returns><see langword="true"/> if the result has a message with the InvalidParameters error code, otherwise <see langword="false"/>.</returns>
+    /// <returns><see langword="true"/> if the result has a message with the InvalidParameter error code, otherwise <see langword="false"/>.</returns>
     public static bool HasInvalidParameters(this IOperationResult result)
     {
         return result.HasErrorCode(GenericErrorCodes.InvalidParameters);

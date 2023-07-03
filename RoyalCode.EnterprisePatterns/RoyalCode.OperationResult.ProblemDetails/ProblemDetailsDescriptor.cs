@@ -65,6 +65,11 @@ public class ProblemDetailsDescriptor
     public static class Defaults
     {
         /// <summary>
+        /// Default type for the problem details of status code 400, Bad Request.
+        /// </summary>
+        public const string GenericErrorType = "https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request";
+
+        /// <summary>
         /// Default type for the problem details of status code 404, Not Found.
         /// </summary>
         public const string NotFoundType = "https://www.rfc-editor.org/rfc/rfc9110.html#name-404-not-found";
@@ -83,6 +88,11 @@ public class ProblemDetailsDescriptor
         /// Default type for the problem details of status code 500, Internal Server Error.
         /// </summary>
         public const string ApplicationErrorType = "https://www.rfc-editor.org/rfc/rfc9110.html#name-500-internal-server-error";
+
+        /// <summary>
+        /// Default title for the problem details of status code 400, Bad Request.
+        /// </summary>
+        public const string GenericErrorTitle = "An error has occurred";
 
         /// <summary>
         /// Default title for the problem details of status code 404, Not Found.
@@ -132,6 +142,17 @@ public class ProblemDetailsDescriptor
                 The 400 (Bad Request) status code indicates that the server cannot or will not process the request
                 due to something that is perceived to be a client error.
                 This particular error occurs because the parameters sent in by the client are invalid.
+                """,
+                HttpStatusCode.BadRequest)
+        },
+        {
+            GenericErrorCodes.GenericError,
+            new ProblemDetailsDescription(GenericErrorCodes.GenericError,
+                Defaults.GenericErrorType,
+                Defaults.GenericErrorTitle,
+                """
+                The 400 (Bad Request) status code indicates that the server cannot or will not process the request
+                due to something that is perceived to be a client error.
                 """,
                 HttpStatusCode.BadRequest)
         },

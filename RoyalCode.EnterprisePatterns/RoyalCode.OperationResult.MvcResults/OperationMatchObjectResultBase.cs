@@ -66,7 +66,7 @@ public abstract class OperationMatchObjectResultBase<TResult> : ObjectResult
     /// <param name="error">The result error.</param>
     /// <param name="context">The <see cref="ActionContext"/>.</param>
     /// <returns>A <see cref="Task"/> that will complete when the result is executed.</returns>
-    protected Task ExecuteErrorResultAsync(ResultsCollection error, ActionContext context)
+    protected Task ExecuteErrorResultAsync(ResultErrors error, ActionContext context)
     {
         context.HttpContext.TryGetResultTypeHeader(out var resultType);
         return resultType switch
@@ -77,12 +77,12 @@ public abstract class OperationMatchObjectResultBase<TResult> : ObjectResult
         };
     }
 
-    private Task ExecuteDefaultErrorAsync(ResultsCollection error, ActionContext context)
+    private Task ExecuteDefaultErrorAsync(ResultErrors error, ActionContext context)
         => MvcOperationResultOptions.IsProblemDetailsDefault
             ? ExecuteProblemDetailsAsync(error, context)
             : ExecuteOperationResultAsync(error, context);
 
-    private Task ExecuteProblemDetailsAsync(ResultsCollection error, ActionContext context)
+    private Task ExecuteProblemDetailsAsync(ResultErrors error, ActionContext context)
     {
         var options = context.HttpContext.RequestServices.GetRequiredService<IOptions<ProblemDetailsOptions>>().Value;
         var problemDetails = error.ToProblemDetails(options);
@@ -95,7 +95,7 @@ public abstract class OperationMatchObjectResultBase<TResult> : ObjectResult
         return base.ExecuteResultAsync(context);
     }
 
-    private Task ExecuteOperationResultAsync(ResultsCollection error, ActionContext context)
+    private Task ExecuteOperationResultAsync(ResultErrors error, ActionContext context)
     {
         Value = error;
         ContentTypes.Add("application/json");

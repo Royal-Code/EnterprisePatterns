@@ -20,13 +20,13 @@ public readonly struct ValidableResult
     public static ValidableResult operator +(ValidableResult result, IResultMessage message)
     {
         if (!result.Failure)
-            return new ValidableResult(new ResultsCollection().With(message));
+            return new ValidableResult(new ResultErrors().With(message));
 
         result.error.Add(message);
         return result;
     }
 
-    private readonly ResultsCollection? error;
+    private readonly ResultErrors? error;
 
     /// <summary>
     /// Creates a successful operation result.
@@ -42,7 +42,7 @@ public readonly struct ValidableResult
     /// </summary>
     /// <param name="error">The error of the operation result.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ValidableResult(ResultsCollection error)
+    public ValidableResult(ResultErrors error)
     {
         this.error = error;
     }
@@ -84,7 +84,7 @@ public readonly struct ValidableResult
     /// <param name="error">The error of the operation result.</param>
     /// <returns>Whether the operation result is failure.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool TryGetError([NotNullWhen(true)] out ResultsCollection? error)
+    public readonly bool TryGetError([NotNullWhen(true)] out ResultErrors? error)
     {
         error = this.error;
         return Failure;
@@ -137,7 +137,7 @@ public readonly struct ValidableResult
     /// <param name="error">The function to execute if the operation result is a failure.</param>
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TResult Match<TResult>(Func<TResult> match, Func<ResultsCollection, TResult> error)
+    public TResult Match<TResult>(Func<TResult> match, Func<ResultErrors, TResult> error)
         => Failure ? error(this.error) : match();
 
     /// <summary>
@@ -154,7 +154,7 @@ public readonly struct ValidableResult
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TResult Match<TResult, TParam>(
         Func<TParam, TResult> match,
-        Func<ResultsCollection, TParam, TResult> error,
+        Func<ResultErrors, TParam, TResult> error,
         TParam param)
         => Failure ? error(this.error, param) : match(param);
 

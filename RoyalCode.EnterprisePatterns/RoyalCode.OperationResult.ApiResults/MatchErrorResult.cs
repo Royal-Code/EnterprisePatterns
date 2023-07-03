@@ -12,7 +12,7 @@ namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// <para>
-///     Minimal API Result for <see cref="ResultsCollection"/>.
+///     Minimal API Result for <see cref="ResultErrors"/>.
 /// </para>
 /// <para>
 ///     Used for create a result from the <see cref="OperationResult"/> match for the error case.
@@ -20,33 +20,33 @@ namespace RoyalCode.OperationResults;
 /// </summary>
 public class MatchErrorResult
 #if NET7_0_OR_GREATER
-    : IResult, IEndpointMetadataProvider, IStatusCodeHttpResult, IValueHttpResult, IValueHttpResult<ResultsCollection>
+    : IResult, IEndpointMetadataProvider, IStatusCodeHttpResult, IValueHttpResult, IValueHttpResult<ResultErrors>
 #else
     : IResult
 #endif
 {
-    private readonly ResultsCollection results;
+    private readonly ResultErrors errors;
 
     /// <summary>
     /// Creates a new instance of <see cref="MatchErrorResult"/>.
     /// </summary>
-    /// <param name="results"></param>
+    /// <param name="errors"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public MatchErrorResult(ResultsCollection results)
+    public MatchErrorResult(ResultErrors errors)
     {
-        this.results = results ?? throw new ArgumentNullException(nameof(results));
+        this.errors = errors ?? throw new ArgumentNullException(nameof(errors));
     }
 
     /// <inheritdoc />
-    public int? StatusCode => results.GetHttpStatus();
+    public int? StatusCode => errors.GetHttpStatus();
 
     /// <inheritdoc />
-    public object? Value => results;
+    public object? Value => errors;
 
 #if NET7_0_OR_GREATER
 
     /// <inheritdoc />
-    ResultsCollection? IValueHttpResult<ResultsCollection>.Value => results;
+    ResultErrors? IValueHttpResult<ResultErrors>.Value => errors;
 
 #endif
 
@@ -87,7 +87,7 @@ public class MatchErrorResult
     public Task WriteProblemDetails(HttpContext httpContext)
     {
         var options = httpContext.RequestServices.GetRequiredService<IOptions<ProblemDetailsOptions>>().Value;
-        var problemDetails = results.ToProblemDetails(options);
+        var problemDetails = errors.ToProblemDetails(options);
         JsonSerializerOptions? serializerOptions = null;
 
         httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status400BadRequest;
@@ -105,18 +105,18 @@ public class MatchErrorResult
     /// <returns>A task that represents the asynchronous execute operation.</returns>
     public Task WriteOperationResult(HttpContext httpContext)
     {
-        httpContext.Response.StatusCode = results.GetHttpStatus();
+        httpContext.Response.StatusCode = errors.GetHttpStatus();
 
 #if NET7_0_OR_GREATER
         return httpContext.Response.WriteAsJsonAsync(
-            results,
-            results.GetJsonTypeInfo(),
+            errors,
+            errors.GetJsonTypeInfo(),
             "application/json",
             httpContext.RequestAborted);
 #else
         return httpContext.Response.WriteAsJsonAsync(
-            results,
-            results.GetJsonSerializerOptions(),
+            errors,
+            errors.GetJsonSerializerOptions(),
             "application/json",
             httpContext.RequestAborted);
 #endif

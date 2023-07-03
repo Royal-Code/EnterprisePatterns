@@ -14,11 +14,11 @@ namespace RoyalCode.OperationResults;
 public readonly struct OperationResult
 {
     /// <summary>
-    /// Implicitly convert a <see cref="ResultsCollection"/> error to a failure operation result.
+    /// Implicitly convert a <see cref="ResultErrors"/> error to a failure operation result.
     /// </summary>
     /// <param name="error"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator OperationResult(ResultsCollection error) => new(error);
+    public static implicit operator OperationResult(ResultErrors error) => new(error);
 
     /// <summary>
     /// Implicitly convert a <see cref="ResultMessage"/> error to a failure operation result.
@@ -43,7 +43,7 @@ public readonly struct OperationResult
         return result;
     }
 
-    private readonly ResultsCollection? error;
+    private readonly ResultErrors? error;
 
     /// <summary>
     /// Creates a successful operation result.
@@ -59,7 +59,7 @@ public readonly struct OperationResult
     /// </summary>
     /// <param name="error">The error of the operation result.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public OperationResult(ResultsCollection error)
+    public OperationResult(ResultErrors error)
     {
         this.error = error;
     }
@@ -101,7 +101,7 @@ public readonly struct OperationResult
     /// <param name="error">The error of the operation result.</param>
     /// <returns>Whether the operation result is failure.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool TryGetError([NotNullWhen(true)] out ResultsCollection? error)
+    public readonly bool TryGetError([NotNullWhen(true)] out ResultErrors? error)
     {
         error = this.error;
         return Failure;
@@ -119,7 +119,7 @@ public readonly struct OperationResult
     /// <returns>Whether the operation result is failure.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool TryConvertError<TOtherError>(
-        Func<ResultsCollection, TOtherError> converter,
+        Func<ResultErrors, TOtherError> converter,
         [NotNullWhen(true)] out TOtherError? error)
         where TOtherError : notnull
     {
@@ -144,7 +144,7 @@ public readonly struct OperationResult
     /// <param name="error">The error of the operation result.</param>
     /// <returns>Whether the operation result is successful.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool IsSuccessOrGetError([NotNullWhen(false)] out ResultsCollection? error)
+    public readonly bool IsSuccessOrGetError([NotNullWhen(false)] out ResultErrors? error)
     {
         error = this.error;
         return !Failure;
@@ -162,7 +162,7 @@ public readonly struct OperationResult
     /// <returns>Whether the operation result is successful.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly bool IsSuccessOrConvertError<TOtherError>(
-        Func<ResultsCollection, TOtherError> converter,
+        Func<ResultErrors, TOtherError> converter,
         [NotNullWhen(false)] out TOtherError? error)
         where TOtherError : notnull
     {
@@ -225,7 +225,7 @@ public readonly struct OperationResult
     /// <param name="error">The function to execute if the operation result is a failure.</param>
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TResult Match<TResult>(Func<TResult> match, Func<ResultsCollection, TResult> error)
+    public TResult Match<TResult>(Func<TResult> match, Func<ResultErrors, TResult> error)
         => Failure ? error(this.error) : match();
 
     /// <summary>
@@ -242,7 +242,7 @@ public readonly struct OperationResult
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TResult Match<TResult, TParam>(
         Func< TParam, TResult> match,
-        Func<ResultsCollection, TParam, TResult> error,
+        Func<ResultErrors, TParam, TResult> error,
         TParam param)
         => Failure ? error(this.error, param) : match(param);
 

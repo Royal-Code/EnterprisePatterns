@@ -1,4 +1,7 @@
 ﻿using RoyalCode.OperationResults;
+#if NET6_0_OR_GREATER
+using RoyalCode.OperationResults.Convertion;
+#endif
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -30,36 +33,7 @@ public static class HttpOperationResultExtensions
         }
         else
         {
-            // check if the content is not json
-            if (response.Content.Headers.ContentType?.MediaType != "application/json")
-            {
-                return await response.ReadNonJsonContent(token);
-            }
-
-            // in case of errors, a collection of messages must be deserialized
-            var messages = await response.Content.ReadFromJsonAsync(
-                DeserializableResultsCollection.ResultMessagesTypeInfo,
-                token);
-
-            var result = new ResultsCollection(messages ?? Enumerable.Empty<ResultMessage>());
-
-            if (result.Count == 0)
-            {
-                // if there is no message, add a default message
-                result.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(),
-                    null, null, response.StatusCode));
-            }
-            else
-            {
-                var status = response.StatusCode;
-                // provides the status code of the response for each message
-                foreach (var message in result)
-                {
-                    message.Status = status;
-                }
-            }
-
-            return result;
+            return await response.ReadErrorStatus(token);
         }
     }
 
@@ -88,37 +62,20 @@ public static class HttpOperationResultExtensions
         }
         else
         {
-            // check if the content is not json
-            if (response.Content.Headers.ContentType?.MediaType != "application/json")
-            {
-                return await response.ReadNonJsonContent(token);
-            }
-
-            // in case of errors, a collection of messages must be deserialized
-            var messages = await response.Content.ReadFromJsonAsync(
-                DeserializableResultsCollection.ResultMessagesTypeInfo,
-                token);
-
-            var result = new ResultsCollection(messages ?? Enumerable.Empty<ResultMessage>());
-
-            if (result.Count == 0)
-            {
-                // if there is no message, add a default message
-                result.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(), 
-                    null, null, response.StatusCode));
-            }
-            else
-            {
-                var status = response.StatusCode;
-                // provides the status code of the response for each message
-                foreach (var message in result)
-                {
-                    message.Status = status;
-                }
-            }
-
-            return result;
+            return await response.ReadErrorStatus(token);
         }
+    }
+
+    private static Task<ResultErrors> ReadErrorStatus(this HttpResponseMessage response, CancellationToken token)
+    {
+        var mediaType = response.Content.Headers.ContentType?.MediaType;
+        // check the content
+        if (mediaType == "application/json")
+            return response.ReadResultErrors(token);
+        else if (mediaType == "application/problem+json")
+            return response.ReadProblemDetails(token);
+        else
+            return response.ReadNonJsonContent(token);
     }
 
 #if NETSTANDARD2_1
@@ -126,7 +83,7 @@ public static class HttpOperationResultExtensions
         "Major Code Smell", "S1172:Unused method parameters should be removed",
         Justification = "Used when target is net6+")]
 #endif
-    private static async Task<ResultMessage> ReadNonJsonContent(
+    private static async Task<ResultErrors> ReadNonJsonContent(
         this HttpResponseMessage response, CancellationToken token = default)
     {
         // when is not json, try reads the content as string, if the response has content
@@ -145,5 +102,48 @@ public static class HttpOperationResultExtensions
             return ResultMessage.Error(text, response.StatusCode);
         else
             return ResultMessage.Error(response.ReasonPhrase ?? response.StatusCode.ToString(), response.StatusCode);
+    }
+
+    private static async Task<ResultErrors> ReadResultErrors(
+        this HttpResponseMessage response, CancellationToken token)
+    {
+        // in case of errors, a collection of messages must be deserialized
+        var messages = await response.Content.ReadFromJsonAsync(
+            DeserializableResultErrors.ResultMessagesTypeInfo,
+            token);
+
+        var result = new ResultErrors(messages ?? Enumerable.Empty<ResultMessage>());
+
+        if (result.Count == 0)
+        {
+            // if there is no message, add a default message
+            result.Add(new ResultMessage(response.ReasonPhrase ?? response.StatusCode.ToString(),
+                null, null, response.StatusCode));
+        }
+        else
+        {
+            var status = response.StatusCode;
+            // provides the status code of the response for each message
+            foreach (var message in result)
+            {
+                message.Status = status;
+            }
+        }
+
+        return result;
+    }
+
+    private static async Task<ResultErrors> ReadProblemDetails(
+        this HttpResponseMessage response, CancellationToken token)
+    {
+#if NET6_0_OR_GREATER
+        var problemDetails = await response.Content.ReadFromJsonAsync(
+            ProblemDetailsSerializer.DefaultProblemDetailsExtended,
+            token);
+
+        return problemDetails!.ToResultErrors();
+#else
+        throw new NotSupportedException("ProblemDetails is only supported on .NET 6.0 or greater.");
+#endif
     }
 }

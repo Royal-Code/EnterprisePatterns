@@ -47,22 +47,22 @@ public static class SerializationExtensions
             error => JsonSerializer.Serialize(error, SerializationContext.Default.AbstractOperationMessage));
 
     /// <summary>
-    /// Get the <see cref="JsonTypeInfo"/> for <see cref="ResultsCollection"/>.
+    /// Get the <see cref="JsonTypeInfo"/> for <see cref="ResultErrors"/>.
     /// </summary>
     /// <param name="_">Used for extension methods.</param>
     /// <returns>
-    ///     The <see cref="JsonTypeInfo"/> for <see cref="ResultsCollection"/>.
+    ///     The <see cref="JsonTypeInfo"/> for <see cref="ResultErrors"/>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static JsonTypeInfo<ResultsCollection> GetJsonTypeInfo(this ResultsCollection _)
-        => SerializationContext.Default.ResultsCollection;
+    public static JsonTypeInfo<ResultErrors> GetJsonTypeInfo(this ResultErrors _)
+        => SerializationContext.Default.ResultErrors;
 
     /// <summary>
-    /// Get the <see cref="JsonSerializerOptions"/> for <see cref="ResultsCollection"/>.
+    /// Get the <see cref="JsonSerializerOptions"/> for <see cref="ResultErrors"/>.
     /// </summary>
     /// <param name="_">Used for extension methods.</param>
-    /// <returns>The <see cref="JsonSerializerOptions"/> for <see cref="ResultsCollection"/>.</returns>
+    /// <returns>The <see cref="JsonSerializerOptions"/> for <see cref="ResultErrors"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static JsonSerializerOptions GetJsonSerializerOptions(this ResultsCollection _)
+    public static JsonSerializerOptions GetJsonSerializerOptions(this ResultErrors _)
         => SerializationContext.JsonSerializerOptions;
 }

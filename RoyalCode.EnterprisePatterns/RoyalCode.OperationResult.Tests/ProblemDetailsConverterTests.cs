@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using RoyalCode.OperationResults.Convertion;
 using System.Net;
 
@@ -8,10 +7,28 @@ namespace RoyalCode.OperationResults.Tests;
 public class ProblemDetailsConverterTests
 {
     [Fact]
-    public void ToProblemDetails_Should_ReturnProblemDetails_With_Status400_When_Error_WithoutStatus_And_WithoutCode()
+    public void ToProblemDetails_Should_ReturnProblemDetails_With_Status400_When_Error_WithoutStatus_And_WithoutCode_And_WithoutProperty()
     {
         // Arrange
         OperationResult result = ResultMessage.Error("Error message");
+        result.TryGetError(out var error);
+
+        // Act
+        var problemDetails = error!.ToProblemDetails(new ProblemDetailsOptions());
+
+        // Assert
+        Assert.NotNull(problemDetails);
+        Assert.Equal(ProblemDetailsDescriptor.Defaults.GenericErrorType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsDescriptor.Defaults.GenericErrorTitle, problemDetails.Title);
+        Assert.Equal("Error message", problemDetails.Detail);
+        Assert.Equal(400, problemDetails.Status);
+    }
+
+    [Fact]
+    public void ToProblemDetails_Should_ReturnProblemDetails_With_Status400_When_Error_WithoutStatus_And_WithoutCode_And_WithProperty()
+    {
+        // Arrange
+        OperationResult result = ResultMessage.Error(code: null, "Error message", "Property");
         result.TryGetError(out var error);
 
         // Act
@@ -193,8 +210,8 @@ public class ProblemDetailsConverterTests
     public void ToProblemDetails_Should_HaveInvalidParamsExtraField_When_HaveManyInvalidParametersErrors()
     {
         // Arrange
-        OperationResult result = ResultMessage.InvalidParameters("Mensagen 1", "FieldA");
-        result += ResultMessage.InvalidParameters("Mensagen 2", "FieldB");
+        OperationResult result = ResultMessage.InvalidParameter("Mensagen 1", "FieldA");
+        result += ResultMessage.InvalidParameter("Mensagen 2", "FieldB");
         result.TryGetError(out var error);
 
         // Act
@@ -313,7 +330,7 @@ public class ProblemDetailsConverterTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Mensagen 1", "FieldA");
-        result += ResultMessage.InvalidParameters("Mensagen 2", "FieldB");
+        result += ResultMessage.InvalidParameter("Mensagen 2", "FieldB");
         result.TryGetError(out var error);
 
         // Act
@@ -332,7 +349,7 @@ public class ProblemDetailsConverterTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Mensagen 1", "FieldA");
-        result += ResultMessage.InvalidParameters("Mensagen 2", "FieldB");
+        result += ResultMessage.InvalidParameter("Mensagen 2", "FieldB");
         result += ResultMessage.ValidationError("Mensagen 3", "FieldC");
         result.TryGetError(out var error);
 
@@ -352,7 +369,7 @@ public class ProblemDetailsConverterTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Mensagen 1", "FieldA");
-        result += ResultMessage.InvalidParameters("Mensagen 2", "FieldB");
+        result += ResultMessage.InvalidParameter("Mensagen 2", "FieldB");
         result += ResultMessage.ValidationError("Mensagen 3", "FieldC");
         result += ResultMessage.Error("error-code-4", "Error message 4", HttpStatusCode.Conflict);
         result += ResultMessage.ApplicationError(new Exception("Mensagen 5"));
@@ -377,7 +394,7 @@ public class ProblemDetailsConverterTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Mensagen 1", "FieldA");
-        result += ResultMessage.InvalidParameters("Mensagen 2", "FieldB");
+        result += ResultMessage.InvalidParameter("Mensagen 2", "FieldB");
         result += ResultMessage.ValidationError("Mensagen 3", "FieldC");
         result += ResultMessage.ApplicationError(new Exception("Mensagen 4"));
 
@@ -392,5 +409,76 @@ public class ProblemDetailsConverterTests
         Assert.Equal(ProblemDetailsDescriptor.Defaults.ApplicationErrorType, problemDetails.Type);
         Assert.Equal(ProblemDetailsDescriptor.Defaults.ApplicationErrorTitle, problemDetails.Title);
         Assert.Equal(ProblemDetailsDescriptor.InternalErrorsMessage, problemDetails.Detail);
+    }
+
+    [Fact]
+    public void ToProblemDetails_Should_AddExtraFieldsInInvalidParameterDetails_When_HaveManyInvalidParameters()
+    {
+        //arrange
+        OperationResult result = ResultMessage.InvalidParameter("Error message 1", "Property1")
+            .WithAdditionInfo("info", "info 1");
+        result += ResultMessage.InvalidParameter("Error message 2", "Property2")
+            .WithAdditionInfo("info", "info 2");
+        result.TryGetError(out var error);
+
+        var options = new ProblemDetailsOptions();
+
+        //act
+        var problemDetails = error!.ToProblemDetails(options);
+
+        //assert
+        Assert.NotNull(problemDetails);
+
+        var extraFields = problemDetails.Extensions[ProblemDetailsDescriptor.InvalidParametersExtensionField] as List<InvalidParameterDetails>;
+        Assert.NotNull(extraFields);
+        Assert.Equal(2, extraFields.Count);
+
+        var details1 = extraFields[0];
+        Assert.Equal("Property1", details1.Name);
+        Assert.Equal("Error message 1", details1.Reason);
+        Assert.NotNull(details1.Extensions);
+        Assert.Equal("info 1", details1.Extensions["info"]);
+
+        var details2 = extraFields[1];
+        Assert.Equal("Property2", details2.Name);
+        Assert.Equal("Error message 2", details2.Reason);
+        Assert.NotNull(details2.Extensions);
+        Assert.Equal("info 2", details2.Extensions["info"]);
+    }
+
+    [Fact]
+    public void ToProblemDetails_Should_AddExtraFieldsInNotFoundDetails_When_HavanManyNotFound()
+    {
+        //arrange
+        OperationResult result = ResultMessage.NotFound("Error message 1", "Property1")
+            .WithAdditionInfo("info", "info 1");
+        result += ResultMessage.NotFound("Error message 2", "Property2")
+            .WithAdditionInfo("info", "info 2");
+        result.TryGetError(out var error);
+
+        var options = new ProblemDetailsOptions();
+
+        //act
+        var problemDetails = error!.ToProblemDetails(options);
+
+        //assert
+        Assert.NotNull(problemDetails);
+
+        var extraFields = problemDetails.Extensions[ProblemDetailsDescriptor.NotFoundExtensionField] as List<NotFoundDetails>;
+
+        Assert.NotNull(extraFields);
+        Assert.Equal(2, extraFields.Count);
+
+        var details1 = extraFields[0];
+        Assert.Equal("Property1", details1.Property);
+        Assert.Equal("Error message 1", details1.Message);
+        Assert.NotNull(details1.Extensions);
+        Assert.Equal("info 1", details1.Extensions["info"]);
+
+        var details2 = extraFields[1];
+        Assert.Equal("Property2", details2.Property);
+        Assert.Equal("Error message 2", details2.Message);
+        Assert.NotNull(details2.Extensions);
+        Assert.Equal("info 2", details2.Extensions["info"]);
     }
 }

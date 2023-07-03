@@ -17,6 +17,13 @@ public static class GenericErrorCodes
 {
     /// <summary>
     /// <para>
+    ///     Generic Error.
+    /// </para>
+    /// </summary>
+    public const string GenericError = "4XX";
+
+    /// <summary>
+    /// <para>
     ///     Errors where the parameters entered are invalid.
     /// </para>
     /// <para>
@@ -53,7 +60,8 @@ public static class GenericErrorCodes
     /// <returns>True if the code is a generic error code.</returns>
     public static bool Contains(string code)
     {
-        return code == InvalidParameters
+        return code == GenericError
+            || code == InvalidParameters
             || code == Validation
             || code == NotFound
             || code == ApplicationError;
@@ -66,7 +74,8 @@ public static class GenericErrorCodes
     ///     The priority is:
     ///     Minimum: NotFound
     ///     Maximum: ApplicationError
-    ///     Validation have more priority than InvalidParameters
+    ///     Validation have more priority than InvalidParameter and GenericError
+    ///     GerericError have more priority than NotFound
     ///     Others codes have more priority than Validation, but less than ApplicationError.
     /// </remarks>
     /// <param name="currentCode">The current code.</param>
@@ -81,6 +90,9 @@ public static class GenericErrorCodes
             return false;
 
         if (currentCode == Validation && newCode == InvalidParameters)
+            return false;
+
+        if (newCode == GenericError && currentCode != NotFound)
             return false;
 
         return true;

@@ -73,7 +73,7 @@ public class ControllersResultsController : ControllerBase
 
         if (!string.IsNullOrEmpty(error))
         {
-            result += ResultMessage.InvalidParameters("Parâmetro inválido.", nameof(error));
+            result += ResultMessage.InvalidParameter("Parâmetro inválido.", nameof(error));
         }
 
         var simpleResult = result.Convert(() => new SimpleValues());
@@ -88,7 +88,7 @@ public class ControllersResultsController : ControllerBase
 
         if (string.IsNullOrWhiteSpace(input))
         {
-            result += ResultMessage.InvalidParameters("Input inválido.", nameof(input));
+            result += ResultMessage.InvalidParameter("Input inválido.", nameof(input));
         }
 
         return result.ToResult();

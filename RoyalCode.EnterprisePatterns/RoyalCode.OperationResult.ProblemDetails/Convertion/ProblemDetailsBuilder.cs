@@ -10,7 +10,7 @@ public class ProblemDetailsBuilder
 {
     private List<InvalidParameterDetails>? invalidParameterErrors;
     private List<NotFoundDetails>? notFoundErrors;
-    private List<string>? internalErrors;
+    private List<string>? errors;
     private List<IResultMessage>? customProblems;
     private Dictionary<string, object>? extensions;
     private bool withRulesValidationErrors = false;
@@ -51,7 +51,7 @@ public class ProblemDetailsBuilder
             return status;
         }
 
-        if (internalErrors is not null)
+        if (errors is not null)
             return StatusCodes.Status500InternalServerError;
 
         if (invalidParameterErrors is not null)
@@ -77,7 +77,7 @@ public class ProblemDetailsBuilder
         if (customProblems is not null)
             return customProblems[0].Text ?? string.Empty;
 
-        if (internalErrors is not null)
+        if (errors is not null)
             return ProblemDetailsDescriptor.InternalErrorsMessage;
 
         if (invalidParameterErrors is not null)
@@ -119,8 +119,8 @@ public class ProblemDetailsBuilder
         if (notFoundErrors is not null)
             pdext[ProblemDetailsDescriptor.NotFoundExtensionField] = notFoundErrors;
 
-        if (internalErrors is not null)
-            pdext[ProblemDetailsDescriptor.ErrorsExtensionField] = internalErrors;
+        if (errors is not null)
+            pdext[ProblemDetailsDescriptor.ErrorsExtensionField] = errors;
 
         if (extensions is not null)
             foreach (var (key, value) in extensions)
@@ -190,10 +190,10 @@ public class ProblemDetailsBuilder
     /// Add a internal error to the problem details.
     /// </summary>
     /// <param name="message">The internal error message (may be the exception message).</param>
-    public void AddInternalErrorMessage(string message)
+    public void AddErrorMessage(string message)
     {
-        internalErrors ??= new List<string>();
-        internalErrors.Add(message);
+        errors ??= new List<string>();
+        errors.Add(message);
     }
 
     /// <summary>
