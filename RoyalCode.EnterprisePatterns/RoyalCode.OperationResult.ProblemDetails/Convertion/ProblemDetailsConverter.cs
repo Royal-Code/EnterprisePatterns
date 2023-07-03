@@ -1,8 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-using Microsoft.AspNetCore.Mvc;
-#else
-using RoyalCode.OperationResults.Convertion.Internals;
-#endif
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace RoyalCode.OperationResults.Convertion;
 

@@ -1,5 +1,7 @@
 ﻿using RoyalCode.OperationResults;
+#if NET6_0_OR_GREATER
 using RoyalCode.OperationResults.Convertion;
+#endif
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -74,9 +76,15 @@ public static class HttpOperationResultExtensions
     private static async Task<OperationResult> ReadProblemDetails(
         this HttpResponseMessage response, CancellationToken token)
     {
+#if NET6_0_OR_GREATER
         var problemDetails = await response.Content.ReadFromJsonAsync(
             ProblemDetailsSerializer.DefaultProblemDetailsExtended,
             token);
+
+        return problemDetails!.ToResultErrors();
+#else
+        throw new NotSupportedException("ProblemDetails is only supported on .NET 6.0 or greater.");
+#endif
     }
 
     /// <summary>
