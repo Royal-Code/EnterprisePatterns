@@ -7,18 +7,20 @@ namespace RoyalCode.OperationResults;
 /// <summary>
 /// A result that can be deserialized.
 /// </summary>
+[Obsolete]
 public class DeserializableResult : IOperationResult
 {
     /// <summary>
     /// Options for serialization and deserialization.
     /// </summary>
-    public static JsonTypeInfo<DeserializableResult> JsonTypeInfo => SerializationContext.Default.DeserializableResult;
+    [Obsolete] public static JsonTypeInfo<DeserializableResult> JsonTypeInfo => SerializationContext.Default.DeserializableResult;
 
     /// <summary>
     /// Deserialize a <see cref="IOperationResult"/> from a JSON string.
     /// </summary>
     /// <param name="json">The JSON string.</param>
     /// <returns>The deserialized <see cref="IOperationResult"/>.</returns>
+    [Obsolete]
     public static IOperationResult? Deserialize(string json)
         => SerializationContext.Deserialize(json);
 
@@ -27,6 +29,7 @@ public class DeserializableResult : IOperationResult
     /// </summary>
     /// <param name="json">The JSON string.</param>
     /// <returns>The deserialized <see cref="IOperationResult"/>.</returns>
+    [Obsolete]
     public static IOperationResult<TValue>? Deserialize<TValue>(string json)
         => SerializationContext.Deserialize<TValue>(json);
 
@@ -61,6 +64,7 @@ public class DeserializableResult : IOperationResult
 /// A result that can be deserialized.
 /// </summary>
 /// <typeparam name="TValue">The type of the value.</typeparam>
+[Obsolete]
 public class DeserializableResult<TValue> : DeserializableResult, IOperationResult<TValue>
 {
     /// <summary>

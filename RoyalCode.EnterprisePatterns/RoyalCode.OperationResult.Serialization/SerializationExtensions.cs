@@ -1,13 +1,12 @@
 ﻿
-using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 
 namespace RoyalCode.OperationResults;
 
 /// <summary>
 /// Extension methods for serialize and deserialize <see cref="IOperationResult"/>.
 /// </summary>
+[Obsolete]
 public static class SerializationExtensions
 {
     /// <summary>
@@ -15,6 +14,7 @@ public static class SerializationExtensions
     /// </summary>
     /// <param name="result">The <see cref="IOperationResult"/> to be serialized.</param>
     /// <returns>The JSON string.</returns>
+    [Obsolete] 
     public static string Serialize(this IOperationResult result) => SerializationContext.Serialize(result);
 
     /// <summary>
@@ -23,6 +23,7 @@ public static class SerializationExtensions
     /// <typeparam name="TValue">The type of the value.</typeparam>
     /// <param name="result">The <see cref="IOperationResult"/> to be serialized.</param>
     /// <returns>The JSON string.</returns>
+    [Obsolete] 
     public static string Serialize<TValue>(this IOperationResult<TValue> result) => SerializationContext.Serialize(result);
 
     /// <summary>
@@ -30,6 +31,8 @@ public static class SerializationExtensions
     /// </summary>
     /// <param name="result">The <see cref="OperationResult"/> to be serialized.</param>
     /// <returns>The JSON string.</returns>
+    [Obsolete]
+    
     public static string Serialize(this OperationResult result)
         => result.Match(
             static () => "{}",
@@ -41,28 +44,9 @@ public static class SerializationExtensions
     /// <typeparam name="T">The type of the value.</typeparam>
     /// <param name="result">The <see cref="OperationResult{T}"/> to be serialized.</param>
     /// <returns>The JSON string.</returns>
+    [Obsolete]
     public static string Serialize<T>(this OperationResult<T> result)
        => result.Match(
             value => JsonSerializer.Serialize(value, SerializationContext.JsonSerializerOptions),
             error => JsonSerializer.Serialize(error, SerializationContext.Default.AbstractOperationMessage));
-
-    /// <summary>
-    /// Get the <see cref="JsonTypeInfo"/> for <see cref="ResultErrors"/>.
-    /// </summary>
-    /// <param name="_">Used for extension methods.</param>
-    /// <returns>
-    ///     The <see cref="JsonTypeInfo"/> for <see cref="ResultErrors"/>.
-    /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static JsonTypeInfo<ResultErrors> GetJsonTypeInfo(this ResultErrors _)
-        => SerializationContext.Default.ResultErrors;
-
-    /// <summary>
-    /// Get the <see cref="JsonSerializerOptions"/> for <see cref="ResultErrors"/>.
-    /// </summary>
-    /// <param name="_">Used for extension methods.</param>
-    /// <returns>The <see cref="JsonSerializerOptions"/> for <see cref="ResultErrors"/>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static JsonSerializerOptions GetJsonSerializerOptions(this ResultErrors _)
-        => SerializationContext.JsonSerializerOptions;
 }

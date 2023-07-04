@@ -5,6 +5,7 @@ namespace RoyalCode.OperationResults;
 /// <summary>
 /// Extension methods for results and messages.
 /// </summary>
+[Obsolete]
 public static class ResultsExtensions
 {
     /// <summary>
@@ -20,6 +21,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     A new instance of <see cref="IOperationResult{TValue}"/>.
     /// </returns>
+    [Obsolete]
     public static IOperationResult<TValue> ToValue<TValue>(this IOperationResult result)
     {
         return new ValueResult<TValue>(result);
@@ -36,6 +38,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     A new instance of <see cref="IOperationResult{TValue}"/>.
     /// </returns>
+    [Obsolete]
     public static IOperationResult<TValue> ToValue<TValue>(this IOperationResult result, TValue value)
     {
         return new ValueResult<TValue>(value, result);
@@ -51,6 +54,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     A new instance of <see cref="IOperationResult{TValue}"/>.
     /// </returns>
+    [Obsolete]
     public static IOperationResult<TAdaptedValue> Adapt<TValue, TAdaptedValue>(
         this IOperationResult<TValue> result, Func<TValue, TAdaptedValue> adapter)
     {
@@ -64,6 +68,7 @@ public static class ResultsExtensions
 
     #region Add Messages
 
+    [Obsolete]
     private static ResultMessage AddMessage(this BaseResult result, ResultMessage message)
     {
         result.Add(message);
@@ -82,6 +87,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage Add(this BaseResult result,
         string text, string? property, string? code, HttpStatusCode? status, Exception? ex)
     {
@@ -100,6 +106,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddError(this BaseResult result, string? code, string text,
         string? property = null, HttpStatusCode? status = null, Exception? ex = null)
     {
@@ -115,6 +122,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddError(this BaseResult result, string text, HttpStatusCode? status = null)
     {
         return result.AddMessage(ResultMessage.Error(text, status));
@@ -131,6 +139,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddError(this BaseResult result, Exception ex, 
         string? property = null, string? code = null, HttpStatusCode? status = null)
     {
@@ -149,6 +158,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddNotFound(this BaseResult result, string text, string? property)
     {
         return result.AddMessage(ResultMessage.NotFound(text, property));
@@ -167,6 +177,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddNotFound(this BaseResult result, string code, string text, string? property)
     {
         return result.AddMessage(ResultMessage.NotFound(code, text, property));
@@ -184,6 +195,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddForbidden(this BaseResult result, string code, string text, string? property = null)
     {
         return result.AddMessage(ResultMessage.Forbidden(code, text, property));
@@ -201,6 +213,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddConflict(this BaseResult result, string code, string text, string? property = null)
     {
         return result.AddMessage(ResultMessage.Conflict(code, text, property));
@@ -218,6 +231,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddInvalidParameters(this BaseResult result, string text, string property)
     {
         return result.AddMessage(ResultMessage.InvalidParameter(text, property));
@@ -236,6 +250,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddValidationError(this BaseResult result,
         string text, string property, Exception? ex = null)
     {
@@ -255,6 +270,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddValidationError(this BaseResult result,
         string code, string text, string property, Exception? ex = null)
     {
@@ -272,6 +288,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddValidationError(this BaseResult result, Exception ex)
     {
         return result.AddMessage(ResultMessage.ValidationError(ex));
@@ -289,6 +306,7 @@ public static class ResultsExtensions
     /// <returns>
     ///     The created message.
     /// </returns>
+    [Obsolete]
     public static ResultMessage AddApplicationError(this BaseResult result, Exception ex, string? text = null)
     {
         return result.AddMessage(ResultMessage.ApplicationError(ex, text));
@@ -307,6 +325,7 @@ public static class ResultsExtensions
     /// <param name="result">The operation result.</param>
     /// <param name="message">The message.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithMessage<TResult>(this TResult result, IResultMessage message)
         where TResult : BaseResult
     {
@@ -327,6 +346,7 @@ public static class ResultsExtensions
     /// <param name="status">The HTTP status code, optional.</param>
     /// <param name="ex">The exception that generate the message, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithError<TResult>(this TResult result, string? code, string text,
         string? property = null, HttpStatusCode? status = null, Exception? ex = null)
         where TResult : BaseResult
@@ -345,6 +365,7 @@ public static class ResultsExtensions
     /// <param name="text">The message text.</param>
     /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithError<TResult>(this TResult result, string text, HttpStatusCode? status = null)
         where TResult : BaseResult
     {
@@ -364,6 +385,7 @@ public static class ResultsExtensions
     /// <param name="code">The message code, optional.</param>
     /// <param name="status">The HTTP status code, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithError<TResult>(this TResult result, 
         Exception ex, string? property = null, string? code = null, HttpStatusCode? status = null)
         where TResult : BaseResult
@@ -383,6 +405,7 @@ public static class ResultsExtensions
     /// <param name="text">The message text.</param>
     /// <param name="property">The property related, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithNotFound<TResult>(this TResult result, string text, string? property)
         where TResult : BaseResult
     {
@@ -402,6 +425,7 @@ public static class ResultsExtensions
     /// <param name="text">The message text.</param>
     /// <param name="property">The property related, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithNotFound<TResult>(this TResult result, string code, string text, string? property)
         where TResult : BaseResult
     {
@@ -420,6 +444,7 @@ public static class ResultsExtensions
     /// <param name="text">The message text.</param>
     /// <param name="property">The property related, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithForbidden<TResult>(this TResult result, string code, string text, string? property = null)
         where TResult : BaseResult
     {
@@ -438,6 +463,7 @@ public static class ResultsExtensions
     /// <param name="text">The message text.</param>
     /// <param name="property">The property related, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithConflict<TResult>(this TResult result, string code, string text, string? property = null)
         where TResult : BaseResult
     {
@@ -456,6 +482,7 @@ public static class ResultsExtensions
     /// <param name="text">The message text.</param>
     /// <param name="property">The related property.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithInvalidParameters<TResult>(this TResult result, string text, string property)
         where TResult : BaseResult
     {
@@ -475,6 +502,7 @@ public static class ResultsExtensions
     /// <param name="property">The related property, optional.</param>
     /// <param name="ex">The exception that generate the message, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithValidationError<TResult>(this TResult result,
         string text, string property, Exception? ex = null)
         where TResult : BaseResult
@@ -495,6 +523,7 @@ public static class ResultsExtensions
     /// <param name="property">The related property, optional.</param>
     /// <param name="ex">The exception that generate the message, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithValidationError<TResult>(this TResult result,
         string code, string text, string property, Exception? ex = null)
         where TResult : BaseResult
@@ -513,6 +542,7 @@ public static class ResultsExtensions
     /// <param name="result">The operation result.</param>
     /// <param name="ex">The exception that generate the message, optional.</param>
     /// <returns>The same instace of <paramref name="result"/>.</returns>
+    [Obsolete]
     public static TResult WithValidationError<TResult>(this TResult result, Exception ex)
         where TResult : BaseResult
     {
@@ -531,6 +561,7 @@ public static class ResultsExtensions
     /// <param name="ex">The exception that generate the message.</param>
     /// <param name="text">The message text, optional, when not informed the exception message will be used.</param>
     /// <returns>A mesma instância de <paramref name="result"/> para chamadas encadeadas.</returns>
+    [Obsolete]
     public static TResult WithApplicationError<TResult>(this TResult result, Exception ex, string? text = null)
         where TResult : BaseResult
     {
@@ -549,6 +580,7 @@ public static class ResultsExtensions
     /// </summary>
     /// <param name="result">The operation result.</param>
     /// <returns><see langword="true"/> if the result has a message with the InvalidParameter error code, otherwise <see langword="false"/>.</returns>
+    [Obsolete]
     public static bool HasInvalidParameters(this IOperationResult result)
     {
         return result.HasErrorCode(GenericErrorCodes.InvalidParameters);
@@ -561,6 +593,7 @@ public static class ResultsExtensions
     /// </summary>
     /// <param name="result">The operation result.</param>
     /// <returns><see langword="true"/> if the result has a message with the Validation error code, otherwise <see langword="false"/>.</returns>
+    [Obsolete]
     public static bool HasValidation(this IOperationResult result)
     {
         return result.HasErrorCode(GenericErrorCodes.Validation);
@@ -573,6 +606,7 @@ public static class ResultsExtensions
     /// </summary>
     /// <param name="result">The operation result.</param>
     /// <returns><see langword="true"/> if the result has a message with the NotFound error code, otherwise <see langword="false"/>.</returns>
+    [Obsolete]
     public static bool HasNotFound(this IOperationResult result)
     {
         return result.HasErrorCode(GenericErrorCodes.NotFound);
@@ -585,6 +619,7 @@ public static class ResultsExtensions
     /// </summary>
     /// <param name="result">The operation result.</param>
     /// <returns><see langword="true"/> if the result has a message with the ApplicationError error code, otherwise <see langword="false"/>.</returns>
+    [Obsolete]
     public static bool HasApplicationError(this IOperationResult result)
     {
         return result.HasErrorCode(GenericErrorCodes.ApplicationError);

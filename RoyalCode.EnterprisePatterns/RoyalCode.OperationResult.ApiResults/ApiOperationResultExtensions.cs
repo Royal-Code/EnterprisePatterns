@@ -17,6 +17,7 @@ public static partial class ApiResults
     /// <param name="createdPath">The path for created responses, when applyable.</param>
     /// <param name="formatPathWithValue">Indicates if the <paramref name="createdPath"/> should be formatted with the value of the result.</param>
     /// <returns>The <see cref="IResult"/> for the response.</returns>
+    [Obsolete]
     public static IResult ToResult(this IOperationResult result,
         string? createdPath = null, bool formatPathWithValue = false)
     {

@@ -7,6 +7,7 @@ namespace RoyalCode.OperationResults;
 /// <summary>
 /// Method factories for <see cref="ValueResult{TValue}"/>.
 /// </summary>
+[Obsolete]
 public static class ValueResult
 {
     /// <summary>
@@ -207,6 +208,7 @@ public static class ValueResult
 /// <summary>
 /// The default implementation of <see cref="IOperationResult{TValue}"/>.
 /// </summary>
+[Obsolete]
 public class ValueResult<TValue> : BaseResult, IOperationResult<TValue>
 {
     /// <summary>

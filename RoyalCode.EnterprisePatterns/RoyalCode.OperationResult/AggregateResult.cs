@@ -2,6 +2,7 @@
 namespace RoyalCode.OperationResults;
 
 /// <inheritdoc />
+[Obsolete]
 public class AggregateResult : IAggregateResult
 {
     private readonly LinkedList<IOperationResult> innerResults = new();

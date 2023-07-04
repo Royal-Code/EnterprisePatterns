@@ -3,6 +3,7 @@
 /// <summary>
 /// Interface to results that have a value.
 /// </summary>
+[Obsolete]
 public interface IResultHasValue
 {
     /// <summary>

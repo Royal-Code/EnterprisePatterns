@@ -6,6 +6,7 @@ namespace RoyalCode.OperationResults;
 ///     A operation result that aggregate many results.
 /// </para>
 /// </summary>
+[Obsolete]
 public interface IAggregateResult : IOperationResult
 {
     /// <summary>

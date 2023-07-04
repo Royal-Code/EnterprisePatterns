@@ -9,6 +9,7 @@ namespace RoyalCode.OperationResults;
 /// <summary>
 /// MVC <see cref="ObjectResult"/> for <see cref="IOperationResult"/>.
 /// </summary>
+[Obsolete]
 public class MvcOperationResult : ObjectResult
 {
     /// <summary>

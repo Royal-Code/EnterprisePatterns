@@ -109,7 +109,7 @@ public static class HttpOperationResultExtensions
     {
         // in case of errors, a collection of messages must be deserialized
         var messages = await response.Content.ReadFromJsonAsync(
-            DeserializableResultErrors.ResultMessagesTypeInfo,
+            ResultErrorsSerialization.GetResultMessagesTypeInfo(),
             token);
 
         var result = new ResultErrors(messages ?? Enumerable.Empty<ResultMessage>());
@@ -133,6 +133,14 @@ public static class HttpOperationResultExtensions
         return result;
     }
 
+
+#pragma warning disable CS1998 // 
+
+#if NETSTANDARD2_1
+    [Diagnostics.CodeAnalysis.SuppressMessage(
+        "Major Code Smell", "CS1998:Async method lacks 'await' operators and will run synchronously",
+        Justification = "Used when target is net6+")]
+#endif
     private static async Task<ResultErrors> ReadProblemDetails(
         this HttpResponseMessage response, CancellationToken token)
     {
