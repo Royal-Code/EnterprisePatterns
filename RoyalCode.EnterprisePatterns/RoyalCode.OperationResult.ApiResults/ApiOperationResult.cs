@@ -8,6 +8,7 @@ namespace RoyalCode.OperationResults;
 /// <summary>
 /// Minimal API Result for <see cref="IOperationResult"/>.
 /// </summary>
+[Obsolete]
 public class ApiOperationResult : IResult
 {
     /// <summary>

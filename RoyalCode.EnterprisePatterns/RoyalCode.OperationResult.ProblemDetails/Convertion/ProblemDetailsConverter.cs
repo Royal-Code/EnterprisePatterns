@@ -13,6 +13,7 @@ public static class ProblemDetailsConverter
     /// <param name="result">The result to be converted.</param>
     /// <param name="options">The options to be used in the conversion.</param>
     /// <returns>A new instance of <see cref="ProblemDetails"/>.</returns>
+    [Obsolete]
     public static ProblemDetails ToProblemDetails(
        this IOperationResult result, ProblemDetailsOptions options)
     {

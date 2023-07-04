@@ -6,6 +6,7 @@ namespace RoyalCode.OperationResults;
 /// <summary>
 /// The default implementation of <see cref="IOperationResult"/>.
 /// </summary>
+[Obsolete]
 public class BaseResult : IOperationResult
 {
     /// <summary>

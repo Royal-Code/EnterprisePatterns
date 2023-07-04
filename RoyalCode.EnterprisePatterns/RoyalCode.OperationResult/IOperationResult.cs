@@ -7,6 +7,7 @@ namespace RoyalCode.OperationResults;
 ///     Interface to the operation result component, used as a return from a service or command.
 /// </para>
 /// </summary>
+[Obsolete]
 public interface IOperationResult
 {
     /// <summary>
@@ -43,6 +44,7 @@ public interface IOperationResult
 /// </para>
 /// </summary>
 /// <typeparam name="TValue">The result type of the value returned by the operation.</typeparam>
+[Obsolete]
 public interface IOperationResult<out TValue> : IOperationResult, IResultHasValue
 {
     /// <summary>

@@ -5,115 +5,66 @@ using System.Net;
 namespace RoyalCode.OperationResults;
 
 /// <summary>
-/// Extensions methods for <see cref="IOperationResult"/> and <see cref="ValidationResult"/>.
+/// Extensions methods for convert <see cref="ValidationResult"/> to <see cref="OperationResult"/>.
 /// </summary>
 public static class ValidationsOperationResultExtensions
 {
     /// <summary>
-    /// Converts to a <see cref="IOperationResult"/>.
+    /// The default status code for errors.
+    /// </summary>
+    public static HttpStatusCode ErrorStatusCode { get; set; } = HttpStatusCode.UnprocessableEntity;
+
+    /// <summary>
+    /// Converts to a <see cref="OperationResult"/>.
     /// </summary>
     /// <param name="result">FluentValidation result.</param>
     /// <returns>Operation Result.</returns>
-    public static IOperationResult ToOperationResult(this ValidationResult result)
+    public static OperationResult ToOperationResult(this ValidationResult result)
     {
-        if (result.IsValid)
-            return BaseResult.ImmutableSuccess;
-
-        var br = BaseResult.Create();
-
-        result.Errors.AddErrorsTo(br);
-        return br;
+        return result.IsValid 
+            ? new() 
+            : result.Errors.ToResultErrors();
     }
 
     /// <summary>
-    /// Converts to a <see cref="IOperationResult"/>.
+    /// Converts to a <see cref="OperationResult{TValue}"/>.
     /// </summary>
     /// <param name="result">FluentValidation result</param>
     /// <param name="value">A value to be included into the result</param>
     /// <returns>Operation Result.</returns>
-    public static IOperationResult<TValue> ToOperationResult<TValue>(this ValidationResult result, TValue value)
-        => ToValueResult(result, value);
-
-    /// <summary>
-    /// Converts to a <see cref="BaseResult"/>.
-    /// </summary>
-    /// <param name="result">FluentValidation result</param>
-    /// <returns>Operation Result.</returns>
-    public static BaseResult ToBaseResult(this ValidationResult result)
+    public static OperationResult<TValue> ToOperationResult<TValue>(this ValidationResult result, TValue value)
     {
-        if (result.IsValid)
-            return new BaseResult();
-
-        var br = BaseResult.Create();
-
-        result.Errors.AddErrorsTo(br);
-        return br;
+        return result.IsValid
+            ? value
+            : result.Errors.ToResultErrors();
     }
 
     /// <summary>
-    /// Converts to a <see cref="ValueResult{TValue}"/>.
+    /// Convert a list of <see cref="ValidationFailure"/> to a <see cref="ResultErrors"/>
     /// </summary>
-    /// <param name="result">FluentValidation result</param>
-    /// <param name="value">A value to be included into the result</param>
-    /// <returns>Operation Result.</returns>
-    public static ValueResult<TValue> ToValueResult<TValue>(this ValidationResult result, TValue value)
+    /// <param name="errors"></param>
+    /// <returns></returns>
+    public static ResultErrors ToResultErrors(this IList<ValidationFailure> errors)
     {
-        var operationResult = new ValueResult<TValue>(value);
+        var result = new ResultErrors();
 
-        if (result.IsValid)
-            return operationResult;
-
-        result.Errors.AddErrorsTo(operationResult);
-        return operationResult;
-    }
-
-    /// <summary>
-    /// Merges the result of the FluentValidation with an Operation Result.
-    /// </summary>
-    /// <param name="operationResult">Operation Result.</param>
-    /// <param name="validationResult">FluentValidation result</param>
-    /// <returns>The same instance of <paramref name="operationResult"/>.</returns>
-    public static BaseResult Join(this BaseResult operationResult, ValidationResult validationResult)
-    {
-        validationResult.Errors.AddErrorsTo(operationResult);
-        return operationResult;
-    }
-
-    /// <summary>
-    /// Merges the result of the FluentValidation with an Operation Result.
-    /// </summary>
-    /// <typeparam name="T">Type of the value.</typeparam>
-    /// <param name="operationResult">Operation Result.</param>
-    /// <param name="validationResult">FluentValidation result</param>
-    /// <returns>The same instance of <paramref name="operationResult"/>.</returns>
-    public static ValueResult<T> Join<T>(this ValueResult<T> operationResult, ValidationResult validationResult)
-    {
-        validationResult.Errors.AddErrorsTo(operationResult);
-        return operationResult;
-    }
-
-    /// <summary>
-    /// Adds validation errors to the Operation Result.
-    /// </summary>
-    /// <param name="errors">FluentValidation errors.</param>
-    /// <param name="result">Operation Result.</param>
-    public static void AddErrorsTo(this IList<ValidationFailure> errors, BaseResult result)
-    {
         for (var i = 0; i < errors.Count; i++)
         {
             var error = errors[i];
             switch (error.Severity)
             {
                 case Severity.Error:
-                    result.AddError(error.ErrorMessage, error.PropertyName, error.ErrorCode, HttpStatusCode.BadRequest);
+                    result += ResultMessage.Error(error.ErrorMessage, error.PropertyName, error.ErrorCode, ErrorStatusCode);
                     break;
                 case Severity.Warning:
                 case Severity.Info:
                     break;
                 default:
-                    result.AddError(error.ErrorMessage, error.PropertyName, error.ErrorCode, HttpStatusCode.BadRequest);
+                    result += ResultMessage.Error(error.ErrorMessage, error.PropertyName, error.ErrorCode, ErrorStatusCode);
                     break;
             }
         }
+
+        return result;
     }
 }

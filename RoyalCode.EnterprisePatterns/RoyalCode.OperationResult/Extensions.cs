@@ -4,6 +4,7 @@ namespace RoyalCode.OperationResults;
 /// <summary>
 /// Extension methods for results and messages.
 /// </summary>
+[Obsolete]
 public static class Extensions
 {
     /// <summary>
@@ -14,6 +15,7 @@ public static class Extensions
     /// <exception cref="InvalidOperationException">
     ///     Case the result is not success.
     /// </exception>
+    [Obsolete]
     public static IOperationResult EnsureSuccess(this IOperationResult result)
     {
         if (result.Success)
@@ -31,6 +33,7 @@ public static class Extensions
     /// <exception cref="InvalidOperationException">
     ///     Case the result is not success.
     /// </exception>
+    [Obsolete]
     public static IOperationResult<TValue> EnsureSuccess<TValue>(this IOperationResult<TValue> result)
     {
         if (result.Success)
@@ -47,6 +50,7 @@ public static class Extensions
     /// <param name="messages">A collection of messages.</param>
     /// <param name="separator">The separator, by default it is a new line.</param>
     /// <returns>A String that contains the text of all the messages.</returns>
+    [Obsolete]
     public static string JoinMessages(this IEnumerable<IResultMessage> messages, string separator = "\n")
     {
         return string.Join(separator, messages);
@@ -66,6 +70,7 @@ public static class Extensions
     ///     An instance of an exception for the message.
     /// </para>
     /// </returns>
+    [Obsolete]
     public static Exception ToException(this IResultMessage message)
     {
         return message.Exception 
@@ -83,6 +88,7 @@ public static class Extensions
     /// <returns>
     ///     The http status code, if any message has an http status code, and if so, returns that has the highest value.
     /// </returns>
+    [Obsolete]
     public static int GetHttpStatus(this IOperationResult result)
     {
         if (result.Success)
@@ -118,6 +124,7 @@ public static class Extensions
     /// <param name="result">The operation result.</param>
     /// <param name="code">The error code to check.</param>
     /// <returns><see langword="true"/> if the result has a message with the specified error code, otherwise <see langword="false"/>.</returns>
+    [Obsolete]
     public static bool HasErrorCode(this IOperationResult result, string code)
     {
         if (result is null)
