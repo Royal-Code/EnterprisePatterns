@@ -33,7 +33,7 @@ public interface IUnitOfWork
     ///     The save result.
     /// </para>
     /// </returns>
-    ISaveResult Save();
+    SaveResult Save();
 
     /// <summary>
     /// <para>
@@ -47,7 +47,7 @@ public interface IUnitOfWork
     ///     The save result.
     /// </para>
     /// </returns>
-    Task<ISaveResult> SaveAsync(CancellationToken token = default);
+    Task<SaveResult> SaveAsync(CancellationToken token = default);
 
     /// <summary>
     /// <para>

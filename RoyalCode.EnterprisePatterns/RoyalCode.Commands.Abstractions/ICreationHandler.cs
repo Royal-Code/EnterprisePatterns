@@ -40,7 +40,7 @@ public interface ICreationHandler<TContext, TRequest, out TEntity>
     /// <param name="request">The request that contains the data to create the entity.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The operation result with the context.</returns>
-    Task<IOperationResult<TContext>> CreateContextAsync(IWorkContext context, TRequest request, CancellationToken cancellationToken);
+    Task<OperationResult<TContext>> CreateContextAsync(IWorkContext context, TRequest request, CancellationToken cancellationToken);
 
     /// <summary>
     /// Create a new entity from the context.
@@ -72,7 +72,7 @@ public interface ICreationHandler<TContext, TRequest, TRootEntity, out TEntity>
     /// <param name="rootEntity">The root entity.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The operation result with the context.</returns>
-    Task<IOperationResult<TContext>> CreateContextAsync(
+    Task<OperationResult<TContext>> CreateContextAsync(
         IWorkContext context, TRequest request, TRootEntity rootEntity, CancellationToken cancellationToken);
 
     /// <summary>

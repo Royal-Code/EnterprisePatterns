@@ -112,7 +112,7 @@ public class UnitOfWork<TDbContext> : IUnitOfWork, ITransaction
     }
 
     /// <inheritdoc/>
-    public ISaveResult Save()
+    public SaveResult Save()
     {
         try
         {
@@ -148,7 +148,7 @@ public class UnitOfWork<TDbContext> : IUnitOfWork, ITransaction
     }
 
     /// <inheritdoc/>
-    public async Task<ISaveResult> SaveAsync(CancellationToken token = default)
+    public async Task<SaveResult> SaveAsync(CancellationToken token = default)
     {
         try
         {

@@ -20,5 +20,5 @@ public interface IValidableContext
     ///     A operation result with the problems messages if the context is invalid,
     ///     or a operation result with success if the context is valid.
     /// </returns>
-    IOperationResult Validate(); // TODO: Usar OperationResult
+    OperationResult Validate();
 }

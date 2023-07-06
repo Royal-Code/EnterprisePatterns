@@ -208,13 +208,11 @@ public static class CreationApi
         try
         {
             var result = await handler.HandleAsync(model, cancellationToken);
-            if (!result.Success)
-                return result.ToResult();
 
             var creationPathKey = new CreatePathKey { EntityType = typeof(TEntity), ModelType = typeof(TModel) };
             var creationPath = creationPathMap[creationPathKey];
 
-            return result.ToResult(creationPath.Path, creationPath.Format);
+            return Results.Extensions.ToResult(result, creationPath.Path, creationPath.Format);
         }
         catch(Exception ex)
         {
@@ -243,13 +241,11 @@ public static class CreationApi
         try
         {
             var result = await handler.HandleAsync(model, cancellationToken);
-            if (!result.Success)
-                return result.ToResult();
 
             var creationPathKey = new CreatePathKey { EntityType = typeof(TEntity), ModelType = typeof(TModel) };
             var creationPath = creationPathMap[creationPathKey];
 
-            return result.ToResult(creationPath.Path, creationPath.Format);
+            return Results.Extensions.ToResult(result, creationPath.Path, creationPath.Format);
         }
         catch (Exception ex)
         {
@@ -280,13 +276,11 @@ public static class CreationApi
         try
         {
             var result = await handler.HandleAsync(id, model, cancellationToken);
-            if (!result.Success)
-                return result.ToResult();
 
             var creationPathKey = new CreatePathKey { EntityType = typeof(TEntity), ModelType = typeof(TModel) };
             var creationPath = creationPathMap[creationPathKey];
 
-            return result.ToResult(creationPath.Path, creationPath.Format);
+            return Results.Extensions.ToResult(result, creationPath.Path, creationPath.Format);
         }
         catch (Exception ex)
         {

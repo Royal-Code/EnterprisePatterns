@@ -50,12 +50,10 @@ public class CreateHandlerTests
         var dto = new SimpleDto { Name = "Test" };
         var result = await handler.HandleAsync(dto, default);
         scope.Dispose();
+        bool success = result.TryGetValue(out var entity);
 
         // assert
-        Assert.NotNull(result);
-        Assert.True(result.Success);
-
-        var entity = result.Value;
+        Assert.True(success);
         Assert.NotNull(entity);
         Assert.Equal(dto.Name, entity.Name);
 

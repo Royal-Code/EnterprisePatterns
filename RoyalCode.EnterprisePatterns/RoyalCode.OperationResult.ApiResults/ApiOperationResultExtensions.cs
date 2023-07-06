@@ -10,20 +10,6 @@ namespace Microsoft.AspNetCore.Http;
 /// </summary>
 public static partial class ApiResults
 {
-    /// <summary>
-    /// Convert <see cref="IOperationResult"/> to <see cref="IResult"/>.
-    /// </summary>
-    /// <param name="result">The <see cref="IOperationResult"/>.</param>
-    /// <param name="createdPath">The path for created responses, when applyable.</param>
-    /// <param name="formatPathWithValue">Indicates if the <paramref name="createdPath"/> should be formatted with the value of the result.</param>
-    /// <returns>The <see cref="IResult"/> for the response.</returns>
-    [Obsolete]
-    public static IResult ToResult(this IOperationResult result,
-        string? createdPath = null, bool formatPathWithValue = false)
-    {
-        return new ApiOperationResult(result, createdPath, formatPathWithValue);
-    }
-
 #if NET6_0
 
     /// <summary>
@@ -87,6 +73,22 @@ public static partial class ApiResults
     /// <summary>
     /// Convert the <see cref="OperationResult{T}"/> to <see cref="IResult"/>.
     /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="_">Used for extension.</param>
+    /// <param name="result">The operation result.</param>
+    /// <param name="createdPathFunction">A function to create the path for created responses.</param>
+    /// <returns>The <see cref="IResult"/> for the response.</returns>
+    public static IResult ToResult<T>(this IResultExtensions _, 
+        OperationResult<T> result, Func<T, string> createdPathFunction)
+    {
+        return result.Match(
+            value => Results.Created(createdPathFunction(value), value),
+            error => new MatchErrorResult(error));
+    }
+
+    /// <summary>
+    /// Convert the <see cref="OperationResult{T}"/> to <see cref="IResult"/>.
+    /// </summary>
     /// <param name="_">Used for extension.</param>
     /// <param name="result">The operation result.</param>
     /// <returns>The <see cref="IResult"/> for the response.</returns>
@@ -119,7 +121,8 @@ public static partial class ApiResults
     /// <param name="result">The operation result.</param>
     /// <param name="createdPath">The path for created responses.</param>
     /// <returns>The <see cref="IResult"/> for the response.</returns>
-    public static Results<Created, MatchErrorResult> ToResult(this IResultExtensions _, OperationResult result, string createdPath)
+    public static Results<Created, MatchErrorResult> ToResult(this IResultExtensions _,
+        OperationResult result, string createdPath)
     {
         return result.Match<Results<Created, MatchErrorResult>>(
             () => TypedResults.Created(createdPath),
@@ -155,6 +158,22 @@ public static partial class ApiResults
     {
         return result.Match<Results<Created<T>, MatchErrorResult>>(
             value => TypedResults.Created(formatPathWithValue ? string.Format(createdPath, value) : createdPath, value),
+            error => new MatchErrorResult(error));
+    }
+
+    /// <summary>
+    /// Convert the <see cref="OperationResult{T}"/> to <see cref="Created{T}"/> or <see cref="MatchErrorResult"/>.
+    /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="_">Used for extension.</param>
+    /// <param name="result">The operation result.</param>
+    /// <param name="createdPathFunction">A function to create the path for created responses.</param>
+    /// <returns>The <see cref="IResult"/> for the response.</returns>
+    public static Results<Created<T>, MatchErrorResult> ToResult<T>(this IResultExtensions _,
+        OperationResult<T> result, Func<T, string> createdPathFunction)
+    {
+        return result.Match<Results<Created<T>, MatchErrorResult>>(
+            value => TypedResults.Created(createdPathFunction(value), value),
             error => new MatchErrorResult(error));
     }
 
