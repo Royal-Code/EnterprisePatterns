@@ -14,7 +14,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\RoyalCode.Entities\RoyalCode.Entities.csproj" />
-		<ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -45,27 +45,27 @@ public sealed class CreateCommandHandler<TEntity, TModel>
     /// <param name="model">The input model.</param>
     /// <param name="token">The cancellation token.</param>
     /// <returns>The result of the operation with the created entity.</returns>
-    public async Task<IOperationResult<TEntity>> HandleAsync(TModel model, CancellationToken token) // TODO: Usar OperationResult
+    public async Task<OperationResult<TEntity>> HandleAsync(TModel model, CancellationToken token)
     {
         foreach (var validator in validators)
         {
             var result = validator.Validate(model);
-            if (result.Failure)
-                return result.ToValue<TEntity>();
+            if (result.TryGetError(out var error))
+                return error;
         }
 
         if (creationHandler is IValidationHandler<TModel> validationHandler)
         {
             var result = validationHandler.Validate(context, model);
-            if (!result.Success)
-                return result.ToValue<TEntity>();
+            if (result.TryGetError(out var error))
+                return error;
         }
 
         var entity = creationHandler.Create(model);
         context.GetRepository<TEntity>().Add(entity);
 
         var saveResult = await context.SaveAsync(token);
-        return saveResult.ToValue(entity);
+        return saveResult.Convert(entity);
     }
 }
 
@@ -111,39 +111,38 @@ public sealed class CreateCommandHandler<TEntity, TModel, TContext>
     /// <param name="model">The input model.</param>
     /// <param name="token">The cancellation token.</param>
     /// <returns>The result of the operation with the created entity.</returns>
-    public async Task<IOperationResult<TEntity>> HandleAsync(TModel model, CancellationToken token)
+    public async Task<OperationResult<TEntity>> HandleAsync(TModel model, CancellationToken token)
     {
         foreach (var validator in validators)
         {
             var result = validator.Validate(model);
-            if (result.Failure)
-                return result.ToValue<TEntity>();
+            if (result.TryGetError(out var error))
+                return error;
         }
 
         if (creationHandler is IValidationHandler<TModel> validationHandler)
         {
             var result = validationHandler.Validate(context, model);
-            if (!result.Success)
-                return result.ToValue<TEntity>();
+            if (result.TryGetError(out var error))
+                return error;
         }
 
         var creationContextResult = await creationHandler.CreateContextAsync(context, model, token);
-        if (!creationContextResult.Success)
-            return creationContextResult.ToValue<TEntity>();
+        if (creationContextResult.IsFailureOrGetValue(out var creationContext))
+            return creationContextResult.Convert<TEntity>();
 
-        var creationContext = creationContextResult.Value!;
         if (creationContext is IValidableContext validable)
         {
             var result = validable.Validate();
-            if (!result.Success)
-                return result.ToValue<TEntity>();
+            if (result.TryGetError(out var error))
+                return error;
         }
 
-        var entity = creationHandler.Create(creationContextResult.Value!);
+        var entity = creationHandler.Create(creationContext);
         context.GetRepository<TEntity>().Add(entity);
 
         var saveResult = await context.SaveAsync(token);
-        return saveResult.ToValue(entity);
+        return saveResult.Convert(entity);
     }
 }
 
@@ -194,42 +193,41 @@ public sealed class CreateCommandHandler<TRootEntity, TRootId, TEntity, TModel, 
     /// <param name="model">The input model.</param>
     /// <param name="token">The cancellation token.</param>
     /// <returns>The result of the operation with the created entity.</returns>
-    public async Task<IOperationResult<TEntity>> HandleAsync(TRootId id, TModel model, CancellationToken token)
+    public async Task<OperationResult<TEntity>> HandleAsync(TRootId id, TModel model, CancellationToken token)
     {
         foreach (var validator in validators)
         {
             var result = validator.Validate(model);
-            if (result.Failure)
-                return result.ToValue<TEntity>();
+            if (result.TryGetError(out var error))
+                return error;
         }
 
         if (creationHandler is IValidationHandler<TModel> validationHandler)
         {
             var result = validationHandler.Validate(context, model);
-            if (!result.Success)
-                return result.ToValue<TEntity>();
+            if (result.TryGetError(out var error))
+                return error;
         }
 
         var rootEntity = await context.GetRepository<TRootEntity>().FindAsync(id!);
         if (rootEntity is null)
-            return ValueResult.NotFound<TEntity>(CommandsErrorMessages.CreateNotFoundMessage<TRootEntity>(id), nameof(id));
+            return ResultMessage.NotFound(CommandsErrorMessages.CreateNotFoundMessage<TRootEntity>(id), nameof(id));
 
         var creationContextResult = await creationHandler.CreateContextAsync(context, model, rootEntity, token);
-        if (!creationContextResult.Success)
-            return creationContextResult.ToValue<TEntity>();
+        if (creationContextResult.IsFailureOrGetValue(out var creationContext))
+            return creationContextResult.Convert<TEntity>();
 
-        var creationContext = creationContextResult.Value!;
         if (creationContext is IValidableContext validable)
         {
             var result = validable.Validate();
-            if (!result.Success)
-                return result.ToValue<TEntity>();
+            if (result.TryGetError(out var error))
+                return error;
         }
 
-        var entity = creationHandler.Create(creationContextResult.Value!);
+        var entity = creationHandler.Create(creationContext);
         context.GetRepository<TEntity>().Add(entity);
 
         var saveResult = await context.SaveAsync(token);
-        return saveResult.ToValue(entity);
+        return saveResult.Convert(entity);
     }
 }

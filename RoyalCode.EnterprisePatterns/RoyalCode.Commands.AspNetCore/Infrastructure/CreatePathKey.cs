@@ -18,3 +18,10 @@ internal struct CreatePathKey
         return HashCode.Combine(EntityType, ModelType);
     }
 }
+
+internal static class CreatePathKey<TEntity, TModel>
+{
+    public static string? Path { get; set; }
+
+    public static Func<TEntity, string, string>? Formatter { get; set; }
+}

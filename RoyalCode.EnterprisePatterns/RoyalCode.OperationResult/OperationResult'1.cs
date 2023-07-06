@@ -322,6 +322,25 @@ public readonly struct OperationResult<TValue>
 
     /// <summary>
     /// <para>
+    ///     Convert the operation result to another type in case of failure.
+    ///     This method can only be used when the operation result is a failure.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TOther">The other type of the result.</typeparam>
+    /// <returns>The new operation result.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     The operation result is not a failure.
+    /// </exception>"
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly OperationResult<TOther> Convert<TOther>()
+    {
+        if (Failure)
+            return error;
+        throw new InvalidOperationException("The operation result is not a failure.");
+    }
+
+    /// <summary>
+    /// <para>
     ///     Match a function depending on the operation result.
     /// </para>
     /// </summary>

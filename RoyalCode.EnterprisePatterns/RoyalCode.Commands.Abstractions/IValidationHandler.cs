@@ -15,5 +15,5 @@ public interface IValidationHandler<in TModel>
     /// <param name="context">The work context.</param>
     /// <param name="model">The command data.</param>
     /// <returns>The result of the validation.</returns>
-    IOperationResult Validate(IWorkContext context, TModel model); // TODO: Usar OperationResult
+    OperationResult Validate(IWorkContext context, TModel model);
 }

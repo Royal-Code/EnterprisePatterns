@@ -17,5 +17,5 @@ public interface IValidator<in TModel>
     ///     A operation result with the problems messages if the model is invalid,
     ///     or a operation result with success if the model is valid.
     /// </returns>
-    IOperationResult Validate(TModel model); // TODO: Usar OperationResult
+    OperationResult Validate(TModel model);
 }
