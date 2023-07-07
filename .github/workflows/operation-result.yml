@@ -21,9 +21,6 @@ jobs:
           dotnet-version: '7.0.x'
           include-prerelease: true
 
-      - name: Build and pack OperationResult.Abstractions
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult.Abstractions/RoyalCode.OperationResult.Abstractions.csproj -c Release
-        
       - name: Build and pack OperationResult
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationResult/RoyalCode.OperationResult.csproj -c Release
       
