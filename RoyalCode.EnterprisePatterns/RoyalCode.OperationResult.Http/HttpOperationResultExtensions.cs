@@ -21,7 +21,7 @@ public static class HttpOperationResultExtensions
     /// </summary>
     /// <param name="response">The <see cref="HttpResponseMessage"/>.</param>
     /// <param name="token">The <see cref="CancellationToken"/>.</param>
-    /// <returns>The <see cref="IOperationResult"/>.</returns>
+    /// <returns>The <see cref="OperationResult"/>.</returns>
     public static async Task<OperationResult> ToOperationResultAsync(
         this HttpResponseMessage response, CancellationToken token = default)
     {
@@ -39,7 +39,7 @@ public static class HttpOperationResultExtensions
 
     /// <summary>
     /// <para>
-    ///     Get <see cref="IOperationResult{TValue}" /> from <see cref="HttpResponseMessage"/>.
+    ///     Get <see cref="OperationResult{TValue}" /> from <see cref="HttpResponseMessage"/>.
     /// </para>
     /// </summary>
     /// <typeparam name="TValue">The type of the value.</typeparam>
@@ -49,7 +49,7 @@ public static class HttpOperationResultExtensions
     ///     used when status code is success.
     /// </param>
     /// <param name="token">The <see cref="CancellationToken"/>.</param>
-    /// <returns>The <see cref="IOperationResult{TValue}"/>.</returns>
+    /// <returns>The <see cref="OperationResult{TValue}"/>.</returns>
     public static async Task<OperationResult<TValue>> ToOperationResultAsync<TValue>(
         this HttpResponseMessage response, JsonSerializerOptions? options = null, CancellationToken token = default)
     {

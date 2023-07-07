@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
 namespace RoyalCode.OperationResults;
@@ -9,6 +10,12 @@ namespace RoyalCode.OperationResults;
 /// </summary>
 public static class ResultErrorsSerialization
 {
+    private static readonly JsonSerializerOptions jsonSerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
+
     /// <summary>
     /// The <see cref="JsonTypeInfo"/> for <see cref="IEnumerable{ResultMessage}"/>.
     /// </summary>
@@ -33,6 +40,5 @@ public static class ResultErrorsSerialization
     /// <param name="_">Used for extension methods.</param>
     /// <returns>The <see cref="JsonSerializerOptions"/> for <see cref="ResultErrors"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static JsonSerializerOptions GetJsonSerializerOptions(this ResultErrors _)
-        => SerializationContext.JsonSerializerOptions;
+    public static JsonSerializerOptions GetJsonSerializerOptions(this ResultErrors _) => jsonSerializerOptions;
 }

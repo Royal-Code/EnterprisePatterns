@@ -28,18 +28,40 @@ public readonly struct OperationResult
     public static implicit operator OperationResult(ResultMessage error) => new(error);
 
     /// <summary>
-    /// Adds a new message to the result collection if the result is a failure.
+    /// Adds a new messages to the result collection if the result is a failure.
     /// </summary>
-    /// <param name="result">The result to add the message to</param>
-    /// <param name="message">The new message to add</param>
+    /// <param name="result">The result to add the messages to</param>
+    /// <param name="message">The new messages to add</param>
     /// <returns>The same instance of the collection</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Case the result is not a failure.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static OperationResult operator +(OperationResult result, IResultMessage message)
     {
         if (!result.Failure)
-            throw new InvalidOperationException("Cannot add a message to a successful operation result.");
+            throw new InvalidOperationException("Cannot add a messages to a successful operation result.");
 
         result.error.Add(message);
+        return result;
+    }
+
+    /// <summary>
+    /// Adds a range of messages to the result collection if the result is a failure.
+    /// </summary>
+    /// <param name="result">The result to add the messages to</param>
+    /// <param name="messages">The new messages to add</param>
+    /// <returns>The same instance of the collection</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Case the result is not a failure.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static OperationResult operator +(OperationResult result, IEnumerable<IResultMessage> messages)
+    {
+        if (!result.Failure)
+            throw new InvalidOperationException("Cannot add a messages to a successful operation result.");
+
+        result.error.AddRange(messages);
         return result;
     }
 

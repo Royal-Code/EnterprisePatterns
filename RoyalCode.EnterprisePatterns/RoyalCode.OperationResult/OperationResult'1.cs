@@ -53,6 +53,25 @@ public readonly struct OperationResult<TValue>
     }
 
     /// <summary>
+    /// Adds a range of messages to the result collection if the result is a failure.
+    /// </summary>
+    /// <param name="result">The result to add the messages to</param>
+    /// <param name="messages">The new messages to add</param>
+    /// <returns>The same instance of the collection</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Case the result is not a failure.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static OperationResult<TValue> operator +(OperationResult<TValue> result, IEnumerable<IResultMessage> messages)
+    {
+        if (!result.Failure)
+            throw new InvalidOperationException("Cannot add a messages to a successful operation result.");
+
+        result.error.AddRange(messages);
+        return result;
+    }
+
+    /// <summary>
     /// Extracts actual result value.
     /// </summary>
     /// <param name="result">The result object.</param>

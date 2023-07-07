@@ -125,7 +125,7 @@ public class MatchErrorResult
     /// <inheritdoc />
     public static void PopulateMetadata(MethodInfo _, EndpointBuilder builder)
     {
-        var type = typeof(IOperationResult);
+        var type = typeof(ResultErrors);
         string[] content = { "application/json" };
 
         builder.Metadata.Add(

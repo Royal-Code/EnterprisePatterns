@@ -6,7 +6,7 @@ using RoyalCode.OperationResults;
 namespace Microsoft.AspNetCore.Http;
 
 /// <summary>
-/// Extensions for adapt <see cref="IOperationResult"/> to <see cref="IResult"/>.
+/// Extensions for adapt <see cref="OperationResult"/> to <see cref="IResult"/>.
 /// </summary>
 public static partial class ApiResults
 {

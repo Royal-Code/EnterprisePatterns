@@ -100,7 +100,7 @@ public abstract class OperationMatchObjectResultBase<TResult> : ObjectResult
         Value = error;
         ContentTypes.Add("application/json");
         StatusCode = error.GetHttpStatus();
-        DeclaredType = typeof(IOperationResult);
+        DeclaredType = typeof(ResultErrors);
 
         return base.ExecuteResultAsync(context);
     }

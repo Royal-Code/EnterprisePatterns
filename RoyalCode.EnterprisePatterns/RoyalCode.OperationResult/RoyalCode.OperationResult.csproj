@@ -18,9 +18,5 @@
 		<PackageReference Include="System.Text.Json" Version="6.0.0" />
 		<PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
 	</ItemGroup>
-	
-	<ItemGroup>
-		<ProjectReference Include="..\RoyalCode.OperationResult.Abstractions\RoyalCode.OperationResult.Abstractions.csproj" />
-	</ItemGroup>
 
 </Project>

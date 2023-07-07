@@ -93,8 +93,8 @@ public class OperationResultTests
         result += ResultMessage.Error("Error message 2");
 
         Assert.False(result.IsSuccessOrGetError(out var gettedError));
-        Assert.Equal("Error message 1", gettedError.Messages.First().Text);
-        Assert.Equal("Error message 2", gettedError.Messages.Last().Text);
+        Assert.Equal("Error message 1", gettedError.First().Text);
+        Assert.Equal("Error message 2", gettedError.Last().Text);
     }
 }
 
