@@ -11,13 +11,26 @@ namespace RoyalCode.OperationResults;
 public readonly struct ValidableResult
 {
     /// <summary>
-    /// Adds a new message to the result collection if the result is a failure.
+    /// Implicitly convert a <see cref="OperationResult"/> error to a <see cref="ValidableResult"/>.
+    /// </summary>
+    /// <param name="other"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator ValidableResult(OperationResult other)
+    {
+        return other.TryGetError(out var errors)
+            ? new(errors)
+            : new();
+    }
+
+    /// <summary>
+    /// Adds a new message to the result collection.
+    /// If the result is not a failure, a new result is created with the message.
     /// </summary>
     /// <param name="result">The result to add the message to</param>
     /// <param name="message">The new message to add</param>
     /// <returns>The same instance of the collection</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ValidableResult operator +(ValidableResult result, IResultMessage message)
+    public static ValidableResult operator +(ValidableResult result, ResultMessage message)
     {
         if (!result.Failure)
             return new ValidableResult(new ResultErrors().With(message));
@@ -27,22 +40,50 @@ public readonly struct ValidableResult
     }
 
     /// <summary>
-    /// Adds a range of messages to the result collection if the result is a failure.
+    /// Adds a range of messages to the result collection.
+    /// If the result is not a failure, a new result is created with the message.
     /// </summary>
     /// <param name="result">The result to add the messages to</param>
     /// <param name="messages">The new messages to add</param>
     /// <returns>The same instance of the collection</returns>
-    /// <exception cref="InvalidOperationException">
-    ///     Case the result is not a failure.
-    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ValidableResult operator +(ValidableResult result, IEnumerable<IResultMessage> messages)
+    public static ValidableResult operator +(ValidableResult result, ResultErrors messages)
     {
         if (!result.Failure)
-            throw new InvalidOperationException("Cannot add a messages to a successful operation result.");
+            return new ValidableResult(new ResultErrors().With(messages));
 
         result.error.AddRange(messages);
         return result;
+    }
+
+    /// <summary>
+    /// Adds a range of messages to the result collection from other result if the other result is a failure.
+    /// If the result is not a failure, a new result is created with the message.
+    /// </summary>
+    /// <param name="result">The result to add the messages to</param>
+    /// <param name="other">The result to add</param>
+    /// <returns>The same instance of the collection</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ValidableResult operator +(ValidableResult result, ValidableResult other)
+    {
+        return other.TryGetError(out var messages) 
+            ? result + messages
+            : result;
+    }
+
+    /// <summary>
+    /// Adds a range of messages to the result collection from other result if the other result is a failure.
+    /// If the result is not a failure, a new result is created with the message.
+    /// </summary>
+    /// <param name="result">The result to add the messages to</param>
+    /// <param name="other">The result to add</param>
+    /// <returns>The same instance of the collection</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ValidableResult operator +(ValidableResult result, OperationResult other)
+    {
+        return other.TryGetError(out var messages)
+            ? result + messages
+            : result;
     }
 
     private readonly ResultErrors? error;
