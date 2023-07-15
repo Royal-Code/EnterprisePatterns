@@ -12,6 +12,12 @@ internal sealed class ResponseTypeMetadata : IProducesResponseTypeMetadata
         ContentTypes = contentTypes ?? new[] { MediaTypeNames.Application.Json };
     }
 
+    public ResponseTypeMetadata(int statusCode, params string[]? contentTypes)
+    {
+        StatusCode = statusCode;
+        ContentTypes = contentTypes ?? new[] { MediaTypeNames.Application.Json };
+    }
+
     public Type? Type { get; }
     public int StatusCode { get; }
     public IEnumerable<string> ContentTypes { get; }
