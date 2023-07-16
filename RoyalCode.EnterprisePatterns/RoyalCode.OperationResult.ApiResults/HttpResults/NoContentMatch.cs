@@ -24,16 +24,37 @@ public sealed class NoContentMatch : IResult, INestedHttpResult, IEndpointMetada
     /// <summary>
     /// Creates a new <see cref="NoContentMatch"/> for the <see cref="OperationResult"/>.
     /// </summary>
-    /// <param name="result"></param>
+    /// <param name="result">The <see cref="OperationResult"/> to be converted.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator NoContentMatch(OperationResult result) => new(result);
 
     /// <summary>
     /// Creates a new <see cref="NoContentMatch"/> for the <see cref="ValidableResult"/>.
     /// </summary>
-    /// <param name="result"></param>
+    /// <param name="result">The <see cref="ValidableResult"/> to be converted.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator NoContentMatch(ValidableResult result) => new(result);
+
+    /// <summary>
+    /// Creates a new <see cref="NoContentMatch"/> for the <see cref="NoContent"/>.
+    /// </summary>
+    /// <param name="result">The <see cref="NoContent"/> to be converted.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator NoContentMatch(NoContent result) => new(result);
+
+    /// <summary>
+    /// Creates a new <see cref="NoContentMatch"/> for the <see cref="MatchErrorResult"/>.
+    /// </summary>
+    /// <param name="result"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator NoContentMatch(MatchErrorResult result) => new(result);
+
+    /// <summary>
+    /// Creates a new <see cref="NoContentMatch"/> for the <see cref="ResultMessage"/>.
+    /// </summary>
+    /// <param name="message"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator NoContentMatch(ResultMessage message) => new(new MatchErrorResult(message));
 
     /// <summary>
     /// Creates a new <see cref="IResult"/> for the <see cref="OperationResult"/>.
@@ -55,6 +76,24 @@ public sealed class NoContentMatch : IResult, INestedHttpResult, IEndpointMetada
         Result = result.Match<IResult>(
             TypedResults.NoContent,
             static error => new MatchErrorResult(error));
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="OkMatch{T}"/> for the <see cref="NoContent"/> match.
+    /// </summary>
+    /// <param name="result"></param>
+    public NoContentMatch(NoContent result)
+    {
+        Result = result;
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="OkMatch{T}"/> for the <see cref="MatchErrorResult"/> match.
+    /// </summary>
+    /// <param name="result"></param>
+    public NoContentMatch(MatchErrorResult result)
+    {
+        Result = result;
     }
 
     /// <inheritdoc/>

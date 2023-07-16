@@ -8,6 +8,7 @@ using RoyalCode.OperationResults.Convertion;
 using RoyalCode.OperationResults.Metadata;
 using System.Net.Mime;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace RoyalCode.OperationResults.HttpResults;
@@ -27,17 +28,44 @@ public class MatchErrorResult
     : IResult
 #endif
 {
+    /// <summary>
+    /// Creates a new <see cref="MatchErrorResult"/> for the <see cref="ResultErrors"/>.
+    /// </summary>
+    /// <param name="errors">The <see cref="ResultErrors"/> to be converted.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator MatchErrorResult(ResultErrors errors) => new(errors);
+
+    /// <summary>
+    /// Creates a new <see cref="MatchErrorResult"/> for the <see cref="ResultMessage"/>.
+    /// </summary>
+    /// <param name="message">The <see cref="ResultMessage"/> to be converted.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator MatchErrorResult(ResultMessage message) => new(message);
 
     private readonly ResultErrors errors;
 
     /// <summary>
     /// Creates a new instance of <see cref="MatchErrorResult"/>.
     /// </summary>
-    /// <param name="errors"></param>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <param name="errors">The <see cref="ResultErrors"/> to be converted.</param>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="errors"/> is <see langword="null"/>.
+    /// </exception>
     public MatchErrorResult(ResultErrors errors)
     {
         this.errors = errors ?? throw new ArgumentNullException(nameof(errors));
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="MatchErrorResult"/>.
+    /// </summary>
+    /// <param name="message">The <see cref="ResultMessage"/> to be converted.</param>
+    /// <exception cref="ArgumentNullException">
+    ///     <paramref name="message"/> is <see langword="null"/>.
+    /// </exception>
+    public MatchErrorResult(ResultMessage message)
+    {
+        errors = message ?? throw new ArgumentNullException(nameof(message));
     }
 
     /// <inheritdoc />

@@ -24,6 +24,27 @@ namespace RoyalCode.OperationResults.HttpResults;
 public sealed class CreatedMatch<T> : IResult, INestedHttpResult, IEndpointMetadataProvider
 {
     /// <summary>
+    /// Creates a new <see cref="CreatedMatch{T}"/> for the <see cref="Created{TValue}"/>.
+    /// </summary>
+    /// <param name="result"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator CreatedMatch<T>(Created<T> result) => new(result);
+
+    /// <summary>
+    /// Creates a new <see cref="CreatedMatch{T}"/> for the <see cref="MatchErrorResult"/>.
+    /// </summary>
+    /// <param name="result"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator CreatedMatch<T>(MatchErrorResult result) => new(result);
+
+    /// <summary>
+    /// Creates a new <see cref="CreatedMatch{T}"/> for the <see cref="ResultMessage"/>.
+    /// </summary>
+    /// <param name="message"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator CreatedMatch<T>(ResultMessage message) => new(new MatchErrorResult(message));
+
+    /// <summary>
     /// Creates a new <see cref="IResult"/> for the <see cref="OperationResult"/>.
     /// </summary>
     /// <param name="result">The <see cref="OperationResult"/> to be converted.</param>
@@ -46,6 +67,24 @@ public sealed class CreatedMatch<T> : IResult, INestedHttpResult, IEndpointMetad
         Result = result.Match<IResult>(
             value => TypedResults.Created(createdPathFunction(value), value),
             error => new MatchErrorResult(error));
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="CreatedMatch{T}"/> for the <see cref="Created{TValue}"/> match.
+    /// </summary>
+    /// <param name="result">The <see cref="Created{TValue}"/> to be converted.</param>
+    public CreatedMatch(Created<T> result)
+    {
+        Result = result;
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="CreatedMatch{T}"/> for the <see cref="MatchErrorResult"/> match.
+    /// </summary>
+    /// <param name="result">The <see cref="MatchErrorResult"/> to be converted.</param>
+    public CreatedMatch(MatchErrorResult result)
+    {
+        Result = result;
     }
 
     /// <inheritdoc/>
@@ -75,6 +114,27 @@ public sealed class CreatedMatch<T> : IResult, INestedHttpResult, IEndpointMetad
 public sealed class CreatedMatch : IResult, INestedHttpResult, IEndpointMetadataProvider
 {
     /// <summary>
+    /// Creates a new <see cref="CreatedMatch"/> for the <see cref="Created"/>.
+    /// </summary>
+    /// <param name="result"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator CreatedMatch(Created result) => new(result);
+
+    /// <summary>
+    /// Creates a new <see cref="CreatedMatch{T}"/> for the <see cref="MatchErrorResult"/>.
+    /// </summary>
+    /// <param name="result"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator CreatedMatch(MatchErrorResult result) => new(result);
+
+    /// <summary>
+    /// Creates a new <see cref="CreatedMatch"/> for the <see cref="ResultMessage"/>.
+    /// </summary>
+    /// <param name="message"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator CreatedMatch(ResultMessage message) => new(new MatchErrorResult(message));
+
+    /// <summary>
     /// Creates a new <see cref="IResult"/> for the <see cref="OperationResult"/>.
     /// </summary>
     /// <param name="result">The <see cref="OperationResult"/> to be converted.</param>
@@ -85,6 +145,37 @@ public sealed class CreatedMatch : IResult, INestedHttpResult, IEndpointMetadata
             TypedResults.Created,
             static (error, uri) => new MatchErrorResult(error),
             createdPath);
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="IResult"/> for the <see cref="ValidableResult"/>.
+    /// </summary>
+    /// <param name="result">The <see cref="ValidableResult"/> to be converted.</param>
+    /// <param name="createdPath">The location of the created resource.</param>
+    public CreatedMatch(ValidableResult result, string createdPath)
+    {
+        Result = result.Match<IResult, string>(
+            TypedResults.Created,
+            static (error, uri) => new MatchErrorResult(error),
+            createdPath);
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="CreatedMatch"/> for the <see cref="Created"/> match.
+    /// </summary>
+    /// <param name="result">The <see cref="Created"/> to be converted.</param>
+    public CreatedMatch(Created result)
+    {
+        Result = result;
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="CreatedMatch"/> for the <see cref="MatchErrorResult"/> match.
+    /// </summary>
+    /// <param name="result">The <see cref="MatchErrorResult"/> to be converted.</param>
+    public CreatedMatch(MatchErrorResult result)
+    {
+        Result = result;
     }
 
     /// <inheritdoc/>

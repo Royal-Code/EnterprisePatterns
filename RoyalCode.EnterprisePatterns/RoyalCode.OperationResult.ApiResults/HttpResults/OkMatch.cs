@@ -31,6 +31,27 @@ public sealed class OkMatch<T> : IResult, INestedHttpResult, IEndpointMetadataPr
     public static implicit operator OkMatch<T>(OperationResult<T> result) => new(result);
 
     /// <summary>
+    /// Creates a new <see cref="OkMatch{T}"/> for the <see cref="Ok{TValue}"/>.
+    /// </summary>
+    /// <param name="result"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator OkMatch<T>(Ok<T> result) => new(result);
+
+    /// <summary>
+    /// Creates a new <see cref="OkMatch{T}"/> for the <see cref="MatchErrorResult"/>.
+    /// </summary>
+    /// <param name="result"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator OkMatch<T>(MatchErrorResult result) => new(result);
+
+    /// <summary>
+    /// Creates a new <see cref="OkMatch{T}"/> for the <see cref="ResultMessage"/>.
+    /// </summary>
+    /// <param name="message"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator OkMatch<T>(ResultMessage message) => new(new MatchErrorResult(message));
+
+    /// <summary>
     /// Creates a new <see cref="IResult"/> for the <see cref="OperationResult"/> match.
     /// </summary>
     /// <param name="result">The <see cref="OperationResult"/> to be converted.</param>
@@ -39,6 +60,24 @@ public sealed class OkMatch<T> : IResult, INestedHttpResult, IEndpointMetadataPr
         Result = result.Match<IResult>(
             TypedResults.Ok,
             static error => new MatchErrorResult(error));
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="OkMatch{T}"/> for the <see cref="Ok{TValue}"/> match.
+    /// </summary>
+    /// <param name="result"></param>
+    public OkMatch(Ok<T> result)
+    {
+        Result = result;
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="OkMatch{T}"/> for the <see cref="MatchErrorResult"/> match.
+    /// </summary>
+    /// <param name="result"></param>
+    public OkMatch(MatchErrorResult result)
+    {
+        Result = result;
     }
 
     /// <inheritdoc/>
