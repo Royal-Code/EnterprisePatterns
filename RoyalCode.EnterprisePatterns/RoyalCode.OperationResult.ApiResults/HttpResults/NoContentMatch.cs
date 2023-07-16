@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿#if NET7_0_OR_GREATER
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Http.Metadata;
@@ -7,8 +9,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace RoyalCode.OperationResults.HttpResults;
-
-#if NET7_0_OR_GREATER
 
 /// <summary>
 /// <para>
