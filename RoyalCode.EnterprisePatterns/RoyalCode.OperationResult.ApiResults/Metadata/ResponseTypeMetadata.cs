@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.Metadata;
 using System.Net.Mime;
 
-namespace RoyalCode.OperationResults;
+namespace RoyalCode.OperationResults.Metadata;
 
 internal sealed class ResponseTypeMetadata : IProducesResponseTypeMetadata
 {

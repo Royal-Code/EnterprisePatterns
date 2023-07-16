@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 #endif
 using RoyalCode.OperationResults;
+using RoyalCode.OperationResults.HttpResults;
 
 namespace Microsoft.AspNetCore.Http;
 
@@ -188,6 +189,53 @@ public static partial class ApiResults
         return result.Match<Results<NoContent, MatchErrorResult>>(
             () => TypedResults.NoContent(),
             error => new MatchErrorResult(error));
+    }
+
+    /// <summary>
+    /// Convert the <see cref="OperationResult{TValue}"/> to <see cref="RoyalCode.OperationResults.HttpResults.CreatedMatch{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The operation result.</param>
+    /// <param name="createdPathFunction">A function to create the path for created responses.</param>
+    /// <returns>The <see cref="RoyalCode.OperationResults.HttpResults.CreatedMatch{T}"/> for the response.</returns>
+    public static CreatedMatch<T> CreatedMatch<T>(this OperationResult<T> result, Func<T, string> createdPathFunction)
+    {
+        return new CreatedMatch<T>(result, createdPathFunction);
+    }
+
+    /// <summary>
+    /// Convert the <see cref="OperationResult{TValue}"/> to <see cref="RoyalCode.OperationResults.HttpResults.CreatedMatch{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The operation result.</param>
+    /// <param name="createdPath">The path for created responses.</param>
+    /// <param name="formatPathWithValue">Indicates if the <paramref name="createdPath"/> should be formatted with the value of the result.</param>
+    /// <returns>The <see cref="RoyalCode.OperationResults.HttpResults.CreatedMatch{T}"/> for the response.</returns>
+    public static CreatedMatch<T> CreatedMatch<T>(this OperationResult<T> result, string createdPath, bool formatPathWithValue = false)
+    {
+        return new CreatedMatch<T>(result, createdPath, formatPathWithValue);
+    }
+
+    /// <summary>
+    /// Convert the <see cref="OperationResult"/> to <see cref="RoyalCode.OperationResults.HttpResults.CreatedMatch"/>.
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="createdPath">The path for created responses.</param>
+    /// <returns>The <see cref="RoyalCode.OperationResults.HttpResults.CreatedMatch"/> for the response.</returns>
+    public static CreatedMatch CreatedMatch(this OperationResult result, string createdPath)
+    {
+        return new CreatedMatch(result, createdPath);
+    }
+
+    /// <summary>
+    /// Convert the <see cref="OperationResult"/> to <see cref="RoyalCode.OperationResults.HttpResults.CreatedMatch"/>.
+    /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="result">The operation result.</param>
+    /// <returns>The <see cref="RoyalCode.OperationResults.HttpResults.CreatedMatch"/> for the response.</returns>
+    public static OkMatch<T> OkMatch<T>(this OperationResult<T> result)
+    {
+        return new OkMatch<T>(result);
     }
 
 #endif

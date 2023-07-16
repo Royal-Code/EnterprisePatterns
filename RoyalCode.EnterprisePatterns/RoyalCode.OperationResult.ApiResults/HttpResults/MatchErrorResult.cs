@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RoyalCode.OperationResults.Convertion;
+using RoyalCode.OperationResults.Metadata;
+using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json;
 
-namespace RoyalCode.OperationResults;
+namespace RoyalCode.OperationResults.HttpResults;
 
 /// <summary>
 /// <para>
@@ -76,9 +77,9 @@ public class MatchErrorResult
     /// </summary>
     /// <param name="httpContext">The <see cref="HttpContext"/> for the current request.</param>
     /// <returns>A task that represents the asynchronous execute operation.</returns>
-    public Task WriteDefault(HttpContext httpContext) 
-        => ApiOperationResultOptions.IsProblemDetailsDefault 
-            ? WriteProblemDetails(httpContext) 
+    public Task WriteDefault(HttpContext httpContext)
+        => ApiOperationResultOptions.IsProblemDetailsDefault
+            ? WriteProblemDetails(httpContext)
             : WriteOperationResult(httpContext);
 
     /// <summary>
@@ -113,13 +114,13 @@ public class MatchErrorResult
         return httpContext.Response.WriteAsJsonAsync(
             errors,
             errors.GetJsonTypeInfo(),
-            "application/json",
+            MediaTypeNames.Application.Json,
             httpContext.RequestAborted);
 #else
         return httpContext.Response.WriteAsJsonAsync(
             errors,
             errors.GetJsonSerializerOptions(),
-            "application/json",
+            MediaTypeNames.Application.Json,
             httpContext.RequestAborted);
 #endif
     }
@@ -128,7 +129,7 @@ public class MatchErrorResult
     public static void PopulateMetadata(MethodInfo _, EndpointBuilder builder)
     {
         var type = typeof(ResultErrors);
-        string[] content = { "application/json" };
+        string[] content = { MediaTypeNames.Application.Json };
 
         builder.Metadata.Add(
             new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
@@ -141,7 +142,7 @@ public class MatchErrorResult
 
         type = typeof(ProblemDetails);
         content = new[] { "application/problem+json" };
-
+        
         builder.Metadata.Add(
             new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
         builder.Metadata.Add(
