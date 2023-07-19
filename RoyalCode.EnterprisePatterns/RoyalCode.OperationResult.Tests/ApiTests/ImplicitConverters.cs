@@ -62,6 +62,11 @@ internal static class ImplicitConverters
         // Implicit conversion from ResultMessage
         createdMatch = ResultMessage.ApplicationError("x");
 
+        // Implicit conversion from ResultErrors
+        var errors = new ResultErrors();
+        errors += ResultMessage.Error("x");
+        createdMatch = errors;
+
         return createdMatch;
     }
 
@@ -77,6 +82,11 @@ internal static class ImplicitConverters
 
         // Implicit conversion from ResultMessage
         createdMatch = ResultMessage.ApplicationError("x");
+
+        // Implicit conversion from ResultErrors
+        var errors = new ResultErrors();
+        errors += ResultMessage.Error("x");
+        createdMatch = errors;
 
         return createdMatch;
     }

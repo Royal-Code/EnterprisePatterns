@@ -45,6 +45,13 @@ public sealed class CreatedMatch<T> : IResult, INestedHttpResult, IEndpointMetad
     public static implicit operator CreatedMatch<T>(ResultMessage message) => new(new MatchErrorResult(message));
 
     /// <summary>
+    /// Creates a new <see cref="CreatedMatch{T}"/> for the <see cref="ResultErrors"/>.
+    /// </summary>
+    /// <param name="errors"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator CreatedMatch<T>(ResultErrors errors) => new(new MatchErrorResult(errors));
+
+    /// <summary>
     /// Creates a new <see cref="IResult"/> for the <see cref="OperationResult"/>.
     /// </summary>
     /// <param name="result">The <see cref="OperationResult"/> to be converted.</param>
@@ -133,6 +140,13 @@ public sealed class CreatedMatch : IResult, INestedHttpResult, IEndpointMetadata
     /// <param name="message"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator CreatedMatch(ResultMessage message) => new(new MatchErrorResult(message));
+
+    /// <summary>
+    /// Creates a new <see cref="CreatedMatch"/> for the <see cref="ResultErrors"/>.
+    /// </summary>
+    /// <param name="errors"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator CreatedMatch(ResultErrors errors) => new(new MatchErrorResult(errors));
 
     /// <summary>
     /// Creates a new <see cref="IResult"/> for the <see cref="OperationResult"/>.

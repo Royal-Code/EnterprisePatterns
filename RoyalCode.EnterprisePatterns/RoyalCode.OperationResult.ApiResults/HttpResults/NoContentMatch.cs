@@ -57,6 +57,13 @@ public sealed class NoContentMatch : IResult, INestedHttpResult, IEndpointMetada
     public static implicit operator NoContentMatch(ResultMessage message) => new(new MatchErrorResult(message));
 
     /// <summary>
+    /// Creates a new <see cref="NoContentMatch"/> for the <see cref="ResultErrors"/>.
+    /// </summary>
+    /// <param name="errors"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator NoContentMatch(ResultErrors errors) => new(new MatchErrorResult(errors));
+
+    /// <summary>
     /// Creates a new <see cref="IResult"/> for the <see cref="OperationResult"/>.
     /// </summary>
     /// <param name="result">The <see cref="OperationResult"/> to be converted.</param>
