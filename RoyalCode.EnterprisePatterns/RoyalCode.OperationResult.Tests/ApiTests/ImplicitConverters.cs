@@ -90,4 +90,23 @@ internal static class ImplicitConverters
 
         return createdMatch;
     }
+
+    public static OkMatch ReturnsOkMatch()
+    {
+        OkMatch okMatch;
+
+        // Implicit conversion from OperationResult
+        okMatch = new OperationResult();
+
+        // Implicit conversion from Ok
+        okMatch = TypedResults.Ok();
+
+        // Implicit conversion from MatchErrorResult
+        okMatch = new MatchErrorResult(ResultMessage.Error("x"));
+
+        // Implicit conversion from ResultMessage
+        okMatch = ResultMessage.ApplicationError("x");
+
+        return okMatch;
+    }
 }
