@@ -38,6 +38,13 @@ public sealed class OkMatch<T> : IResult, INestedHttpResult, IEndpointMetadataPr
     public static implicit operator OkMatch<T>(Ok<T> result) => new(result);
 
     /// <summary>
+    /// Creates a new <see cref="OkMatch{T}"/> for the <see cref="Ok{TValue}"/>.
+    /// </summary>
+    /// <param name="value"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator OkMatch<T>(T value) => new(TypedResults.Ok(value));
+
+    /// <summary>
     /// Creates a new <see cref="OkMatch{T}"/> for the <see cref="MatchErrorResult"/>.
     /// </summary>
     /// <param name="result"></param>

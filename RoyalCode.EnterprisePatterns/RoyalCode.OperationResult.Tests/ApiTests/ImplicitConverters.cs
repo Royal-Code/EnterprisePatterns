@@ -40,6 +40,9 @@ internal static class ImplicitConverters
         // Implicit conversion from Ok<T>
         okMatch = TypedResults.Ok(value);
 
+        // Implicit conversion from T
+        okMatch = value;
+
         // Implicit conversion from MatchErrorResult
         okMatch = new MatchErrorResult(ResultMessage.Error("x"));
 
