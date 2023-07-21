@@ -52,6 +52,28 @@ internal static class ImplicitConverters
         return okMatch;
     }
 
+    public static OkMatch ReturnsOkMatch()
+    {
+        OkMatch okMatch;
+
+        // Implicit conversion from OperationResult
+        okMatch = new OperationResult();
+
+        // Implicit conversion from ValidableResult
+        okMatch = new ValidableResult();
+
+        // Implicit conversion from Ok
+        okMatch = TypedResults.Ok();
+
+        // Implicit conversion from MatchErrorResult
+        okMatch = new MatchErrorResult(ResultMessage.Error("x"));
+
+        // Implicit conversion from ResultMessage
+        okMatch = ResultMessage.ApplicationError("x");
+
+        return okMatch;
+    }
+
     public static CreatedMatch<T> ReturnsCreatedMatch<T>(T value)
     {
         CreatedMatch<T> createdMatch;
@@ -92,24 +114,5 @@ internal static class ImplicitConverters
         createdMatch = errors;
 
         return createdMatch;
-    }
-
-    public static OkMatch ReturnsOkMatch()
-    {
-        OkMatch okMatch;
-
-        // Implicit conversion from OperationResult
-        okMatch = new OperationResult();
-
-        // Implicit conversion from Ok
-        okMatch = TypedResults.Ok();
-
-        // Implicit conversion from MatchErrorResult
-        okMatch = new MatchErrorResult(ResultMessage.Error("x"));
-
-        // Implicit conversion from ResultMessage
-        okMatch = ResultMessage.ApplicationError("x");
-
-        return okMatch;
     }
 }

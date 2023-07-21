@@ -9,7 +9,7 @@ namespace System.Net.Http;
 
 /// <summary>
 /// <para>
-///     Extension methods for deserialize <see cref="IOperationResult" /> from <see cref="HttpResponseMessage"/>.
+///     Extension methods for deserialize <see cref="OperationResult" /> from <see cref="HttpResponseMessage"/>.
 /// </para>
 /// </summary>
 public static class HttpOperationResultExtensions
