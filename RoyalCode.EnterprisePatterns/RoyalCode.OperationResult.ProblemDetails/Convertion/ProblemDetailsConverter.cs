@@ -18,7 +18,7 @@ public static class ProblemDetailsConverter
     {
         if (result.Count == 1)
         {
-            var message = result.First();
+            var message = result[0];
             return message.ToProblemDetails(options);
         }
 

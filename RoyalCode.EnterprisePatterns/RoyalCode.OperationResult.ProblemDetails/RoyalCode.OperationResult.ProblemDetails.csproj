@@ -14,11 +14,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App"/>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\RoyalCode.OperationResult\RoyalCode.OperationResult.csproj" />
+	  <ProjectReference Include="..\RoyalCode.OperationResult.Serialization\RoyalCode.OperationResult.Serialization.csproj" />
 	</ItemGroup>
 
 </Project>
