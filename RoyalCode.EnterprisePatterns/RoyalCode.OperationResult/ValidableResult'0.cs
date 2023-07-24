@@ -225,5 +225,5 @@ public readonly struct ValidableResult
     /// </summary>
     /// <returns>The string representation of the operation result.</returns>
     public override readonly string ToString()
-        => Failure ? $"Failure: {error}" : $"Success";
+        => Failure ? $"Failure: {error}" : "Success";
 }

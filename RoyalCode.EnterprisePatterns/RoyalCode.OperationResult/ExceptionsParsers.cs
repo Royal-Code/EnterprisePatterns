@@ -57,25 +57,24 @@ public static class ExceptionsParsers
         message = null;
         return false;
     }
-}
 
-/// <summary>
-/// <para>
-///     A parser of exceptions to result messages.
-/// </para>
-/// <para>
-///     Add a parser to <see cref="ExceptionsParsers"/> to use it.
-/// </para>
-/// </summary>
-public interface IExceptionParser
-{
     /// <summary>
     /// <para>
-    ///     Try to parse the exception to a result message.
+    ///     Try to create a exception from a result message.
     /// </para>
     /// </summary>
-    /// <param name="ex">The exception occured into a operation message.</param>
-    /// <param name="message">The output message.</param>
-    /// <returns>True if the exception was parsed.</returns>
-    bool TryParse(Exception ex, [NotNullWhen(true)] out ResultMessage? message);
+    /// <param name="message">The result message.</param>
+    /// <param name="exception">The output exception.</param>
+    /// <returns>True if the exception was created.</returns>
+    public static bool TryCreate(IResultMessage message, [NotNullWhen(true)] out Exception? exception)
+    {
+        if (parsers is not null)
+            foreach (var parser in parsers)
+                if (parser.TryCreate(message, out exception))
+                    return true;
+
+        exception = null;
+        return false;
+    }
+        
 }

@@ -1,8 +1,13 @@
-﻿
+﻿#if NET6_0_OR_GREATER
+using System.Diagnostics;
+#endif
+
+using System.Diagnostics.CodeAnalysis;
+
 namespace RoyalCode.OperationResults;
 
 /// <summary>
-/// Extension methods for results and messages.
+/// Extension methods for results and errors.
 /// </summary>
 public static class Extensions
 {
@@ -14,6 +19,9 @@ public static class Extensions
     /// <exception cref="Exception">
     ///     Case the errors is not success.
     /// </exception>
+#if NET6_0_OR_GREATER
+    [StackTraceHidden]
+#endif
     public static OperationResult EnsureSuccess(this OperationResult result)
     {
         if (result.TryGetError(out var errors))
@@ -30,6 +38,9 @@ public static class Extensions
     /// <exception cref="Exception">
     ///     Case the errors is not success.
     /// </exception>
+#if NET6_0_OR_GREATER
+    [StackTraceHidden]
+#endif
     public static OperationResult<TValue> EnsureSuccess<TValue>(this OperationResult<TValue> result)
     {
         if (result.TryGetError(out var errors))
@@ -46,12 +57,96 @@ public static class Extensions
     /// <exception cref="Exception">
     ///     Case the errors is not success.
     /// </exception>
+#if NET6_0_OR_GREATER
+    [StackTraceHidden]
+#endif
     public static ValidableResult EnsureSuccess(this ValidableResult result)
     {
         if (result.TryGetError(out var errors))
             throw errors.CreateException();
 
         return result;
+    }
+
+    /// <summary>
+    /// Try get the value from the result, if it is success, otherwise it throws a exception.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <param name="result">The operation result.</param>
+    /// <returns>The value.</returns>
+#if NET6_0_OR_GREATER
+    [StackTraceHidden]
+#endif
+    public static TValue GetValueOrThrow<TValue>(this OperationResult<TValue> result)
+    {
+        if (result.IsSuccessAndGet(out var value, out var errors))
+            return value;
+
+        throw errors.CreateException();
+    }
+
+    /// <summary>
+    /// Check if the result is success then return true with the the value,
+    /// otherwise return false with the exception.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <param name="result">The operation result.</param>
+    /// <param name="exception">The exception, if the result is failure.</param>
+    /// <param name="value">The value, if the result is success.</param>
+    /// <returns>True if the result is success, otherwise false.</returns>
+    public static bool GetValueOrException<TValue>(this OperationResult<TValue> result,
+        [NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out Exception? exception)
+    {
+        if (result.IsSuccessAndGet(out var v, out var errors))
+        {
+            value = v;
+            exception = null;
+            return true;
+        }
+
+        value = default;
+        exception = errors.CreateException();
+        return false;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Check if the result is a failure, then create a exception from the errors.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="exception">The exception, if the result is failure.</param>
+    /// <returns>True if the result is failure, otherwise false.</returns>
+    public static bool TryGetException(this OperationResult result, [NotNullWhen(true)] out Exception? exception)
+    {
+        if (result.TryGetError(out var errors))
+        {
+            exception = errors.CreateException();
+            return true;
+        }
+
+        exception = null;
+        return false;
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Check if the result is a failure, then create a exception from the errors.
+    /// </para>
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="exception">The exception, if the result is failure.</param>
+    /// <returns>True if the result is failure, otherwise false.</returns>
+    public static bool TryGetException(this ValidableResult result, [NotNullWhen(true)] out Exception? exception)
+    {
+        if (result.TryGetError(out var errors))
+        {
+            exception = errors.CreateException();
+            return true;
+        }
+
+        exception = null;
+        return false;
     }
 
     /// <summary>
@@ -70,23 +165,34 @@ public static class Extensions
     /// </returns>
     public static Exception ToException(this IResultMessage message)
     {
-        return message.Exception 
+        return message.Exception
+            ?? message.TryCreateException()
             ?? (message.Property is null
                 ? new InvalidOperationException(message.Text)
                 : new ArgumentException(message.Text, message.Property));
     }
 
-    private static Exception CreateException(this IEnumerable<IResultMessage> messages)
+    private static Exception? TryCreateException(this IResultMessage message)
     {
-        var exceptions = messages
+        ExceptionsParsers.TryCreate(message, out var exception);
+        return exception;
+    }
+
+    /// <summary>
+    /// Creates a exception from the result errors.
+    /// </summary>
+    /// <param name="errors">The result errors.</param>
+    /// <returns>An exception.</returns>
+    public static Exception CreateException(this ResultErrors errors)
+    {
+        if (errors.Count == 1)
+            return errors[0].ToException();
+
+        var exceptions = errors
             .Select(m => m.ToException())
             .ToList();
 
-        Exception exception = exceptions.Count == 1
-            ? exceptions.First()
-            : new AggregateException("Multiple exceptions have occurred, check the internal exceptions to see the details.", exceptions);
-
-        return exception;
+        return new AggregateException("Multiple exceptions have occurred, check the internal exceptions to see the details.", exceptions);
     }
 
     /// <summary>
