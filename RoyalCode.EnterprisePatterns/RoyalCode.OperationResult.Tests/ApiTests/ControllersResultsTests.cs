@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RoyalCode.OperationResults.Convertion;
 using System.Net;
 using System.Text.Json;
 
@@ -283,9 +284,9 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
         // Assert Values
         var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(json);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.GenericErrorTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsExtended.Titles.GenericErrorTitle, problemDetails.Title);
         Assert.Equal("Erro ao obter valores simples.", problemDetails.Detail);
         Assert.Equal(400, problemDetails.Status);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.GenericErrorType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsDescriptor.Types.GenericErrorType, problemDetails.Type);
     }
 }

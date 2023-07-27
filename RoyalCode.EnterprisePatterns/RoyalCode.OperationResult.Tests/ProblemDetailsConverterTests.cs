@@ -18,8 +18,8 @@ public class ProblemDetailsConverterTests
 
         // Assert
         Assert.NotNull(problemDetails);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.GenericErrorType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.GenericErrorTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Types.GenericErrorType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.GenericErrorTitle, problemDetails.Title);
         Assert.Equal("Error message", problemDetails.Detail);
         Assert.Equal(400, problemDetails.Status);
     }
@@ -36,8 +36,8 @@ public class ProblemDetailsConverterTests
 
         // Assert
         Assert.NotNull(problemDetails);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.InvalidParametersType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.InvalidParametersTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Types.InvalidParametersType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.InvalidParametersTitle, problemDetails.Title);
         Assert.Equal("Error message", problemDetails.Detail);
         Assert.Equal(400, problemDetails.Status);
     }
@@ -70,8 +70,8 @@ public class ProblemDetailsConverterTests
 
         // Assert
         Assert.NotNull(problemDetails);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.InvalidParametersType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.InvalidParametersTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Types.InvalidParametersType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.InvalidParametersTitle, problemDetails.Title);
         Assert.Equal("Error message", problemDetails.Detail);
         Assert.Equal(400, problemDetails.Status);
     }
@@ -88,8 +88,8 @@ public class ProblemDetailsConverterTests
 
         // Assert
         Assert.NotNull(problemDetails);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.NotFoundType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.NotFoundTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Types.NotFoundType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.NotFoundTitle, problemDetails.Title);
         Assert.Equal("Error message", problemDetails.Detail);
         Assert.Equal(404, problemDetails.Status);
     }
@@ -106,8 +106,8 @@ public class ProblemDetailsConverterTests
 
         // Assert
         Assert.NotNull(problemDetails);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.ValidationType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.ValidationTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Types.ValidationType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.ValidationTitle, problemDetails.Title);
         Assert.Equal("Error message", problemDetails.Detail);
         Assert.Equal(422, problemDetails.Status);
     }
@@ -124,8 +124,8 @@ public class ProblemDetailsConverterTests
 
         // Assert
         Assert.NotNull(problemDetails);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.ApplicationErrorType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.ApplicationErrorTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Types.ApplicationErrorType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.ApplicationErrorTitle, problemDetails.Title);
         Assert.Equal("Error message", problemDetails.Detail);
         Assert.Equal(500, problemDetails.Status);
     }
@@ -219,11 +219,11 @@ public class ProblemDetailsConverterTests
 
         // Assert
         Assert.NotNull(problemDetails);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.InvalidParametersType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.InvalidParametersTitle, problemDetails.Title);
-        Assert.Equal(ProblemDetailsDescriptor.InvalidParametersMessage, problemDetails.Detail);
+        Assert.Equal(ProblemDetailsDescriptor.Types.InvalidParametersType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.InvalidParametersTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Messages.InvalidParametersMessage, problemDetails.Detail);
 
-        var extraFields = problemDetails.Extensions[ProblemDetailsDescriptor.InvalidParametersExtensionField] as List<InvalidParameterDetails>;
+        var extraFields = problemDetails.Extensions[ProblemDetailsExtended.Fields.InvalidParametersExtensionField] as List<InvalidParameterDetails>;
         Assert.NotNull(extraFields);
         Assert.Equal(2, extraFields.Count);
 
@@ -247,11 +247,11 @@ public class ProblemDetailsConverterTests
 
         // Assert
         Assert.NotNull(problemDetails);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.NotFoundType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.NotFoundTitle, problemDetails.Title);
-        Assert.Equal(ProblemDetailsDescriptor.NotFoundMessage, problemDetails.Detail);
+        Assert.Equal(ProblemDetailsDescriptor.Types.NotFoundType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.NotFoundTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Messages.NotFoundMessage, problemDetails.Detail);
 
-        var extraFields = problemDetails.Extensions[ProblemDetailsDescriptor.NotFoundExtensionField] as List<NotFoundDetails>;
+        var extraFields = problemDetails.Extensions[ProblemDetailsExtended.Fields.NotFoundExtensionField] as List<NotFoundDetails>;
         Assert.NotNull(extraFields);
         Assert.Equal(2, extraFields.Count);
 
@@ -275,11 +275,11 @@ public class ProblemDetailsConverterTests
 
         // Assert
         Assert.NotNull(problemDetails);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.ApplicationErrorType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.ApplicationErrorTitle, problemDetails.Title);
-        Assert.Equal(ProblemDetailsDescriptor.InternalErrorsMessage, problemDetails.Detail);
+        Assert.Equal(ProblemDetailsDescriptor.Types.ApplicationErrorType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.ApplicationErrorTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Messages.InternalErrorsMessage, problemDetails.Detail);
 
-        var extraFields = problemDetails.Extensions[ProblemDetailsDescriptor.ErrorsExtensionField] as List<string>;
+        var extraFields = problemDetails.Extensions[ProblemDetailsExtended.Fields.ErrorsExtensionField] as List<string>;
         Assert.NotNull(extraFields);
         Assert.Equal(2, extraFields.Count);
 
@@ -304,11 +304,11 @@ public class ProblemDetailsConverterTests
 
         //assert
         Assert.NotNull(problemDetails);
-        Assert.Equal($"{options.BaseAddress}{options.TypeComplement}{ProblemDetailsDescriptor.AggregateProblemsDetails}", problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.AggregateProblemsDetailsTitle, problemDetails.Title);
-        Assert.Equal(ProblemDetailsDescriptor.AggregateMessage, problemDetails.Detail);
+        Assert.Equal($"{options.BaseAddress}{options.TypeComplement}{ProblemDetailsDescriptor.Codes.AggregateProblemsDetails}", problemDetails.Type);
+        Assert.Equal(ProblemDetailsDescriptor.Titles.AggregateProblemsDetailsTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Messages.AggregateMessage, problemDetails.Detail);
 
-        var extraFields = problemDetails.Extensions[ProblemDetailsDescriptor.AggregateExtensionField] as List<ProblemDetails>;
+        var extraFields = problemDetails.Extensions[ProblemDetailsExtended.Fields.AggregateExtensionField] as List<ProblemDetails>;
         Assert.NotNull(extraFields);
         Assert.Equal(2, extraFields.Count);
 
@@ -339,9 +339,9 @@ public class ProblemDetailsConverterTests
         // Assert
         Assert.NotNull(problemDetails);
         Assert.Equal(400, problemDetails.Status);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.InvalidParametersType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.InvalidParametersTitle, problemDetails.Title);
-        Assert.Equal(ProblemDetailsDescriptor.InvalidParametersMessage, problemDetails.Detail);
+        Assert.Equal(ProblemDetailsDescriptor.Types.InvalidParametersType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.InvalidParametersTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Messages.InvalidParametersMessage, problemDetails.Detail);
     }
 
     [Fact]
@@ -359,9 +359,9 @@ public class ProblemDetailsConverterTests
         // Assert
         Assert.NotNull(problemDetails);
         Assert.Equal(422, problemDetails.Status);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.ValidationType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.ValidationTitle, problemDetails.Title);
-        Assert.Equal(ProblemDetailsDescriptor.InvalidParametersMessage, problemDetails.Detail);
+        Assert.Equal(ProblemDetailsDescriptor.Types.ValidationType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.ValidationTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Messages.InvalidParametersMessage, problemDetails.Detail);
     }
 
     [Fact]
@@ -406,9 +406,9 @@ public class ProblemDetailsConverterTests
         // Assert
         Assert.NotNull(problemDetails);
         Assert.Equal(500, problemDetails.Status);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.ApplicationErrorType, problemDetails.Type);
-        Assert.Equal(ProblemDetailsDescriptor.Defaults.ApplicationErrorTitle, problemDetails.Title);
-        Assert.Equal(ProblemDetailsDescriptor.InternalErrorsMessage, problemDetails.Detail);
+        Assert.Equal(ProblemDetailsDescriptor.Types.ApplicationErrorType, problemDetails.Type);
+        Assert.Equal(ProblemDetailsExtended.Titles.ApplicationErrorTitle, problemDetails.Title);
+        Assert.Equal(ProblemDetailsDescriptor.Messages.InternalErrorsMessage, problemDetails.Detail);
     }
 
     [Fact]
@@ -429,7 +429,7 @@ public class ProblemDetailsConverterTests
         //assert
         Assert.NotNull(problemDetails);
 
-        var extraFields = problemDetails.Extensions[ProblemDetailsDescriptor.InvalidParametersExtensionField] as List<InvalidParameterDetails>;
+        var extraFields = problemDetails.Extensions[ProblemDetailsExtended.Fields.InvalidParametersExtensionField] as List<InvalidParameterDetails>;
         Assert.NotNull(extraFields);
         Assert.Equal(2, extraFields.Count);
 
@@ -464,7 +464,7 @@ public class ProblemDetailsConverterTests
         //assert
         Assert.NotNull(problemDetails);
 
-        var extraFields = problemDetails.Extensions[ProblemDetailsDescriptor.NotFoundExtensionField] as List<NotFoundDetails>;
+        var extraFields = problemDetails.Extensions[ProblemDetailsExtended.Fields.NotFoundExtensionField] as List<NotFoundDetails>;
 
         Assert.NotNull(extraFields);
         Assert.Equal(2, extraFields.Count);

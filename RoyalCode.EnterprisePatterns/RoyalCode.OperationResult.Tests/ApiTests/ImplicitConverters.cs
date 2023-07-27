@@ -6,6 +6,25 @@ namespace RoyalCode.OperationResults.Tests.ApiTests;
 #pragma warning disable S1854 // Unused assignments should be removed
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
 
+public class ImplicitConvertersTests
+{
+    [Fact]
+    public void ExecuteImplicitConverters()
+    {
+        var noContentMatch = ImplicitConverters.ReturnsNoContentMatch();
+        var okMatch = ImplicitConverters.ReturnsOkMatch();
+        var okMatchT = ImplicitConverters.ReturnsOkMatch("x");
+        var createdMatch = ImplicitConverters.ReturnsCreatedMatch();
+        var createdMatchT = ImplicitConverters.ReturnsCreatedMatch("x");
+        
+        Assert.NotNull(noContentMatch);
+        Assert.NotNull(okMatch);
+        Assert.NotNull(okMatchT);
+        Assert.NotNull(createdMatch);
+        Assert.NotNull(createdMatchT);
+    }
+}
+
 internal static class ImplicitConverters
 {
     public static NoContentMatch ReturnsNoContentMatch()
