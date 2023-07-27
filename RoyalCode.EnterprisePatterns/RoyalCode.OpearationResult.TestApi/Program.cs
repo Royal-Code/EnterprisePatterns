@@ -1,6 +1,11 @@
+using RoyalCode.OperationResults;
 using RoyalCode.OperationResults.TestApi.Apis;
 using RoyalCode.OperationResults.TestApi.Application.SeedWork;
 using RoyalCode.OperationResults.TestApi.Application.WeatherForecasts;
+
+
+ApiOperationResultOptions.SetResultType(ApiResultTypes.OperationResultAsDefault);
+
 
 var builder = WebApplication.CreateBuilder(args);
 

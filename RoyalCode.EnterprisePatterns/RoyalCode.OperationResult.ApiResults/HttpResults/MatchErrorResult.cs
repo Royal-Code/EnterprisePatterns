@@ -84,13 +84,20 @@ public class MatchErrorResult
     /// <inheritdoc />
     public Task ExecuteAsync(HttpContext httpContext)
     {
-        httpContext.TryGetResultTypeHeader(out var resultType);
-        return resultType switch
+        if (ApiOperationResultOptions.IsFlexible)
         {
-            "ProblemDetails" => WriteProblemDetails(httpContext),
-            "OperationResult" => WriteOperationResult(httpContext),
-            _ => WriteDefault(httpContext)
-        };
+            httpContext.TryGetResultTypeHeader(out var resultType);
+            return resultType switch
+            {
+                nameof(ProblemDetails) => WriteProblemDetails(httpContext),
+                nameof(OperationResult) => WriteOperationResult(httpContext),
+                _ => WriteDefault(httpContext)
+            };
+        }
+        else
+        {
+            return WriteDefault(httpContext);
+        }
     }
 
     /// <summary>
@@ -156,28 +163,42 @@ public class MatchErrorResult
     /// <inheritdoc />
     public static void PopulateMetadata(MethodInfo _, EndpointBuilder builder)
     {
-        var type = typeof(ResultErrors);
-        string[] content = { MediaTypeNames.Application.Json };
+        Type type;
+        string[] content;
 
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status404NotFound, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status409Conflict, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
+        if (ApiOperationResultOptions.IsFlexible || !ApiOperationResultOptions.IsProblemDetailsDefault)
+        {
+            type = typeof(ResultErrors);
+            content = new[] { MediaTypeNames.Application.Json };
 
-        type = typeof(ProblemDetails);
-        content = new[] { "application/problem+json" };
-        
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status404NotFound, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status409Conflict, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status404NotFound, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status409Conflict, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
+        }
+
+        if (ApiOperationResultOptions.IsFlexible || ApiOperationResultOptions.IsProblemDetailsDefault)
+        {
+            type = typeof(ProblemDetails);
+            content = new[] { "application/problem+json" };
+
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status404NotFound, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status409Conflict, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
+        }
+
+        if (ApiOperationResultOptions.IsFlexible)
+        {
+            builder.Metadata.Add(XResultHeaderMetadata.Instance);
+        }
     }
 }

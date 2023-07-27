@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RoyalCode.OperationResults.HttpResults;
 using RoyalCode.OperationResults.TestApi.Application.ResultsModels;
 
 namespace RoyalCode.OperationResults.TestApi.Apis;
@@ -11,7 +12,6 @@ public static class ApiResultsApis
 
         group.MapGet("GetSimpleValues", GetSimpleValues)
             .WithName("GetSimpleValues")
-            .WithTags("GetSimpleValues")
             .WithDescription("Obtém valores simples.")
             .WithOpenApi();
 
@@ -51,12 +51,12 @@ public static class ApiResultsApis
             .WithOpenApi();
     }
 
-    private static IResult GetSimpleValues()
+    private static OkMatch<SimpleValues> GetSimpleValues()
     {
         // cria novo resultado de sucesso a partir do resultado.
         OperationResult<SimpleValues> result = new SimpleValues();
 
-        return Results.Extensions.ToResult(result);
+        return result;
     }
 
     private static IResult GetSimpleValuesWithCreatedPath()
