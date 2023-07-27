@@ -6,7 +6,7 @@ namespace RoyalCode.OperationResults;
 /// <summary>
 /// Enum to determine the result type returned by the API when an error occurs.
 /// </summary>
-public enum ApiResultTypes
+public enum ErrorResultTypes
 {
     /// <summary>
     /// The API will return the <see cref="OperationResult"/> when an error occurs.

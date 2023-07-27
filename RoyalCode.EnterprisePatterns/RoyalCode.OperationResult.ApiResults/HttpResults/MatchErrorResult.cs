@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 
+
 namespace RoyalCode.OperationResults.HttpResults;
 
 /// <summary>
@@ -84,7 +85,7 @@ public class MatchErrorResult
     /// <inheritdoc />
     public Task ExecuteAsync(HttpContext httpContext)
     {
-        if (ApiOperationResultOptions.IsFlexible)
+        if (ErrorResultTypeOptions.IsFlexible)
         {
             httpContext.TryGetResultTypeHeader(out var resultType);
             return resultType switch
@@ -107,13 +108,13 @@ public class MatchErrorResult
     /// </para>
     /// <para>
     ///     For determinate the default result, 
-    ///     use <see cref="ApiOperationResultOptions.IsProblemDetailsDefault"/> static property.
+    ///     use <see cref="ErrorResultTypeOptions.IsProblemDetailsDefault"/> static property.
     /// </para>
     /// </summary>
     /// <param name="httpContext">The <see cref="HttpContext"/> for the current request.</param>
     /// <returns>A task that represents the asynchronous execute operation.</returns>
     public Task WriteDefault(HttpContext httpContext)
-        => ApiOperationResultOptions.IsProblemDetailsDefault
+        => ErrorResultTypeOptions.IsProblemDetailsDefault
             ? WriteProblemDetails(httpContext)
             : WriteOperationResult(httpContext);
 
@@ -166,7 +167,7 @@ public class MatchErrorResult
         Type type;
         string[] content;
 
-        if (ApiOperationResultOptions.IsFlexible || !ApiOperationResultOptions.IsProblemDetailsDefault)
+        if (ErrorResultTypeOptions.IsFlexible || !ErrorResultTypeOptions.IsProblemDetailsDefault)
         {
             type = typeof(ResultErrors);
             content = new[] { MediaTypeNames.Application.Json };
@@ -181,7 +182,7 @@ public class MatchErrorResult
                 new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
         }
 
-        if (ApiOperationResultOptions.IsFlexible || ApiOperationResultOptions.IsProblemDetailsDefault)
+        if (ErrorResultTypeOptions.IsFlexible || ErrorResultTypeOptions.IsProblemDetailsDefault)
         {
             type = typeof(ProblemDetails);
             content = new[] { "application/problem+json" };
@@ -194,11 +195,6 @@ public class MatchErrorResult
                 new ResponseTypeMetadata(type, StatusCodes.Status409Conflict, content));
             builder.Metadata.Add(
                 new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
-        }
-
-        if (ApiOperationResultOptions.IsFlexible)
-        {
-            builder.Metadata.Add(XResultHeaderMetadata.Instance);
         }
     }
 }

@@ -1,35 +1,34 @@
 ﻿
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RoyalCode.OperationResults.HttpResults;
 
 namespace RoyalCode.OperationResults;
 
 /// <summary>
-/// Used by the <see cref="MatchErrorResult"/> 
-/// to determine if the default result is <see cref="OperationResult"/> or <see cref="ProblemDetails"/>.
+/// Options used to determine if the default result is <see cref="OperationResult"/> or <see cref="ProblemDetails"/>.
 /// </summary>
-public static class ApiOperationResultOptions
+public static class ErrorResultTypeOptions
 {
     /// <summary>
     /// Set the default result type.
     /// </summary>
-    public static void SetResultType(ApiResultTypes resultType)
+    public static void SetResultType(ErrorResultTypes resultType)
     {
         switch (resultType)
         {
-            case ApiResultTypes.AlwaysOperationResult:
+            case ErrorResultTypes.AlwaysOperationResult:
                 IsFlexible = false;
                 IsProblemDetailsDefault = false;
                 break;
-            case ApiResultTypes.AlwaysProblemDetails:
+            case ErrorResultTypes.AlwaysProblemDetails:
                 IsFlexible = false;
                 IsProblemDetailsDefault = true;
                 break;
-            case ApiResultTypes.OperationResultAsDefault:
+            case ErrorResultTypes.OperationResultAsDefault:
                 IsFlexible = true;
                 IsProblemDetailsDefault = false;
                 break;
-            case ApiResultTypes.ProblemDetailsAsDefault:
+            case ErrorResultTypes.ProblemDetailsAsDefault:
                 IsFlexible = true;
                 IsProblemDetailsDefault = true;
                 break;
@@ -39,7 +38,7 @@ public static class ApiOperationResultOptions
     }
 
     /// <summary>
-    /// Determines if the API clients can decide the result type.
+    /// Determines if the API clients can decide the result type, informing the header <see cref="HeaderExtensions.ErrorTypeHeaderName"/>.
     /// </summary>
     public static bool IsFlexible { get; private set; } = false;
 
