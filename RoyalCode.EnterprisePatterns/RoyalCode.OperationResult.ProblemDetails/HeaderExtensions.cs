@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.AspNetCore.Http;
 
@@ -9,10 +7,10 @@ namespace Microsoft.AspNetCore.Http;
 /// </summary>
 public static class HeaderExtensions
 {
-    private const string OperationResultHeaderKey = "OperationResultHeader";
-    private const string OperationResultHeaderDefaultValue = "X-Result";
-
-    private static string? headerName;
+    /// <summary>
+    /// The header name of the result type.
+    /// </summary>
+    public const string ErrorTypeHeaderName = "X-ErrorType";
 
     /// <summary>
     /// Try get the header of the result type from the request context.
@@ -23,13 +21,7 @@ public static class HeaderExtensions
     public static bool TryGetResultTypeHeader(this HttpContext httpContext,
         [NotNullWhen(true)] out string? resultType)
     {
-        if (headerName is null)
-        {
-            var configuration = httpContext.RequestServices.GetRequiredService<IConfiguration>();
-            headerName = configuration.GetValue<string>(OperationResultHeaderKey) ?? OperationResultHeaderDefaultValue;
-        }
-
-        if (httpContext.Request.Headers.TryGetValue(headerName, out var resultHeader))
+        if (httpContext.Request.Headers.TryGetValue(ErrorTypeHeaderName, out var resultHeader))
         {
             resultType = resultHeader!;
             return true;

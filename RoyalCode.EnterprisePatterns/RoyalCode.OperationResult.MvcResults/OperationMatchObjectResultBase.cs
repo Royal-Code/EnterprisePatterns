@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RoyalCode.OperationResults.Convertion;
+using System.Net.Http;
+using System.Net.Mime;
 
 namespace RoyalCode.OperationResults;
 
@@ -68,17 +70,24 @@ public abstract class OperationMatchObjectResultBase<TResult> : ObjectResult
     /// <returns>A <see cref="Task"/> that will complete when the result is executed.</returns>
     protected Task ExecuteErrorResultAsync(ResultErrors error, ActionContext context)
     {
-        context.HttpContext.TryGetResultTypeHeader(out var resultType);
-        return resultType switch
+        if (ErrorResultTypeOptions.IsFlexible)
         {
-            "ProblemDetails" => ExecuteProblemDetailsAsync(error, context),
-            "OperationResult" => ExecuteOperationResultAsync(error, context),
-            _ => ExecuteDefaultErrorAsync(error, context)
-        };
+            context.HttpContext.TryGetResultTypeHeader(out var resultType);
+            return resultType switch
+            {
+                nameof(ProblemDetails) => ExecuteProblemDetailsAsync(error, context),
+                nameof(OperationResult) => ExecuteOperationResultAsync(error, context),
+                _ => ExecuteDefaultErrorAsync(error, context)
+            };
+        }
+        else
+        {
+            return ExecuteDefaultErrorAsync(error, context);
+        }
     }
 
     private Task ExecuteDefaultErrorAsync(ResultErrors error, ActionContext context)
-        => MvcOperationResultOptions.IsProblemDetailsDefault
+        => ErrorResultTypeOptions.IsProblemDetailsDefault
             ? ExecuteProblemDetailsAsync(error, context)
             : ExecuteOperationResultAsync(error, context);
 
@@ -98,7 +107,7 @@ public abstract class OperationMatchObjectResultBase<TResult> : ObjectResult
     private Task ExecuteOperationResultAsync(ResultErrors error, ActionContext context)
     {
         Value = error;
-        ContentTypes.Add("application/json");
+        ContentTypes.Add(MediaTypeNames.Application.Json);
         StatusCode = error.GetHttpStatus();
         DeclaredType = typeof(ResultErrors);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using RoyalCode.OperationResults.Convertion;
 using System.Net;
 using System.Text.Json;
@@ -248,7 +249,7 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
     {
         // Prepare
         var message = new HttpRequestMessage(HttpMethod.Get, "/ControllersResults/GetSimpleValues");
-        message.Headers.Add("X-Result", "ProblemDetails");
+        message.Headers.Add(HeaderExtensions.ErrorTypeHeaderName, "ProblemDetails");
 
         // Act
         var response = await client.SendAsync(message);
@@ -272,7 +273,7 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
     {
         // Prepare
         var message = new HttpRequestMessage(HttpMethod.Get, "/ControllersResults/GetSimpleValuesWithError");
-        message.Headers.Add("X-Result", "ProblemDetails");
+        message.Headers.Add(HeaderExtensions.ErrorTypeHeaderName, "ProblemDetails");
 
         // Act
         var response = await client.SendAsync(message);

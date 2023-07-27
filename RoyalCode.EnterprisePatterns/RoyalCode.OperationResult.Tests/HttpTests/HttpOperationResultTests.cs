@@ -1,4 +1,5 @@
-﻿using RoyalCode.OperationResults.TestApi.Application.ResultsModels;
+﻿using Microsoft.AspNetCore.Http;
+using RoyalCode.OperationResults.TestApi.Application.ResultsModels;
 using RoyalCode.OperationResults.Tests.ApiTests;
 
 namespace RoyalCode.OperationResults.Tests.HttpTests;
@@ -141,7 +142,7 @@ public class HttpOperationResultTests : IClassFixture<AppFixture>
     {
         // Arrange
         var message = new HttpRequestMessage(HttpMethod.Get, "/api/results/GetSimpleValuesWithError");
-        message.Headers.Add("X-Result", "ProblemDetails");
+        message.Headers.Add(HeaderExtensions.ErrorTypeHeaderName, "ProblemDetails");
 
         // Act
         var response = await client.SendAsync(message);
@@ -161,7 +162,7 @@ public class HttpOperationResultTests : IClassFixture<AppFixture>
     {
         // Arrange
         var message = new HttpRequestMessage(HttpMethod.Get, "/api/results/GetSimpleValuesWithError");
-        message.Headers.Add("X-Result", "ProblemDetails");
+        message.Headers.Add(HeaderExtensions.ErrorTypeHeaderName, "ProblemDetails");
 
         // Act
         var response = await client.SendAsync(message);

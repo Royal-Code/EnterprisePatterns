@@ -19,4 +19,8 @@
 		<ProjectReference Include="..\RoyalCode.OperationResult.Serialization\RoyalCode.OperationResult.Serialization.csproj" />
 	</ItemGroup>
 
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net7' ">
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(DotNetCoreVersion)" />
+	</ItemGroup>
+	
 </Project>

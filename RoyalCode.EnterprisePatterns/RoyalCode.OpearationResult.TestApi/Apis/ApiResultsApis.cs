@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RoyalCode.OperationResults.HttpResults;
 using RoyalCode.OperationResults.TestApi.Application.ResultsModels;
 
 namespace RoyalCode.OperationResults.TestApi.Apis;
@@ -11,52 +12,59 @@ public static class ApiResultsApis
 
         group.MapGet("GetSimpleValues", GetSimpleValues)
             .WithName("GetSimpleValues")
-            .WithTags("GetSimpleValues")
             .WithDescription("Obtém valores simples.")
-            .WithOpenApi();
+            .WithOpenApi()
+            .WithXErrorTypeHeader();
 
         group.MapGet("GetSimpleValuesWithCreatedPath", GetSimpleValuesWithCreatedPath)
             .WithName("GetSimpleValuesWithCreatedPath")
             .WithDescription("Obtém valores simples com caminho criado.")
-            .WithOpenApi();
-        
+            .WithOpenApi()
+            .WithXErrorTypeHeader();
+
         group.MapGet("GetSimpleValuesWithError", GetSimpleValuesWithError)
             .WithName("GetSimpleValuesWithError")
             .WithDescription("Obtém valores simples com erro.")
-            .WithOpenApi();
+            .WithOpenApi()
+            .WithXErrorTypeHeader();
 
         group.MapGet("GetSimpleValuesWithErrorWithCreatedPath", GetSimpleValuesWithErrorWithCreatedPath)
             .WithName("GetSimpleValuesWithErrorWithCreatedPath")
             .WithDescription("Obtém valores simples com erro e caminho criado.")
-            .WithOpenApi();
+            .WithOpenApi()
+            .WithXErrorTypeHeader();
 
         group.MapGet("GetSimpleValuesWithCreatedPathAndFormat", GetSimpleValuesWithCreatedPathAndFormat)
             .WithName("GetSimpleValuesWithCreatedPathAndFormat")
             .WithDescription("Obtém valores simples com caminho criado e formato.")
-            .WithOpenApi();
+            .WithOpenApi()
+            .WithXErrorTypeHeader();
 
         group.MapGet("GetSimpleValuesWithErrorWithCreatedPathAndFormat", GetSimpleValuesWithErrorWithCreatedPathAndFormat)
             .WithName("GetSimpleValuesWithErrorWithCreatedPathAndFormat")
             .WithDescription("Obtém valores simples com erro, caminho criado e formato.")
-            .WithOpenApi();
+            .WithOpenApi()
+            .WithXErrorTypeHeader();
 
         group.MapGet("GetSimpleValuesIfValidInput", GetSimpleValuesIfValidInput)
             .WithName("GetSimpleValuesIfValidInput")
             .WithDescription("Obtém valores simples se o input for válido.")
-            .WithOpenApi();
+            .WithOpenApi()
+            .WithXErrorTypeHeader();
 
         group.MapGet("ValidableResult", ValidableResult)
             .WithName("ValidableResult")
             .WithDescription("Obtém valores simples se o input for válido.")
-            .WithOpenApi();
+            .WithOpenApi()
+            .WithXErrorTypeHeader();
     }
 
-    private static IResult GetSimpleValues()
+    private static OkMatch<SimpleValues> GetSimpleValues()
     {
         // cria novo resultado de sucesso a partir do resultado.
         OperationResult<SimpleValues> result = new SimpleValues();
 
-        return Results.Extensions.ToResult(result);
+        return result;
     }
 
     private static IResult GetSimpleValuesWithCreatedPath()

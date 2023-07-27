@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 
+
 namespace RoyalCode.OperationResults.HttpResults;
 
 /// <summary>
@@ -84,13 +85,20 @@ public class MatchErrorResult
     /// <inheritdoc />
     public Task ExecuteAsync(HttpContext httpContext)
     {
-        httpContext.TryGetResultTypeHeader(out var resultType);
-        return resultType switch
+        if (ErrorResultTypeOptions.IsFlexible)
         {
-            "ProblemDetails" => WriteProblemDetails(httpContext),
-            "OperationResult" => WriteOperationResult(httpContext),
-            _ => WriteDefault(httpContext)
-        };
+            httpContext.TryGetResultTypeHeader(out var resultType);
+            return resultType switch
+            {
+                nameof(ProblemDetails) => WriteProblemDetails(httpContext),
+                nameof(OperationResult) => WriteOperationResult(httpContext),
+                _ => WriteDefault(httpContext)
+            };
+        }
+        else
+        {
+            return WriteDefault(httpContext);
+        }
     }
 
     /// <summary>
@@ -100,13 +108,13 @@ public class MatchErrorResult
     /// </para>
     /// <para>
     ///     For determinate the default result, 
-    ///     use <see cref="ApiOperationResultOptions.IsProblemDetailsDefault"/> static property.
+    ///     use <see cref="ErrorResultTypeOptions.IsProblemDetailsDefault"/> static property.
     /// </para>
     /// </summary>
     /// <param name="httpContext">The <see cref="HttpContext"/> for the current request.</param>
     /// <returns>A task that represents the asynchronous execute operation.</returns>
     public Task WriteDefault(HttpContext httpContext)
-        => ApiOperationResultOptions.IsProblemDetailsDefault
+        => ErrorResultTypeOptions.IsProblemDetailsDefault
             ? WriteProblemDetails(httpContext)
             : WriteOperationResult(httpContext);
 
@@ -156,28 +164,37 @@ public class MatchErrorResult
     /// <inheritdoc />
     public static void PopulateMetadata(MethodInfo _, EndpointBuilder builder)
     {
-        var type = typeof(ResultErrors);
-        string[] content = { MediaTypeNames.Application.Json };
+        Type type;
+        string[] content;
 
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status404NotFound, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status409Conflict, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
+        if (ErrorResultTypeOptions.IsFlexible || !ErrorResultTypeOptions.IsProblemDetailsDefault)
+        {
+            type = typeof(ResultErrors);
+            content = new[] { MediaTypeNames.Application.Json };
 
-        type = typeof(ProblemDetails);
-        content = new[] { "application/problem+json" };
-        
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status404NotFound, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status409Conflict, content));
-        builder.Metadata.Add(
-            new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status404NotFound, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status409Conflict, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
+        }
+
+        if (ErrorResultTypeOptions.IsFlexible || ErrorResultTypeOptions.IsProblemDetailsDefault)
+        {
+            type = typeof(ProblemDetails);
+            content = new[] { "application/problem+json" };
+
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status400BadRequest, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status404NotFound, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status409Conflict, content));
+            builder.Metadata.Add(
+                new ResponseTypeMetadata(type, StatusCodes.Status422UnprocessableEntity, content));
+        }
     }
 }

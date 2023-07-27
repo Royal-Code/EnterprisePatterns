@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RoyalCode.OperationResults.Convertion;
 using System.Collections.Generic;
@@ -243,7 +244,7 @@ public class ApiResultsTests : IClassFixture<AppFixture>
     {
         // Prepare
         var message = new HttpRequestMessage(HttpMethod.Get, "/api/results/GetSimpleValues");
-        message.Headers.Add("X-Result", "ProblemDetails");
+        message.Headers.Add(HeaderExtensions.ErrorTypeHeaderName, "ProblemDetails");
 
         // Act
         var response = await client.SendAsync(message);
@@ -267,7 +268,7 @@ public class ApiResultsTests : IClassFixture<AppFixture>
     {
         // Prepare
         var message = new HttpRequestMessage(HttpMethod.Get, "/api/results/GetSimpleValuesWithError");
-        message.Headers.Add("X-Result", "ProblemDetails");
+        message.Headers.Add(HeaderExtensions.ErrorTypeHeaderName, "ProblemDetails");
 
         // Act
         var response = await client.SendAsync(message);
