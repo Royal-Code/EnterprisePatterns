@@ -3,7 +3,7 @@
 namespace RoyalCode.OperationResults.Convertion;
 
 /// <summary>
-/// Converts the <see cref="IOperationResult"/> to <see cref="ProblemDetails"/>.
+/// Converts the <see cref="ResultErrors"/> to <see cref="ProblemDetails"/>.
 /// </summary>
 public static class ProblemDetailsConverter
 {
@@ -13,21 +13,17 @@ public static class ProblemDetailsConverter
     /// <param name="result">The result to be converted.</param>
     /// <param name="options">The options to be used in the conversion.</param>
     /// <returns>A new instance of <see cref="ProblemDetails"/>.</returns>
-    [Obsolete]
     public static ProblemDetails ToProblemDetails(
-       this IOperationResult result, ProblemDetailsOptions options)
+       this ResultErrors result, ProblemDetailsOptions options)
     {
-        if (result.Success || result.ErrorsCount == 0)
-            return null!;
-
-        if (result.ErrorsCount == 1)
+        if (result.Count == 1)
         {
-            var message = result.Messages.First();
+            var message = result[0];
             return message.ToProblemDetails(options);
         }
 
         var builder = new ProblemDetailsBuilder();
-        foreach (var message in result.Messages)
+        foreach (var message in result)
         {
             AddMessage(message, builder);
         }

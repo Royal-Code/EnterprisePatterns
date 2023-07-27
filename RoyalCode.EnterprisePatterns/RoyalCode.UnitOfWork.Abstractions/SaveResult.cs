@@ -22,8 +22,24 @@ public readonly struct SaveResult
     /// Implicit conversion from <see cref="Exception"/> to <see cref="SaveResult"/>.
     /// </summary>
     /// <param name="ex"></param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator SaveResult(Exception ex) => new(ex);
+
+    /// <summary>
+    /// Implicit conversion from <see cref="SaveResult"/> to <see cref="OperationResult"/>.
+    /// </summary>
+    /// <param name="result"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator OperationResult(SaveResult result) 
+        => result.TryGetError(out var errors) ? errors : new OperationResult();
+
+    /// <summary>
+    /// Implicit conversion from <see cref="SaveResult"/> to <see cref="OperationResult"/>.
+    /// </summary>
+    /// <param name="result"></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator ValidableResult(SaveResult result)
+        => result.TryGetError(out var errors) ? new ValidableResult(errors) : new ValidableResult();
 
     /// <summary>
     /// Success constructor

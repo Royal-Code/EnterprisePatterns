@@ -5,6 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResults;
 
+#pragma warning disable S3427 // Method overloads with default parameter values should not overlap
+
 /// <summary>
 /// Component for the message of an operation result.
 /// </summary>

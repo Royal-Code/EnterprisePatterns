@@ -72,21 +72,21 @@ public class ProblemDetailsBuilder
     public string GetDetail()
     {
         if (Aggregate)
-            return ProblemDetailsDescriptor.AggregateMessage;
+            return ProblemDetailsDescriptor.Messages.AggregateMessage;
 
         if (customProblems is not null)
             return customProblems[0].Text ?? string.Empty;
 
         if (errors is not null)
-            return ProblemDetailsDescriptor.InternalErrorsMessage;
+            return ProblemDetailsDescriptor.Messages.InternalErrorsMessage;
 
         if (invalidParameterErrors is not null)
-            return ProblemDetailsDescriptor.InvalidParametersMessage;
+            return ProblemDetailsDescriptor.Messages.InvalidParametersMessage;
 
         if (notFoundErrors is not null)
-            return ProblemDetailsDescriptor.NotFoundMessage;
+            return ProblemDetailsDescriptor.Messages.NotFoundMessage;
 
-        return ProblemDetailsDescriptor.DefaultMessage;
+        return ProblemDetailsDescriptor.Messages.DefaultMessage;
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public class ProblemDetailsBuilder
         {
             if (Aggregate)
             {
-                pdext[ProblemDetailsDescriptor.AggregateExtensionField] = customProblems
+                pdext[ProblemDetailsExtended.Fields.AggregateExtensionField] = customProblems
                     .Select(m => m.ToProblemDetails(options))
                     .ToList();
             }
@@ -114,13 +114,13 @@ public class ProblemDetailsBuilder
             }
         }
         if (invalidParameterErrors is not null)
-            pdext[ProblemDetailsDescriptor.InvalidParametersExtensionField] = invalidParameterErrors;
+            pdext[ProblemDetailsExtended.Fields.InvalidParametersExtensionField] = invalidParameterErrors;
 
         if (notFoundErrors is not null)
-            pdext[ProblemDetailsDescriptor.NotFoundExtensionField] = notFoundErrors;
+            pdext[ProblemDetailsExtended.Fields.NotFoundExtensionField] = notFoundErrors;
 
         if (errors is not null)
-            pdext[ProblemDetailsDescriptor.ErrorsExtensionField] = errors;
+            pdext[ProblemDetailsExtended.Fields.ErrorsExtensionField] = errors;
 
         if (extensions is not null)
             foreach (var (key, value) in extensions)
@@ -149,7 +149,7 @@ public class ProblemDetailsBuilder
             if (GenericError is false)
             {
                 Aggregate = true;
-                Code = ProblemDetailsDescriptor.AggregateProblemsDetails;
+                Code = ProblemDetailsDescriptor.Codes.AggregateProblemsDetails;
             }
             else
             {

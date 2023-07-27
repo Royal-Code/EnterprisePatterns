@@ -28,19 +28,89 @@ public readonly struct OperationResult
     public static implicit operator OperationResult(ResultMessage error) => new(error);
 
     /// <summary>
-    /// Adds a new message to the result collection if the result is a failure.
+    /// Implicitly convert a <see cref="ValidableResult"/> error to a <see cref="OperationResult"/>.
     /// </summary>
-    /// <param name="result">The result to add the message to</param>
-    /// <param name="message">The new message to add</param>
-    /// <returns>The same instance of the collection</returns>
+    /// <param name="other"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static OperationResult operator +(OperationResult result, IResultMessage message)
+    public static implicit operator OperationResult(ValidableResult other)
+    {
+        return other.TryGetError(out var errors) 
+            ? new(errors) 
+            : new();
+    }
+
+    /// <summary>
+    /// Adds a new messages to the result collection if the result is a failure.
+    /// </summary>
+    /// <param name="result">The result to add the messages to</param>
+    /// <param name="message">The new messages to add</param>
+    /// <returns>The same instance of the collection</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Case the result is not a failure.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static OperationResult operator +(OperationResult result, ResultMessage message)
     {
         if (!result.Failure)
-            throw new InvalidOperationException("Cannot add a message to a successful operation result.");
+            throw new InvalidOperationException("Cannot add a messages to a successful operation result.");
 
         result.error.Add(message);
         return result;
+    }
+
+    /// <summary>
+    /// Adds a range of messages to the result collection if the result is a failure.
+    /// </summary>
+    /// <param name="result">The result to add the messages to</param>
+    /// <param name="messages">The new messages to add</param>
+    /// <returns>The same instance of the collection</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Case the result is not a failure.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static OperationResult operator +(OperationResult result, ResultErrors messages)
+    {
+        if (!result.Failure)
+            throw new InvalidOperationException("Cannot add a messages to a successful operation result.");
+
+        result.error.AddRange(messages);
+        return result;
+    }
+
+    /// <summary>
+    /// Adds a range of messages to the result collection from other result if the both result is a failure.
+    /// If the result is not a failure, a new result is created with the message.
+    /// </summary>
+    /// <param name="result">The result to add the messages to</param>
+    /// <param name="other">The result to add</param>
+    /// <returns>The same instance of the collection</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Case the result is not a failure.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static OperationResult operator +(OperationResult result, ValidableResult other)
+    {
+        return other.TryGetError(out var messages)
+            ? result + messages
+            : result;
+    }
+
+    /// <summary>
+    /// Adds a range of messages to the result collection from other result if the both result is a failure.
+    /// If the result is not a failure, a new result is created with the message.
+    /// </summary>
+    /// <param name="result">The result to add the messages to</param>
+    /// <param name="other">The result to add</param>
+    /// <returns>The same instance of the collection</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Case the result is not a failure.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static OperationResult operator +(OperationResult result, OperationResult other)
+    {
+        return other.TryGetError(out var messages)
+            ? result + messages
+            : result;
     }
 
     private readonly ResultErrors? error;

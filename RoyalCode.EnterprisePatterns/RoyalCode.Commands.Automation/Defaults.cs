@@ -12,7 +12,7 @@ namespace RoyalCode.Commands.Abstractions.Defaults;
 
 public interface ICommandContextFactory
 {
-    Task<IOperationResult<TContext>> CreateCreationContextAsync<TContext, TModel>(TModel model)
+    Task<OperationResult<TContext>> CreateCreationContextAsync<TContext, TModel>(TModel model)
         where TContext : ICreationContext<TModel>
         where TModel : class;
 }
@@ -21,7 +21,7 @@ public interface ICreationContextBuilder<TContext, TModel>
     where TContext : ICreationContext<TModel>
     where TModel : class
 {
-    Task<IOperationResult<TContext>> BuildAsync(TModel model);
+    Task<OperationResult<TContext>> BuildAsync(TModel model);
 }
 
 internal class DefaultCommandContextFactory : ICommandContextFactory
@@ -31,7 +31,7 @@ internal class DefaultCommandContextFactory : ICommandContextFactory
     private readonly ContextBuilderGenerator generator;
 
     // TODO: Usar OperationResult
-    public async Task<IOperationResult<TContext>> CreateCreationContextAsync<TContext, TModel>(TModel model)
+    public async Task<OperationResult<TContext>> CreateCreationContextAsync<TContext, TModel>(TModel model)
         where TContext : ICreationContext<TModel>
         where TModel : class
     {
@@ -65,7 +65,7 @@ internal class DefaultCommandContextFactory : ICommandContextFactory
         return contextBuilderType is not null;
     }
 
-    public Task<IOperationResult<TContext>> CreateAsync<TContext, TRootEntity, TModel>(TRootEntity entity, TModel model)
+    public Task<OperationResult<TContext>> CreateAsync<TContext, TRootEntity, TModel>(TRootEntity entity, TModel model)
         where TContext : ICreationContext<TRootEntity, TModel>
         where TRootEntity : class
         where TModel : class
@@ -202,7 +202,7 @@ internal sealed class ContextBuilderGenerator
         var asyncScopeBuilder = new AsyncScopeBuilder();
 
         // expression da variável result do tipo BaseResult
-        var resultVariable = Expression.Variable(typeof(BaseResult), "result");
+        var resultVariable = Expression.Variable(typeof(OperationResult), "result");
 
         // para cada match, deve ser gerado um bloco de código que faz a busca da entidade no repositório.
         foreach (var match in resolution.PropertyMatches)
@@ -335,17 +335,17 @@ internal sealed class ContextBuilderMap
 {
     private readonly Dictionary<(Type, Type), object> modelBuilders = new();
 
-    public Func<TModel, IServiceProvider, Task<IOperationResult<TContext>>>? GetBuilder<TContext, TModel>()
+    public Func<TModel, IServiceProvider, Task<OperationResult<TContext>>>? GetBuilder<TContext, TModel>()
         where TContext : ICreationContext<TModel>
         where TModel : class
     {
         return modelBuilders.TryGetValue((typeof(TContext), typeof(TModel)), out var builder)
-            ? (Func<TModel, IServiceProvider, Task<IOperationResult<TContext>>>)builder
+            ? (Func<TModel, IServiceProvider, Task<OperationResult<TContext>>>)builder
             : null;
     }
 
     // add builder
-    public void AddBuilder<TContext, TModel>(Func<TModel, IServiceProvider, Task<IOperationResult<TContext>>> builder)
+    public void AddBuilder<TContext, TModel>(Func<TModel, IServiceProvider, Task<OperationResult<TContext>>> builder)
         where TContext : ICreationContext<TModel>
         where TModel : class
     {
@@ -369,7 +369,7 @@ internal sealed class DefaultContextBuilder<TContext, TModel> : ICreationContext
         this.contextBuilderMap = contextBuilderMap;
     }
 
-    public Task<IOperationResult<TContext>> BuildAsync(TModel model)
+    public Task<OperationResult<TContext>> BuildAsync(TModel model)
     {
         var builderFunction = contextBuilderMap.GetBuilder<TContext, TModel>()
             ?? throw new InvalidOperationException(
@@ -385,7 +385,7 @@ internal sealed class DefaultValidableContextBuilder<TContext, TModel> : ICreati
 {
 
 
-    public Task<IOperationResult<TContext>> BuildAsync(TModel model)
+    public Task<OperationResult<TContext>> BuildAsync(TModel model)
     {
         throw new NotImplementedException();
     }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using RoyalCode.OperationResults.Convertion;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json;
 
@@ -10,59 +11,62 @@ namespace RoyalCode.OperationResults;
 public class ProblemDetailsDescriptor
 {
     /// <summary>
-    /// The key for the an aggregation of problems.
+    /// Messages for well-known problem details.
     /// </summary>
-    public const string AggregateProblemsDetails = "aggregate-problems-details";
+    public static class Messages
+    {
+        /// <summary>
+        /// The Detail field for the an aggregation of problems.
+        /// </summary>
+        public static string AggregateMessage { get; set; } = "Multiples problems";
+
+        /// <summary>
+        /// The Detail field for the an internal error.
+        /// </summary>
+        public static string InternalErrorsMessage { get; set; } = "Internal error";
+
+        /// <summary>
+        /// The Detail field for the an invalid parameters.
+        /// </summary>
+        public static string InvalidParametersMessage { get; set; } = "Invalid parameters";
+
+        /// <summary>
+        /// The Detail field for the an entity not found.
+        /// </summary>
+        public static string NotFoundMessage { get; set; } = "Entity not found";
+
+        /// <summary>
+        /// The Detail field for the an undefined error.
+        /// </summary>
+        public static string DefaultMessage { get; set; } = "An error has occurred";
+    }
 
     /// <summary>
-    /// Extension field for the problems details of an aggregation of problems.
+    /// Well-known codes for the problem details.
     /// </summary>
-    public const string AggregateExtensionField = "inner-details";
+    public static class Codes
+    {
+        /// <summary>
+        /// The key for the an aggregation of problems.
+        /// </summary>
+        public const string AggregateProblemsDetails = "aggregate-problems-details";
+    }
 
     /// <summary>
-    /// Extension field for the details of invalid parameters.
+    /// Titles for well-known problem details.
     /// </summary>
-    public const string InvalidParametersExtensionField = "invalid-params";
-
-    /// <summary>
-    /// Extension field for internal server errors messagens
-    /// </summary>
-    public const string ErrorsExtensionField = "errors";
-
-    /// <summary>
-    /// Extension field for the details of an entity not found.
-    /// </summary>
-    public const string NotFoundExtensionField = "not-found";
-
-    /// <summary>
-    /// The Detail field for the an aggregation of problems.
-    /// </summary>
-    public static string AggregateMessage { get; set; } = "Multiples problems";
-
-    /// <summary>
-    /// The Detail field for the an internal error.
-    /// </summary>
-    public static string InternalErrorsMessage { get; set; } = "Internal error";
-
-    /// <summary>
-    /// The Detail field for the an invalid parameters.
-    /// </summary>
-    public static string InvalidParametersMessage { get; set; } = "Invalid parameters";
-
-    /// <summary>
-    /// The Detail field for the an entity not found.
-    /// </summary>
-    public static string NotFoundMessage { get; set; } = "Entity not found";
-
-    /// <summary>
-    /// The Detail field for the an undefined error.
-    /// </summary>
-    public static string DefaultMessage { get; set; } = "An error has occurred";
+    public static class Titles
+    {
+        /// <summary>
+        /// Default title for the problem details of an aggregation of problems.
+        /// </summary>
+        public const string AggregateProblemsDetailsTitle = "Multiples problems";
+    }
 
     /// <summary>
     /// Constants for the defaults values of the problem details.
     /// </summary>
-    public static class Defaults
+    public static class Types
     {
         /// <summary>
         /// Default type for the problem details of status code 400, Bad Request.
@@ -88,36 +92,6 @@ public class ProblemDetailsDescriptor
         /// Default type for the problem details of status code 500, Internal Server Error.
         /// </summary>
         public const string ApplicationErrorType = "https://www.rfc-editor.org/rfc/rfc9110.html#name-500-internal-server-error";
-
-        /// <summary>
-        /// Default title for the problem details of status code 400, Bad Request.
-        /// </summary>
-        public const string GenericErrorTitle = "An error has occurred";
-
-        /// <summary>
-        /// Default title for the problem details of status code 404, Not Found.
-        /// </summary>
-        public const string NotFoundTitle = "Entity not found";
-
-        /// <summary>
-        /// Default title for the problem details of status code 400, Bad Request.
-        /// </summary>
-        public const string InvalidParametersTitle = "The input parameters are invalid";
-
-        /// <summary>
-        /// Default title for the problem details of status code 422, Unprocessable Content.
-        /// </summary>
-        public const string ValidationTitle = "Errors have occurred in the validation of the input parameters.";
-
-        /// <summary>
-        /// Default title for the problem details of status code 500, Internal Server Error.
-        /// </summary>
-        public const string ApplicationErrorTitle = "An error has occurred";
-
-        /// <summary>
-        /// Default title for the problem details of an aggregation of problems.
-        /// </summary>
-        public const string AggregateProblemsDetailsTitle = "Multiples problems";
     }
 
     private readonly Dictionary<string, ProblemDetailsDescription> descriptions = new()
@@ -125,8 +99,8 @@ public class ProblemDetailsDescriptor
         {
             GenericErrorCodes.NotFound,
             new ProblemDetailsDescription(GenericErrorCodes.NotFound,
-                Defaults.NotFoundType,
-                Defaults.NotFoundTitle,
+                Types.NotFoundType,
+                ProblemDetailsExtended.Titles.NotFoundTitle,
                 """
                 The 404 (Not Found) status code indicates that the origin server did not find a current representation
                 for the target resource or is not willing to disclose that one exists. 
@@ -136,8 +110,8 @@ public class ProblemDetailsDescriptor
         {
             GenericErrorCodes.InvalidParameters,
             new ProblemDetailsDescription(GenericErrorCodes.InvalidParameters,
-                Defaults.InvalidParametersType,
-                Defaults.InvalidParametersTitle,
+                Types.InvalidParametersType,
+                ProblemDetailsExtended.Titles.InvalidParametersTitle,
                 """
                 The 400 (Bad Request) status code indicates that the server cannot or will not process the request
                 due to something that is perceived to be a client error.
@@ -148,8 +122,8 @@ public class ProblemDetailsDescriptor
         {
             GenericErrorCodes.GenericError,
             new ProblemDetailsDescription(GenericErrorCodes.GenericError,
-                Defaults.GenericErrorType,
-                Defaults.GenericErrorTitle,
+                Types.GenericErrorType,
+                ProblemDetailsExtended.Titles.GenericErrorTitle,
                 """
                 The 400 (Bad Request) status code indicates that the server cannot or will not process the request
                 due to something that is perceived to be a client error.
@@ -159,7 +133,7 @@ public class ProblemDetailsDescriptor
         {
             GenericErrorCodes.Validation,
             new ProblemDetailsDescription(GenericErrorCodes.Validation,
-                Defaults.ValidationType,
+                Types.ValidationType,
                 "Errors have occurred in the validation of the input parameters.",
                 """
                 The 422 (Unprocessable Content) status code indicates that the server understands the content type 
@@ -173,8 +147,8 @@ public class ProblemDetailsDescriptor
         {
             GenericErrorCodes.ApplicationError,
             new ProblemDetailsDescription(GenericErrorCodes.ApplicationError,
-                Defaults.ApplicationErrorType,
-                Defaults.ApplicationErrorTitle,
+                Types.ApplicationErrorType,
+                ProblemDetailsExtended.Titles.ApplicationErrorTitle,
                 """
                 The 500 (Internal Server Error) status code indicates that the server 
                 encountered an unexpected condition that prevented it from fulfilling the request.
@@ -182,9 +156,9 @@ public class ProblemDetailsDescriptor
                 HttpStatusCode.InternalServerError)
         },
         {
-            AggregateProblemsDetails,
-            new ProblemDetailsDescription(AggregateProblemsDetails,
-                Defaults.AggregateProblemsDetailsTitle,
+            Codes.AggregateProblemsDetails,
+            new ProblemDetailsDescription(Codes.AggregateProblemsDetails,
+                Titles.AggregateProblemsDetailsTitle,
                 """
                 This type of problem describes that there were several problems, and they are of different types. 
                 An additional property, called 'inner-problems' will contain the various problems.

@@ -1,27 +1,42 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResults;
 
 /// <summary>
-/// A collection of <see cref="IResultMessage"/>s.
+/// A errors of <see cref="IResultMessage"/>s.
 /// </summary>
-public class ResultErrors : List<IResultMessage>, IOperationResult
+public class ResultErrors : List<IResultMessage>
 {
     /// <summary>
-    /// Default capacity of the collection.
+    /// Default capacity of the errors.
     /// </summary>
     public static int DefaultCapacity { get; set; } = 1;
 
     /// <summary>
-    /// Adds a new message to the collection and returns the collection.
+    /// Adds a new message to the errors and returns the errors.
     /// </summary>
-    /// <param name="collection">The collection to add the message to</param>
+    /// <param name="errors">The errors to add the message to</param>
     /// <param name="message">The new message to add</param>
-    /// <returns>The same instance of the collection</returns>
-    public static ResultErrors operator +(ResultErrors collection, IResultMessage message)
+    /// <returns>The same instance of the errors</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ResultErrors operator +(ResultErrors errors, IResultMessage message)
     {
-        collection.Add(message);
-        return collection;
+        errors.Add(message);
+        return errors;
+    }
+
+    /// <summary>
+    /// Adds a range of messages to the errors and returns the errors.
+    /// </summary>
+    /// <param name="errors">The errors to add the messages to</param>
+    /// <param name="other">The messages to add</param>
+    /// <returns>The same instance of the errors</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ResultErrors operator +(ResultErrors errors, IEnumerable<IResultMessage> other)
+    {
+        errors.AddRange(other);
+        return errors;
     }
 
     /// <summary>
@@ -32,24 +47,15 @@ public class ResultErrors : List<IResultMessage>, IOperationResult
     /// <summary>
     /// Creates a new instance of <see cref="ResultErrors"/> with the messages provided.
     /// </summary>
-    /// <param name="messages">The collection of messages to add to the new instance.</param>
+    /// <param name="messages">The errors of messages to add to the new instance.</param>
     [JsonConstructor]
     public ResultErrors(IEnumerable<ResultMessage> messages) : base(messages) { }
 
-    /// <inheritdoc />
-    public bool Success => false;
-
-    /// <inheritdoc />
-    public int ErrorsCount => Count;
-
-    /// <inheritdoc />
-    public IEnumerable<IResultMessage> Messages => this;
-
     /// <summary>
-    /// Adds a new message to the collection and returns the collection.
+    /// Adds a new message to the errors and returns the errors.
     /// </summary>
     /// <param name="message">The new message to add</param>
-    /// <returns>The same instance of the collection</returns>
+    /// <returns>The same instance of the errors</returns>
     public ResultErrors With(IResultMessage message)
     {
         Add(message);
@@ -57,10 +63,10 @@ public class ResultErrors : List<IResultMessage>, IOperationResult
     }
 
     /// <summary>
-    /// Adds a range of messages to the collection and returns the collection.
+    /// Adds a range of messages to the errors and returns the errors.
     /// </summary>
     /// <param name="messages">The messages to add</param>
-    /// <returns>The same instance of the collection</returns>
+    /// <returns>The same instance of the errors</returns>
     public ResultErrors With(IEnumerable<IResultMessage> messages)
     {
         AddRange(messages);
@@ -69,10 +75,10 @@ public class ResultErrors : List<IResultMessage>, IOperationResult
 
     /// <summary>
     /// <para>
-    ///     Returns a string representation of the collection.
+    ///     Returns a string representation of the errors.
     /// </para>
     /// <para>
-    ///     The string will be a semicolon-separated list of the <see cref="IResultMessage"/> of each message in the collection.
+    ///     The string will be a semicolon-separated list of the <see cref="IResultMessage"/> of each message in the errors.
     /// </para>
     /// </summary>
     /// <returns></returns>

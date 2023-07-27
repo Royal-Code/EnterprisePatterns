@@ -15,7 +15,7 @@ public abstract class OperationMatchObjectResultBase<TResult> : ObjectResult
     /// <summary>
     /// Creates a new instance of <see cref="OperationMatchObjectResultBase{TResult}"/>.
     /// </summary>
-    /// <param name="result">The result.
+    /// <param name="result">The result.</param>
     /// <param name="createdPath">Optinal, the path created by the operation.</param>
     /// <param name="formatPathWithValue">If true, the <paramref name="createdPath"/> will be formatted with the value of the result.</param>
     protected OperationMatchObjectResultBase(TResult result,
@@ -100,7 +100,7 @@ public abstract class OperationMatchObjectResultBase<TResult> : ObjectResult
         Value = error;
         ContentTypes.Add("application/json");
         StatusCode = error.GetHttpStatus();
-        DeclaredType = typeof(IOperationResult);
+        DeclaredType = typeof(ResultErrors);
 
         return base.ExecuteResultAsync(context);
     }

@@ -1,15 +1,17 @@
 ﻿using RoyalCode.OperationResults;
-#if NET6_0_OR_GREATER
 using RoyalCode.OperationResults.Convertion;
-#endif
 using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace System.Net.Http;
 
+#if NETSTANDARD2_1
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#endif
+
 /// <summary>
 /// <para>
-///     Extension methods for deserialize <see cref="IOperationResult" /> from <see cref="HttpResponseMessage"/>.
+///     Extension methods for deserialize <see cref="OperationResult" /> from <see cref="HttpResponseMessage"/>.
 /// </para>
 /// </summary>
 public static class HttpOperationResultExtensions
@@ -21,7 +23,7 @@ public static class HttpOperationResultExtensions
     /// </summary>
     /// <param name="response">The <see cref="HttpResponseMessage"/>.</param>
     /// <param name="token">The <see cref="CancellationToken"/>.</param>
-    /// <returns>The <see cref="IOperationResult"/>.</returns>
+    /// <returns>The <see cref="OperationResult"/>.</returns>
     public static async Task<OperationResult> ToOperationResultAsync(
         this HttpResponseMessage response, CancellationToken token = default)
     {
@@ -39,7 +41,7 @@ public static class HttpOperationResultExtensions
 
     /// <summary>
     /// <para>
-    ///     Get <see cref="IOperationResult{TValue}" /> from <see cref="HttpResponseMessage"/>.
+    ///     Get <see cref="OperationResult{TValue}" /> from <see cref="HttpResponseMessage"/>.
     /// </para>
     /// </summary>
     /// <typeparam name="TValue">The type of the value.</typeparam>
@@ -49,7 +51,7 @@ public static class HttpOperationResultExtensions
     ///     used when status code is success.
     /// </param>
     /// <param name="token">The <see cref="CancellationToken"/>.</param>
-    /// <returns>The <see cref="IOperationResult{TValue}"/>.</returns>
+    /// <returns>The <see cref="OperationResult{TValue}"/>.</returns>
     public static async Task<OperationResult<TValue>> ToOperationResultAsync<TValue>(
         this HttpResponseMessage response, JsonSerializerOptions? options = null, CancellationToken token = default)
     {
@@ -133,25 +135,13 @@ public static class HttpOperationResultExtensions
         return result;
     }
 
-
-#pragma warning disable CS1998 // 
-
-#if NETSTANDARD2_1
-    [Diagnostics.CodeAnalysis.SuppressMessage(
-        "Major Code Smell", "CS1998:Async method lacks 'await' operators and will run synchronously",
-        Justification = "Used when target is net6+")]
-#endif
     private static async Task<ResultErrors> ReadProblemDetails(
         this HttpResponseMessage response, CancellationToken token)
     {
-#if NET6_0_OR_GREATER
         var problemDetails = await response.Content.ReadFromJsonAsync(
             ProblemDetailsSerializer.DefaultProblemDetailsExtended,
             token);
 
         return problemDetails!.ToResultErrors();
-#else
-        throw new NotSupportedException("ProblemDetails is only supported on .NET 6.0 or greater.");
-#endif
     }
 }

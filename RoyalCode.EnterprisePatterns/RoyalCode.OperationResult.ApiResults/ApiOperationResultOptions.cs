@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
+using RoyalCode.OperationResults.HttpResults;
 
 namespace RoyalCode.OperationResults;
 

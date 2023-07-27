@@ -21,10 +21,74 @@ namespace RoyalCode.OperationResults.Convertion;
 ///         <term><see cref="NotFoundDetails"/></term> that contains the not found details,
 ///         like the property name and the error message adn additional information.
 ///     </item>
+///     <item>
+///         <term><see cref="Errors"/></term> that contains messages for generic errors or application errors.
+///     </item>
+///     <item>
+///         <term><see cref="InnerProblemDetails"/></term> that contains inner <see cref="ProblemDetails"/>
+///         for aggregate exceptions.
+///     </item>
 /// </list>
 /// </summary>
 public class ProblemDetailsExtended : ProblemDetails
 {
+    /// <summary>
+    /// Contains the constants for the extension fields used by the operation results.
+    /// </summary>
+    public static class Fields 
+    {
+        /// <summary>
+        /// Extension field for the <see cref="ProblemDetails"/> that contains the aggregate details.
+        /// </summary>
+        public const string AggregateExtensionField = "inner-details";
+
+        /// <summary>
+        /// Extension field for the <see cref="ProblemDetails"/> that contains the invalid parameters details.
+        /// </summary>
+        public const string InvalidParametersExtensionField = "invalid-params";
+
+        /// <summary>
+        /// Extension field for the <see cref="ProblemDetails"/> that contains generic errors or application errors.
+        /// </summary>
+        public const string ErrorsExtensionField = "errors";
+
+        /// <summary>
+        /// Extension field for the <see cref="ProblemDetails"/> that contains the not found details.
+        /// </summary>
+        public const string NotFoundExtensionField = "not-found";
+    }
+
+    /// <summary>
+    /// Contains the constants for the default titles used by the operation results.
+    /// </summary>
+    public static class Titles
+    {
+        /// <summary>
+        /// The default title for the generic errors.
+        /// </summary>
+        public const string GenericErrorTitle = "An error has occurred";
+
+        /// <summary>
+        /// The default title for the not found errors.
+        /// </summary>
+        public const string NotFoundTitle = "Entity not found";
+
+        /// <summary>
+        /// The default title for the invalid parameters errors.
+        /// </summary>
+        public const string InvalidParametersTitle = "The input parameters are invalid";
+
+        /// <summary>
+        /// The default title for the validation errors.
+        /// </summary>
+        public const string ValidationTitle = "Errors have occurred in the validation of the input parameters.";
+
+        /// <summary>
+        /// The default title for the application errors.
+        /// </summary>
+        public const string ApplicationErrorTitle = "An error has occurred";
+    }
+
     /// <summary>
     /// <para>
     ///     A human-readable explanation specific to this occurrence of the problem.
@@ -33,7 +97,7 @@ public class ProblemDetailsExtended : ProblemDetails
     ///     Invalid parameters errors are added to this property.
     /// </para>
     /// </summary>
-    [JsonPropertyName(ProblemDetailsDescriptor.InvalidParametersExtensionField)]
+    [JsonPropertyName(Fields.InvalidParametersExtensionField)]
     public IEnumerable<InvalidParameterDetails>? InvalidParameters { get; set; }
 
     /// <summary>
@@ -44,7 +108,7 @@ public class ProblemDetailsExtended : ProblemDetails
     ///     Not found errors are added to this property.
     /// </para>
     /// </summary>
-    [JsonPropertyName(ProblemDetailsDescriptor.NotFoundExtensionField)]
+    [JsonPropertyName(Fields.NotFoundExtensionField)]
     public IEnumerable<NotFoundDetails>? NotFoundDetails { get; set; }
 
     /// <summary>
@@ -55,7 +119,7 @@ public class ProblemDetailsExtended : ProblemDetails
     ///     Internal errors are added to this property.
     /// </para>
     /// </summary>
-    [JsonPropertyName(ProblemDetailsDescriptor.ErrorsExtensionField)]
+    [JsonPropertyName(Fields.ErrorsExtensionField)]
     public IEnumerable<string>? Errors { get; set; }
 
     /// <summary>
@@ -64,23 +128,8 @@ public class ProblemDetailsExtended : ProblemDetails
     ///     the inner problem details are added to this property.
     /// </para>
     /// </summary>
-    [JsonPropertyName(ProblemDetailsDescriptor.AggregateExtensionField)]
+    [JsonPropertyName(Fields.AggregateExtensionField)]
     public IEnumerable<ProblemDetails>? InnerProblemDetails { get; set; }
-
-    /// <summary>
-    /// <para>
-    ///     Determines if the problem details is an aggregate of other problem details.
-    /// </para>
-    /// <para>
-    ///     When is an aggregate, see <see cref="InnerProblemDetails"/>.
-    /// </para>
-    /// <para>
-    ///     The problem details is an aggregate when the <see cref="ProblemDetails.Type"/>
-    ///     is <see cref="ProblemDetailsDescriptor.AggregateProblemsDetails"/>.
-    /// </para>
-    /// </summary>
-    [JsonIgnore]
-    public bool IsAggregate => Type == ProblemDetailsDescriptor.AggregateProblemsDetails;
 
     /// <summary>
     /// <para>
@@ -113,8 +162,7 @@ public class ProblemDetailsExtended : ProblemDetails
                 erros += message;
             }
 
-            if (Title == ProblemDetailsDescriptor.Defaults.InvalidParametersTitle
-                || Title == ProblemDetailsDescriptor.Defaults.ValidationTitle)
+            if (Title == Titles.InvalidParametersTitle || Title == Titles.ValidationTitle)
             {
                 ignoreDetails = true;
             }
@@ -132,7 +180,7 @@ public class ProblemDetailsExtended : ProblemDetails
                 erros += message;
             }
 
-            if (Title == ProblemDetailsDescriptor.Defaults.NotFoundTitle)
+            if (Title == Titles.NotFoundTitle)
                 ignoreDetails = true;
         }
 
@@ -147,8 +195,7 @@ public class ProblemDetailsExtended : ProblemDetails
                     : ResultMessage.Error(GenericErrorCodes.GenericError, error, HttpStatusCode.BadRequest);
             }
 
-            if (Title == ProblemDetailsDescriptor.Defaults.ApplicationErrorTitle
-                || Title == ProblemDetailsDescriptor.Defaults.GenericErrorTitle)
+            if (Title == Titles.ApplicationErrorTitle || Title == Titles.GenericErrorTitle)
                 ignoreDetails = true;
         }
 
@@ -166,7 +213,7 @@ public class ProblemDetailsExtended : ProblemDetails
         {
             if (Extensions?.Count > 0)
             {
-                var message = (ResultMessage)erros.First();
+                var message = (ResultMessage)erros[0];
                 foreach (var extension in Extensions)
                     message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
             }

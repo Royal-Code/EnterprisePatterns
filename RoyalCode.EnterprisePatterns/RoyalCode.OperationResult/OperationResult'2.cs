@@ -143,6 +143,24 @@ public readonly struct OperationResult<TValue, TError>
 
     /// <summary>
     /// <para>
+    ///     Check if the operation result is failure, then return true.
+    ///     When is failure, set the <paramref name="error"/> of the operation result, so the <paramref name="value"/> is <see langword="null"/>.
+    ///     When is successful, set the <paramref name="value"/> of the operation result, so the <paramref name="error"/> is <see langword="null"/>.
+    /// </para>
+    /// </summary>
+    /// <param name="error">The error of the operation result, that is not <see langword="null"/> when the operation result is failure.</param>
+    /// <param name="value">The value of the operation result, that is not <see langword="null"/> when the operation result is successful.</param>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool IsFailureAndGet([NotNullWhen(true)] out TError? error, [NotNullWhen(false)] out TValue? value)
+    {
+        value = this.value;
+        error = this.error;
+        return Failure;
+    }
+
+    /// <summary>
+    /// <para>
     ///     Check if the operation result is failure, 
     ///     then return true and set the error of the operation result.
     /// </para>
@@ -225,6 +243,23 @@ public readonly struct OperationResult<TValue, TError>
             error = default;
             return true;
         }
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Check if the operation result is successful, then return true.
+    ///     When is successful, set the <paramref name="value"/> of the operation result, so the <paramref name="error"/> is <see langword="null"/>.
+    ///     When is failure, set the <paramref name="error"/> of the operation result, so the <paramref name="value"/> is <see langword="null"/>.
+    /// </para>
+    /// </summary>
+    /// <param name="value">The value of the operation result, that is not <see langword="null"/> when the operation result is successful.</param>
+    /// <param name="error">The error of the operation result, that is not <see langword="null"/> when the operation result is failure.</param>
+    /// <returns></returns>
+    public readonly bool IsSuccessAndGet([NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out TError? error)
+    {
+        value = this.value;
+        error = this.error;
+        return Success;
     }
 
     /// <summary>
