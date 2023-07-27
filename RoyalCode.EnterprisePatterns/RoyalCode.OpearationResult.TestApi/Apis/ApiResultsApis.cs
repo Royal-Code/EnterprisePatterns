@@ -57,6 +57,12 @@ public static class ApiResultsApis
             .WithDescription("Obtém valores simples se o input for válido.")
             .WithOpenApi()
             .WithXErrorTypeHeader();
+
+        group.MapGet("GetSimpleValuesWithException", GetSimpleValuesWithException)
+            .WithName("GetSimpleValuesWithException")
+            .WithDescription("Obtém valores simples com exceção.")
+            .WithOpenApi()
+            .WithXErrorTypeHeader();
     }
 
     private static OkMatch<SimpleValues> GetSimpleValues()
@@ -135,5 +141,12 @@ public static class ApiResultsApis
         }
 
         return Results.Extensions.ToResult(result);
+    }
+
+    private static OkMatch<SimpleValues> GetSimpleValuesWithException(HttpContext context)
+    {
+        var Exception = new Exception("Erro ao obter valores simples.");
+        OperationResult<SimpleValues> result = ResultMessage.Error(Exception);
+        return result;
     }
 }

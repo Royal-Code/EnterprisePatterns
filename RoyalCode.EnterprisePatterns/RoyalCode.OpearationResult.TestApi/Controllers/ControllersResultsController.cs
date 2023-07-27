@@ -93,4 +93,12 @@ public class ControllersResultsController : ControllerBase
 
         return result.ToResult();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetSimpleValuesWithException()
+    {
+        var Exception = new Exception("Erro ao obter valores simples.");
+        OperationResult<SimpleValues> result = ResultMessage.Error(Exception);
+        return result.ToResult();
+    }
 }

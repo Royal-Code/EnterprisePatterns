@@ -18,6 +18,14 @@ public static class ExceptionsParsers
 
     /// <summary>
     /// <para>
+    ///     Determines if a generic message or the exception message 
+    ///     will be used as the <see cref="ResultMessage.Text"/>
+    ///     when creating a message from an exception.
+    /// </para>
+    public static bool UseGenericMessageForExceptions { get; set; } = true;
+
+    /// <summary>
+    /// <para>
     ///     Add a parser to the list of parsers.
     /// </para>
     /// </summary>
@@ -76,5 +84,12 @@ public static class ExceptionsParsers
         exception = null;
         return false;
     }
-        
+    
+    internal static string GetExceptionMessage(Exception ex)
+    {
+        if (UseGenericMessageForExceptions)
+            return R.GenericExceptionMessage;
+
+        return ex.Message;
+    }
 }
