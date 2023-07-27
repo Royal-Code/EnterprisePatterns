@@ -5,7 +5,6 @@ namespace RoyalCode.OperationResults.Tests;
 
 public class OperationResultTests
 {
-
     [Fact]
     public void ImplicitlyConvertValueToSuccessfulOperationResult()
     {

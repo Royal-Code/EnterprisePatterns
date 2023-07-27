@@ -125,8 +125,10 @@ public class ResultMessage : IResultMessage
 
             return message;
         }
-        
-        return new ResultMessage(ex.Message, property, code, status ?? HttpStatusCode.InternalServerError, ex);
+
+        var text = ExceptionsParsers.GetExceptionMessage(ex);
+
+        return new ResultMessage(text, property, code, status ?? HttpStatusCode.InternalServerError, ex);
     }
 
     /// <summary>
@@ -312,6 +314,8 @@ public class ResultMessage : IResultMessage
             if (text is not null)
                 message.Text = text;
 
+            message.Status ??= HttpStatusCode.InternalServerError;
+
             return message;
         }
 
@@ -319,9 +323,11 @@ public class ResultMessage : IResultMessage
         if (ex is ArgumentException aex)
             property = aex.ParamName;
         
-        return new ResultMessage(text ?? ex.Message,
+        text ??= ExceptionsParsers.GetExceptionMessage(ex);
+
+        return new ResultMessage(text, 
             property,
-            GenericErrorCodes.ApplicationError, 
+            GenericErrorCodes.ApplicationError,
             HttpStatusCode.InternalServerError,
             ex);
     }

@@ -6,6 +6,11 @@ namespace RoyalCode.OperationResults.Tests;
 
 public class ProblemDetailsConverterTests
 {
+    public ProblemDetailsConverterTests()
+    {
+        ExceptionsParsers.UseGenericMessageForExceptions = false;
+    }
+
     [Fact]
     public void ToProblemDetails_Should_ReturnProblemDetails_With_Status400_When_Error_WithoutStatus_And_WithoutCode_And_WithoutProperty()
     {

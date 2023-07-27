@@ -83,7 +83,7 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
         Assert.NotNull(collection);
         Assert.Single(collection);
 
-        var dictionary = collection.First();
+        var dictionary = collection[0];
         Assert.Single(dictionary);
         Assert.True(dictionary.ContainsKey("text"));
         Assert.Equal(JsonValueKind.String, dictionary["text"].ValueKind);
@@ -106,7 +106,7 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
         Assert.NotNull(collection);
         Assert.Single(collection);
 
-        var dictionary = collection.First();
+        var dictionary = collection[0];
         Assert.Single(dictionary);
         Assert.True(dictionary.ContainsKey("text"));
         Assert.Equal(JsonValueKind.String, dictionary["text"].ValueKind);
@@ -154,7 +154,7 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
         Assert.NotNull(collection);
         Assert.Single(collection);
 
-        var dictionary = collection.First();
+        var dictionary = collection[0];
         Assert.Single(dictionary);
         Assert.True(dictionary.ContainsKey("text"));
         Assert.Equal(JsonValueKind.String, dictionary["text"].ValueKind);
@@ -196,7 +196,7 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
             Assert.NotNull(collection);
             Assert.Single(collection);
 
-            var dictionary = collection.First();
+            var dictionary = collection[0];
             Assert.Equal(3, dictionary.Count);
             Assert.True(dictionary.ContainsKey("text"));
             Assert.Equal(JsonValueKind.String, dictionary["text"].ValueKind);
@@ -233,7 +233,7 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
             Assert.NotNull(collection);
             Assert.Single(collection);
 
-            var dictionary = collection.First();
+            var dictionary = collection[0];
             Assert.Equal(3, dictionary.Count);
             Assert.True(dictionary.ContainsKey("text"));
             Assert.Equal(JsonValueKind.String, dictionary["text"].ValueKind);
@@ -289,5 +289,26 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
         Assert.Equal("Erro ao obter valores simples.", problemDetails.Detail);
         Assert.Equal(400, problemDetails.Status);
         Assert.Equal(ProblemDetailsDescriptor.Types.GenericErrorType, problemDetails.Type);
+    }
+
+    [Fact]
+    public async Task GetSimpleValuesWithException_Returns_InternalServerError_WithGenericMessage()
+    {
+        // Prepare
+        var message = new HttpRequestMessage(HttpMethod.Get, "/ControllersResults/GetSimpleValuesWithException");
+        message.Headers.Add(HeaderExtensions.ErrorTypeHeaderName, "ProblemDetails");
+
+        // Act
+        var response = await client.SendAsync(message);
+        var json = await response.Content.ReadAsStringAsync();
+
+        // Assert StatusCode
+        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+
+        // Assert Values
+        var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(json);
+        Assert.NotNull(problemDetails);
+        Assert.Equal(ProblemDetailsExtended.Titles.GenericErrorTitle, problemDetails.Title);
+        Assert.Equal("Internal error", problemDetails.Detail);
     }
 }
