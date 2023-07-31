@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RoyalCode.OperationResults.Convertion;
+using RoyalCode.OperationResults.Interceptors;
 using RoyalCode.OperationResults.Metadata;
 using System.Net.Mime;
 using System.Reflection;
@@ -85,6 +86,8 @@ public class MatchErrorResult
     /// <inheritdoc />
     public Task ExecuteAsync(HttpContext httpContext)
     {
+        MatchErrorInterceptors.ExecutingError(httpContext, errors);
+
         if (ErrorResultTypeOptions.IsFlexible)
         {
             httpContext.TryGetResultTypeHeader(out var resultType);
