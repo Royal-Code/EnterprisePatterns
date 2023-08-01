@@ -86,8 +86,6 @@ public class MatchErrorResult
     /// <inheritdoc />
     public Task ExecuteAsync(HttpContext httpContext)
     {
-        MatchErrorInterceptors.ExecutingError(httpContext, errors);
-
         if (ErrorResultTypeOptions.IsFlexible)
         {
             httpContext.TryGetResultTypeHeader(out var resultType);
@@ -132,6 +130,8 @@ public class MatchErrorResult
         var problemDetails = errors.ToProblemDetails(options);
         JsonSerializerOptions? serializerOptions = null;
 
+        MatchInterceptors.WritingProblemDetails(httpContext, problemDetails);
+
         httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status400BadRequest;
         return httpContext.Response.WriteAsJsonAsync(
             problemDetails,
@@ -147,6 +147,8 @@ public class MatchErrorResult
     /// <returns>A task that represents the asynchronous execute operation.</returns>
     public Task WriteOperationResult(HttpContext httpContext)
     {
+        MatchInterceptors.WritingResultErrors(httpContext, errors);
+
         httpContext.Response.StatusCode = errors.GetHttpStatus();
 
 #if NET7_0_OR_GREATER
