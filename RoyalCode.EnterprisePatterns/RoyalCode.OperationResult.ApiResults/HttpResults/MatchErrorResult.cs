@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RoyalCode.OperationResults.Convertion;
+using RoyalCode.OperationResults.Interceptors;
 using RoyalCode.OperationResults.Metadata;
 using System.Net.Mime;
 using System.Reflection;
@@ -129,6 +130,8 @@ public class MatchErrorResult
         var problemDetails = errors.ToProblemDetails(options);
         JsonSerializerOptions? serializerOptions = null;
 
+        MatchInterceptors.WritingProblemDetails(httpContext, problemDetails);
+
         httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status400BadRequest;
         return httpContext.Response.WriteAsJsonAsync(
             problemDetails,
@@ -144,6 +147,8 @@ public class MatchErrorResult
     /// <returns>A task that represents the asynchronous execute operation.</returns>
     public Task WriteOperationResult(HttpContext httpContext)
     {
+        MatchInterceptors.WritingResultErrors(httpContext, errors);
+
         httpContext.Response.StatusCode = errors.GetHttpStatus();
 
 #if NET7_0_OR_GREATER
