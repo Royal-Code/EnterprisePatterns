@@ -55,7 +55,7 @@ public static class MatchInterceptors
     /// <param name="httpContext">The <see cref="HttpContext"/> for the current request.</param>
     /// <param name="problemDetails">The <see cref="ProblemDetails"/> to be writed.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WritingProblemDetails(HttpContext httpContext, ProblemDetails problemDetails)
+    public static void WritingProblemDetails(HttpContext httpContext, ProblemDetails problemDetails, ResultErrors errors)
     {
         IEnumerable<IMatchProblemDetailsInterceptor> interceptors;
 
@@ -74,7 +74,7 @@ public static class MatchInterceptors
         foreach (var interceptor in interceptors)
             try
             {
-                interceptor.WritingProblemDetails(problemDetails);
+                interceptor.WritingProblemDetails(problemDetails, errors);
             }
             catch (Exception ex)
             {

@@ -130,7 +130,7 @@ public class MatchErrorResult
         var problemDetails = errors.ToProblemDetails(options);
         JsonSerializerOptions? serializerOptions = null;
 
-        MatchInterceptors.WritingProblemDetails(httpContext, problemDetails);
+        MatchInterceptors.WritingProblemDetails(httpContext, problemDetails, errors);
 
         httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status400BadRequest;
         return httpContext.Response.WriteAsJsonAsync(

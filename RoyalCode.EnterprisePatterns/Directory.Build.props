@@ -5,7 +5,7 @@
 	</PropertyGroup>
 	<PropertyGroup>
 		<OpResVer>2.0.0</OpResVer>
-		<OpResPreview>-rc8</OpResPreview>
+		<OpResPreview>-rc9</OpResPreview>
 		<PersistVer>1.0.0</PersistVer>
 		<PersistPreview>-preview3.8</PersistPreview>
 		<CommandVer>0.1.0</CommandVer>

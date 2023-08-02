@@ -114,7 +114,7 @@ file class ProbleDetailsInterceptor1 : IMatchProblemDetailsInterceptor, IProblem
 {
     public ICollection<ProblemDetails> Problems { get; } = new List<ProblemDetails>();
 
-    public void WritingProblemDetails(ProblemDetails problemDetails)
+    public void WritingProblemDetails(ProblemDetails problemDetails, ResultErrors errors)
     {
         Problems.Add(problemDetails);
     }
@@ -124,7 +124,7 @@ file class ProbleDetailsInterceptor2 : IMatchProblemDetailsInterceptor, IProblem
 {
     public ICollection<ProblemDetails> Problems { get; } = new List<ProblemDetails>();
 
-    public void WritingProblemDetails(ProblemDetails problemDetails)
+    public void WritingProblemDetails(ProblemDetails problemDetails, ResultErrors errors)
     {
         Problems.Add(problemDetails);
     }

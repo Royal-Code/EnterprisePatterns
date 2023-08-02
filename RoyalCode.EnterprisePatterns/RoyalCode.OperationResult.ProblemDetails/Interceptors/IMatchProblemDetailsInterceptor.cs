@@ -11,5 +11,5 @@ public interface IMatchProblemDetailsInterceptor
     /// Interceptor for the <see cref="ProblemDetails"/> when is being writed as a result.
     /// </summary>
     /// <param name="problemDetails">The <see cref="ProblemDetails"/> to be writed.</param>
-    void WritingProblemDetails(ProblemDetails problemDetails);
+    void WritingProblemDetails(ProblemDetails problemDetails, ResultErrors errors);
 }
