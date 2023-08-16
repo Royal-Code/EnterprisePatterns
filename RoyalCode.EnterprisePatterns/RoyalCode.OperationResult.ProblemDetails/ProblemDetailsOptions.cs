@@ -10,9 +10,14 @@ public class ProblemDetailsOptions
     private bool completed;
 
     /// <summary>
+    /// Default value for the base address to describe the problem details, and use for build the type from the code.
+    /// </summary>
+    public const string DefaultBaseAddress = "tag:problemdetails/.problems";
+
+    /// <summary>
     /// The base address to describe the problem details, and use for build the type from the code.
     /// </summary>
-    public string BaseAddress { get; set; } = "http://problemdetails.ml/problems";
+    public string BaseAddress { get; set; } = DefaultBaseAddress;
 
     /// <summary>
     /// Additional part to add in the type of the problem details.

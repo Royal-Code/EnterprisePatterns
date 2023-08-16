@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using RoyalCode.OperationResults;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,14 @@ public static class ProblemDetailsServiceCollectionExtensions
     {
         services.AddOptions<ProblemDetailsOptions>()
             .BindConfiguration("ProblemDetails")
+            .PostConfigure<IHttpContextAccessor>((o, a) =>
+            {
+                if (o.BaseAddress == ProblemDetailsOptions.DefaultBaseAddress
+                    && a.HttpContext?.Request is not null)
+                {
+                    o.BaseAddress = $"https://{a.HttpContext.Request.Host.Value}/.problems";
+                }
+            })
             .PostConfigure<ILogger<ProblemDetailsOptions>>((o, l) =>
             {
                 // log completing the options configuration
