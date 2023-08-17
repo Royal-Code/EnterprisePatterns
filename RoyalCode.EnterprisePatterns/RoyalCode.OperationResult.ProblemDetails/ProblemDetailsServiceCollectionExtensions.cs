@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿//using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using RoyalCode.OperationResults;
 
@@ -26,7 +26,7 @@ public static class ProblemDetailsServiceCollectionExtensions
     {
         services.AddOptions<ProblemDetailsOptions>()
             .BindConfiguration("ProblemDetails")
-            .PostConfigure<IHttpContextAccessor>((o, a) =>
+            .PostConfigure<AspNetCore.Http.IHttpContextAccessor>((o, a) =>
             {
                 if (o.BaseAddress == ProblemDetailsOptions.DefaultBaseAddress
                     && a.HttpContext?.Request is not null)

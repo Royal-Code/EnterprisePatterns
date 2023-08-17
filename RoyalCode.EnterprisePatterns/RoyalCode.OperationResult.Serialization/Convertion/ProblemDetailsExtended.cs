@@ -40,12 +40,12 @@ public class ProblemDetailsExtended : ProblemDetails
         /// <summary>
         /// Extension field for the <see cref="ProblemDetails"/> that contains the aggregate details.
         /// </summary>
-        public const string AggregateExtensionField = "inner-details";
+        public const string AggregateExtensionField = "inner_details";
 
         /// <summary>
         /// Extension field for the <see cref="ProblemDetails"/> that contains the invalid parameters details.
         /// </summary>
-        public const string InvalidParametersExtensionField = "invalid-params";
+        public const string InvalidParametersExtensionField = "invalid_params";
 
         /// <summary>
         /// Extension field for the <see cref="ProblemDetails"/> that contains generic errors or application errors.
@@ -55,7 +55,7 @@ public class ProblemDetailsExtended : ProblemDetails
         /// <summary>
         /// Extension field for the <see cref="ProblemDetails"/> that contains the not found details.
         /// </summary>
-        public const string NotFoundExtensionField = "not-found";
+        public const string NotFoundExtensionField = "not_found";
     }
 
     /// <summary>
