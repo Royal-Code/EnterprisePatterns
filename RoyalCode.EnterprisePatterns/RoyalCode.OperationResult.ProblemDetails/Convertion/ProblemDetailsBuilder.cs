@@ -10,7 +10,7 @@ public class ProblemDetailsBuilder
 {
     private List<InvalidParameterDetails>? invalidParameterErrors;
     private List<NotFoundDetails>? notFoundErrors;
-    private List<string>? errors;
+    private List<ErrorDetails>? errors;
     private List<IResultMessage>? customProblems;
     private Dictionary<string, object>? extensions;
     private bool withRulesValidationErrors = false;
@@ -170,7 +170,7 @@ public class ProblemDetailsBuilder
     /// <param name="validationError">If the error is a validation error.</param>
     public void AddInvalidParameter(InvalidParameterDetails details, bool validationError)
     {
-        invalidParameterErrors ??= new List<InvalidParameterDetails>();
+        invalidParameterErrors ??= new();
         invalidParameterErrors.Add(details);
         if (validationError)
             withRulesValidationErrors = true;
@@ -182,18 +182,18 @@ public class ProblemDetailsBuilder
     /// <param name="notFoundDetails">The not found details.</param>
     public void AddNotFound(NotFoundDetails notFoundDetails)
     {
-        notFoundErrors ??= new List<NotFoundDetails>();
+        notFoundErrors ??= new();
         notFoundErrors.Add(notFoundDetails);
     }
 
     /// <summary>
     /// Add a internal error to the problem details.
     /// </summary>
-    /// <param name="message">The internal error message (may be the exception message).</param>
-    public void AddErrorMessage(string message)
+    /// <param name="errorDetails">The erro details.</param>
+    public void AddErrorMessage(ErrorDetails errorDetails)
     {
-        errors ??= new List<string>();
-        errors.Add(message);
+        errors ??= new();
+        errors.Add(errorDetails);
     }
 
     /// <summary>
@@ -207,7 +207,7 @@ public class ProblemDetailsBuilder
     /// <param name="message">The custom problem message.</param>
     public void AddCustomProblem(IResultMessage message)
     {
-        customProblems ??= new List<IResultMessage>();
+        customProblems ??= new();
         customProblems.Add(message);
     }
 

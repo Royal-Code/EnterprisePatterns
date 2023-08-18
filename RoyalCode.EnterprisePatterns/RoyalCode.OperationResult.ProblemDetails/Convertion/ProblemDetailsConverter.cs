@@ -122,9 +122,7 @@ public static class ProblemDetailsConverter
             // if not, add error, it can be a generic error or a application error (internal error)
             else
             {
-                builder.AddErrorMessage(message.Text);
-                if (message.AdditionalInformation is not null)
-                    builder.AddExtension(message.AdditionalInformation);
+                builder.AddErrorMessage(ErrorDetails.From(message));
             }
         }
         else

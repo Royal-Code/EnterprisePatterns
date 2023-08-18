@@ -770,12 +770,12 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(2, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
         Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Null(message.AdditionalInformation);
     }
 

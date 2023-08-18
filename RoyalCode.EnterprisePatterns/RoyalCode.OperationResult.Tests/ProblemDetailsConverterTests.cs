@@ -284,7 +284,7 @@ public class ProblemDetailsConverterTests
         Assert.Equal(ProblemDetailsExtended.Titles.ApplicationErrorTitle, problemDetails.Title);
         Assert.Equal(ProblemDetailsDescriptor.Messages.InternalErrorsMessage, problemDetails.Detail);
 
-        var extraFields = problemDetails.Extensions[ProblemDetailsExtended.Fields.ErrorsExtensionField] as List<string>;
+        var extraFields = problemDetails.Extensions[ProblemDetailsExtended.Fields.ErrorsExtensionField] as List<ErrorDetails>;
         Assert.NotNull(extraFields);
         Assert.Equal(2, extraFields.Count);
 
