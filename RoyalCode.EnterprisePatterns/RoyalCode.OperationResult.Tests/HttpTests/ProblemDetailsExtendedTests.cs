@@ -773,10 +773,10 @@ public class ProblemDetailsExtendedTests
         var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
-        Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
-
+        
         message = resultErrors[1];
-        Assert.Null(message.AdditionalInformation);
+        Assert.NotNull(message.AdditionalInformation);
+        Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
     }
 
     [Fact]
@@ -804,15 +804,15 @@ public class ProblemDetailsExtendedTests
         Assert.Equal(3, resultErrors.Count);
 
         var message = resultErrors[0];
-        Assert.Null(message.AdditionalInformation);
-        
+        Assert.NotNull(message.AdditionalInformation);
+        Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
+
         message = resultErrors[1];
-        Assert.Null(message.AdditionalInformation);
+        Assert.NotNull(message.AdditionalInformation);
+        Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
 
         message = resultErrors[2];
         Assert.NotNull(message.AdditionalInformation);
-        Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
-        Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
         Assert.Equal("Value 3", message.AdditionalInformation!["Info3"]);
     }
 
@@ -846,10 +846,10 @@ public class ProblemDetailsExtendedTests
         var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
-        Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
 
         message = resultErrors[1];
-        Assert.Null(message.AdditionalInformation);
+        Assert.NotNull(message.AdditionalInformation);
+        Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
 
         message = resultErrors[2];
         Assert.NotNull(message.AdditionalInformation);
