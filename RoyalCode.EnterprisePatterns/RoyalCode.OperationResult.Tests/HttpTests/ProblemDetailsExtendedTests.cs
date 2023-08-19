@@ -30,7 +30,7 @@ public class ProblemDetailsExtendedTests
         // Assert
         Assert.NotNull(resultErrors);
         Assert.Single(resultErrors);
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
@@ -54,12 +54,12 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(2, resultErrors.Count);
         
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
@@ -82,7 +82,7 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Single(resultErrors);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message", message.Text);
         Assert.Equal("Property", message.Property);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
@@ -107,12 +107,12 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(2, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
@@ -137,17 +137,17 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(3, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Equal("Error message 3", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
@@ -170,7 +170,7 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Single(resultErrors);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message", message.Text);
         Assert.Equal("Property", message.Property);
         Assert.Equal(HttpStatusCode.NotFound, message.Status);
@@ -195,13 +195,13 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(2, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal("Property1", message.Property);
         Assert.Equal(HttpStatusCode.NotFound, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal("Property2", message.Property);
         Assert.Equal(HttpStatusCode.NotFound, message.Status);
@@ -227,19 +227,19 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(3, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal("Property2", message.Property);
         Assert.Equal(HttpStatusCode.NotFound, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Equal("Error message 3", message.Text);
         Assert.Equal("Property3", message.Property);
         Assert.Equal(HttpStatusCode.NotFound, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
@@ -263,7 +263,7 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Single(resultErrors);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message", message.Text);
         Assert.Equal("Property", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
@@ -288,13 +288,13 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(2, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal("Property1", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal("Property2", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
@@ -320,19 +320,19 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(3, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal("Property1", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal("Property2", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 3", message.Text);
         Assert.Equal("Property3", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
@@ -358,19 +358,19 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(3, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal("Property1", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal("Property2", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 3", message.Text);
         Assert.Equal("Property3", message.Property);
         Assert.Equal(HttpStatusCode.NotFound, message.Status);
@@ -396,19 +396,19 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(3, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal("Property1", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal("Property2", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 3", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
@@ -431,7 +431,7 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Single(resultErrors);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message", message.Text);
         Assert.Equal(HttpStatusCode.InternalServerError, message.Status);
         Assert.NotNull(message.Code);
@@ -455,12 +455,12 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(2, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal(HttpStatusCode.InternalServerError, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal(HttpStatusCode.InternalServerError, message.Status);
         Assert.NotNull(message.Code);
@@ -485,17 +485,17 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(3, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal(HttpStatusCode.InternalServerError, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal(HttpStatusCode.InternalServerError, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 3", message.Text);
         Assert.Equal(HttpStatusCode.InternalServerError, message.Status);
         Assert.NotNull(message.Code);
@@ -520,18 +520,18 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(3, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 3", message.Text);
         Assert.Equal("Property3", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal(HttpStatusCode.InternalServerError, message.Status);
         Assert.NotNull(message.Code);
         
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal(HttpStatusCode.InternalServerError, message.Status);
         Assert.NotNull(message.Code);
@@ -556,7 +556,7 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Single(resultErrors);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message", message.Text);
         Assert.Equal($"{options.BaseAddress}{options.TypeComplement}conflict-1", message.Code);
         Assert.Equal(HttpStatusCode.Conflict, message.Status);
@@ -583,12 +583,12 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(2, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal($"{options.BaseAddress}{options.TypeComplement}conflict-1", message.Code);
         Assert.Equal(HttpStatusCode.Conflict, message.Status);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal($"{options.BaseAddress}{options.TypeComplement}conflict-2", message.Code);
         Assert.Equal(HttpStatusCode.Conflict, message.Status);
@@ -617,22 +617,22 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(4, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Equal("Error message 3", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Equal("Error message 4", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(2);
+        message = resultErrors[2];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal($"{options.BaseAddress}{options.TypeComplement}conflict-1", message.Code);
         Assert.Equal(HttpStatusCode.Conflict, message.Status);
 
-        message = resultErrors.Last();
+        message = resultErrors[^1];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal($"{options.BaseAddress}{options.TypeComplement}conflict-2", message.Code);
         Assert.Equal(HttpStatusCode.Conflict, message.Status);
@@ -670,58 +670,58 @@ public class ProblemDetailsExtendedTests
 
         IResultMessage message;
 
-        message = resultErrors.First();
+        message = resultErrors[0];
         Assert.Equal("Error message 5", message.Text);
         Assert.Equal("Property5", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Equal("Error message 6", message.Text);
         Assert.Equal("Property6", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(2);
+        message = resultErrors[2];
         Assert.Equal("Error message 7", message.Text);
         Assert.Equal("Property7", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(3);
+        message = resultErrors[3];
         Assert.Equal("Error message 8", message.Text);
         Assert.Equal("Property8", message.Property);
         Assert.Equal(HttpStatusCode.UnprocessableEntity, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(4);
+        message = resultErrors[4];
         Assert.Equal("Error message 9", message.Text);
         Assert.Equal("Property9", message.Property);
         Assert.Equal(HttpStatusCode.NotFound, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(5);
+        message = resultErrors[5];
         Assert.Equal("Error message 10", message.Text);
         Assert.Equal("Property10", message.Property);
         Assert.Equal(HttpStatusCode.NotFound, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(6);
+        message = resultErrors[6];
         Assert.Equal("Error message 3", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(7);
+        message = resultErrors[7];
         Assert.Equal("Error message 4", message.Text);
         Assert.Equal(HttpStatusCode.BadRequest, message.Status);
         Assert.NotNull(message.Code);
 
-        message = resultErrors.ElementAt(8);
+        message = resultErrors[8];
         Assert.Equal("Error message 1", message.Text);
         Assert.Equal($"{options.BaseAddress}{options.TypeComplement}conflict-1", message.Code);
         Assert.Equal(HttpStatusCode.Conflict, message.Status);
         
-        message = resultErrors.ElementAt(9);
+        message = resultErrors[9];
         Assert.Equal("Error message 2", message.Text);
         Assert.Equal($"{options.BaseAddress}{options.TypeComplement}conflict-2", message.Code);
         Assert.Equal(HttpStatusCode.Conflict, message.Status);
@@ -745,7 +745,7 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Single(resultErrors);
         
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
     }
@@ -803,13 +803,13 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(3, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.Null(message.AdditionalInformation);
         
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Null(message.AdditionalInformation);
 
-        message = resultErrors.ElementAt(2);
+        message = resultErrors[2];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
         Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
@@ -843,22 +843,22 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(4, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
         Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.Null(message.AdditionalInformation);
 
-        message = resultErrors.ElementAt(2);
+        message = resultErrors[2];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 3", message.AdditionalInformation!["Info3"]);
         Assert.False(message.AdditionalInformation!.ContainsKey("Info1"));
         Assert.False(message.AdditionalInformation!.ContainsKey("Info2"));
         Assert.False(message.AdditionalInformation!.ContainsKey("Info4"));
         
-        message = resultErrors.ElementAt(3);
+        message = resultErrors[3];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 4", message.AdditionalInformation!["Info4"]);
         Assert.False(message.AdditionalInformation!.ContainsKey("Info1"));
@@ -884,7 +884,7 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Single(resultErrors);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
     }
@@ -909,11 +909,11 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(2, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
     }
@@ -942,15 +942,15 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(3, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
 
-        message = resultErrors.ElementAt(2);
+        message = resultErrors[2];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 3", message.AdditionalInformation!["Info3"]);
     }
@@ -982,19 +982,19 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(4, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
 
-        message = resultErrors.ElementAt(2);
+        message = resultErrors[2];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 3", message.AdditionalInformation!["Info3"]);
 
-        message = resultErrors.ElementAt(3);
+        message = resultErrors[3];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 4", message.AdditionalInformation!["Info4"]);
     }
@@ -1017,7 +1017,7 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Single(resultErrors);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
     }
@@ -1042,11 +1042,11 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(2, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
     }
@@ -1075,15 +1075,15 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(3, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
 
-        message = resultErrors.ElementAt(2);
+        message = resultErrors[2];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 3", message.AdditionalInformation!["Info3"]);
     }
@@ -1115,19 +1115,19 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Equal(4, resultErrors.Count);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
 
-        message = resultErrors.ElementAt(1);
+        message = resultErrors[1];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 2", message.AdditionalInformation!["Info2"]);
 
-        message = resultErrors.ElementAt(2);
+        message = resultErrors[2];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 3", message.AdditionalInformation!["Info3"]);
 
-        message = resultErrors.ElementAt(3);
+        message = resultErrors[3];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 4", message.AdditionalInformation!["Info4"]);
     }
@@ -1163,7 +1163,7 @@ public class ProblemDetailsExtendedTests
         Assert.NotNull(resultErrors);
         Assert.Single(resultErrors);
 
-        var message = resultErrors.First();
+        var message = resultErrors[0];
         Assert.NotNull(message.AdditionalInformation);
         Assert.Equal("Value 1", message.AdditionalInformation!["Info1"]);
         Assert.Equal(true, message.AdditionalInformation!["Info2a"]);
