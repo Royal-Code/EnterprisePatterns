@@ -157,7 +157,7 @@ public class ProblemDetailsExtended : ProblemDetails
                     : ResultMessage.InvalidParameter(invalidParameter.Reason, invalidParameter.Name ?? string.Empty);
                 if (invalidParameter.Extensions is not null)
                     foreach(var extension in invalidParameter.Extensions)
-                        message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
+                        message.WithInformation(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
 
                 errors += message;
             }
@@ -175,7 +175,7 @@ public class ProblemDetailsExtended : ProblemDetails
                 var message = ResultMessage.NotFound(notFoundDetail.Message, notFoundDetail.Property ?? string.Empty);
                 if (notFoundDetail.Extensions is not null)
                     foreach(var extension in notFoundDetail.Extensions)
-                        message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
+                        message.WithInformation(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
 
                 errors += message;
             }
@@ -196,7 +196,7 @@ public class ProblemDetailsExtended : ProblemDetails
 
                 if (errorDetails.Extensions is not null)
                     foreach (var extension in errorDetails.Extensions)
-                        message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
+                        message.WithInformation(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
 
                 errors += message;
             }
@@ -221,7 +221,7 @@ public class ProblemDetailsExtended : ProblemDetails
             {
                 var message = (ResultMessage)errors[0];
                 foreach (var extension in Extensions)
-                    message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
+                    message.WithInformation(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
             }
         }
         else
@@ -244,7 +244,7 @@ public class ProblemDetailsExtended : ProblemDetails
         // add the additional information
         if (details.Extensions is not null)
             foreach(var extension in details.Extensions)
-                message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
+                message.WithInformation(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
 
         return message;
     }

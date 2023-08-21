@@ -732,7 +732,7 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.Error("Error message")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result.TryGetError(out var error);
         var problemDetails = error!.ToProblemDetails(new ProblemDetailsOptions());
         var json = JsonSerializer.Serialize(problemDetails, ProblemDetailsSerializer.JsonSerializerOptions);
@@ -755,9 +755,9 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.Error("Error message 1")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result += ResultMessage.Error("Error message 2")
-            .WithAdditionInfo("Info2", "Value 2");
+            .WithInformation("Info2", "Value 2");
         result.TryGetError(out var error);
         var problemDetails = error!.ToProblemDetails(new ProblemDetailsOptions());
         var json = JsonSerializer.Serialize(problemDetails, ProblemDetailsSerializer.JsonSerializerOptions);
@@ -784,11 +784,11 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.Error("Error message 1")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result += ResultMessage.Error("Error message 2")
-            .WithAdditionInfo("Info2", "Value 2");
+            .WithInformation("Info2", "Value 2");
         result += ResultMessage.Conflict("conflict-1", "Error message 3")
-            .WithAdditionInfo("Info3", "Value 3");
+            .WithInformation("Info3", "Value 3");
         result.TryGetError(out var error);
         var options = new ProblemDetailsOptions();
         options.Descriptor.Add(new ProblemDetailsDescription("conflict-1", "Conflict Error", "A conflict has occurred", HttpStatusCode.Conflict));
@@ -821,13 +821,13 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.Error("Error message 1")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result += ResultMessage.Error("Error message 2")
-            .WithAdditionInfo("Info2", "Value 2");
+            .WithInformation("Info2", "Value 2");
         result += ResultMessage.Conflict("conflict-1", "Error message 3")
-            .WithAdditionInfo("Info3", "Value 3");
+            .WithInformation("Info3", "Value 3");
         result += ResultMessage.Conflict("conflict-2", "Error message 4")
-            .WithAdditionInfo("Info4", "Value 4");
+            .WithInformation("Info4", "Value 4");
         result.TryGetError(out var error);
         var options = new ProblemDetailsOptions();
         options.Descriptor.Add(new ProblemDetailsDescription("conflict-1", "Conflict Error", "A conflict has occurred", HttpStatusCode.Conflict));
@@ -871,7 +871,7 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.InvalidParameter("Error message 1", "Property1")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result.TryGetError(out var error);
         var problemDetails = error!.ToProblemDetails(new ProblemDetailsOptions());
         var json = JsonSerializer.Serialize(problemDetails, ProblemDetailsSerializer.JsonSerializerOptions);
@@ -894,9 +894,9 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.InvalidParameter("Error message 1", "Property1")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result += ResultMessage.InvalidParameter("Error message 2", "Property2")
-            .WithAdditionInfo("Info2", "Value 2");
+            .WithInformation("Info2", "Value 2");
         result.TryGetError(out var error);
         var problemDetails = error!.ToProblemDetails(new ProblemDetailsOptions());
         var json = JsonSerializer.Serialize(problemDetails, ProblemDetailsSerializer.JsonSerializerOptions);
@@ -923,11 +923,11 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.InvalidParameter("Error message 1", "Property1")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result += ResultMessage.InvalidParameter("Error message 2", "Property2")
-            .WithAdditionInfo("Info2", "Value 2");
+            .WithInformation("Info2", "Value 2");
         result += ResultMessage.Conflict("conflict-1", "Error message 3")
-            .WithAdditionInfo("Info3", "Value 3");
+            .WithInformation("Info3", "Value 3");
         result.TryGetError(out var error);
         var options = new ProblemDetailsOptions();
         options.Descriptor.Add(new ProblemDetailsDescription("conflict-1", "Conflict Error", "A conflict has occurred", HttpStatusCode.Conflict));
@@ -960,13 +960,13 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.InvalidParameter("Error message 1", "Property1")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result += ResultMessage.InvalidParameter("Error message 2", "Property2")
-            .WithAdditionInfo("Info2", "Value 2");
+            .WithInformation("Info2", "Value 2");
         result += ResultMessage.Conflict("conflict-1", "Error message 3")
-            .WithAdditionInfo("Info3", "Value 3");
+            .WithInformation("Info3", "Value 3");
         result += ResultMessage.Conflict("conflict-2", "Error message 4")
-            .WithAdditionInfo("Info4", "Value 4");
+            .WithInformation("Info4", "Value 4");
         result.TryGetError(out var error);
         var options = new ProblemDetailsOptions();
         options.Descriptor.Add(new ProblemDetailsDescription("conflict-1", "Conflict Error", "A conflict has occurred", HttpStatusCode.Conflict));
@@ -1004,7 +1004,7 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Error message 1", "Property1")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result.TryGetError(out var error);
         var problemDetails = error!.ToProblemDetails(new ProblemDetailsOptions());
         var json = JsonSerializer.Serialize(problemDetails, ProblemDetailsSerializer.JsonSerializerOptions);
@@ -1027,9 +1027,9 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Error message 1", "Property1")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result += ResultMessage.NotFound("Error message 2", "Property2")
-            .WithAdditionInfo("Info2", "Value 2");
+            .WithInformation("Info2", "Value 2");
         result.TryGetError(out var error);
         var problemDetails = error!.ToProblemDetails(new ProblemDetailsOptions());
         var json = JsonSerializer.Serialize(problemDetails, ProblemDetailsSerializer.JsonSerializerOptions);
@@ -1056,11 +1056,11 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Error message 1", "Property1")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result += ResultMessage.NotFound("Error message 2", "Property2")
-            .WithAdditionInfo("Info2", "Value 2");
+            .WithInformation("Info2", "Value 2");
         result += ResultMessage.Conflict("conflict-1", "Error message 3")
-            .WithAdditionInfo("Info3", "Value 3");
+            .WithInformation("Info3", "Value 3");
         result.TryGetError(out var error);
         var options = new ProblemDetailsOptions();
         options.Descriptor.Add(new ProblemDetailsDescription("conflict-1", "Conflict Error", "A conflict has occurred", HttpStatusCode.Conflict));
@@ -1093,13 +1093,13 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.NotFound("Error message 1", "Property1")
-            .WithAdditionInfo("Info1", "Value 1");
+            .WithInformation("Info1", "Value 1");
         result += ResultMessage.NotFound("Error message 2", "Property2")
-            .WithAdditionInfo("Info2", "Value 2");
+            .WithInformation("Info2", "Value 2");
         result += ResultMessage.Conflict("conflict-1", "Error message 3")
-            .WithAdditionInfo("Info3", "Value 3");
+            .WithInformation("Info3", "Value 3");
         result += ResultMessage.Conflict("conflict-2", "Error message 4")
-            .WithAdditionInfo("Info4", "Value 4");
+            .WithInformation("Info4", "Value 4");
         result.TryGetError(out var error);
         var options = new ProblemDetailsOptions();
         options.Descriptor.Add(new ProblemDetailsDescription("conflict-1", "Conflict Error", "A conflict has occurred", HttpStatusCode.Conflict));
@@ -1137,13 +1137,13 @@ public class ProblemDetailsExtendedTests
     {
         // Arrange
         OperationResult result = ResultMessage.Conflict("conflict-1", "Error message")
-            .WithAdditionInfo("Info1", "Value 1")
-            .WithAdditionInfo("Info2a", true)
-            .WithAdditionInfo("Info2b", false)
-            .WithAdditionInfo("Info3", 1)
-            .WithAdditionInfo("Info4", 1.1)
-            .WithAdditionInfo("Info5", new[] { "1", "2" })
-            .WithAdditionInfo("Info6", new { Name = "Name", Value = "Value" });
+            .WithInformation("Info1", "Value 1")
+            .WithInformation("Info2a", true)
+            .WithInformation("Info2b", false)
+            .WithInformation("Info3", 1)
+            .WithInformation("Info4", 1.1)
+            .WithInformation("Info5", new[] { "1", "2" })
+            .WithInformation("Info6", new { Name = "Name", Value = "Value" });
 
         result.TryGetError(out var error);
         var options = new ProblemDetailsOptions();

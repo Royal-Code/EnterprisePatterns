@@ -421,9 +421,9 @@ public class ProblemDetailsConverterTests
     {
         //arrange
         OperationResult result = ResultMessage.InvalidParameter("Error message 1", "Property1")
-            .WithAdditionInfo("info", "info 1");
+            .WithInformation("info", "info 1");
         result += ResultMessage.InvalidParameter("Error message 2", "Property2")
-            .WithAdditionInfo("info", "info 2");
+            .WithInformation("info", "info 2");
         result.TryGetError(out var error);
 
         var options = new ProblemDetailsOptions();
@@ -456,9 +456,9 @@ public class ProblemDetailsConverterTests
     {
         //arrange
         OperationResult result = ResultMessage.NotFound("Error message 1", "Property1")
-            .WithAdditionInfo("info", "info 1");
+            .WithInformation("info", "info 1");
         result += ResultMessage.NotFound("Error message 2", "Property2")
-            .WithAdditionInfo("info", "info 2");
+            .WithInformation("info", "info 2");
         result.TryGetError(out var error);
 
         var options = new ProblemDetailsOptions();
