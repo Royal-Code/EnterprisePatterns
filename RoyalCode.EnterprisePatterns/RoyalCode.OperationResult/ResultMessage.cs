@@ -444,7 +444,7 @@ public class ResultMessage : IResultMessage
     /// <exception cref="ArgumentNullException">
     ///     if the <paramref name="value"/> is null.
     /// </exception>
-    public ResultMessage WithAdditionInfo(string key, object value)
+    public ResultMessage WithInformation(string key, object value)
     {
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentException($"'{nameof(key)}' cannot be null or whitespace.", nameof(key));

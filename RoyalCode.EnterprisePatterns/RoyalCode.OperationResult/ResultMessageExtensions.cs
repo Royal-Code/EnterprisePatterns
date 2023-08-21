@@ -154,7 +154,7 @@ public static class ResultMessageExtensions
         if (string.IsNullOrEmpty(pointer))
             throw new ArgumentException($"'{nameof(pointer)}' cannot be null or empty.", nameof(pointer));
 
-        message.WithAdditionInfo(PointerPropertyName, pointer);
+        message.WithInformation(PointerPropertyName, pointer);
         return message;
     }
 
@@ -177,7 +177,7 @@ public static class ResultMessageExtensions
 
         var pointer = PropertyToPointer(message.Property);
 
-        message.WithAdditionInfo(PointerPropertyName, pointer);
+        message.WithInformation(PointerPropertyName, pointer);
         return message;
     }
 
