@@ -120,7 +120,7 @@ public class ProblemDetailsExtended : ProblemDetails
     /// </para>
     /// </summary>
     [JsonPropertyName(Fields.ErrorsExtensionField)]
-    public IEnumerable<string>? Errors { get; set; }
+    public IEnumerable<ErrorDetails>? Errors { get; set; }
 
     /// <summary>
     /// <para>
@@ -141,7 +141,7 @@ public class ProblemDetailsExtended : ProblemDetails
     /// </returns>
     public ResultErrors ToResultErrors()
     {
-        var erros = new ResultErrors();
+        var errors = new ResultErrors();
 
         bool ignoreDetails = false;
 
@@ -159,7 +159,7 @@ public class ProblemDetailsExtended : ProblemDetails
                     foreach(var extension in invalidParameter.Extensions)
                         message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
 
-                erros += message;
+                errors += message;
             }
 
             if (Title == Titles.InvalidParametersTitle || Title == Titles.ValidationTitle)
@@ -177,7 +177,7 @@ public class ProblemDetailsExtended : ProblemDetails
                     foreach(var extension in notFoundDetail.Extensions)
                         message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
 
-                erros += message;
+                errors += message;
             }
 
             if (Title == Titles.NotFoundTitle)
@@ -188,11 +188,17 @@ public class ProblemDetailsExtended : ProblemDetails
         {
             bool isInternalError = Status == 500;
 
-            foreach (var error in Errors)
+            foreach (var errorDetails in Errors)
             {
-                erros += isInternalError
-                    ? ResultMessage.ApplicationError(error)
-                    : ResultMessage.Error(GenericErrorCodes.GenericError, error, HttpStatusCode.BadRequest);
+                var message = isInternalError
+                    ? ResultMessage.ApplicationError(errorDetails.Detail)
+                    : ResultMessage.Error(GenericErrorCodes.GenericError, errorDetails.Detail, HttpStatusCode.BadRequest);
+
+                if (errorDetails.Extensions is not null)
+                    foreach (var extension in errorDetails.Extensions)
+                        message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
+
+                errors += message;
             }
 
             if (Title == Titles.ApplicationErrorTitle || Title == Titles.GenericErrorTitle)
@@ -203,7 +209,7 @@ public class ProblemDetailsExtended : ProblemDetails
         {
             foreach (var innerProblemDetail in InnerProblemDetails)
             {
-                erros += ToResultMessage(innerProblemDetail);
+                errors += ToResultMessage(innerProblemDetail);
             }
 
             ignoreDetails = true;
@@ -213,17 +219,17 @@ public class ProblemDetailsExtended : ProblemDetails
         {
             if (Extensions?.Count > 0)
             {
-                var message = (ResultMessage)erros[0];
+                var message = (ResultMessage)errors[0];
                 foreach (var extension in Extensions)
                     message.WithAdditionInfo(extension.Key, ReadJsonValue(extension.Value) ?? string.Empty);
             }
         }
         else
         {
-            erros += ToResultMessage(this);
+            errors += ToResultMessage(this);
         }
 
-        return erros;
+        return errors;
     }
 
     private static ResultMessage ToResultMessage(ProblemDetails details)

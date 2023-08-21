@@ -92,8 +92,38 @@ public class OperationResultTests
         result += ResultMessage.Error("Error message 2");
 
         Assert.False(result.IsSuccessOrGetError(out var gettedError));
-        Assert.Equal("Error message 1", gettedError.First().Text);
-        Assert.Equal("Error message 2", gettedError.Last().Text);
+        Assert.Equal("Error message 1", gettedError[0].Text);
+        Assert.Equal("Error message 2", gettedError[^1].Text);
+    }
+
+    [Fact]
+    public void WithPointerSettingTheValue()
+    {
+        OperationResult result = ResultMessage.Error("Error message 1")
+            .WithPointer("#/property1");
+
+        Assert.False(result.IsSuccessOrGetError(out var gettedError));
+        var message = gettedError[0];
+        Assert.Equal("#/property1", message.GetPointer());
+    }
+
+    [Fact]
+    public void WithPointerFromProperty()
+    {
+        OperationResult result = ResultMessage.Error("error-code-1", "Error message 1", "Property1")
+            .WithPointer();
+
+        Assert.False(result.IsSuccessOrGetError(out var gettedError));
+        var message = gettedError[0];
+        Assert.Equal("#/property1", message.GetPointer());
+    }
+
+    [Fact]
+    public void WithPointerWithouPropertyMustThrow()
+    {
+        ResultMessage message = ResultMessage.Error("Error message 1");
+
+        Assert.Throws<InvalidOperationException>(message.WithPointer);
     }
 }
 

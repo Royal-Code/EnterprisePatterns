@@ -14,6 +14,7 @@ namespace RoyalCode.OperationResults.Convertion;
 [JsonSerializable(typeof(ProblemDetailsExtended))]
 [JsonSerializable(typeof(InvalidParameterDetails))]
 [JsonSerializable(typeof(NotFoundDetails))]
+[JsonSerializable(typeof(ErrorDetails))]
 [JsonSerializable(typeof(ProblemDetails))]
 public partial class ProblemDetailsSerializer : JsonSerializerContext
 {
