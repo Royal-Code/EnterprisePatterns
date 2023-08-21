@@ -181,6 +181,29 @@ public static class ResultMessageExtensions
         return message;
     }
 
+    /// <summary>
+    /// <para>
+    ///     Try to get the result message pointer (JSON-POINTER).
+    /// </para>
+    /// </summary>
+    /// <param name="message">The result message.</param>
+    /// <returns>The pointer or null.</returns>
+    /// <exception cref="ArgumentNullException">
+    ///     Case <paramref name="message"/> is null.
+    /// </exception>
+    public static string? GetPointer(this IResultMessage message)
+    {
+        if (message is null)
+            throw new ArgumentNullException(nameof(message));
+
+        if (message.AdditionalInformation is null)
+            return null;
+
+        return message.AdditionalInformation.TryGetValue(PointerPropertyName, out var pointer) 
+            ? pointer as string 
+            : null;
+    }
+
     private static string ToPointer(string property)
     {
         // transform the property name to a JSON pointer pattern
