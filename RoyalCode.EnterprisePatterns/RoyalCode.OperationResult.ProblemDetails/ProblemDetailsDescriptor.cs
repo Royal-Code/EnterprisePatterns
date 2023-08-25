@@ -61,6 +61,11 @@ public class ProblemDetailsDescriptor
         /// Default title for the problem details of an aggregation of problems.
         /// </summary>
         public const string AggregateProblemsDetailsTitle = "Multiples problems";
+
+        /// <summary>
+        /// Default title for the problem details of type "about:blank".
+        /// </summary>
+        public const string AboutBlankTitle = "See HTTP Status Code";
     }
 
     /// <summary>
@@ -68,6 +73,12 @@ public class ProblemDetailsDescriptor
     /// </summary>
     public static class Types
     {
+        /// <summary>
+        /// The "about:blank" URI, when used as a problem type, 
+        /// indicates that the problem has no additional semantics beyond that of the HTTP status code.
+        /// </summary>
+        public const string AboutBlank = "about:blank";
+
         /// <summary>
         /// Default type for the problem details of status code 400, Bad Request.
         /// </summary>
@@ -260,6 +271,19 @@ public class ProblemDetailsDescriptor
         catch (Exception ex)
         {
             throw new ProblemDetailsDescriptorDeserializationException(string.Empty, ex);
+        }
+    }
+
+    internal void DescribeGenericErrorsWithAboutBlank()
+    {
+        var genericErrorsDescriptions = descriptions
+            .Where(kv => GenericErrorCodes.Contains(kv.Key))
+            .Select(kv => kv.Value);
+
+        foreach (var description in genericErrorsDescriptions)
+        {
+            description.Type = Types.AboutBlank;
+            description.Title = Titles.AboutBlankTitle;
         }
     }
 }
