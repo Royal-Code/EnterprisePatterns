@@ -1,5 +1,4 @@
-﻿//using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using RoyalCode.OperationResults;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -21,10 +20,12 @@ public static class ProblemDetailsServiceCollectionExtensions
     /// </para>
     /// </summary>
     /// <param name="services">The service collection.</param>
+    /// <param name="configureOptions">Optional, the action to configure the options.</param>
     /// <returns>Same instance of <paramref name="services"/> for chaining.</returns>
-    public static IServiceCollection AddProblemDetailsDescriptions(this IServiceCollection services)
+    public static IServiceCollection AddProblemDetailsDescriptions(this IServiceCollection services,
+        Action<ProblemDetailsOptions>? configureOptions = null)
     {
-        services.AddOptions<ProblemDetailsOptions>()
+        var builder = services.AddOptions<ProblemDetailsOptions>()
             .BindConfiguration("ProblemDetails")
             .PostConfigure<AspNetCore.Http.IHttpContextAccessor>((o, a) =>
             {
@@ -42,6 +43,9 @@ public static class ProblemDetailsServiceCollectionExtensions
                 // complete the options configuration
                 o.Complete(l);
             });
+
+        if (configureOptions is not null)
+            builder.Configure(configureOptions);
 
         return services;
     }

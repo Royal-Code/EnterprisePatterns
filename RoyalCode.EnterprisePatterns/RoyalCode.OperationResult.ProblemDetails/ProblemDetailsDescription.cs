@@ -74,7 +74,7 @@ public class ProblemDetailsDescription
     ///     The title of the problem detail.
     /// </para>
     /// </summary>
-    public string Title { get; }
+    public string Title { get; internal set; }
 
     /// <summary>
     /// A text that describes and explains what the problem is,

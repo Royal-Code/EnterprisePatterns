@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using static System.Net.WebRequestMethods;
 
 namespace RoyalCode.OperationResults;
 
@@ -41,6 +42,11 @@ public class ProblemDetailsOptions
     public string[]? DescriptionFiles { get; set; }
 
     /// <summary>
+    /// Determine how the generic error codes will be described. Used for generate the problem details.
+    /// </summary>
+    public GenericErrorsDescriptions HowToDescribeGenericErrors { get; set; }
+
+    /// <summary>
     /// Complete the options configuration, adding the problem details from the files.
     /// </summary>
     internal void Complete(ILogger logger)
@@ -54,6 +60,9 @@ public class ProblemDetailsOptions
         }
 
         completed = true;
+
+        if (HowToDescribeGenericErrors == GenericErrorsDescriptions.AboutBlank)
+            Descriptor.DescribeGenericErrorsWithAboutBlank();
 
         if (DescriptionFiles is null)
             return;
@@ -74,4 +83,31 @@ public class ProblemDetailsOptions
             }
         }
     }
+}
+
+/// <summary>
+/// Define how the generic error codes will be described. Used for generate the problem details.
+/// </summary>
+public enum GenericErrorsDescriptions
+{
+    /// <summary>
+    /// <para>
+    ///     Describe the generic erros with the RFC 9457.
+    /// </para>
+    /// <para>
+    ///     The problem details types will be links to the RFC 9110 error codes.
+    /// </para>
+    /// </summary>
+    RfcHttpStatusCode = 0,
+
+    /// <summary>
+    /// <para>
+    ///     Describe the generic erros as simple problems, where the http status code is enough to describe the error.
+    /// </para>
+    /// <para>
+    ///     The problem details types will be about:blank, as recommended by the RFC 9457.
+    ///     See more: <see href="https://www.rfc-editor.org/rfc/rfc9457#section-4.2.1" />.
+    /// </para>
+    /// </summary>
+    AboutBlank = 1,
 }
