@@ -160,11 +160,11 @@ public readonly struct ValidableResult
     /// </para>
     /// </summary>
     /// <typeparam name="TValue">The type of the result, after the conversion.</typeparam>
-    /// <param name="map">The function to convert the value.</param>
+    /// <param name="converter">The function to convert the value.</param>
     /// <returns>The new operation result.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly OperationResult<TValue> Convert<TValue>(Func<TValue> map)
-        => Failure ? error : map();
+    public readonly OperationResult<TValue> Convert<TValue>(Func<TValue> converter)
+        => Failure ? error : converter();
 
     /// <summary>
     /// <para>
@@ -178,14 +178,14 @@ public readonly struct ValidableResult
     /// </summary>
     /// <typeparam name="TValue">The type of the result, after the conversion.</typeparam>
     /// <typeparam name="TParam">The type of the parameter for the conversion.</typeparam>
-    /// <param name="map">The function to convert the value.</param>
+    /// <param name="converter">The function to convert the value.</param>
     /// <param name="param">The parameter for the conversion.</param>
     /// <returns>The new operation result.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly OperationResult<TValue> Convert<TValue, TParam>(
-        Func<TParam, TValue> map,
+        Func<TParam, TValue> converter,
         TParam param)
-        => Failure ? error : map(param);
+        => Failure ? error : converter(param);
 
     /// <summary>
     /// <para>
@@ -193,12 +193,12 @@ public readonly struct ValidableResult
     /// </para>
     /// </summary>
     /// <typeparam name="TResult">The type returned by the match function.</typeparam>
-    /// <param name="match">The function to execute if the operation result is successful.</param>
-    /// <param name="error">The function to execute if the operation result is a failure.</param>
+    /// <param name="success">The function to execute if the operation result is successful.</param>
+    /// <param name="failure">The function to execute if the operation result is a failure.</param>
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TResult Match<TResult>(Func<TResult> match, Func<ResultErrors, TResult> error)
-        => Failure ? error(this.error) : match();
+    public TResult Match<TResult>(Func<TResult> success, Func<ResultErrors, TResult> failure)
+        => Failure ? failure(error) : success();
 
     /// <summary>
     /// <para>
@@ -207,16 +207,16 @@ public readonly struct ValidableResult
     /// </summary>
     /// <typeparam name="TResult">The type returned by the match function.</typeparam>
     /// <typeparam name="TParam">The type of the parameter passed to the match function.</typeparam>
-    /// <param name="match">The function to execute if the operation result is successful.</param>
-    /// <param name="error">The function to execute if the operation result is a failure.</param>
+    /// <param name="success">The function to execute if the operation result is successful.</param>
+    /// <param name="failure">The function to execute if the operation result is a failure.</param>
     /// <param name="param">The parameter passed to the match function.</param>
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TResult Match<TResult, TParam>(
-        Func<TParam, TResult> match,
-        Func<ResultErrors, TParam, TResult> error,
+        Func<TParam, TResult> success,
+        Func<ResultErrors, TParam, TResult> failure,
         TParam param)
-        => Failure ? error(this.error, param) : match(param);
+        => Failure ? failure(error, param) : success(param);
 
     /// <summary>
     /// Convert the operation result to a string.

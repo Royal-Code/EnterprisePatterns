@@ -173,12 +173,12 @@ public readonly struct ValidableResult<TError>
     /// </para>
     /// </summary>
     /// <typeparam name="TResult">The type returned by the match function.</typeparam>
-    /// <param name="match">The function to execute if the operation result is successful.</param>
-    /// <param name="error">The function to execute if the operation result is a failure.</param>
+    /// <param name="success">The function to execute if the operation result is successful.</param>
+    /// <param name="failure">The function to execute if the operation result is a failure.</param>
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TResult Match<TResult>(Func<TResult> match, Func<TError, TResult> error)
-        => Failure ? error(this.error) : match();
+    public TResult Match<TResult>(Func<TResult> success, Func<TError, TResult> failure)
+        => Failure ? failure(error) : success();
 
     /// <summary>
     /// <para>
@@ -187,16 +187,16 @@ public readonly struct ValidableResult<TError>
     /// </summary>
     /// <typeparam name="TResult">The type returned by the match function.</typeparam>
     /// <typeparam name="TParam">The type of the parameter passed to the match function.</typeparam>
-    /// <param name="match">The function to execute if the operation result is successful.</param>
-    /// <param name="error">The function to execute if the operation result is a failure.</param>
+    /// <param name="success">The function to execute if the operation result is successful.</param>
+    /// <param name="failure">The function to execute if the operation result is a failure.</param>
     /// <param name="param">The parameter passed to the match function.</param>
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TResult Match<TResult, TParam>(
-        Func<TParam, TResult> match,
-        Func<TError, TParam, TResult> error,
+        Func<TParam, TResult> success,
+        Func<TError, TParam, TResult> failure,
         TParam param)
-        => Failure ? error(this.error, param) : match(param);
+        => Failure ? failure(error, param) : success(param);
 
     /// <summary>
     /// Convert the operation result to a string.
