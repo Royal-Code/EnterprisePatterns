@@ -37,7 +37,7 @@ public interface IResultMessage
     ///     This is a optional property.
     /// </para>
     /// <para>
-    ///     Used to help convert operation results into webapi's responses.
+    ///     Used to help convert operation results into web API's responses.
     /// </para>
     /// <para>
     ///     It can be used to return the status code of the response to the client,

@@ -1,4 +1,5 @@
-﻿
+﻿// Ignore Spelling: evt
+
 using RoyalCode.DomainEvents;
 using RoyalCode.Entities;
 

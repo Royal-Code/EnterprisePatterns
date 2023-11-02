@@ -14,7 +14,7 @@ public static class ResultMessageExtensions
     public const string PointerPropertyName = "pointer";
 
     /// <summary>
-    /// Transform the property name to a json pointer.
+    /// Transform the property name to a JSON pointer.
     /// </summary>
     public static Func<string, string> PropertyToPointer { get; set; } = ToPointer;
 

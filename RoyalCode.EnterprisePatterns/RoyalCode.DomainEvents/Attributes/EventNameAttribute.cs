@@ -8,11 +8,6 @@ namespace RoyalCode.DomainEvents.Attributes;
 public class EventNameAttribute : Attribute
 {
     /// <summary>
-    /// The name of the event.
-    /// </summary>
-    public string Name;
-
-    /// <summary>
     /// Creates a new attribute.
     /// </summary>
     /// <param name="name">The name of the event.</param>
@@ -20,4 +15,9 @@ public class EventNameAttribute : Attribute
     {
         Name = name;
     }
+
+    /// <summary>
+    /// The name of the event.
+    /// </summary>
+    public string Name { get; }
 }
