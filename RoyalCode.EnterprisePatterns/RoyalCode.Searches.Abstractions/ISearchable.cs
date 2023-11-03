@@ -1,4 +1,5 @@
-﻿
+﻿// Ignore Spelling: Searchable
+
 namespace RoyalCode.Searches.Abstractions;
 
 /// <summary>

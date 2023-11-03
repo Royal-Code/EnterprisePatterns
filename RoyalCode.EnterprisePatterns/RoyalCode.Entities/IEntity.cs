@@ -13,4 +13,4 @@ public interface IEntity { }
 /// </para>
 /// </summary>
 /// <typeparam name="TId">The entity ID type.</typeparam>
-public interface IEntity<TId> : IEntity, IHasId<TId> { }
+public interface IEntity<out TId> : IEntity, IHasId<TId> { }

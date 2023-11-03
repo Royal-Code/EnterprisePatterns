@@ -24,4 +24,4 @@ public interface IAggregateRoot : IEntity, IHasEvents { }
 /// </para>
 /// </summary>
 /// <typeparam name="TId">The entity ID type.</typeparam>
-public interface IAggregateRoot<TId> : IAggregateRoot, IEntity<TId> { }
+public interface IAggregateRoot<out TId> : IAggregateRoot, IEntity<TId> { }
