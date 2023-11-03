@@ -1,5 +1,7 @@
 ﻿
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using System.Text.Json;
 
 namespace RoyalCode.OperationResults.Tests;
 
@@ -124,6 +126,102 @@ public class OperationResultTests
         ResultMessage message = ResultMessage.Error("Error message 1");
 
         Assert.Throws<InvalidOperationException>(message.WithPointer);
+    }
+
+    [Fact]
+    public void MatchSuccessfulOperationResult()
+    {
+        var value = new object();
+        OperationResult<object> result = value;
+
+        Response response = result.Match<Response>(
+            success: v => new(v, 200),
+            failure: e => new(e, 400));
+
+        Assert.Equal(200, response.StatusCode);
+    }
+
+    [Fact]
+    public void MatchFailureOperationResult()
+    {
+        var error = ResultMessage.Error("error");
+        OperationResult<object> result = error;
+
+        Response response = result.Match<Response>(
+            success: v => new(v, 200),
+            failure: e => new(e, 400));
+
+        Assert.Equal(400, response.StatusCode);
+    }
+
+    [Fact]
+    public void MatchConvertSuccessfulOperationResult_1()
+    {
+        var value = new object();
+        OperationResult<object> result = value;
+
+        var serializer = new ResponseSerializer();
+
+        Response response = result.Match<Response, ResponseSerializer>(
+            serializer,
+            success: static (v, s) => new(s.Serialize(v), 200, "application/json"),
+            failure: static (e, s) => new(s.Serialize(e), 400, "application/json"));
+
+        Assert.Equal(200, response.StatusCode);
+        Assert.Equal("application/json", response.ContentType);
+    }
+
+    [Fact]
+    public void MatchConvertSuccessfulOperationResult_2()
+    {
+        var value = new object();
+        OperationResult<object> result = value;
+
+        var serializer = new ResponseSerializer();
+
+        Response response = result.Match<Response, ResponseSerializer>(
+            serializer,
+            success: static (v, s) => new(s.Serialize(v), 200, "application/json"),
+            failure: static e => new(e, 400));
+
+        Assert.Equal(200, response.StatusCode);
+        Assert.Equal("application/json", response.ContentType);
+    }
+}
+
+file class Response
+{
+    public Response(object? bodyObject, int statusCode)
+    {
+        BodyObject = bodyObject;
+        StatusCode = statusCode;
+    }
+
+    public Response(byte[] body, int statusCode, string contentType)
+    {
+        BodyObject = body ?? throw new ArgumentNullException(nameof(body));
+        StatusCode = statusCode;
+        ContentType = contentType ?? throw new ArgumentNullException(nameof(contentType));
+    }
+
+    public object? BodyObject { get; }
+
+    public int StatusCode { get; }
+
+    public string? ContentType { get; }
+}
+
+file class ResponseSerializer
+{
+    public byte[] Serialize(object? value)
+    {
+        if (value is null)
+            return Array.Empty<byte>();
+
+        if (value is string stringValue)
+            return Encoding.UTF8.GetBytes(stringValue);
+
+        return JsonSerializer.SerializeToUtf8Bytes(value);
     }
 }
 

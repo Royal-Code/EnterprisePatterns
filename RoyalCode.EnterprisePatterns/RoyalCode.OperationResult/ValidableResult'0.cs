@@ -182,9 +182,7 @@ public readonly struct ValidableResult
     /// <param name="param">The parameter for the conversion.</param>
     /// <returns>The new operation result.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly OperationResult<TValue> Convert<TValue, TParam>(
-        Func<TParam, TValue> converter,
-        TParam param)
+    public readonly OperationResult<TValue> Convert<TValue, TParam>(TParam param, Func<TParam, TValue> converter)
         => Failure ? error : converter(param);
 
     /// <summary>
@@ -213,9 +211,9 @@ public readonly struct ValidableResult
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TResult Match<TResult, TParam>(
+        TParam param,
         Func<TParam, TResult> success,
-        Func<ResultErrors, TParam, TResult> failure,
-        TParam param)
+        Func<ResultErrors, TParam, TResult> failure)
         => Failure ? failure(error, param) : success(param);
 
     /// <summary>

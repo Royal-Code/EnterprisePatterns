@@ -76,11 +76,17 @@ public readonly struct SaveResult
     /// <summary>
     /// Returns true if the save operation succeeded.
     /// </summary>
+#if NET6_0_OR_GREATER
+    [MemberNotNullWhen(false, nameof(Error))]
+#endif
     public bool IsSuccess => Error is null;
 
     /// <summary>
     /// Returns true if the save operation failed.
     /// </summary>
+#if NET6_0_OR_GREATER
+    [MemberNotNullWhen(true, nameof(Error))]
+#endif
     public bool IsFailure => Error is not null;
 
     /// <summary>
@@ -111,7 +117,7 @@ public readonly struct SaveResult
     {
           return IsSuccess
             ? new OperationResult()
-            : Error!;
+            : Error;
     }
 
     /// <summary>
@@ -128,7 +134,7 @@ public readonly struct SaveResult
     {
         return IsSuccess
             ? value
-            : Error!;
+            : Error;
     }
 
     /// <inheritdoc />

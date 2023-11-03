@@ -58,9 +58,9 @@ public sealed class CreatedMatch : IResult, INestedHttpResult, IEndpointMetadata
     public CreatedMatch(OperationResult result, string createdPath)
     {
         Result = result.Match<IResult, string>(
+            createdPath,
             TypedResults.Created,
-            static (error, uri) => new MatchErrorResult(error),
-            createdPath);
+            static (error, uri) => new MatchErrorResult(error));
     }
 
     /// <summary>
@@ -71,9 +71,9 @@ public sealed class CreatedMatch : IResult, INestedHttpResult, IEndpointMetadata
     public CreatedMatch(ValidableResult result, string createdPath)
     {
         Result = result.Match<IResult, string>(
+            createdPath,
             TypedResults.Created,
-            static (error, uri) => new MatchErrorResult(error),
-            createdPath);
+            static (error, uri) => new MatchErrorResult(error));
     }
 
     /// <summary>

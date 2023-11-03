@@ -27,12 +27,7 @@ public sealed class OperationMatchObjectResult : OperationMatchObjectResultBase<
 
     /// <inheritdoc />
     protected override Task ExecuteMatchAsync(ActionContext context)
-    {
-        return Result.Match(
-            ExecuteSuccessResultAsync,
-            ExecuteErrorResultAsync,
-            context);
-    }
+        => Result.Match(context, ExecuteSuccessResultAsync, ExecuteErrorResultAsync);
 
     private Task ExecuteSuccessResultAsync(ActionContext context)
     {
@@ -72,12 +67,7 @@ public sealed class OperationMatchObjectResult<TValue> : OperationMatchObjectRes
 
     /// <inheritdoc />
     protected override Task ExecuteMatchAsync(ActionContext context)
-    {
-        return Result.Match(
-            ExecuteSuccessResultAsync,
-            ExecuteErrorResultAsync,
-            context);
-    }
+        => Result.Match(context, ExecuteSuccessResultAsync, ExecuteErrorResultAsync);
 
     private Task ExecuteSuccessResultAsync(TValue value, ActionContext context)
     {
@@ -126,12 +116,7 @@ public sealed class ValidableMatchObjectResult : OperationMatchObjectResultBase<
 
     /// <inheritdoc />
     protected override Task ExecuteMatchAsync(ActionContext context)
-    {
-        return Result.Match(
-            ExecuteSuccessResultAsync,
-            ExecuteErrorResultAsync,
-            context);
-    }
+        => Result.Match(context, ExecuteSuccessResultAsync, ExecuteErrorResultAsync);
 
     private Task ExecuteSuccessResultAsync(ActionContext context)
     {

@@ -241,6 +241,33 @@ public readonly struct OperationResult<TValue>
 
     /// <summary>
     /// <para>
+    ///     Check if the operation result is failure, then return true,
+    ///     otherwise set the value of the operation result with the converted value, because it is successful.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TOther">The type of the converted value.</typeparam>
+    /// <typeparam name="TParam">The type of the parameter for the conversion.</typeparam>
+    /// <param name="param">The parameter for the conversion.</param>
+    /// <param name="converter">The converter to convert the value.</param>
+    /// <param name="value">The converted value of the operation result.</param>
+    /// <returns>Whether the operation result is failure.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool IsFailureOrConvertValue<TOther, TParam>(
+        TParam param, Func<TValue, TParam, TOther> converter, [NotNullWhen(false)] out TOther? value)
+        where TOther : notnull
+    {
+        if (Failure)
+        {
+            value = default;
+            return true;
+        }
+
+        value = converter(this.value, param);
+        return Failure;
+    }
+
+    /// <summary>
+    /// <para>
     ///     Check if the operation result is failure, then return true.
     ///     When is failure, set the <paramref name="error"/> of the operation result, so the <paramref name="value"/> is <see langword="null"/>.
     ///     When is successful, set the <paramref name="value"/> of the operation result, so the <paramref name="error"/> is <see langword="null"/>.
@@ -467,8 +494,7 @@ public readonly struct OperationResult<TValue>
     /// <returns>The new operation result.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly OperationResult<TOther, ResultErrors> Convert<TOther, TParam>(
-        Func<TValue, TParam, TOther> converter,
-        TParam param)
+        TParam param, Func<TValue, TParam, TOther> converter)
         => Failure ? error : converter(value, param);
 
     /// <summary>
@@ -510,15 +536,15 @@ public readonly struct OperationResult<TValue>
     /// </summary>
     /// <typeparam name="TResult">The type returned by the match function.</typeparam>
     /// <typeparam name="TParam">The type of the parameter passed to the match function.</typeparam>
+    /// <param name="param">The parameter passed to the match function.</param>
     /// <param name="success">The function to execute if the operation result is successful.</param>
     /// <param name="failure">The function to execute if the operation result is a failure.</param>
-    /// <param name="param">The parameter passed to the match function.</param>
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TResult Match<TResult, TParam>(
+        TParam param,
         Func<TValue, TParam, TResult> success,
-        Func<ResultErrors, TParam, TResult> failure,
-        TParam param)
+        Func<ResultErrors, TParam, TResult> failure)
         => Failure ? failure(error, param) : success(value, param);
 
     /// <summary>
@@ -527,19 +553,37 @@ public readonly struct OperationResult<TValue>
     /// </para>
     /// </summary>
     /// <typeparam name="TResult">The type returned by the match function.</typeparam>
-    /// <typeparam name="TParam1">The type of the parameter passed to the match function when value is present.</typeparam>
-    /// <typeparam name="TParam2">The type of the parameter passed to the match function when error is present.</typeparam>
+    /// <typeparam name="TParam">The type of the parameter passed to the success match function.</typeparam>
+    /// <param name="param">The parameter passed to the success match function.</param>
     /// <param name="success">The function to execute if the operation result is successful.</param>
     /// <param name="failure">The function to execute if the operation result is a failure.</param>
-    /// <param name="param1">The parameter passed to the match function.</param>
-    /// <param name="param2">The parameter passed to the error function.</param>
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TResult Match<TResult, TParam1, TParam2>(
-        Func<TValue, TParam1, TResult> success,
-        Func<ResultErrors, TParam2, TResult> failure,
-        TParam1 param1, TParam2 param2)
-        => Failure ? failure(error, param2) : success(value, param1);
+    public TResult Match<TResult, TParam>(
+        TParam param,
+        Func<TValue, TParam, TResult> success,
+        Func<ResultErrors, TResult> failure)
+        => Failure ? failure(error) : success(value, param);
+
+    /// <summary>
+    /// <para>
+    ///     Match a function depending on the operation result.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The type returned by the match function.</typeparam>
+    /// <typeparam name="TParamSuccess">The type of the parameter passed to the match function when value is present.</typeparam>
+    /// <typeparam name="TParamFailure">The type of the parameter passed to the match function when error is present.</typeparam>
+    /// <param name="success">The function to execute if the operation result is successful.</param>
+    /// <param name="failure">The function to execute if the operation result is a failure.</param>
+    /// <param name="paramSuccess">The parameter passed to the match function.</param>
+    /// <param name="paramFailure">The parameter passed to the error function.</param>
+    /// <returns>The result of the executed function.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TResult Match<TResult, TParamSuccess, TParamFailure>(
+        TParamSuccess paramSuccess, TParamFailure paramFailure,
+        Func<TValue, TParamSuccess, TResult> success,
+        Func<ResultErrors, TParamFailure, TResult> failure)
+        => Failure ? failure(error, paramFailure) : success(value, paramSuccess);
 
     /// <summary>
     /// Convert the operation result to a string.
