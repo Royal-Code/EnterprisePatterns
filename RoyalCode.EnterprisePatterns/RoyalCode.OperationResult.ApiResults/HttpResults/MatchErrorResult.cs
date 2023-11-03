@@ -167,7 +167,7 @@ public class MatchErrorResult
     }
 
     /// <inheritdoc />
-    public static void PopulateMetadata(MethodInfo _, EndpointBuilder builder)
+    public static void PopulateMetadata(MethodInfo method, EndpointBuilder builder)
     {
         Type type;
         string[] content;
