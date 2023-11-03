@@ -405,6 +405,37 @@ public readonly struct OperationResult<TValue>
 
     /// <summary>
     /// <para>
+    ///     Check if the operation result is successful,
+    ///     then return true and set the value of the operation result with the converted value.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TOther">The type of the converted value.</typeparam>
+    /// <typeparam name="TParam">The type of the parameter for the conversion.</typeparam>
+    /// <param name="param">The parameter for the conversion.</param>
+    /// <param name="converter">The converter to convert the value.</param>
+    /// <param name="value">The converted value of the operation result.</param>
+    /// <returns>Whether the operation result is successful.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool TryConvertValue<TOther, TParam>(
+        TParam param,
+        Func<TValue, TParam, TOther> converter,
+        [NotNullWhen(true)] out TOther? value)
+        where TOther : notnull
+    {
+        if (Success)
+        {
+            value = converter(this.value, param);
+            return true;
+        }
+        else
+        {
+            value = default;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// <para>
     ///     Create a new operation result with a new value, converted from the current value.
     /// </para>
     /// <para>
@@ -508,7 +539,7 @@ public readonly struct OperationResult<TValue>
         Func<TValue, TParam1, TResult> success,
         Func<ResultErrors, TParam2, TResult> failure,
         TParam1 param1, TParam2 param2)
-        => Failure ? failure(this.error, param2) : success(value, param1);
+        => Failure ? failure(error, param2) : success(value, param1);
 
     /// <summary>
     /// Convert the operation result to a string.
