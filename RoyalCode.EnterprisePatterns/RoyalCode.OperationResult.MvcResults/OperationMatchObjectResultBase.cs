@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RoyalCode.OperationResults.Convertion;
-using System.Net.Http;
 using System.Net.Mime;
 
 namespace RoyalCode.OperationResults;
@@ -19,15 +18,12 @@ public abstract class OperationMatchObjectResultBase<TResult> : ObjectResult
     /// </summary>
     /// <param name="result">The result.</param>
     /// <param name="createdPath">Optinal, the path created by the operation.</param>
-    /// <param name="formatPathWithValue">If true, the <paramref name="createdPath"/> will be formatted with the value of the result.</param>
     protected OperationMatchObjectResultBase(TResult result,
-        string? createdPath = null,
-        bool formatPathWithValue = false)
+        string? createdPath = null)
         : base(result)
     {
         Result = result;
         CreatedPath = createdPath;
-        FormatPathWithValue = formatPathWithValue;
     }
 
     /// <summary>
@@ -39,11 +35,6 @@ public abstract class OperationMatchObjectResultBase<TResult> : ObjectResult
     /// The path created by the operation.
     /// </summary>
     public string? CreatedPath { get; }
-
-    /// <summary>
-    /// If true, the <see cref="CreatedPath"/> will be formatted with the value of the result.
-    /// </summary>
-    public bool FormatPathWithValue { get; }
 
     /// <inheritdoc />
     public override Task ExecuteResultAsync(ActionContext context)

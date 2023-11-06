@@ -138,6 +138,36 @@ public class ControllersResultsTests : IClassFixture<AppFixture>
     }
 
     [Fact]
+    public async Task GetSimpleValuesWithCreatedPathProvider_Returns_Created()
+    {
+        // Act
+        var response = await client.GetAsync("/ControllersResults/GetSimpleValuesWithCreatedPathProvider");
+
+        // Assert StatusCode
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+        // Act
+        var json = await response.Content.ReadAsStringAsync();
+        var dictionary = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+
+        // Assert Values
+        Assert.NotNull(dictionary);
+        Assert.Equal(2, dictionary.Count);
+        Assert.True(dictionary.ContainsKey("number"));
+        Assert.True(dictionary.ContainsKey("text"));
+        Assert.Equal(JsonValueKind.Number, dictionary["number"].ValueKind);
+        Assert.Equal(JsonValueKind.String, dictionary["text"].ValueKind);
+
+        // Act
+        var location = response.Headers.Location;
+
+        // Assert location
+        Assert.NotNull(location);
+        var expected = $"/simple-values/{dictionary["number"].GetInt32()}";
+        Assert.Equal(expected, location.OriginalString);
+    }
+
+    [Fact]
     public async Task GetSimpleValuesWithErrorWithCreatedPathAndFormat_Returns_BadRequest()
     {
         // Act

@@ -18,11 +18,9 @@ public sealed class OperationMatchObjectResult : OperationMatchObjectResultBase<
     /// </summary>
     /// <param name="result">The operation result.</param>
     /// <param name="createdPath">Optional, the path created by the operation.</param>
-    /// <param name="formatPathWithValue">If true, the <paramref name="createdPath"/> will be formatted with the value of the result.</param>
     public OperationMatchObjectResult(
         OperationResult result,
-        string? createdPath = null,
-        bool formatPathWithValue = false) : base(result, createdPath, formatPathWithValue)
+        string? createdPath = null) : base(result, createdPath)
     { }
 
     /// <inheritdoc />
@@ -62,8 +60,31 @@ public sealed class OperationMatchObjectResult<TValue> : OperationMatchObjectRes
     public OperationMatchObjectResult(
         OperationResult<TValue> result,
         string? createdPath = null,
-        bool formatPathWithValue = false) : base(result, createdPath, formatPathWithValue)
-    { }
+        bool formatPathWithValue = false) : base(result, createdPath)
+    {
+        FormatPathWithValue = formatPathWithValue;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="OperationMatchObjectResult{TValue}"/>.
+    /// </summary>
+    /// <param name="result">The operation result.</param>
+    /// <param name="createdPathProvider">A function to provide the value for the <c>Location</c> header.</param>
+    public OperationMatchObjectResult(OperationResult<TValue> result, Func<TValue, string> createdPathProvider) 
+        : base(result)
+    {
+        CreatedPathProvider = createdPathProvider;
+    }
+
+    /// <summary>
+    /// If true, the <see cref="OperationMatchObjectResultBase{TResult}.CreatedPath"/> will be formatted with the value of the result.
+    /// </summary>
+    public bool FormatPathWithValue { get; }
+
+    /// <summary>
+    /// A function to provide the value for the <c>Location</c> header.
+    /// </summary>
+    public Func<TValue, string>? CreatedPathProvider { get; set; }
 
     /// <inheritdoc />
     protected override Task ExecuteMatchAsync(ActionContext context)
@@ -78,10 +99,15 @@ public sealed class OperationMatchObjectResult<TValue> : OperationMatchObjectRes
             StatusCode = StatusCodes.Status201Created;
 
             var createdPath = FormatPathWithValue
-                ? string.Format(CreatedPath, value)
-                : CreatedPath;
+                    ? string.Format(CreatedPath, value)
+                    : CreatedPath;
             
             context.HttpContext.Response.Headers.Add("Location", createdPath);
+        }
+        else if (CreatedPathProvider is not null)
+        {
+            StatusCode = StatusCodes.Status201Created;
+            context.HttpContext.Response.Headers.Add("Location", CreatedPathProvider(value));
         }
         else
         {
@@ -107,11 +133,9 @@ public sealed class ValidableMatchObjectResult : OperationMatchObjectResultBase<
     /// </summary>
     /// <param name="result">The operation result.</param>
     /// <param name="createdPath">Optional, the path created by the operation.</param>
-    /// <param name="formatPathWithValue">If true, the <paramref name="createdPath"/> will be formatted with the value of the result.</param>
     public ValidableMatchObjectResult(
         ValidableResult result,
-        string? createdPath = null,
-        bool formatPathWithValue = false) : base(result, createdPath, formatPathWithValue)
+        string? createdPath = null) : base(result, createdPath)
     { }
 
     /// <inheritdoc />
