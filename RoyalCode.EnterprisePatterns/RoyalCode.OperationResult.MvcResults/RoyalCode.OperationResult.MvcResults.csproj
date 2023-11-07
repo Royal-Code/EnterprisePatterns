@@ -7,7 +7,7 @@
 		<AssemblyVersion>$(OpResVer)</AssemblyVersion>
 		<FileVersion>$(OpResVer)</FileVersion>
 		<Description>
-			Extensions methods for adapt operations results objects to apsnetcode mvc objects results.
+			Extensions methods for adapt operations results objects to AspNetCore MVC objects results (IActionResult).
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Operation-Result Operation-Result-Pattern</PackageTags>
 		<RootNamespace>RoyalCode.OperationResults</RootNamespace>

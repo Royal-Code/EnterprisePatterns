@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Http.Metadata;
 using RoyalCode.OperationResults.Metadata;
-using System.Net.Mime;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
