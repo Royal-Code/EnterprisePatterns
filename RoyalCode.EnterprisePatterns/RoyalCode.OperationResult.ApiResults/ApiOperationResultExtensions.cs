@@ -23,7 +23,7 @@ public static partial class ApiResults
     {
         return result.Match(
             Results.NoContent,
-            error => new MatchErrorResult(error));
+            static error => new MatchErrorResult(error));
     }
 
     /// <summary>
@@ -36,8 +36,9 @@ public static partial class ApiResults
     public static IResult ToResult(this IResultExtensions _, OperationResult result, string createdPath)
     {
         return result.Match(
-            () => Results.Created(createdPath, null),
-            error => new MatchErrorResult(error));
+            createdPath,
+            static path => Results.Created(path, null),
+            static error => new MatchErrorResult(error));
     }
 
     /// <summary>
@@ -50,8 +51,8 @@ public static partial class ApiResults
     public static IResult ToResult<T>(this IResultExtensions _, OperationResult<T> result)
     {
         return result.Match(
-            value => Results.Ok(value),
-            error => new MatchErrorResult(error));
+            static value => Results.Ok(value),
+            static error => new MatchErrorResult(error));
     }
 
     /// <summary>
@@ -67,8 +68,9 @@ public static partial class ApiResults
         OperationResult<T> result, string createdPath, bool formatPathWithValue = false)
     {
         return result.Match(
-            value => Results.Created(formatPathWithValue ? string.Format(createdPath, value) : createdPath, value),
-            error => new MatchErrorResult(error));
+            (createdPath, formatPathWithValue),
+            static (value, tuple) => Results.Created(tuple.formatPathWithValue ? string.Format(tuple.createdPath, value) : tuple.createdPath, value),
+            static error => new MatchErrorResult(error));
     }
 
     /// <summary>
@@ -83,8 +85,9 @@ public static partial class ApiResults
         OperationResult<T> result, Func<T, string> createdPathFunction)
     {
         return result.Match(
-            value => Results.Created(createdPathFunction(value), value),
-            error => new MatchErrorResult(error));
+            createdPathFunction,
+            static (value, func) => Results.Created(func(value), value),
+            static error => new MatchErrorResult(error));
     }
 
     /// <summary>
@@ -97,7 +100,7 @@ public static partial class ApiResults
     {
         return result.Match(
             Results.NoContent,
-            error => new MatchErrorResult(error));
+            static error => new MatchErrorResult(error));
     }
 
 #else
@@ -111,8 +114,8 @@ public static partial class ApiResults
     public static Results<NoContent, MatchErrorResult> ToResult(this IResultExtensions _, OperationResult result)
     {
         return result.Match<Results<NoContent, MatchErrorResult>>(
-            () => TypedResults.NoContent(),
-            error => new MatchErrorResult(error));
+            static () => TypedResults.NoContent(),
+            static error => new MatchErrorResult(error));
     }
 
     /// <summary>
@@ -125,9 +128,10 @@ public static partial class ApiResults
     public static Results<Created, MatchErrorResult> ToResult(this IResultExtensions _,
         OperationResult result, string createdPath)
     {
-        return result.Match<Results<Created, MatchErrorResult>>(
-            () => TypedResults.Created(createdPath),
-            error => new MatchErrorResult(error));
+        return result.Match<Results<Created, MatchErrorResult>, string>(
+            createdPath,
+            static path => TypedResults.Created(path),
+            static error => new MatchErrorResult(error));
     }
 
     /// <summary>
@@ -141,8 +145,8 @@ public static partial class ApiResults
         this IResultExtensions _, OperationResult<T> result)
     {
         return result.Match<Results<Ok<T>, MatchErrorResult>>(
-            value => TypedResults.Ok(value),
-            error => new MatchErrorResult(error));
+            static value => TypedResults.Ok(value),
+            static error => new MatchErrorResult(error));
     }
 
     /// <summary>
@@ -157,9 +161,10 @@ public static partial class ApiResults
     public static Results<Created<T>, MatchErrorResult> ToResult<T>(this IResultExtensions _,
         OperationResult<T> result, string createdPath, bool formatPathWithValue = false)
     {
-        return result.Match<Results<Created<T>, MatchErrorResult>>(
-            value => TypedResults.Created(formatPathWithValue ? string.Format(createdPath, value) : createdPath, value),
-            error => new MatchErrorResult(error));
+        return result.Match<Results<Created<T>, MatchErrorResult>, (string path, bool format)>(
+            (createdPath, formatPathWithValue),
+            static (value, tuple) => TypedResults.Created(tuple.format ? string.Format(tuple.path, value) : tuple.path, value),
+            static error => new MatchErrorResult(error));
     }
 
     /// <summary>
@@ -173,9 +178,10 @@ public static partial class ApiResults
     public static Results<Created<T>, MatchErrorResult> ToResult<T>(this IResultExtensions _,
         OperationResult<T> result, Func<T, string> createdPathFunction)
     {
-        return result.Match<Results<Created<T>, MatchErrorResult>>(
-            value => TypedResults.Created(createdPathFunction(value), value),
-            error => new MatchErrorResult(error));
+        return result.Match<Results<Created<T>, MatchErrorResult>, Func<T, string>>(
+            createdPathFunction,
+            static (value, func) => TypedResults.Created(func(value), value),
+            static error => new MatchErrorResult(error));
     }
 
     /// <summary>
@@ -187,8 +193,8 @@ public static partial class ApiResults
     public static Results<NoContent, MatchErrorResult> ToResult(this IResultExtensions _, ValidableResult result)
     {
         return result.Match<Results<NoContent, MatchErrorResult>>(
-            () => TypedResults.NoContent(),
-            error => new MatchErrorResult(error));
+            static () => TypedResults.NoContent(),
+            static error => new MatchErrorResult(error));
     }
 
     /// <summary>

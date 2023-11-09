@@ -331,6 +331,24 @@ public readonly struct OperationResult
         => Failure ? failure(error, param) : success(param);
 
     /// <summary>
+    /// <para>
+    ///     Match a function depending on the operation result.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The type returned by the match function.</typeparam>
+    /// <typeparam name="TParam">The type of the parameter passed to the match function.</typeparam>
+    /// <param name="success">The function to execute if the operation result is successful.</param>
+    /// <param name="failure">The function to execute if the operation result is a failure.</param>
+    /// <param name="param">The parameter passed to the match function.</param>
+    /// <returns>The result of the executed function.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TResult Match<TResult, TParam>(
+        TParam param,
+        Func<TParam, TResult> success,
+        Func<ResultErrors, TResult> failure)
+        => Failure ? failure(error) : success(param);
+
+    /// <summary>
     /// Convert the operation result to a string.
     /// When the operation result is successful, the string will be "Success: {value}".
     /// When the operation result is a failure, the string will be "Failure: {error}".
