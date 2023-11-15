@@ -19,7 +19,7 @@ namespace RoyalCode.OperationResults.Convertion;
 ///     </item>
 ///     <item>
 ///         <term><see cref="NotFoundDetails"/></term> that contains the not found details,
-///         like the property name and the error message adn additional information.
+///         like the property name and the error message and additional information.
 ///     </item>
 ///     <item>
 ///         <term><see cref="Errors"/></term> that contains messages for generic errors or application errors.

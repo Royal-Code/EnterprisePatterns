@@ -278,7 +278,7 @@ public class ApiResultsTests : IClassFixture<AppFixture>
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
         // Assert Values
-        var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(json);
+        var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(json, JSON.Options);
         Assert.NotNull(problemDetails);
         Assert.Equal(ProblemDetailsExtended.Titles.GenericErrorTitle, problemDetails.Title);
         Assert.Equal("Erro ao obter valores simples.", problemDetails.Detail);
@@ -301,7 +301,7 @@ public class ApiResultsTests : IClassFixture<AppFixture>
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
 
         // Assert Values
-        var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(json);
+        var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(json, JSON.Options);
         Assert.NotNull(problemDetails);
         Assert.Equal(ProblemDetailsExtended.Titles.GenericErrorTitle, problemDetails.Title);
         Assert.Equal("Internal error", problemDetails.Detail);
