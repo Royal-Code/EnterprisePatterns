@@ -22,6 +22,7 @@ public static class ExceptionsParsers
     ///     will be used as the <see cref="ResultMessage.Text"/>
     ///     when creating a message from an exception.
     /// </para>
+    /// </summary>
     public static bool UseGenericMessageForExceptions { get; set; } = true;
 
     /// <summary>

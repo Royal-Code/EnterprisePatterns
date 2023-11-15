@@ -14,7 +14,7 @@ public class ControllersResultsController : ControllerBase
         // cria novo resultado de sucesso a partir do resultado.
         OperationResult<SimpleValues> result = new SimpleValues();
 
-        return result.ToResult();
+        return result.ToActionResult();
     }
 
     [HttpGet]
@@ -23,7 +23,7 @@ public class ControllersResultsController : ControllerBase
         // cria novo resultado de sucesso a partir do resultado.
         OperationResult<SimpleValues> result = new SimpleValues();
 
-        return result.ToResult("/simple-values");
+        return result.ToActionResult("/simple-values");
     }
 
     [HttpGet]
@@ -32,7 +32,7 @@ public class ControllersResultsController : ControllerBase
         // cria novo resultado de erro a partir do resultado.
         OperationResult<SimpleValues> result = ResultMessage.Error("Erro ao obter valores simples.");
 
-        return result.ToResult();
+        return result.ToActionResult();
     }
 
     [HttpGet]
@@ -41,7 +41,7 @@ public class ControllersResultsController : ControllerBase
         // cria novo resultado de erro a partir do resultado.
         OperationResult<SimpleValues> result = ResultMessage.Error("Erro ao obter valores simples.");
 
-        return result.ToResult("/simple-values");
+        return result.ToActionResult("/simple-values");
     }
 
     [HttpGet]
@@ -52,7 +52,16 @@ public class ControllersResultsController : ControllerBase
 
         var result = simpleResult.Convert(v => v.Number);
 
-        return result.ToResult("/simple-values/{0}", true);
+        return result.ToActionResult("/simple-values/{0}", true);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetSimpleValuesWithCreatedPathProvider()
+    {
+        // cria novo resultado de sucesso a partir do resultado.
+        OperationResult<SimpleValues> simpleResult = new SimpleValues();
+
+        return simpleResult.ToActionResult(value => $"/simple-values/{value.Number}");
     }
 
     [HttpGet]
@@ -63,7 +72,7 @@ public class ControllersResultsController : ControllerBase
 
         var result = simpleResult.Convert(v => v.Number);
 
-        return result.ToResult("/simple-values/{0}", true);
+        return result.ToActionResult("/simple-values/{0}", true);
     }
 
     [HttpGet]
@@ -78,7 +87,7 @@ public class ControllersResultsController : ControllerBase
 
         var simpleResult = result.Convert(() => new SimpleValues());
 
-        return simpleResult.ToResult();
+        return simpleResult.ToActionResult();
     }
 
     [HttpGet]
@@ -91,7 +100,7 @@ public class ControllersResultsController : ControllerBase
             result += ResultMessage.InvalidParameter("Input inválido.", nameof(input));
         }
 
-        return result.ToResult();
+        return result.ToActionResult();
     }
 
     [HttpGet]
@@ -99,6 +108,6 @@ public class ControllersResultsController : ControllerBase
     {
         var Exception = new Exception("Erro ao obter valores simples.");
         OperationResult<SimpleValues> result = ResultMessage.Error(Exception);
-        return result.ToResult();
+        return result.ToActionResult();
     }
 }

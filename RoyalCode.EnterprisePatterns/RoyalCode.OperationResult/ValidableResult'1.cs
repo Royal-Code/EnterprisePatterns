@@ -193,9 +193,9 @@ public readonly struct ValidableResult<TError>
     /// <returns>The result of the executed function.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TResult Match<TResult, TParam>(
+        TParam param,
         Func<TParam, TResult> success,
-        Func<TError, TParam, TResult> failure,
-        TParam param)
+        Func<TError, TParam, TResult> failure)
         => Failure ? failure(error, param) : success(param);
 
     /// <summary>

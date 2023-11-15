@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using static System.Net.WebRequestMethods;
 
 namespace RoyalCode.OperationResults;
 

@@ -10,7 +10,7 @@ public static class HeaderExtensions
     /// <summary>
     /// The header name of the result type.
     /// </summary>
-    public const string ErrorTypeHeaderName = "X-ErrorType";
+    public const string ErrorTypeHeaderName = "Error-ResponseType";
 
     /// <summary>
     /// Try get the header of the result type from the request context.
