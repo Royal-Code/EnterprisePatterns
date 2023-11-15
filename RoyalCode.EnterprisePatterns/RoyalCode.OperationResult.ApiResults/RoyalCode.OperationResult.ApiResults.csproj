@@ -22,5 +22,7 @@
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net7' ">
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(DotNetCoreVersion)" />
 	</ItemGroup>
-	
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net8' ">
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(DotNetCoreVersion)" />
+	</ItemGroup>
 </Project>

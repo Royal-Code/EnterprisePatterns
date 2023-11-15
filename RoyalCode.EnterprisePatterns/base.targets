@@ -19,5 +19,6 @@
 	<PropertyGroup>
 		<DotNetCoreVersion Condition="'$(TargetFramework)' == 'net6'">6.0.0</DotNetCoreVersion>
 		<DotNetCoreVersion Condition="'$(TargetFramework)' == 'net7'">7.0.0</DotNetCoreVersion>
+		<DotNetCoreVersion Condition="'$(TargetFramework)' == 'net8'">8.0.0</DotNetCoreVersion>
 	</PropertyGroup>
 </Project>
