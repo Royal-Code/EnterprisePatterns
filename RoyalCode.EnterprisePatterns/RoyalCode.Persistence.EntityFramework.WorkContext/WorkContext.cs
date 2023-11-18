@@ -31,7 +31,14 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     /// <inheritdoc />
     public IAllEntities<TEntity> All<TEntity>() where TEntity : class
     {
+
+/* Unmerged change from project 'RoyalCode.Persistence.EntityFramework.WorkContext (net8)'
+Before:
         var search = serviceProvider.GetService<Searches.IAllEntities<TDbContext, TEntity>>();
+After:
+        var search = serviceProvider.GetService<IAllEntities<TDbContext, TEntity>>();
+*/
+        var search = serviceProvider.GetService<RoyalCode.Searches.Persistence.EntityFramework.IAllEntities<TDbContext, TEntity>>();
         return search is null
             ? throw new InvalidOperationException($"The search for all the entities of type {typeof(TEntity)} was not configured for the unit of work")
             : (IAllEntities<TEntity>)search;
@@ -40,7 +47,7 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     /// <inheritdoc />
     public ISearch<TEntity> CreateSearch<TEntity>() where TEntity : class
     {
-        var search = serviceProvider.GetService<Searches.ISearch<TDbContext, TEntity>>();
+        var search = serviceProvider.GetService<RoyalCode.Searches.Persistence.EntityFramework.ISearch<TDbContext, TEntity>>();
         return search is null
             ? throw new InvalidOperationException($"The search for the entity type {typeof(TEntity)} was not configured for the unit of work")
             : (ISearch<TEntity>)search;

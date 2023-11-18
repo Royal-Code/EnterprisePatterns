@@ -1,12 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.Persistence.EntityFramework.Searches.Configurations;
-using RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
 using RoyalCode.Searches.Abstractions;
-using System;
+using RoyalCode.Searches.Persistence.Linq;
+using RoyalCode.Searches.Persistence.Linq.Filter;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Xunit;
 

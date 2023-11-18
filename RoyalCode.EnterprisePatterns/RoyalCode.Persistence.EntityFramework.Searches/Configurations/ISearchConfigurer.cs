@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RoyalCode.Searches.Persistence.Linq;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches.Configurations;
+namespace RoyalCode.Searches.Persistence.EntityFramework.Configurations;
 
 /// <summary>
 ///     Configure searches for the unit of work.

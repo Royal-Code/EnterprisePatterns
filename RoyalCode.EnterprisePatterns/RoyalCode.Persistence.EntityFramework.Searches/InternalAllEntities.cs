@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RoyalCode.Persistence.Searches.Abstractions.Pipeline;
+using RoyalCode.Searches.Persistence.Abstractions.Pipeline;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches;
+namespace RoyalCode.Searches.Persistence.EntityFramework;
 
 internal sealed class InternalAllEntities<TDbContext, TEntity> : AllEntities<TEntity>, IAllEntities<TDbContext, TEntity>
     where TEntity : class

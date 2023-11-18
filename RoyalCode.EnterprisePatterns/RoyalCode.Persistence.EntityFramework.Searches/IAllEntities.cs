@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RoyalCode.Searches.Abstractions;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches;
+namespace RoyalCode.Searches.Persistence.EntityFramework;
 
 /// <summary>
 /// <para>

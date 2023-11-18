@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
-using RoyalCode.Persistence.Searches.Abstractions.Base;
 using RoyalCode.Searches.Abstractions;
+using RoyalCode.Searches.Persistence.Abstractions;
 
-namespace RoyalCode.Persistence.Searches.Abstractions.Pipeline;
+namespace RoyalCode.Searches.Persistence.Abstractions.Pipeline;
 
 /// <inheritdoc />
 public class Search<TEntity> : SearchBase<TEntity>
@@ -18,7 +18,7 @@ public class Search<TEntity> : SearchBase<TEntity>
     {
         this.factory = factory;
     }
-    
+
     /// <inheritdoc />
     public override ISearch<TEntity, TDto> Select<TDto>()
     {

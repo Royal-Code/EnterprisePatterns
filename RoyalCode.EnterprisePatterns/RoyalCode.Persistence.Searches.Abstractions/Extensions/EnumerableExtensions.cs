@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace RoyalCode.Persistence.Searches.Abstractions.Extensions;
+namespace RoyalCode.Searches.Persistence.Abstractions.Extensions;
 
 /// <summary>
 /// Extension methods for <see cref="IEnumerable{T}"/>.

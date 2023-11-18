@@ -1,13 +1,13 @@
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
-using RoyalCode.Persistence.Searches.Abstractions.Base;
-using RoyalCode.Persistence.Searches.Abstractions.Linq;
-using RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
-using RoyalCode.Persistence.Searches.Abstractions.Pipeline;
 using RoyalCode.Searches.Abstractions;
+using RoyalCode.Searches.Persistence.Abstractions;
+using RoyalCode.Searches.Persistence.Abstractions.Pipeline;
+using RoyalCode.Searches.Persistence.Linq;
+using RoyalCode.Searches.Persistence.Linq.Filter;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches;
+namespace RoyalCode.Searches.Persistence.EntityFramework;
 
 /// <summary>
 /// <para>
@@ -22,13 +22,13 @@ public sealed class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISear
     public SearchPipeline(
         IQueryableProvider<TEntity> queryableProvider,
         ISpecifierFactory specifierFactory,
-        ISorter<TEntity> sorter) 
+        ISorter<TEntity> sorter)
         : base(
             queryableProvider,
             specifierFactory,
             sorter)
     { }
-    
+
     /// <inheritdoc />
     public IResultList<TEntity> Execute(SearchCriteria criteria)
     {
@@ -53,7 +53,7 @@ public sealed class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISear
                 : 0;
 
         var pages = CountPages(count, criteria.ItemsPerPage);
-        
+
         var result = new ResultList<TEntity>()
         {
             Page = criteria.GetPageNumber(),
@@ -61,7 +61,7 @@ public sealed class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISear
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new (),
+            Projections = new(),
             Items = items
         };
 
@@ -100,7 +100,7 @@ public sealed class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISear
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new (),
+            Projections = new(),
             Items = items
         };
 
@@ -135,7 +135,7 @@ public sealed class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISear
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new (),
+            Projections = new(),
             Items = items
         };
 
@@ -173,7 +173,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private IQueryable<TDto> Select(IQueryable<TEntity> query, SearchCriteria criteria)
     {
-        var selectExpression = ((Expression<Func<TEntity, TDto>>?)criteria.Select?.SelectExpression) 
+        var selectExpression = (Expression<Func<TEntity, TDto>>?)criteria.Select?.SelectExpression
                                ?? selector?.GetSelectExpression()
                                ?? throw new SelectorNotFoundException(typeof(TEntity), typeof(TDto));
 
@@ -202,7 +202,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
                 : 0;
 
         var pages = CountPages(count, criteria.ItemsPerPage);
-        
+
         var result = new ResultList<TDto>()
         {
             Page = criteria.GetPageNumber(),
@@ -210,7 +210,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new (),
+            Projections = new(),
             Items = items
         };
 
@@ -239,7 +239,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
                 : 0;
 
         var pages = CountPages(count, criteria.ItemsPerPage);
-        
+
         var result = new ResultList<TDto>()
         {
             Page = criteria.GetPageNumber(),
@@ -247,7 +247,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new (),
+            Projections = new(),
             Items = items
         };
 
@@ -272,7 +272,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
                 : 0;
 
         var pages = CountPages(count, criteria.ItemsPerPage);
-        
+
         var result = new AsyncResultList<TDto>()
         {
             Page = criteria.GetPageNumber(),
@@ -280,7 +280,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new (),
+            Projections = new(),
             Items = items
         };
 

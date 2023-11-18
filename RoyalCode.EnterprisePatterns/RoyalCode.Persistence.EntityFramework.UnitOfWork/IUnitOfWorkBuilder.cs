@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Persistence.EntityFramework.Repositories.Configurations;
-using RoyalCode.Persistence.EntityFramework.Searches.Configurations;
+using RoyalCode.Searches.Persistence.EntityFramework.Configurations;
 
 namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 

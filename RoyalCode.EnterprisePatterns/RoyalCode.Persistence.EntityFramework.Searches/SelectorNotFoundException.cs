@@ -1,4 +1,4 @@
-namespace RoyalCode.Persistence.EntityFramework.Searches;
+namespace RoyalCode.Searches.Persistence.EntityFramework;
 
 /// <summary>
 /// Exception for when a selector is not informed for the search and also there is none configured for a given entity and DTO.

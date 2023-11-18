@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using RoyalCode.Persistence.Searches.Abstractions.Linq;
-using RoyalCode.Persistence.Searches.Abstractions.Pipeline;
 using RoyalCode.Searches.Abstractions;
+using RoyalCode.Searches.Persistence.Abstractions.Pipeline;
+using RoyalCode.Searches.Persistence.Linq;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches.Configurations;
+namespace RoyalCode.Searches.Persistence.EntityFramework.Configurations;
 
 /// <inheritdoc />
 public class SearchConfigurer<TDbContext> : ISearchConfigurer<TDbContext>

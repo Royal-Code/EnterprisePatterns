@@ -1,10 +1,10 @@
 using System.Runtime.CompilerServices;
-using RoyalCode.Persistence.Searches.Abstractions.Base;
-using RoyalCode.Persistence.Searches.Abstractions.Linq;
-using RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
-using RoyalCode.Persistence.Searches.Abstractions.Pipeline;
+using RoyalCode.Searches.Persistence.Abstractions;
+using RoyalCode.Searches.Persistence.Abstractions.Pipeline;
+using RoyalCode.Searches.Persistence.Linq;
+using RoyalCode.Searches.Persistence.Linq.Filter;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches;
+namespace RoyalCode.Searches.Persistence.EntityFramework;
 
 /// <summary>
 /// <para>

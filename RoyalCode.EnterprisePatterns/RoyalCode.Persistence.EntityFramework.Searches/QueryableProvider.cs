@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RoyalCode.Persistence.Searches.Abstractions.Linq;
+using RoyalCode.Searches.Persistence.Linq;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches;
+namespace RoyalCode.Searches.Persistence.EntityFramework;
 
 internal sealed class QueryableProvider<TDbContext, TEntity> : IQueryableProvider<TEntity>
     where TDbContext : DbContext

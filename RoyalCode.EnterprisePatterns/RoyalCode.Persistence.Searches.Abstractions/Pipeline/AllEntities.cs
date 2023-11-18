@@ -1,7 +1,7 @@
-﻿using RoyalCode.Persistence.Searches.Abstractions.Base;
-using RoyalCode.Searches.Abstractions;
+﻿using RoyalCode.Searches.Abstractions;
+using RoyalCode.Searches.Persistence.Abstractions;
 
-namespace RoyalCode.Persistence.Searches.Abstractions.Pipeline;
+namespace RoyalCode.Searches.Persistence.Abstractions.Pipeline;
 
 /// <inheritdoc />
 public class AllEntities<TEntity> : IAllEntities<TEntity>

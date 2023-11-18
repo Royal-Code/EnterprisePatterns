@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using RoyalCode.Persistence.Searches.Abstractions.Linq.Filter;
-using RoyalCode.Persistence.Searches.Abstractions.Linq.Selector;
-using RoyalCode.Persistence.Searches.Abstractions.Linq.Sorter;
-using RoyalCode.Persistence.Searches.Abstractions.Pipeline;
+using RoyalCode.Searches.Persistence.Abstractions.Pipeline;
+using RoyalCode.Searches.Persistence.Linq.Filter;
+using RoyalCode.Searches.Persistence.Linq.Selector;
+using RoyalCode.Searches.Persistence.Linq.Sorter;
 
-namespace RoyalCode.Persistence.EntityFramework.Searches;
+namespace RoyalCode.Searches.Persistence.EntityFramework;
 
 /// <inheritdoc />
 public sealed class PipelineFactory<TDbContext> : IPipelineFactory

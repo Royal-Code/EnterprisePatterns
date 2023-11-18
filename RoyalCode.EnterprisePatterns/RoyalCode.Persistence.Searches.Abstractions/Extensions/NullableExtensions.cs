@@ -1,4 +1,4 @@
-﻿namespace RoyalCode.Persistence.Searches.Abstractions.Extensions;
+﻿namespace RoyalCode.Searches.Persistence.Abstractions.Extensions;
 
 /// <summary>
 /// Extension method to check if a type is nullable.

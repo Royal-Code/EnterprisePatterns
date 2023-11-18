@@ -1,4 +1,4 @@
-namespace RoyalCode.Persistence.Searches.Abstractions.Pipeline;
+namespace RoyalCode.Searches.Persistence.Abstractions.Pipeline;
 
 /// <summary>
 /// <para>

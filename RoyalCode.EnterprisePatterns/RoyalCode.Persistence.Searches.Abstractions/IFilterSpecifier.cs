@@ -1,4 +1,4 @@
-namespace RoyalCode.Persistence.Searches.Abstractions;
+namespace RoyalCode.Searches.Persistence.Abstractions;
 
 /// <summary>
 /// Component that applies the filtering conditions to the query.

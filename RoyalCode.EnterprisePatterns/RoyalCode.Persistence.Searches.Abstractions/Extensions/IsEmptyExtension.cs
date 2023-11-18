@@ -1,8 +1,7 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 using System.Globalization;
 
-namespace RoyalCode.Persistence.Searches.Abstractions.Extensions;
+namespace RoyalCode.Searches.Persistence.Abstractions.Extensions;
 
 /// <summary>
 /// Class to check if some value is empty.
@@ -66,7 +65,7 @@ public static class IsEmptyExtension
     /// <returns>True if it is empty, false otherwise.</returns>
     public static bool VerifyCollection(IEnumerable source)
     {
-        return source == null || (!source.GetEnumerator().MoveNext());
+        return source == null || !source.GetEnumerator().MoveNext();
     }
 
     /// <summary>
