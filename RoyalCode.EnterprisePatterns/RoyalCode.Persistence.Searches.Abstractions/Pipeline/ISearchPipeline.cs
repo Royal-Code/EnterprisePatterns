@@ -1,5 +1,4 @@
 using RoyalCode.Searches.Abstractions;
-using RoyalCode.Searches.Persistence.Abstractions;
 
 namespace RoyalCode.Searches.Persistence.Abstractions.Pipeline;
 

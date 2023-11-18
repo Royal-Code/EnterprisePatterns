@@ -1,6 +1,7 @@
+// Ignore Spelling: sortings
+
 using System.ComponentModel;
 using RoyalCode.Searches.Abstractions;
-using RoyalCode.Searches.Persistence.Linq;
 
 namespace RoyalCode.Searches.Persistence.Linq.Sorter;
 

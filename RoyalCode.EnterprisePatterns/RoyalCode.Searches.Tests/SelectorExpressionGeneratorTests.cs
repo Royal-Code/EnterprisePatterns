@@ -1,6 +1,5 @@
 ﻿
 using RoyalCode.Searches.Persistence.Linq.Selector;
-using Xunit;
 
 namespace RoyalCode.Persistence.Tests.Selectors;
 

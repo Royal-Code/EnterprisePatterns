@@ -3,7 +3,13 @@
 	<Import Project="..\tests.targets" />
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(DotNetCoreVersion)" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(DotNetCoreVersion)" />
+		
+		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Searches\RoyalCode.Searches.Persistence.EntityFramework.csproj" />
+		<ProjectReference Include="..\RoyalCode.Persistence.Searches.Abstractions\RoyalCode.Searches.Persistence.Abstractions.csproj" />
 		<ProjectReference Include="..\RoyalCode.Searches.Abstractions\RoyalCode.Searches.Abstractions.csproj" />
+		<ProjectReference Include="..\RoyalCode.Searches.Persistence.Linq\RoyalCode.Searches.Persistence.Linq.csproj" />
 	</ItemGroup>
 
 </Project>

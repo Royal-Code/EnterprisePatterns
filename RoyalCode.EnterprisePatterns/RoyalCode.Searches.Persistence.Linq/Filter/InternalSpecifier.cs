@@ -1,5 +1,4 @@
-﻿using RoyalCode.Searches.Persistence.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace RoyalCode.Searches.Persistence.Linq.Filter;
 

@@ -1,3 +1,5 @@
+// Ignore Spelling: Sortings
+
 using System.Text.Json.Serialization;
 
 namespace RoyalCode.Searches.Abstractions;

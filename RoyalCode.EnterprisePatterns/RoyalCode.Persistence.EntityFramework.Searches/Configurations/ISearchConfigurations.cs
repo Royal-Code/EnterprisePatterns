@@ -7,7 +7,7 @@ namespace RoyalCode.Searches.Persistence.EntityFramework.Configurations;
 ///     Configure searches for the unit of work.
 /// </summary>
 /// <typeparam name="TDbContext">The type of the database context.</typeparam>
-public interface ISearchConfigurer<out TDbContext> : ISearchConfigurer
+public interface ISearchConfigurations<out TDbContext> : ISearchConfigurations
     where TDbContext : DbContext
 {
     /// <summary>
@@ -15,6 +15,6 @@ public interface ISearchConfigurer<out TDbContext> : ISearchConfigurer
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <returns>The same instance.</returns>
-    ISearchConfigurer<TDbContext> Add<TEntity>()
+    ISearchConfigurations<TDbContext> Add<TEntity>()
         where TEntity : class;
 }

@@ -12,7 +12,7 @@ internal class NullableSelectorPropertyConverter : ISelectorPropertyConverter, I
         // and the target property type is the same of the origin property type.
         var canResolve = selection.TargetSelection!.PropertyType.IsNullableType()
             && selection.OriginProperty.PropertyType.IsNotNullableType()
-            && selection.TargetSelection.PropertyType.GetNullabeUnderlyingType() == selection.OriginProperty.PropertyType;
+            && selection.TargetSelection.PropertyType.GetNullableUnderlyingType() == selection.OriginProperty.PropertyType;
 
         converter = canResolve ? this : null;
         return canResolve;
@@ -20,13 +20,13 @@ internal class NullableSelectorPropertyConverter : ISelectorPropertyConverter, I
 
     public Expression GetExpression(PropertyMatch selection, Expression parameter)
     {
-        // the target proprerty selection is a nullable property.
+        // the target property selection is a nullable property.
         // so, we need to generate a expression like:
         // e.Id.HasValue ? e.Id.Value : default(int)
         // where:
         // e is the parameter
         // Id is the Selection property,
-        // int is the origen property type.
+        // int is the origin property type.
 
         var hasValueExpression = selection.TargetSelection!.SelectChild(nameof(Nullable<int>.HasValue))!.GetAccessExpression(parameter);
         var valueExpression = selection.TargetSelection!.SelectChild(nameof(Nullable<int>.Value))!.GetAccessExpression(parameter);

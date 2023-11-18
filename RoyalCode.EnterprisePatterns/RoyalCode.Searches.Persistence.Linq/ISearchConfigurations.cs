@@ -6,9 +6,14 @@ using System.Linq.Expressions;
 namespace RoyalCode.Searches.Persistence.Linq;
 
 /// <summary>
+/// <para>
 ///     Configure search components like specifier, order by and selector.
+/// </para>
+/// <para>
+///     The configurations are global and will be used by all searches.
+/// </para>
 /// </summary>
-public interface ISearchConfigurer
+public interface ISearchConfigurations
 {
     /// <summary>
     /// Add a specifier function for the model and filter.
@@ -17,7 +22,7 @@ public interface ISearchConfigurer
     /// <typeparam name="TFilter">The type of the filter.</typeparam>
     /// <param name="specifier">The specifier function that applies the filter over the model query.</param>
     /// <returns>The same instance of the configuration.</returns>
-    ISearchConfigurer AddSpecifier<TModel, TFilter>(
+    ISearchConfigurations AddSpecifier<TModel, TFilter>(
         Func<IQueryable<TModel>, TFilter, IQueryable<TModel>> specifier)
         where TModel : class
         where TFilter : class
@@ -33,7 +38,7 @@ public interface ISearchConfigurer
     /// <typeparam name="TFilter">The type of the filter.</typeparam>
     /// <param name="specifier">The specifier that applies the filter over the model query.</param>
     /// <returns>The same instance of the configuration.</returns>
-    ISearchConfigurer AddSpecifier<TModel, TFilter>(ISpecifier<TModel, TFilter> specifier)
+    ISearchConfigurations AddSpecifier<TModel, TFilter>(ISpecifier<TModel, TFilter> specifier)
         where TModel : class
         where TFilter : class
     {
@@ -48,7 +53,7 @@ public interface ISearchConfigurer
     /// <typeparam name="TFilter">The type of the filter.</typeparam>
     /// <param name="configure">The configuration action.</param>
     /// <returns>The same instance of the configuration.</returns>
-    ISearchConfigurer ConfigureSpecifierGenerator<TModel, TFilter>(
+    ISearchConfigurations ConfigureSpecifierGenerator<TModel, TFilter>(
         Action<ISpecifierGeneratorOptions<TModel, TFilter>> configure)
         where TModel : class
         where TFilter : class
@@ -66,7 +71,7 @@ public interface ISearchConfigurer
     /// <param name="orderBy">The name of the property.</param>
     /// <param name="expression">The expression that represents the property.</param>
     /// <returns>The same instance of the configuration.</returns>
-    ISearchConfigurer AddOrderBy<TModel, TProperty>(
+    ISearchConfigurations AddOrderBy<TModel, TProperty>(
         string orderBy, Expression<Func<TModel, TProperty>> expression)
         where TModel : class
     {
@@ -82,7 +87,7 @@ public interface ISearchConfigurer
     /// <param name="orderBy">The name of the property.</param>
     /// <param name="handler">The handler that represents the property.</param>
     /// <returns>The same instance of the configuration.</returns>
-    ISearchConfigurer AddOrderBy<TModel, TProperty>(string orderBy, IOrderByHandler<TModel> handler)
+    ISearchConfigurations AddOrderBy<TModel, TProperty>(string orderBy, IOrderByHandler<TModel> handler)
         where TModel : class
     {
         OrderByHandlersMap.Instance.Add(orderBy, handler);
@@ -96,7 +101,7 @@ public interface ISearchConfigurer
     /// <typeparam name="TDto">The type of the DTO.</typeparam>
     /// <param name="selector">The selector function.</param>
     /// <returns>The same instance of the configuration.</returns>
-    ISearchConfigurer AddSelector<TEntity, TDto>(
+    ISearchConfigurations AddSelector<TEntity, TDto>(
         Expression<Func<TEntity, TDto>> selector)
         where TEntity : class
         where TDto : class
@@ -112,7 +117,7 @@ public interface ISearchConfigurer
     /// <typeparam name="TDto">The type of the DTO.</typeparam>
     /// <param name="selector">The selector.</param>
     /// <returns>The same instance of the configuration.</returns>
-    ISearchConfigurer AddSelector<TEntity, TDto>(
+    ISearchConfigurations AddSelector<TEntity, TDto>(
         ISelector<TEntity, TDto> selector)
         where TEntity : class
         where TDto : class

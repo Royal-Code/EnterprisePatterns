@@ -1,5 +1,4 @@
-﻿using RoyalCode.Searches.Persistence.Linq;
-
+﻿
 namespace RoyalCode.Searches.Persistence.Linq.Filter;
 
 /// <summary>

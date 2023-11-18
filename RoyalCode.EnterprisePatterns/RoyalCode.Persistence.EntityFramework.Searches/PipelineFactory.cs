@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RoyalCode.Searches.Persistence.Abstractions.Pipeline;
+using RoyalCode.Searches.Persistence.EntityFramework.Internals;
 using RoyalCode.Searches.Persistence.Linq.Filter;
 using RoyalCode.Searches.Persistence.Linq.Selector;
 using RoyalCode.Searches.Persistence.Linq.Sorter;
@@ -7,7 +8,7 @@ using RoyalCode.Searches.Persistence.Linq.Sorter;
 namespace RoyalCode.Searches.Persistence.EntityFramework;
 
 /// <inheritdoc />
-public sealed class PipelineFactory<TDbContext> : IPipelineFactory
+public sealed class PipelineFactory<TDbContext> : IPipelineFactory<TDbContext>
     where TDbContext : DbContext
 {
     private readonly TDbContext db;

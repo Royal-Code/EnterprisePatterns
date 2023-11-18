@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Globalization;
 
+#pragma warning disable S6580 // Use a format provider when parsing date and time
+
 namespace RoyalCode.Searches.Persistence.Abstractions.Extensions;
 
 /// <summary>
@@ -33,7 +35,7 @@ public static class IsEmptyExtension
             return ((DateTime?)expression).IsBlank();
 
         if (expression is Guid guid)
-            return guid == default;
+            return guid == Guid.Empty;
 
         bool isNumber = double.TryParse(
             Convert.ToString(expression, CultureInfo.InvariantCulture),
@@ -46,6 +48,7 @@ public static class IsEmptyExtension
         bool isDate = DateTime.TryParse(
             Convert.ToString(expression, CultureInfo.InvariantCulture),
             out var date);
+
         if (isDate)
             return date.IsBlank();
 

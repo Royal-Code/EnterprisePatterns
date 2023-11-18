@@ -8,7 +8,7 @@ internal class InternalSpecifierGeneratorOptions<TModel, TFilter> : ISpecifierGe
     where TModel : class
     where TFilter : class
 {
-    private readonly List<SpecifierGeneratorPropertyOptions<TModel, TFilter>> propertyOptions = new();
+    private readonly List<SpecifierGeneratorPropertyOptions<TModel, TFilter>> propertyOptions = [];
 
     public SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty> For<TProperty>(
         Expression<Func<TFilter, TProperty>> selector)
@@ -18,7 +18,7 @@ internal class InternalSpecifierGeneratorOptions<TModel, TFilter> : ISpecifierGe
             ?? throw new ArgumentException("The selector must be a property selector.", nameof(selector));
 
         // check if exists the options in propertyOptions
-        var previous = propertyOptions.FirstOrDefault(p => p.PropertyInfo == property);
+        var previous = propertyOptions.Find(p => p.PropertyInfo == property);
         if (previous is not null)
             return (SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty>)previous;
 
@@ -36,7 +36,7 @@ internal class InternalSpecifierGeneratorOptions<TModel, TFilter> : ISpecifierGe
             ?? throw new ArgumentException("The selector must be a property selector.", nameof(selector));
 
         // check if exists the options in propertyOptions
-        var previous = propertyOptions.FirstOrDefault(p => p.PropertyInfo == property);
+        var previous = propertyOptions.Find(p => p.PropertyInfo == property);
         if (previous is not null)
             return (SpecifierGeneratorPropertyOptions<TModel, TFilter, TProperty>)previous;
 
@@ -48,7 +48,7 @@ internal class InternalSpecifierGeneratorOptions<TModel, TFilter> : ISpecifierGe
     public bool TryGetPropertyOptions(PropertyInfo filterProperty,
         [NotNullWhen(true)] out SpecifierGeneratorPropertyOptions<TModel, TFilter>? options)
     {
-        options = propertyOptions.FirstOrDefault(p => p.PropertyInfo == filterProperty);
+        options = propertyOptions.Find(p => p.PropertyInfo == filterProperty);
         return options is not null;
     }
 }

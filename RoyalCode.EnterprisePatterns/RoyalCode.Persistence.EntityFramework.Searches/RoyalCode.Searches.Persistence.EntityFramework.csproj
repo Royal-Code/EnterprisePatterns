@@ -3,9 +3,9 @@
 	<Import Project="..\asp.targets" />
 
 	<PropertyGroup>
-		<Version>$(PersistVer)$(PersistPreview)</Version>
-		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
-		<FileVersion>$(PersistVer)</FileVersion>
+		<Version>$(SearchesVer)$(SearchesPreview)</Version>
+		<AssemblyVersion>$(SearchesVer)</AssemblyVersion>
+		<FileVersion>$(SearchesVer)</FileVersion>
 		<Description>
 			Persistence components implementation with EntityFrameworkCore,
 			including the handling of Searchable, Filters and Specifiers.

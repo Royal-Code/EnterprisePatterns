@@ -7,15 +7,15 @@ internal sealed class OrderByHandlersMap
 {
     public static OrderByHandlersMap Instance { get; } = new();
 
-    private readonly Dictionary<(Type, string), object> handlers = new();
+    private readonly Dictionary<(Type, string), object> handlers = [];
+
+    public object this[(Type, string) key] => handlers[key];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains((Type, string) key) => handlers.ContainsKey(key);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Add((Type modelType, string orderBy) key, object handler) => handlers.Add(key, handler);
-
-    public object this[(Type, string) key] => handlers[key];
 
     public void Add<TModel>(string orderBy, IOrderByHandler<TModel> handler)
         where TModel : class

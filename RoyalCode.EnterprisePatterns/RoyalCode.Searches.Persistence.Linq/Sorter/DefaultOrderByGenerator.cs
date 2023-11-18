@@ -5,7 +5,7 @@ namespace RoyalCode.Searches.Persistence.Linq.Sorter;
 
 /// <summary>
 /// Default implementation of <see cref="IOrderByGenerator"/>, using <see cref="PropertySelection"/> for
-/// loookup of properties.
+/// lookup of properties.
 /// </summary>
 public class DefaultOrderByGenerator : IOrderByGenerator
 {

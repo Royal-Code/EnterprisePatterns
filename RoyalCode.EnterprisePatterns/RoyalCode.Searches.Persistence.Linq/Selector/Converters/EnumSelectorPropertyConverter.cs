@@ -28,7 +28,7 @@ internal class EnumSelectorPropertyConverter : ISelectorPropertyConverter, ISele
 
     public Expression GetExpression(PropertyMatch selection, Expression parameter)
     {
-        // the target proprerty selection is a enum property.
+        // the target property selection is a enum property.
         // so, we need to generate a expression like:
         // (EnumType)e.Id
         // where:

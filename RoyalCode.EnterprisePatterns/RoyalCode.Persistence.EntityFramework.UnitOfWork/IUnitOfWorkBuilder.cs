@@ -10,7 +10,7 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 ///     Interface to configure one unit of work with the DbContext.
 /// </para>
 /// <para>
-///     It is designed to work with dependecy injection.
+///     It is designed to work with dependency injection.
 /// </para>
 /// </summary>
 /// <typeparam name="TDbContext">The type of DbContext for the unit of work.</typeparam>
@@ -67,5 +67,5 @@ public interface IUnitOfWorkBuilder<out TDbContext>
     /// </summary>
     /// <param name="configureAction">Action to configure.</param>
     /// <returns>The same instance.</returns>
-    IUnitOfWorkBuilder<TDbContext> ConfigureSearches(Action<ISearchConfigurer<TDbContext>> configureAction);
+    IUnitOfWorkBuilder<TDbContext> ConfigureSearches(Action<ISearchConfigurations<TDbContext>> configureAction);
 }

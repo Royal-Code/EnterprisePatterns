@@ -61,7 +61,7 @@ public sealed class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISear
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new(),
+            Projections = [],
             Items = items
         };
 
@@ -100,7 +100,7 @@ public sealed class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISear
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new(),
+            Projections = [],
             Items = items
         };
 
@@ -135,7 +135,7 @@ public sealed class SearchPipeline<TEntity> : SearchPipelineBase<TEntity>, ISear
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new(),
+            Projections = [],
             Items = items
         };
 
@@ -210,7 +210,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new(),
+            Projections = [],
             Items = items
         };
 
@@ -247,7 +247,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new(),
+            Projections = [],
             Items = items
         };
 
@@ -280,7 +280,7 @@ public sealed class SearchPipeline<TEntity, TDto> : SearchPipelineBase<TEntity>,
             ItemsPerPage = criteria.ItemsPerPage,
             Pages = pages,
             Sortings = criteria.Sortings,
-            Projections = new(),
+            Projections = [],
             Items = items
         };
 

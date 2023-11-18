@@ -5,7 +5,6 @@ using RoyalCode.Searches.Persistence.Linq;
 using RoyalCode.Searches.Persistence.Linq.Filter;
 using System.Collections;
 using System.Linq.Expressions;
-using Xunit;
 
 namespace RoyalCode.Persistence.Tests.Specifiers;
 
@@ -38,13 +37,14 @@ public class SpecifierFunctionGeneratorTests
     }
 
     [Fact]
-    public void Generate_Must_GenerateTheFilter_When_ConfiguredByUnitOfWork()
+    public void Generate_Must_GenerateTheFilter_When_ConfiguredWithDbContext()
     {
         // arrange
         ServiceCollection services = new();
-        services.AddUnitOfWork<LocalDbContext>()
-            .ConfigureDbContext(builder => builder.UseInMemoryDatabase("test"))
-            .ConfigureSearches(s => s.Add<SimpleModel>());
+
+        services.AddDbContext<LocalDbContext>(builder => builder.UseInMemoryDatabase("test"));
+
+        services.AddEntityFrameworkSearches<LocalDbContext>(s => s.Add<SimpleModel>());
 
         ServiceProvider provider = services.BuildServiceProvider();
 
@@ -238,7 +238,7 @@ public class SpecifierFunctionGeneratorTests
     [InlineData(typeof(IEnumerable), typeof(int?), false)]
     [InlineData(typeof(IEnumerable), typeof(object), false)]
     [InlineData(typeof(IEnumerable<IEnumerable<int>>), typeof(int), false)]
-    public void CheckTypes_Must_ValidateDiferentsTypeAbleToFilter(
+    public void CheckTypes_Must_ValidateDifferentTypeAbleToFilter(
         Type filterPropertyType, Type modelPropertyType, bool expected)
     {
         // act
@@ -301,8 +301,8 @@ public class SpecifierFunctionGeneratorTests
     public void ConfigureSpecifierGenerator_TwoAutoFields_OnePredicateFactory()
     {
         // arrange configuration
-        ISearchConfigurer configurer = new SearchConfigurer();
-        configurer.ConfigureSpecifierGenerator<ConfigurableEntity, ConfigurableFilter>(cfg =>
+        ISearchConfigurations configurations = new SearchConfigurer();
+        configurations.ConfigureSpecifierGenerator<ConfigurableEntity, ConfigurableFilter>(cfg =>
         {
             cfg.For(f => f.ModelId).Predicate(id => e => e.Models.Any(m => m.Id == id));
         });
@@ -320,7 +320,7 @@ public class SpecifierFunctionGeneratorTests
     public void ConfigureSpecifierGenerator_OnlyPredicateFactory_NotNullProperty()
     {
         // arrange configuration
-        ISearchConfigurer configurer = new SearchConfigurer();
+        ISearchConfigurations configurer = new SearchConfigurer();
         configurer.ConfigureSpecifierGenerator<ConfigurableEntity, ConfigurableFilterNotNull>(cfg =>
         {
             cfg.For(f => f.ModelId).Predicate(id => e => e.Models.Any(m => m.Id == id));
@@ -339,7 +339,7 @@ public class SpecifierFunctionGeneratorTests
     public void ConfigureSpecifierGenerator_RunningWithoutFilterValue_Must_ReturnAll()
     {
         // arrange
-        ISearchConfigurer configurer = new SearchConfigurer();
+        ISearchConfigurations configurer = new SearchConfigurer();
         configurer.ConfigureSpecifierGenerator<ConfigurableEntity, ConfigurableFilter>(cfg =>
         {
             cfg.For(f => f.ModelId).Predicate(id => e => e.Models.Any(m => m.Id == id));
@@ -370,7 +370,7 @@ public class SpecifierFunctionGeneratorTests
     public void ConfigureSpecifierGenerator_RunningWithFilter_Must_ApplyPredicates(int id, int expectedCount)
     {
         // arrange
-        ISearchConfigurer configurer = new SearchConfigurer();
+        ISearchConfigurations configurer = new SearchConfigurer();
         configurer.ConfigureSpecifierGenerator<ConfigurableEntity, ConfigurableFilter>(cfg =>
         {
             cfg.For(f => f.ModelId).Predicate(id => e => e.Models.Any(m => m.Id == id));
@@ -400,7 +400,7 @@ public class SpecifierFunctionGeneratorTests
     public void ConfigureSpecifierGenerator_RunningWithFilter_NotNullProperty_Must_ApplyPredicates(int id, int expectedCount)
     {
         // arrange
-        ISearchConfigurer configurer = new SearchConfigurer();
+        ISearchConfigurations configurer = new SearchConfigurer();
         configurer.ConfigureSpecifierGenerator<ConfigurableEntity, ConfigurableFilterNotNull>(cfg =>
         {
             cfg.For(f => f.ModelId).Predicate(id => e => e.Models.Any(m => m.Id == id));
@@ -503,7 +503,7 @@ file class LocalDbContext : DbContext
     }
 }
 
-file class SearchConfigurer : ISearchConfigurer { }
+file class SearchConfigurer : ISearchConfigurations { }
 
 file class ConfigurableEntity
 {

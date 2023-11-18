@@ -2,36 +2,35 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RoyalCode.Searches.Abstractions;
-using RoyalCode.Searches.Persistence.Abstractions.Pipeline;
+using RoyalCode.Searches.Persistence.EntityFramework.Internals;
 using RoyalCode.Searches.Persistence.Linq;
 
 namespace RoyalCode.Searches.Persistence.EntityFramework.Configurations;
 
 /// <inheritdoc />
-public class SearchConfigurer<TDbContext> : ISearchConfigurer<TDbContext>
+public class SearchConfigurations<TDbContext> : ISearchConfigurations<TDbContext>
     where TDbContext : DbContext
 {
     private readonly IServiceCollection services;
 
     /// <summary>
-    /// Creates a new instance of <see cref="SearchConfigurer{TDbContext}"/>.
+    /// Creates a new instance of <see cref="SearchConfigurations{TDbContext}"/>.
     /// </summary>
     /// <param name="services">The service collection to register the searches as a service.</param>
-    public SearchConfigurer(
-        IServiceCollection services)
+    public SearchConfigurations(IServiceCollection services)
     {
         this.services = services;
 
         services.AddSearchesLinq();
-        services.TryAddTransient<IPipelineFactory, PipelineFactory<TDbContext>>();
+        services.TryAddTransient<IPipelineFactory<TDbContext>, PipelineFactory<TDbContext>>();
     }
 
     /// <inheritdoc />
-    public ISearchConfigurer<TDbContext> Add<TEntity>() where TEntity : class
+    public ISearchConfigurations<TDbContext> Add<TEntity>() where TEntity : class
     {
         // add search as a service for the respective context
         var searchType = typeof(ISearch<>).MakeGenericType(typeof(TEntity));
-        var dbSearchType = typeof(ISearch<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
+        var dbSearchType = typeof(Internals.ISearch<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
         var searchImplType = typeof(InternalSearch<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
 
         services.Add(ServiceDescriptor.Describe(

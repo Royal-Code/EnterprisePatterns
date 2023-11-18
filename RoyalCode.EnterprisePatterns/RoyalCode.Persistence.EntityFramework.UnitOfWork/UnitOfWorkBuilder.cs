@@ -104,13 +104,13 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     }
 
     /// <inheritdoc />
-    public IUnitOfWorkBuilder<TDbContext> ConfigureSearches(Action<ISearchConfigurer<TDbContext>> configureAction)
+    public IUnitOfWorkBuilder<TDbContext> ConfigureSearches(Action<ISearchConfigurations<TDbContext>> configureAction)
     {
         if (configureAction is null)
             throw new ArgumentNullException(nameof(configureAction));
 
-        var searchConfigurer = new SearchConfigurer<TDbContext>(services);
-        configureAction(searchConfigurer);
+        var configurations = new SearchConfigurations<TDbContext>(services);
+        configureAction(configurations);
         return this;
     }
 }

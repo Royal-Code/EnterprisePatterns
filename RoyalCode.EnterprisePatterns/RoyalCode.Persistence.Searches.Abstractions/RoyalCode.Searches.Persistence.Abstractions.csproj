@@ -3,9 +3,9 @@
 	<Import Project="..\asp.targets" />
 
 	<PropertyGroup>
-		<Version>$(PersistVer)$(PersistPreview)</Version>
-		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
-		<FileVersion>$(PersistVer)</FileVersion>
+		<Version>$(SearchesVer)$(SearchesPreview)</Version>
+		<AssemblyVersion>$(SearchesVer)</AssemblyVersion>
+		<FileVersion>$(SearchesVer)</FileVersion>
 		<Description>
 			Persistence abstract components for search entities by filters using linq specifiers and queryables.
 		</Description>

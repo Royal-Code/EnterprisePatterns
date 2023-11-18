@@ -1,5 +1,4 @@
-﻿#pragma warning disable S3925 // "ISerializable" should be implemented correctly
-
+﻿
 namespace RoyalCode.Searches.Persistence.Linq.Selector;
 
 /// <summary>

@@ -6,6 +6,8 @@
 	<PropertyGroup>
 		<OpResVer>2.0.0</OpResVer>
 		<OpResPreview>-rc9.15</OpResPreview>
+		<SearchesVer>1.0.0</SearchesVer>
+		<SearchesPreview>-preview-4.0</SearchesPreview>
 		<PersistVer>1.0.0</PersistVer>
 		<PersistPreview>-preview3.8.1</PersistPreview>
 		<CommandVer>0.1.0</CommandVer>

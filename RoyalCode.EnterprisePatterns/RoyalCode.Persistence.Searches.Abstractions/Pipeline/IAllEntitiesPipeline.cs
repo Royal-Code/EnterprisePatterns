@@ -17,7 +17,7 @@ public interface IAllEntitiesPipeline<TEntity>
     /// <summary>
     /// Execute the query and collect all entities.
     /// </summary>
-    /// <param name="searchCriteria">The criterias for the query.</param>
+    /// <param name="searchCriteria">The criteria for the query.</param>
     /// <returns>A collection of the entities.</returns>
     ICollection<TEntity> Execute(SearchCriteria searchCriteria);
 

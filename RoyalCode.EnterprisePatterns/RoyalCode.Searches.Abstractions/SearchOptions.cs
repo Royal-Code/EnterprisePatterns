@@ -1,4 +1,5 @@
-﻿
+﻿// Ignore Spelling: sortings
+
 namespace RoyalCode.Searches.Abstractions;
 
 /// <summary>
@@ -63,7 +64,7 @@ public class SearchOptions
     /// <returns>The same instance for chaining calls.</returns>
     public SearchOptions OrderBy(string orderBy)
     {
-        sortings ??= new List<Sorting>();
+        sortings ??= [];
         sortings.Add(new Sorting
         {
             OrderBy = orderBy,
@@ -79,7 +80,7 @@ public class SearchOptions
     /// <returns>The same instance for chaining calls.</returns>
     public SearchOptions OrderByDesc(string orderBy)
     {
-        sortings ??= new List<Sorting>();
+        sortings ??= [];
         sortings.Add(new Sorting
         {
             OrderBy = orderBy,

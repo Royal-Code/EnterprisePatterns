@@ -120,7 +120,7 @@ internal sealed class EnumerableSelectorPropertyResolver : ISelectorPropertyReso
 
         public Expression GetExpression(PropertyMatch selection, Expression parameter)
         {
-            // parâmetro da expressão do subselect.
+            // parâmetro da expressão do sub-select.
             var fromParam = Expression.Parameter(entityUnderlyingType, "from");
 
             // generate de bindings for create the new DTO
@@ -137,7 +137,7 @@ internal sealed class EnumerableSelectorPropertyResolver : ISelectorPropertyReso
             var callSelect = Expression.Call(
                 typeof(Enumerable),
                 nameof(Enumerable.Select),
-                new Type[] { entityUnderlyingType, dtoUnderlyingType },
+                [entityUnderlyingType, dtoUnderlyingType],
                 targetSelection.GetAccessExpression(parameter),
                 lambda
             );
@@ -148,7 +148,7 @@ internal sealed class EnumerableSelectorPropertyResolver : ISelectorPropertyReso
                     : Expression.Call(
                         typeof(Enumerable),
                         nameof(Enumerable.ToList),
-                        new Type[] { dtoUnderlyingType },
+                        [dtoUnderlyingType],
                         callSelect);
 
             return resultExpression;

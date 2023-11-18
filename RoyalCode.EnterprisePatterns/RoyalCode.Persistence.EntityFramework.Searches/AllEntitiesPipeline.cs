@@ -22,16 +22,16 @@ public sealed class AllEntitiesPipeline<TEntity> : SearchPipelineBase<TEntity>, 
     { }
 
     /// <inheritdoc />
-    public ICollection<TEntity> Execute(SearchCriteria criteria)
+    public ICollection<TEntity> Execute(SearchCriteria searchCriteria)
     {
-        return PrepareQuery(criteria).ToList();
+        return PrepareQuery(searchCriteria).ToList();
     }
 
     /// <inheritdoc />
     public async Task<ICollection<TEntity>> ExecuteAsync(
-        SearchCriteria criteria,
+        SearchCriteria searchCriteria,
         CancellationToken cancellationToken = default)
     {
-        return await PrepareQuery(criteria).ToListAsync(cancellationToken);
+        return await PrepareQuery(searchCriteria).ToListAsync(cancellationToken);
     }
 }

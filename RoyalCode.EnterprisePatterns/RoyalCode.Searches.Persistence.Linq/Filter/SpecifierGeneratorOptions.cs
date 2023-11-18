@@ -10,7 +10,7 @@ internal static class SpecifierGeneratorOptions
         where TModel : class
         where TFilter : class
     {
-        options ??= new();
+        options ??= [];
 
         if (options.TryGetValue((typeof(TModel), typeof(TFilter)), out var value))
             return (ISpecifierGeneratorOptions<TModel, TFilter>)value;

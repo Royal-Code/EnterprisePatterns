@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RoyalCode.Searches.Abstractions;
 
-namespace RoyalCode.Searches.Persistence.EntityFramework;
+#pragma warning disable S2326 // Unused type parameters should be removed
+
+namespace RoyalCode.Searches.Persistence.EntityFramework.Internals;
 
 /// <summary>
 /// <para>

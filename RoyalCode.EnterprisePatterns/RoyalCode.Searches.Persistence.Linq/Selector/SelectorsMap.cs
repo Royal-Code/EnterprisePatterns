@@ -1,5 +1,4 @@
-﻿using RoyalCode.Searches.Persistence.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace RoyalCode.Searches.Persistence.Linq.Selector;
@@ -11,7 +10,7 @@ internal class SelectorsMap
 {
     public static SelectorsMap Instance { get; } = new();
 
-    private readonly Dictionary<(Type, Type), object> selectors = new();
+    private readonly Dictionary<(Type, Type), object> selectors = [];
 
     public object this[(Type, Type) key] => selectors[key];
 

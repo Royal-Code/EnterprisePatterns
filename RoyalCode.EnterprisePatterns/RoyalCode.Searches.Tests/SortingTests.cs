@@ -10,7 +10,7 @@ public class SortingTests
     [Fact]
     public void Deserialize_ResultList_With_Sorting_MustBeEquivalent()
     {
-        // arrage
+        // arrange
         var expected = new ResultList<TestModel>
         {
             Page = 1,

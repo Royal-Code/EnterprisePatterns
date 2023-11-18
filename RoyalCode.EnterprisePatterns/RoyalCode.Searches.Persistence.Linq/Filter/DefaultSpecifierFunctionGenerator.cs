@@ -2,7 +2,6 @@
 using RoyalCode.Searches.Abstractions;
 using RoyalCode.Searches.Persistence.Abstractions.Extensions;
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -34,52 +33,49 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
     /// </summary>
     private static readonly MethodInfo AnyMethod = typeof(Enumerable).GetMethods()
         .Where(m => m.Name == nameof(Enumerable.Any))
-        .Where(m => m.GetParameters().Length == 1)
-        .First();
+        .First(m => m.GetParameters().Length == 1);
 
     private static readonly MethodInfo WhereMethod = typeof(Queryable).GetMethods()
         .Where(m => m.Name == nameof(Queryable.Where))
         .Where(m => m.GetParameters().Length == 2)
-        .Where(m => m.GetParameters()[1].ParameterType.GetGenericArguments()[0].GetGenericArguments().Length == 2)
-        .First();
+        .First(m => m.GetParameters()[1].ParameterType.GetGenericArguments()[0].GetGenericArguments().Length == 2);
 
     /// <summary>
     /// MethodInfo for checks whether a date is empty.
     /// </summary>
     private static readonly MethodInfo IsBlankMethod = typeof(IsEmptyExtension)
-        .GetMethod(nameof(IsEmptyExtension.IsBlank), new Type[] { typeof(DateTime) })!;
+        .GetMethod(nameof(IsEmptyExtension.IsBlank), [typeof(DateTime)])!;
 
     /// <summary>
     /// Contains Method of string.
     /// </summary>
     public static readonly MethodInfo ContainsMethod = typeof(string)
-        .GetMethod(nameof(string.Contains), new Type[] { typeof(string) })!;
+        .GetMethod(nameof(string.Contains), [typeof(string)])!;
 
     /// <summary>
     /// StartsWith Method of string.
     /// </summary>
     public static readonly MethodInfo StartsWithMethod = typeof(string)
-        .GetMethod(nameof(string.StartsWith), new Type[] { typeof(string) })!;
+        .GetMethod(nameof(string.StartsWith), [typeof(string)])!;
 
     /// <summary>
     /// EndsWith Method of string.
     /// </summary>
     public static readonly MethodInfo EndsWithMethod = typeof(string)
-        .GetMethod(nameof(string.EndsWith), new Type[] { typeof(string) })!;
+        .GetMethod(nameof(string.EndsWith), [typeof(string)])!;
 
     /// <summary>
     /// Where method of <see cref="Enumerable"/> to call over <see cref="IEnumerable{T}"/>.
     /// </summary>
     internal static readonly MethodInfo InMethod = typeof(Enumerable).GetMethods()
         .Where(m => m.Name == nameof(Enumerable.Contains))
-        .Where(m => m.GetParameters().Length == 2)
-        .First();
+        .First(m => m.GetParameters().Length == 2);
 
     /// <summary>
     /// Types where "greater than" is applied to check that the value is not empty.
     /// </summary>
-    private static readonly Type[] GreaterThenTypes = new Type[]
-    {
+    private static readonly Type[] GreaterThenTypes =
+    [
         typeof(byte),
         typeof(short),
         typeof(int),
@@ -87,7 +83,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         typeof(float),
         typeof(double),
         typeof(decimal),
-    };
+    ];
 
     #endregion
 
@@ -107,10 +103,10 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         {
             foreach (var cr in criterionResolutions)
             {
-                if (options.TryGetPropertyOptions(cr.FilterPropertyInfo, out var propertyOptions))
+                if (options.TryGetPropertyOptions(cr.FilterPropertyInfo, out var propertyOptions)
+                    && propertyOptions.PredicateFactory is not null)
                 {
-                    if (propertyOptions.PredicateFactory is not null)
-                        cr.AddPredicateFactory(propertyOptions.PredicateFactory);
+                    cr.AddPredicateFactory(propertyOptions.PredicateFactory);
                 }
             }
         }
@@ -146,7 +142,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
                 }
 
         // check if all resolution are satisfied, if any pending, then return.
-        if (criterionResolutions.Any(cr => cr.IsPending))
+        if (criterionResolutions.Exists(cr => cr.IsPending))
             return null;
 
         // creates a function to apply the filter in a query.
@@ -160,7 +156,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
     {
         var filterParam = Expression.Parameter(typeof(TFilter), "filter");
         var queryParam = Expression.Parameter(typeof(IQueryable<TModel>), "query");
-        List<Expression> body = new();
+        List<Expression> body = [];
 
         foreach (var resolution in resolvedProperties)
         {
@@ -195,7 +191,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
                     typeof(TModel),
                     typeof(bool));
 
-                // create the lamdba expression for the queryable
+                // create the lambda expression for the queryable
                 var lambda = Expression.Lambda(predicateType, operatorExpression, targetParam);
 
                 predicateExpression = lambda;
@@ -275,7 +271,7 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
             case CriterionOperator.Like:
                 expression = Expression.Call(
                     targetMemberAccess,
-                    typeof(string).GetMethod("Contains", new[] { typeof(string) })!,
+                    typeof(string).GetMethod("Contains", [typeof(string)])!,
                     filterMemberAccess);
                 break;
             case CriterionOperator.Contains:
@@ -339,22 +335,24 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
         {
             return CriterionOperator.In;
         }
-        //else if (PropertyFilter.GreaterThanOrEqualSuffix.Any(filterProperty.PropertyName.EndsWith))
-        //{
-        //    return CriterionOperator.GreaterThanOrEqual;
-        //}
-        //else if (PropertyFilter.GreaterThanSuffix.Any(filterProperty.PropertyName.EndsWith))
-        //{
-        //    return CriterionOperator.GreaterThan;
-        //}
-        //else if (PropertyFilter.LessThanOrEqualSuffix.Any(filterProperty.PropertyName.EndsWith))
-        //{
-        //    return CriterionOperator.LessThanOrEqual;
-        //}
-        //else if (PropertyFilter.LessThanSuffix.Any(filterProperty.PropertyName.EndsWith))
-        //{
-        //    return CriterionOperator.LessThan;
-        //}
+
+        // think about this
+        ////else if (PropertyFilter.GreaterThanOrEqualSuffix.Any(filterProperty.PropertyName.EndsWith))
+        ////{
+        ////    return CriterionOperator.GreaterThanOrEqual;
+        ////}
+        ////else if (PropertyFilter.GreaterThanSuffix.Any(filterProperty.PropertyName.EndsWith))
+        ////{
+        ////    return CriterionOperator.GreaterThan;
+        ////}
+        ////else if (PropertyFilter.LessThanOrEqualSuffix.Any(filterProperty.PropertyName.EndsWith))
+        ////{
+        ////    return CriterionOperator.LessThanOrEqual;
+        ////}
+        ////else if (PropertyFilter.LessThanSuffix.Any(filterProperty.PropertyName.EndsWith))
+        ////{
+        ////    return CriterionOperator.LessThan;
+        ////}
 
         return CriterionOperator.Equal;
     }
@@ -484,15 +482,15 @@ public class DefaultSpecifierFunctionGenerator : ISpecifierFunctionGenerator
             }
         }
 
-        //// check if both types are assinable to IEnumerable, and generic, and compare the args
-        //if (typeof(IEnumerable).IsAssignableFrom(filterPropertyType)
-        //    && typeof(IEnumerable).IsAssignableFrom(modelPropertyType)
-        //    && filterPropertyType.IsGenericType
-        //    && modelPropertyType.IsGenericType
-        //    && filterPropertyType.GetGenericArguments()[0] == modelPropertyType.GetGenericArguments()[0])
-        //{
-        //    return true;
-        //} ---> for now, it's not possible to apply a condition for this case.
+        ////// check if both types are assignable to IEnumerable, and generic, and compare the args
+        ////if (typeof(IEnumerable).IsAssignableFrom(filterPropertyType)
+        ////    && typeof(IEnumerable).IsAssignableFrom(modelPropertyType)
+        ////    && filterPropertyType.IsGenericType
+        ////    && modelPropertyType.IsGenericType
+        ////    && filterPropertyType.GetGenericArguments()[0] == modelPropertyType.GetGenericArguments()[0])
+        ////{
+        ////    return true;
+        ////} ---> for now, it's not possible to apply a condition for this case.
 
         return false;
     }

@@ -12,7 +12,7 @@ public static class NullableExtensions
     /// <returns>True if it is nullable, false otherwise.</returns>
     public static bool IsNullableType(this Type type)
     {
-        return type.GetNullabeUnderlyingType() is not null;
+        return type.GetNullableUnderlyingType() is not null;
     }
 
     /// <summary>
@@ -22,7 +22,7 @@ public static class NullableExtensions
     /// <returns>True if it is not nullable, false otherwise.</returns>
     public static bool IsNotNullableType(this Type type)
     {
-        return type.GetNullabeUnderlyingType() is null;
+        return type.GetNullableUnderlyingType() is null;
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public static class NullableExtensions
     /// </summary>
     /// <param name="type">Type to check.</param>
     /// <returns>The underlying type if it is nullable, null otherwise.</returns>
-    public static Type? GetNullabeUnderlyingType(this Type type)
+    public static Type? GetNullableUnderlyingType(this Type type)
     {
         if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             return Nullable.GetUnderlyingType(type);

@@ -1,4 +1,5 @@
-﻿
+﻿// Ignore Spelling: sortings
+
 namespace RoyalCode.Searches.Abstractions;
 
 /// <summary>

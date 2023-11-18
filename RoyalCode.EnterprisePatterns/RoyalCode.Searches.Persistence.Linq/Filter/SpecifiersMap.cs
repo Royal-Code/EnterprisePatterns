@@ -1,5 +1,4 @@
-﻿using RoyalCode.Searches.Persistence.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace RoyalCode.Searches.Persistence.Linq.Filter;
 
@@ -14,13 +13,13 @@ internal sealed class SpecifiersMap
 
     private readonly Dictionary<(Type, Type), object> specifiers = new();
 
+    public object this[(Type, Type) key] => specifiers[key];
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool ContainsKey((Type, Type) key) => specifiers.ContainsKey(key);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Add((Type, Type) key, object value) => specifiers.Add(key, value);
-
-    public object this[(Type, Type) key] => specifiers[key];
 
     public void Add<TModel, TFilter>(ISpecifier<TModel, TFilter> specifier)
         where TModel : class

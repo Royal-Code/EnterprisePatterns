@@ -1,3 +1,5 @@
+// Ignore Spelling: Sortings
+
 using System.Linq.Expressions;
 using RoyalCode.Searches.Abstractions;
 
@@ -67,7 +69,7 @@ public class SearchCriteria
     public void AddFilter<TFilter>(Type modelType, TFilter filter)
         where TFilter : class
     {
-        filters ??= new List<SearchFilter>();
+        filters ??= [];
         filters.Add(new SearchFilter<TFilter>(modelType, filter));
     }
 
@@ -77,7 +79,7 @@ public class SearchCriteria
     /// <param name="sorting">The sorting definition.</param>
     public void AddSorting(ISorting sorting)
     {
-        sortings ??= new List<ISorting>();
+        sortings ??= [];
         sortings.Add(sorting);
     }
 

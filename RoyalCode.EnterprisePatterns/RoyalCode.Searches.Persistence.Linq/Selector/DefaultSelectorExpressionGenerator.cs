@@ -75,7 +75,7 @@ public sealed class DefaultSelectorExpressionGenerator : ISelectorExpressionGene
             return false;
 
         // for each property, check if was matched, check types, and create a resolution
-        // if has an unmatch property, return null.
+        // if has an unmatched property, return null.
         var list = new List<SelectResolution>();
         foreach (var item in match.PropertyMatches)
         {
