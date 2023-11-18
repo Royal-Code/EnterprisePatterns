@@ -18,7 +18,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '7.0.x'
+          dotnet-version: '8.0.x'
           include-prerelease: true
 
       - name: Build and pack Entities
@@ -26,25 +26,16 @@ jobs:
         
       - name: Build and pack Repositories Abstractions
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Repositories.Abstractions/RoyalCode.Repositories.Abstractions.csproj -c Release
-
-      - name: Build and pack Searches Abstractions
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Searches.Abstractions/RoyalCode.Searches.Abstractions.csproj -c Release
         
       - name: Build and pack Unit Of Work Abstractions
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.UnitOfWork.Abstractions/RoyalCode.UnitOfWork.Abstractions.csproj -c Release
       
       - name: Build and pack Work Context Abstractions
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.Abstractions/RoyalCode.WorkContext.Abstractions.csproj -c Release
-        
-      - name: Build and pack Persistence Search Abstractions
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.Searches.Abstractions/RoyalCode.Persistence.Searches.Abstractions.csproj -c Release
-        
+                
       - name: Build and pack Persistence EF Repositories
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.Repositories/RoyalCode.Persistence.EntityFramework.Repositories.csproj -c Release
-        
-      - name: Build and pack Persistence EF Search
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.Searches/RoyalCode.Persistence.EntityFramework.Searches.csproj -c Release
-        
+                
       - name: Build and pack Persistence EF Unit Of Work
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.UnitOfWork/RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj -c Release
         
