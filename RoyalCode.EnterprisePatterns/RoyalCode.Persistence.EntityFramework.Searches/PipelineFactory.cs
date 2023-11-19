@@ -29,7 +29,7 @@ public sealed class PipelineFactory<TDbContext> : IPipelineFactory<TDbContext>
         TDbContext db,
         ISpecifierFactory specifierFactory,
         IOrderByProvider orderByProvider,
-        ISelectorFactory selectorFactory)
+        ISelectorFactory selectorFactory) // criar um queryable interceptor e usar junto com o queryable provider
     {
         this.db = db;
         this.specifierFactory = specifierFactory;

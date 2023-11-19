@@ -92,15 +92,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Commands.Automati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Commands.AspNetCore", "RoyalCode.Commands.AspNetCore\RoyalCode.Commands.AspNetCore.csproj", "{671A631E-884F-4F3F-8435-C6B3A7782F18}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Searches", "Searches", "{D155578A-4CEA-4BD7-B566-8D4982AF0B68}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Results", "Results", "{61EA8808-DA44-4352-AB00-DEE7F5988681}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.OperationResult.TestApi", "RoyalCode.OpearationResult.TestApi\RoyalCode.OperationResult.TestApi.csproj", "{72952788-6EE6-4E43-9766-B55BA10AD0EE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Searches", "Searches", "{39B801C7-9236-4637-A5F9-3AFCCA36BC71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Searches.Persistence.Linq", "RoyalCode.Searches.Persistence.Linq\RoyalCode.Searches.Persistence.Linq.csproj", "{B918E699-F628-4E89-B982-7CBF5DED24CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Searches.Persistence.Linq", "RoyalCode.Searches.Persistence.Linq\RoyalCode.Searches.Persistence.Linq.csproj", "{B918E699-F628-4E89-B982-7CBF5DED24CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.OperationHint.Abstractions", "RoyalCode.OperationHint.Abstractions\RoyalCode.OperationHint.Abstractions.csproj", "{425B872B-ECE3-4691-A6C0-22FCD9474BBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -232,6 +232,10 @@ Global
 		{B918E699-F628-4E89-B982-7CBF5DED24CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B918E699-F628-4E89-B982-7CBF5DED24CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B918E699-F628-4E89-B982-7CBF5DED24CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{425B872B-ECE3-4691-A6C0-22FCD9474BBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{425B872B-ECE3-4691-A6C0-22FCD9474BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{425B872B-ECE3-4691-A6C0-22FCD9474BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{425B872B-ECE3-4691-A6C0-22FCD9474BBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -275,11 +279,11 @@ Global
 		{158C26A7-315B-44ED-BC47-4F43A85FE5FB} = {4847AB47-2B45-4A3A-BF3B-7F010F21ED86}
 		{E1FED657-EB01-460E-9AA8-B03761F0F884} = {B5A9FFDD-0C5F-4D1D-9196-56A0E49792C9}
 		{671A631E-884F-4F3F-8435-C6B3A7782F18} = {B5A9FFDD-0C5F-4D1D-9196-56A0E49792C9}
-		{D155578A-4CEA-4BD7-B566-8D4982AF0B68} = {BC2C235F-E382-4286-8BB3-8C8E590D81F2}
 		{61EA8808-DA44-4352-AB00-DEE7F5988681} = {D91CABB8-AE3F-4FE8-B8E3-DEDBD6C2EDB6}
 		{72952788-6EE6-4E43-9766-B55BA10AD0EE} = {61EA8808-DA44-4352-AB00-DEE7F5988681}
 		{39B801C7-9236-4637-A5F9-3AFCCA36BC71} = {1C6A6956-9DA6-45C6-AADA-3E42CEA8F8E6}
 		{B918E699-F628-4E89-B982-7CBF5DED24CD} = {39B801C7-9236-4637-A5F9-3AFCCA36BC71}
+		{425B872B-ECE3-4691-A6C0-22FCD9474BBC} = {4847AB47-2B45-4A3A-BF3B-7F010F21ED86}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FAC6C2E-62DE-4665-BB16-4E7D445FAB26}

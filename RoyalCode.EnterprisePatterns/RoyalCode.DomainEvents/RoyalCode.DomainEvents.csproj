@@ -3,9 +3,10 @@
 	<Import Project="..\libs.targets" />
 	
 	<PropertyGroup>
-		<Version>1.0.0-preview1</Version>
-		<AssemblyVersion>1.0.0</AssemblyVersion>
-		<FileVersion>1.0.0</FileVersion>
+		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
+		<Version>$(DomainVer)$(DomainPreview)</Version>
+		<AssemblyVersion>$(DomainVer)</AssemblyVersion>
+		<FileVersion>$(DomainVer)</FileVersion>
 		<Description>
 			Abstract components for the Domain Event Pattern.
 		</Description>
