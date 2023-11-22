@@ -1,4 +1,5 @@
-﻿using RoyalCode.Repositories.Abstractions;
+﻿using RoyalCode.OperationHint.Abstractions;
+using RoyalCode.Repositories.Abstractions;
 using RoyalCode.Searches.Abstractions;
 using RoyalCode.UnitOfWork.Abstractions;
 
@@ -24,4 +25,4 @@ namespace RoyalCode.WorkContext.Abstractions;
 ///     and the services that are provided is part of the persistence unit.
 /// </para>
 /// </summary>
-public interface IWorkContext : IUnitOfWork, IEntityManager, ISearchable { }
+public interface IWorkContext : IUnitOfWork, IEntityManager, ISearchable, IHintsContainer { }

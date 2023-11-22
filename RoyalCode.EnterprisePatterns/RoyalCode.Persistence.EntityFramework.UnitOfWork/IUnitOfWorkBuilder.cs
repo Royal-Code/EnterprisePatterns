@@ -13,9 +13,7 @@ namespace RoyalCode.Persistence.EntityFramework.UnitOfWork;
 ///     It is designed to work with dependency injection.
 /// </para>
 /// </summary>
-/// <typeparam name="TDbContext">The type of DbContext for the unit of work.</typeparam>
-public interface IUnitOfWorkBuilder<out TDbContext>
-    where TDbContext : DbContext
+public interface IUnitOfWorkBuilder
 {
     /// <summary>
     /// The service collection.
@@ -26,7 +24,20 @@ public interface IUnitOfWorkBuilder<out TDbContext>
     /// The <see cref="ServiceLifetime"/> used for register the services and the <see cref="DbContext"/>.
     /// </summary>
     ServiceLifetime Lifetime { get; }
+}
 
+/// <summary>
+/// <para>
+///     Interface to configure one unit of work with the DbContext.
+/// </para>
+/// <para>
+///     It is designed to work with dependency injection.
+/// </para>
+/// </summary>
+/// <typeparam name="TDbContext">The type of DbContext for the unit of work.</typeparam>
+public interface IUnitOfWorkBuilder<out TDbContext> : IUnitOfWorkBuilder
+    where TDbContext : DbContext
+{
     /// <summary>
     /// Configure the <see cref="DbContext"/> for the unit of work as pooled.
     /// </summary>

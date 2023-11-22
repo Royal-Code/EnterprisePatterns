@@ -52,7 +52,7 @@ public class WorkContextBuilderTests
         Assert.Same(context, searchable);
         
         var repo = sp.GetService<IRepository<Person>>();
-        var contextRepo = context!.GetRepository<Person>();
+        var contextRepo = context!.Repository<Person>();
         Assert.NotNull(repo);
         Assert.NotNull(contextRepo);
         Assert.Same(repo, contextRepo);

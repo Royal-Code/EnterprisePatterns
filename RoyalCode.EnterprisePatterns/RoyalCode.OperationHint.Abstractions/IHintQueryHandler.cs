@@ -1,5 +1,4 @@
-﻿
-namespace RoyalCode.OperationHint.Abstractions;
+﻿namespace RoyalCode.OperationHint.Abstractions;
 
 /// <summary>
 /// <para>
@@ -9,11 +8,11 @@ namespace RoyalCode.OperationHint.Abstractions;
 ///     The hint handler can apply some logic to the query based on the hint.
 /// </para>
 /// </summary>
-/// <typeparam name="TEntity">The type of the entity.</typeparam>
+/// <typeparam name="TQuery">The type of the query.</typeparam>
 /// <typeparam name="THint">The type of the hint.</typeparam>
-public interface IHintHandler<TEntity, THint>
-    where TEntity: class
-    where THint: Enum
+public interface IHintQueryHandler<TQuery, in THint>
+    where TQuery : class
+    where THint : Enum
 {
     /// <summary>
     /// <para>
@@ -26,5 +25,5 @@ public interface IHintHandler<TEntity, THint>
     /// <param name="query">The query to handle.</param>
     /// <param name="hint">The hint to handle.</param>
     /// <returns>The query after handling the hint.</returns>
-    IQueryable<TEntity> Handle(IQueryable<TEntity> query, THint hint);
+    TQuery Handle(TQuery query, THint hint);
 }

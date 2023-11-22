@@ -16,6 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\RoyalCode.OperationHint.Abstractions\RoyalCode.OperationHint.Abstractions.csproj" />
 	  <ProjectReference Include="..\RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj" />
 	</ItemGroup>
 

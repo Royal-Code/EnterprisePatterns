@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.Persistence.EntityFramework.Repositories;
 using RoyalCode.Persistence.EntityFramework.UnitOfWork;
 using RoyalCode.Repositories.Abstractions;
@@ -29,6 +30,13 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     }
 
     /// <inheritdoc />
+    public void AddHint<THint>(THint hint) where THint : Enum
+    {
+        var container = serviceProvider.GetService<IHintsContainer>();
+        container?.AddHint(hint);
+    }
+
+    /// <inheritdoc />
     public IAllEntities<TEntity> All<TEntity>() where TEntity : class
     {
         var search = serviceProvider.GetService<Searches.Persistence.EntityFramework.Internals.IAllEntities<TDbContext, TEntity>>();
@@ -47,7 +55,7 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     }
 
     /// <inheritdoc />
-    public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
+    public IRepository<TEntity> Repository<TEntity>() where TEntity : class
     {
         var repository = serviceProvider.GetService<IRepository<TDbContext, TEntity>>();
         return repository is null

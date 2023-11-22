@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RoyalCode.Entities;
+using RoyalCode.OperationHint.Abstractions;
+using System.Runtime.CompilerServices;
 
 namespace RoyalCode.Persistence.EntityFramework.Repositories;
 
@@ -15,6 +17,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     where TDbContext: DbContext
 {
     private readonly TDbContext db;
+    private readonly IHintPerformer? hintPerformer;
 
     /// <summary>
     /// <para>
@@ -22,22 +25,42 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     /// </para>
     /// </summary>
     /// <param name="dbContext">The DbContext for work.</param>
+    /// <param name="hintPerformer">Optional, hint performer for initialize query with hints.</param>
     /// <exception cref="ArgumentNullException">
     /// <para>
     ///     If the context is null.
     /// </para>
     /// </exception>
-    public Repository(TDbContext dbContext)
+    public Repository(TDbContext dbContext, IHintPerformer? hintPerformer = null)
     {
         db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        this.hintPerformer = hintPerformer;
     }
-    
+
     /// <inheritdoc/>
-    public TEntity? Find(object id) => db.Set<TEntity>().Find(id);
-    
+    public TEntity? Find(object id)
+    {
+        var entity = db.Set<TEntity>().Find(id);
+
+        if (hintPerformer is not null && entity is not null)
+            hintPerformer.Perform<TEntity, DbContext>(entity, db);
+
+        return entity;
+    }
+
     /// <inheritdoc/>
     public async ValueTask<TEntity?> FindAsync(object id, CancellationToken token = default)
-        => await db.Set<TEntity>().FindAsync(new object[] { id }, token);
+    {
+        if (id is null)
+            return null;
+
+        var entity = await db.Set<TEntity>().FindAsync([ id ], token);
+
+        if (hintPerformer is not null && entity is not null)
+            hintPerformer.Perform<TEntity, DbContext>(entity, db);
+
+        return entity;
+    }
     
     /// <inheritdoc/>
     public void Add(TEntity entity) 
@@ -59,7 +82,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
         if (model is null)
             throw new ArgumentNullException(nameof(model));
 
-        var entity = db.Set<TEntity>().Find(model.Id);
+        var entity = Find(model.Id!);
         if (entity is null)
             return false;
 
@@ -75,7 +98,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
         if (model is null)
             throw new ArgumentNullException(nameof(model));
 
-        var entity = await db.Set<TEntity>().FindAsync(new object[] { model.Id! }, token);
+        var entity = await FindAsync(model.Id!, token);
         if (entity is null)
             return false;
 
@@ -95,7 +118,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     /// <inheritdoc/>
     public TEntity? Delete(object id)
     {
-        var entity = db.Set<TEntity>().Find(id);
+        var entity = Find(id);
 
         if (entity is not null)
             db.Entry(entity).State = EntityState.Deleted;
@@ -106,11 +129,26 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     /// <inheritdoc/>
     public async Task<TEntity?> DeleteAsync(object id, CancellationToken token = default)
     {
-        var entity = await db.Set<TEntity>().FindAsync(new object[] { id }, token);
+        var entity = await FindAsync(id, token);
 
         if (entity != null)
             db.Entry(entity).State = EntityState.Deleted;
 
         return entity;
+    }
+
+    /// <summary>
+    /// Get queryable for entity, with hints performed if exists.
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected IQueryable<TEntity> GetQueryable()
+    {
+        IQueryable<TEntity> query = db.Set<TEntity>();
+
+        if (hintPerformer is not null)
+            query = hintPerformer.Perform(query);
+
+        return query;
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.Persistence.EntityFramework.UnitOfWork;
 using RoyalCode.Persistence.EntityFramework.WorkContext;
 using RoyalCode.Repositories.Abstractions;
@@ -48,5 +50,50 @@ public static class WorkContextServiceCollectionExtensions
             lifetime));
 
         return services.AddUnitOfWork<TDbContext>(lifetime);
+    }
+
+    public static IUnitOfWorkBuilder<TDbContext> ConfigureOperationHints<TDbContext>(
+        this IUnitOfWorkBuilder<TDbContext> builder,
+        Action<IHintHandlerRegistry>? configure = null)
+        where TDbContext : DbContext
+    {
+        builder.Services.TryAdd(ServiceDescriptor.Describe(
+            typeof(DefaultHintPerformer),
+            typeof(DefaultHintPerformer),
+            builder.Lifetime));
+
+        builder.Services.TryAdd(ServiceDescriptor.Describe(
+            typeof(IHintPerformer),
+            sp => sp.GetService<DefaultHintPerformer>()!,
+            builder.Lifetime));
+
+        builder.Services.TryAdd(ServiceDescriptor.Describe(
+            typeof(IHintsContainer),
+            sp => sp.GetService<DefaultHintPerformer>()!,
+            builder.Lifetime));
+
+        if (configure is not null)
+        {
+            var registry = builder.Services.GetOrAddHintHandlerRegistry();
+            configure(registry);
+        }
+        
+        return builder;
+    }
+
+    private static IHintHandlerRegistry GetOrAddHintHandlerRegistry(this IServiceCollection services)
+    {
+        var descriptor = services.FirstOrDefault(d => d.ServiceType == typeof(IHintHandlerRegistry)
+            && d.ImplementationType is not null
+            && d.ImplementationType.IsAssignableTo(typeof(DefaultHintHandlerRegistry)));
+
+        if (descriptor is not null)
+        {
+            return (IHintHandlerRegistry)descriptor.ImplementationInstance!;
+        }
+
+        var registry = new DefaultHintHandlerRegistry();
+        services.AddSingleton<IHintHandlerRegistry>(registry);
+        return registry;
     }
 }

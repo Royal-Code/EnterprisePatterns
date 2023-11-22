@@ -25,6 +25,6 @@ public interface IEntityManager
     ///     If the repository for the entity type is not found. 
     ///     It's happens when the entity type is not registered in the persistence unit.
     /// </exception>
-    IRepository<TEntity> GetRepository<TEntity>()
+    IRepository<TEntity> Repository<TEntity>()
         where TEntity : class;
 }

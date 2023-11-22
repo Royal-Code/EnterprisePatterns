@@ -62,7 +62,7 @@ public sealed class CreateCommandHandler<TEntity, TModel>
         }
 
         var entity = creationHandler.Create(model);
-        context.GetRepository<TEntity>().Add(entity);
+        context.Repository<TEntity>().Add(entity);
 
         var saveResult = await context.SaveAsync(token);
         return saveResult.Convert(entity);
@@ -139,7 +139,7 @@ public sealed class CreateCommandHandler<TEntity, TModel, TContext>
         }
 
         var entity = creationHandler.Create(creationContext);
-        context.GetRepository<TEntity>().Add(entity);
+        context.Repository<TEntity>().Add(entity);
 
         var saveResult = await context.SaveAsync(token);
         return saveResult.Convert(entity);
@@ -209,7 +209,7 @@ public sealed class CreateCommandHandler<TRootEntity, TRootId, TEntity, TModel, 
                 return error;
         }
 
-        var rootEntity = await context.GetRepository<TRootEntity>().FindAsync(id!);
+        var rootEntity = await context.Repository<TRootEntity>().FindAsync(id!);
         if (rootEntity is null)
             return ResultMessage.NotFound(CommandsErrorMessages.CreateNotFoundMessage<TRootEntity>(id), nameof(id));
 
@@ -225,7 +225,7 @@ public sealed class CreateCommandHandler<TRootEntity, TRootId, TEntity, TModel, 
         }
 
         var entity = creationHandler.Create(creationContext);
-        context.GetRepository<TEntity>().Add(entity);
+        context.Repository<TEntity>().Add(entity);
 
         var saveResult = await context.SaveAsync(token);
         return saveResult.Convert(entity);

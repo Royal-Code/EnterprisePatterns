@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.Searches.Persistence.Abstractions.Pipeline;
 using RoyalCode.Searches.Persistence.EntityFramework.Internals;
 using RoyalCode.Searches.Persistence.Linq.Filter;
@@ -15,6 +16,7 @@ public sealed class PipelineFactory<TDbContext> : IPipelineFactory<TDbContext>
     private readonly ISpecifierFactory specifierFactory;
     private readonly IOrderByProvider orderByProvider;
     private readonly ISelectorFactory selectorFactory;
+    private readonly IHintPerformer? hintPerformer;
 
     /// <summary>
     /// <para>
@@ -25,16 +27,19 @@ public sealed class PipelineFactory<TDbContext> : IPipelineFactory<TDbContext>
     /// <param name="specifierFactory">The specifier factory.</param>
     /// <param name="orderByProvider">The order by provider.</param>
     /// <param name="selectorFactory">The selector factory.</param>
+    /// <param name="hintPerformer">Optional, the hint performer.</param>
     public PipelineFactory(
         TDbContext db,
         ISpecifierFactory specifierFactory,
         IOrderByProvider orderByProvider,
-        ISelectorFactory selectorFactory) // criar um queryable interceptor e usar junto com o queryable provider
+        ISelectorFactory selectorFactory,
+        IHintPerformer? hintPerformer = null)
     {
         this.db = db;
         this.specifierFactory = specifierFactory;
         this.orderByProvider = orderByProvider;
         this.selectorFactory = selectorFactory;
+        this.hintPerformer = hintPerformer;
     }
 
     /// <inheritdoc />
@@ -57,7 +62,7 @@ public sealed class PipelineFactory<TDbContext> : IPipelineFactory<TDbContext>
     /// <inheritdoc />
     public IAllEntitiesPipeline<TEntity> CreateAllEntities<TEntity>() where TEntity : class
     {
-        var queryableProvider = new QueryableProvider<TDbContext, TEntity>(db, true);
+        var queryableProvider = new QueryableProvider<TDbContext, TEntity>(db, true, hintPerformer);
         var sorter = new DefaultSorter<TEntity>(orderByProvider);
         return new AllEntitiesPipeline<TEntity>(queryableProvider, specifierFactory, sorter);
     }

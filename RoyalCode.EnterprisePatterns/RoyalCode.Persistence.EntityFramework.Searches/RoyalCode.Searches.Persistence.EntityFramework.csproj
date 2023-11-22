@@ -20,6 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\RoyalCode.OperationHint.Abstractions\RoyalCode.OperationHint.Abstractions.csproj" />
 	  <ProjectReference Include="..\RoyalCode.Searches.Persistence.Linq\RoyalCode.Searches.Persistence.Linq.csproj" />
 	</ItemGroup>
 
