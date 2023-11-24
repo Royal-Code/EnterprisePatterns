@@ -71,7 +71,7 @@ public interface IUnitOfWorkBuilder<out TDbContext> : IUnitOfWorkBuilder
     /// </summary>
     /// <param name="configureAction">Action to configure.</param>
     /// <returns>The same instance.</returns>
-    IUnitOfWorkBuilder<TDbContext> ConfigureRepositories(Action<IRepositoryConfigurer<TDbContext>> configureAction);
+    IUnitOfWorkBuilder<TDbContext> ConfigureRepositories(Action<IRepositoriesBuilder<TDbContext>> configureAction);
 
     /// <summary>
     /// Configure the searches for the unit of work.

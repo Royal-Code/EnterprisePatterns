@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.Persistence.EntityFramework.UnitOfWork;
 using RoyalCode.Persistence.EntityFramework.WorkContext;
@@ -52,25 +51,19 @@ public static class WorkContextServiceCollectionExtensions
         return services.AddUnitOfWork<TDbContext>(lifetime);
     }
 
+    /// <summary>
+    /// Configure the operation hints for the unit of work.
+    /// </summary>
+    /// <typeparam name="TDbContext">The type of the DbContext used in the work context.</typeparam>
+    /// <param name="builder">The unit of work builder.</param>
+    /// <param name="configure">The action to configure the operation hints.</param>
+    /// <returns>The same instance of <paramref name="builder"/> for chaining.</returns>
     public static IUnitOfWorkBuilder<TDbContext> ConfigureOperationHints<TDbContext>(
         this IUnitOfWorkBuilder<TDbContext> builder,
         Action<IHintHandlerRegistry>? configure = null)
         where TDbContext : DbContext
     {
-        builder.Services.TryAdd(ServiceDescriptor.Describe(
-            typeof(DefaultHintPerformer),
-            typeof(DefaultHintPerformer),
-            builder.Lifetime));
-
-        builder.Services.TryAdd(ServiceDescriptor.Describe(
-            typeof(IHintPerformer),
-            sp => sp.GetService<DefaultHintPerformer>()!,
-            builder.Lifetime));
-
-        builder.Services.TryAdd(ServiceDescriptor.Describe(
-            typeof(IHintsContainer),
-            sp => sp.GetService<DefaultHintPerformer>()!,
-            builder.Lifetime));
+        builder.Services.AddOperationHints();
 
         if (configure is not null)
         {
@@ -79,21 +72,5 @@ public static class WorkContextServiceCollectionExtensions
         }
         
         return builder;
-    }
-
-    private static IHintHandlerRegistry GetOrAddHintHandlerRegistry(this IServiceCollection services)
-    {
-        var descriptor = services.FirstOrDefault(d => d.ServiceType == typeof(IHintHandlerRegistry)
-            && d.ImplementationType is not null
-            && d.ImplementationType.IsAssignableTo(typeof(DefaultHintHandlerRegistry)));
-
-        if (descriptor is not null)
-        {
-            return (IHintHandlerRegistry)descriptor.ImplementationInstance!;
-        }
-
-        var registry = new DefaultHintHandlerRegistry();
-        services.AddSingleton<IHintHandlerRegistry>(registry);
-        return registry;
     }
 }

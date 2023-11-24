@@ -93,12 +93,12 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     }
 
     /// <inheritdoc />
-    public IUnitOfWorkBuilder<TDbContext> ConfigureRepositories(Action<IRepositoryConfigurer<TDbContext>> configureAction)
+    public IUnitOfWorkBuilder<TDbContext> ConfigureRepositories(Action<IRepositoriesBuilder<TDbContext>> configureAction)
     {
         if (configureAction is null)
             throw new ArgumentNullException(nameof(configureAction));
 
-        var repositoryConfigurer = new RepositoryConfigurer<TDbContext>(services, lifetime);
+        var repositoryConfigurer = new RepositoriesBuilder<TDbContext>(services, lifetime);
         configureAction(repositoryConfigurer);
         return this;
     }

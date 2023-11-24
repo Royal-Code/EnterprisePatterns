@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RoyalCode.OperationHint.Abstractions;
 
 namespace RoyalCode.Persistence.EntityFramework.Repositories.Configurations;
 
@@ -6,7 +7,7 @@ namespace RoyalCode.Persistence.EntityFramework.Repositories.Configurations;
 ///    Configure repositories for the unit of work.
 /// </summary>
 /// <typeparam name="TDbContext">The type of the database context.</typeparam>
-public interface IRepositoryConfigurer<out TDbContext>
+public interface IRepositoriesBuilder<out TDbContext>
     where TDbContext : DbContext
 {
     /// <summary>
@@ -14,6 +15,13 @@ public interface IRepositoryConfigurer<out TDbContext>
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <returns>The same instance.</returns>
-    IRepositoryConfigurer<TDbContext> Add<TEntity>()
+    IRepositoriesBuilder<TDbContext> Add<TEntity>()
         where TEntity : class;
+
+    /// <summary>
+    /// Allows the configuration of hints for repository operations.
+    /// </summary>
+    /// <param name="configure">The configuration action.</param>
+    /// <returns>The same instance.</returns>
+    IRepositoriesBuilder<TDbContext> ConfigureOperationHints(Action<IHintHandlerRegistry> configure);
 }

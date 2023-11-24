@@ -23,7 +23,8 @@ public class DefaultHintHandlerRegistry : IHintHandlerRegistry
         where TQuery : class
         where THint : Enum
     {
-        handlers.Add(handler);
+        if (!handlers.Contains(handler))
+            handlers.Add(handler);
         return this;
     }
 
@@ -33,7 +34,8 @@ public class DefaultHintHandlerRegistry : IHintHandlerRegistry
         where TSource : class
         where THint : Enum
     {
-        handlers.Add(handler);
+        if (!handlers.Contains(handler))
+            handlers.Add(handler);
         return this;
     }
 
