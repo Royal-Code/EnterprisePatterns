@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 
-namespace RoyalCode.Persistence.EntityFramework.Repositories.Hints;
+namespace RoyalCode.EntityFramework.OperationHint.Internals;
 
 internal sealed class EntryIncludes<TEntity> : Includes<TEntity> where TEntity : class
 {
@@ -12,14 +12,14 @@ internal sealed class EntryIncludes<TEntity> : Includes<TEntity> where TEntity :
         this.entry = entry;
     }
 
-    public override Includes<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty?>> expression)
+    public override Includes<TEntity> IncludeReference<TProperty>(Expression<Func<TEntity, TProperty?>> expression)
         where TProperty : class
     {
         entry.Reference(expression).Load();
         return this;
     }
 
-    public override Includes<TEntity> Include<TProperty>(Expression<Func<TEntity, IEnumerable<TProperty>>> expression) where TProperty : class
+    public override Includes<TEntity> IncludeCollection<TProperty>(Expression<Func<TEntity, IEnumerable<TProperty>>> expression) where TProperty : class
     {
         entry.Collection(expression).Load();
         return this;

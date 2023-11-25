@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.OperationHint.Abstractions;
 
-namespace RoyalCode.Persistence.EntityFramework.Repositories.Hints;
+namespace RoyalCode.EntityFramework.OperationHint.Internals;
 
 internal sealed class HintHandlerBuilder<THint> : IHintHandlerBuilder<THint>
     where THint : Enum

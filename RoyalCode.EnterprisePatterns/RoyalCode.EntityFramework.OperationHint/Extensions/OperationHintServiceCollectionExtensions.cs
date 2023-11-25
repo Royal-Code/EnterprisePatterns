@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using RoyalCode.EntityFramework.OperationHint;
+using RoyalCode.EntityFramework.OperationHint.Internals;
 using RoyalCode.OperationHint.Abstractions;
-using RoyalCode.Persistence.EntityFramework.Repositories.Hints;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Extensions methods for add operation hints to the service collection.
 /// </summary>
-public static class RepositoryHintsExtensions
+public static class OperationHintServiceCollectionExtensions
 {
     /// <summary>
     /// Add base services for operation hints.
@@ -19,17 +19,20 @@ public static class RepositoryHintsExtensions
     public static IServiceCollection AddOperationHints(this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
-        services.TryAdd(ServiceDescriptor.Describe(
+        if (services.Any(d => d.ServiceType == typeof(DefaultHintPerformer)))
+            return services;
+
+        services.Add(ServiceDescriptor.Describe(
             typeof(DefaultHintPerformer),
             typeof(DefaultHintPerformer),
             lifetime));
 
-        services.TryAdd(ServiceDescriptor.Describe(
+        services.Add(ServiceDescriptor.Describe(
             typeof(IHintPerformer),
             sp => sp.GetService<DefaultHintPerformer>()!,
             lifetime));
 
-        services.TryAdd(ServiceDescriptor.Describe(
+        services.Add(ServiceDescriptor.Describe(
             typeof(IHintsContainer),
             sp => sp.GetService<DefaultHintPerformer>()!,
             lifetime));

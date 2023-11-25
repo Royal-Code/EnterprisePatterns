@@ -8,25 +8,20 @@
 		<FileVersion>$(PersistVer)</FileVersion>
 		<Description>
 			Persistence components implementation with EntityFrameworkCore,
-			including the handling of repositories.
+			for work with Operation Hint.
 		</Description>
 		<PackageTags>
-			RoyalCode Enterprise-Patterns Persistence Repository-Pattern Repository
+			RoyalCode Enterprise-Patterns Persistence OperationHint Operation-Hint-Pattern
 		</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\RoyalCode.EntityFramework.OperationHint\RoyalCode.EntityFramework.OperationHint.csproj" />
-	  <ProjectReference Include="..\RoyalCode.OperationHint.Abstractions\RoyalCode.OperationHint.Abstractions.csproj" />
-	  <ProjectReference Include="..\RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj" />
+		<ProjectReference Include="..\RoyalCode.OperationHint.Abstractions\RoyalCode.OperationHint.Abstractions.csproj" />
+		<ProjectReference Include="..\RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Extesions\" />
 	</ItemGroup>
 
 </Project>

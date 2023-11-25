@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RoyalCode.EntityFramework.OperationHint.Internals;
 using RoyalCode.OperationHint.Abstractions;
 
-namespace RoyalCode.Persistence.EntityFramework.Repositories.Hints;
+namespace RoyalCode.EntityFramework.OperationHint;
 
 /// <summary>
 /// Base class for hint handlers for Entity Framework.

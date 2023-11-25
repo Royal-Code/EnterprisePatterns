@@ -1,5 +1,5 @@
 ﻿
-namespace RoyalCode.Persistence.EntityFramework.Repositories.Hints;
+namespace RoyalCode.EntityFramework.OperationHint;
 
 /// <summary>
 /// <para>

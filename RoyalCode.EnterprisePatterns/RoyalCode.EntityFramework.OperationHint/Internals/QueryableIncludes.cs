@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace RoyalCode.Persistence.EntityFramework.Repositories.Hints;
+namespace RoyalCode.EntityFramework.OperationHint.Internals;
 
 internal sealed class QueryableIncludes<TEntity> : Includes<TEntity> where TEntity : class
 {
@@ -12,14 +12,14 @@ internal sealed class QueryableIncludes<TEntity> : Includes<TEntity> where TEnti
 
     public IQueryable<TEntity> Query { get; private set; }
 
-    public override Includes<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty?>> expression)
+    public override Includes<TEntity> IncludeReference<TProperty>(Expression<Func<TEntity, TProperty?>> expression)
         where TProperty : class
     {
         Query = Query.Include(expression);
         return this;
     }
 
-    public override Includes<TEntity> Include<TProperty>(Expression<Func<TEntity, IEnumerable<TProperty>>> expression) where TProperty : class
+    public override Includes<TEntity> IncludeCollection<TProperty>(Expression<Func<TEntity, IEnumerable<TProperty>>> expression) where TProperty : class
     {
         Query = Query.Include(expression);
         return this;

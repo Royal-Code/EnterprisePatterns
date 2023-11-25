@@ -26,13 +26,19 @@ jobs:
         
       - name: Build and pack Repositories Abstractions
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Repositories.Abstractions/RoyalCode.Repositories.Abstractions.csproj -c Release
+
+      - name: Build and pack OperationHint Abstractions
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationHint.Abstractions/RoyalCode.OperationHint.Abstractions.csproj -c Release
         
       - name: Build and pack Unit Of Work Abstractions
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.UnitOfWork.Abstractions/RoyalCode.UnitOfWork.Abstractions.csproj -c Release
       
       - name: Build and pack Work Context Abstractions
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.Abstractions/RoyalCode.WorkContext.Abstractions.csproj -c Release
-                
+
+      - name: Build and pack EF OperationHint
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.EntityFramework.OperationHint/RoyalCode.EntityFramework.OperationHint.csproj -c Release
+
       - name: Build and pack Persistence EF Repositories
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.Repositories/RoyalCode.Persistence.EntityFramework.Repositories.csproj -c Release
                 

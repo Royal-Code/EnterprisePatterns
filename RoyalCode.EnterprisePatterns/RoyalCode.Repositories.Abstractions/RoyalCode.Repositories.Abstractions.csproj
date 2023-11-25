@@ -10,7 +10,7 @@
 		<Description>
 			Abstract components for the Repository Pattern.
 		</Description>
-		<PackageTags>RoyalCode Enterprise-Patterns Repository Repository-Pattern</PackageTags>
+		<PackageTags>RoyalCode Enterprise-Patterns Repository-Pattern Repository</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using RoyalCode.OperationHint.Abstractions;
 using System.Linq.Expressions;
 
-namespace RoyalCode.Persistence.EntityFramework.Repositories.Hints;
+namespace RoyalCode.EntityFramework.OperationHint;
 
 /// <summary>
 /// <para>
@@ -21,7 +21,7 @@ public abstract class Includes<TEntity> where TEntity : class
     /// <typeparam name="TProperty">The type of the property.</typeparam>
     /// <param name="expression">The expression that selects the property.</param>
     /// <returns>The same instance of <see cref="Includes{TEntity}"/> for chaining.</returns>
-    public abstract Includes<TEntity> Include<TProperty>(Expression<Func<TEntity, TProperty?>> expression)
+    public abstract Includes<TEntity> IncludeReference<TProperty>(Expression<Func<TEntity, TProperty?>> expression)
         where TProperty : class;
 
     /// <summary>
@@ -30,6 +30,6 @@ public abstract class Includes<TEntity> where TEntity : class
     /// <typeparam name="TProperty">The generic type of the collection.</typeparam>
     /// <param name="expression">The expression that selects the collection.</param>
     /// <returns>The same instance of <see cref="Includes{TEntity}"/> for chaining.</returns>
-    public abstract Includes<TEntity> Include<TProperty>(Expression<Func<TEntity, IEnumerable<TProperty>>> expression)
+    public abstract Includes<TEntity> IncludeCollection<TProperty>(Expression<Func<TEntity, IEnumerable<TProperty>>> expression)
         where TProperty : class;
 }
