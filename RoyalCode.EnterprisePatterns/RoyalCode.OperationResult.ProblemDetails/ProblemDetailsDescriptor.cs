@@ -105,7 +105,10 @@ public class ProblemDetailsDescriptor
         public const string ApplicationErrorType = "https://www.rfc-editor.org/rfc/rfc9110.html#name-500-internal-server-error";
     }
 
-    private readonly Dictionary<string, ProblemDetailsDescription> descriptions = new()
+    /// <summary>
+    /// The factory to create the default descriptions of the problem details for the generic errors.
+    /// </summary>
+    public static Func<Dictionary<string, ProblemDetailsDescription>> DescriptionFactory { get; set; } = () => new()
     {
         {
             GenericErrorCodes.NotFound,
@@ -177,6 +180,8 @@ public class ProblemDetailsDescriptor
         }
     };
 
+    private readonly Dictionary<string, ProblemDetailsDescription> descriptions = DescriptionFactory();
+
     /// <summary>
     /// <para>
     ///     Try to get the descriptionsToAdd of a problem details by its code.
@@ -210,7 +215,7 @@ public class ProblemDetailsDescriptor
     /// </summary>
     /// <param name="descriptions">A collection of descriptionsToAdd of problem details.</param>
     /// <returns>Same instance of <see cref="ProblemDetailsDescriptor"/>.</returns>
-    public ProblemDetailsDescriptor AddMany(IEnumerable<ProblemDetailsDescription> descriptions)
+    public ProblemDetailsDescriptor AddRange(IEnumerable<ProblemDetailsDescription> descriptions)
     {
         foreach (var description in descriptions)
         {
@@ -234,10 +239,16 @@ public class ProblemDetailsDescriptor
     {
         try
         {
-            var descriptionsToAdd = JsonSerializer.Deserialize<IEnumerable<ProblemDetailsDescription>>(json);
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                AllowTrailingCommas = true,
+                ReadCommentHandling = JsonCommentHandling.Skip
+            };
+            var descriptionsToAdd = JsonSerializer.Deserialize<IEnumerable<ProblemDetailsDescription>>(json, jsonOptions);
             if (descriptionsToAdd is not null)
             {
-                AddMany(descriptionsToAdd);
+                AddRange(descriptionsToAdd);
             }
             return this;
         }

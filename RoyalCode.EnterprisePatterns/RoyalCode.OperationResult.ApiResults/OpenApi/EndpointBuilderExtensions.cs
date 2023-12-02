@@ -13,7 +13,7 @@ namespace Microsoft.AspNetCore.Builder;
 /// </summary>
 public static class EndpointBuilderExtensions
 {
-    private const string ErrorMessage = $"{nameof(OpenApiOperation)} not found in metadata. Use the method {nameof(WithXErrorTypeHeader)} after the method WithOpenApi";
+    private const string ErrorMessage = $"{nameof(OpenApiOperation)} not found in metadata. Use the method {nameof(WithErrorResponseTypeHeader)} after the method WithOpenApi";
 
     /// <summary>
     /// 
@@ -22,7 +22,7 @@ public static class EndpointBuilderExtensions
     /// <param name="builder"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public static TBuilder WithXErrorTypeHeader<TBuilder>(this TBuilder builder) 
+    public static TBuilder WithErrorResponseTypeHeader<TBuilder>(this TBuilder builder) 
         where TBuilder : IEndpointConventionBuilder
     {
         builder.Finally(b =>

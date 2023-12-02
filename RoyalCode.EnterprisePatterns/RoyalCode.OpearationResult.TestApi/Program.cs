@@ -22,6 +22,7 @@ var app = builder.Build();
 app.UseAuthorization();
 
 app.MapApiResults();
+app.MapErrors();
 app.MapControllers();
 
 app.UseSwagger();

@@ -24,7 +24,7 @@ public class NotFoundDetails
     public string Message { get; set; }
 
     /// <summary>
-    /// The property or paramenter name related to the problem.
+    /// The property or parameter name related to the problem.
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Property { get; set; }

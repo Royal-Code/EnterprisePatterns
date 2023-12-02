@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json.Serialization;
 
 namespace RoyalCode.OperationResults;
 
@@ -42,10 +43,11 @@ public class ProblemDetailsDescription
     /// <exception cref="ArgumentNullException">
     ///     If <paramref name="code"/>, <paramref name="title"/> or <paramref name="description"/> is null.
     /// </exception>
-    public ProblemDetailsDescription(string code, string type, string title, string description, HttpStatusCode? status = null)
+    [JsonConstructor]
+    public ProblemDetailsDescription(string code, string? type, string title, string description, HttpStatusCode? status = null)
     {
         Code = code ?? throw new ArgumentNullException(nameof(code));
-        Type = type ?? throw new ArgumentNullException(nameof(type));
+        Type = type;
         Title = title ?? throw new ArgumentNullException(nameof(title));
         Description = description ?? throw new ArgumentNullException(nameof(description));
         Status = status;

@@ -93,7 +93,7 @@ public class ProblemDetailsBuilder
     /// Add the extensions fields and values to the <see cref="ProblemDetails"/>.
     /// </summary>
     /// <param name="problemDetails">The problem details to be modified.</param>
-    /// <param name="options">The options for the problem details convertion.</param>
+    /// <param name="options">The options for the problem details conversion.</param>
     public void WriteExtensions(ProblemDetails problemDetails,
         ProblemDetailsOptions options)
     {
@@ -170,7 +170,7 @@ public class ProblemDetailsBuilder
     /// <param name="validationError">If the error is a validation error.</param>
     public void AddInvalidParameter(InvalidParameterDetails details, bool validationError)
     {
-        invalidParameterErrors ??= new();
+        invalidParameterErrors ??= [];
         invalidParameterErrors.Add(details);
         if (validationError)
             withRulesValidationErrors = true;
@@ -182,7 +182,7 @@ public class ProblemDetailsBuilder
     /// <param name="notFoundDetails">The not found details.</param>
     public void AddNotFound(NotFoundDetails notFoundDetails)
     {
-        notFoundErrors ??= new();
+        notFoundErrors ??= [];
         notFoundErrors.Add(notFoundDetails);
     }
 
@@ -192,7 +192,7 @@ public class ProblemDetailsBuilder
     /// <param name="errorDetails">The erro details.</param>
     public void AddErrorMessage(ErrorDetails errorDetails)
     {
-        errors ??= new();
+        errors ??= [];
         errors.Add(errorDetails);
     }
 
@@ -207,7 +207,7 @@ public class ProblemDetailsBuilder
     /// <param name="message">The custom problem message.</param>
     public void AddCustomProblem(IResultMessage message)
     {
-        customProblems ??= new();
+        customProblems ??= [];
         customProblems.Add(message);
     }
 
@@ -217,7 +217,7 @@ public class ProblemDetailsBuilder
     /// <param name="additionalInformation">Additional information, in the form of key-value pairs.</param>
     public void AddExtension(IEnumerable<KeyValuePair<string, object>> additionalInformation)
     {
-        extensions ??= new Dictionary<string, object>();
+        extensions ??= [];
 
         foreach (var kvp in additionalInformation)
         {
