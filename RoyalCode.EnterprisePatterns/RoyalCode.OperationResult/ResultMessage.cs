@@ -255,7 +255,7 @@ public class ResultMessage : IResultMessage
     ///     New instance of message.
     /// </para>
     /// </returns>
-    public static ResultMessage ValidationError(string code, string text, string property, Exception? ex = null)
+    public static ResultMessage ValidationError(string code, string text, string? property, Exception? ex = null)
     {
         return new ResultMessage(text, property, code, HttpStatusCode.UnprocessableEntity, ex);
     }
