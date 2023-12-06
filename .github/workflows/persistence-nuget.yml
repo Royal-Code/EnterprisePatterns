@@ -49,4 +49,4 @@ jobs:
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.WorkContext/RoyalCode.Persistence.EntityFramework.WorkContext.csproj -c Release
         
       - name: Publish
-        run: sudo dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+        run: sudo dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
