@@ -4,7 +4,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(DotNetCoreVersion)" />
-		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Searches\RoyalCode.Searches.Persistence.EntityFramework.csproj" />
 
 		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.WorkContext\RoyalCode.Persistence.EntityFramework.WorkContext.csproj" />
 	</ItemGroup>

@@ -9,7 +9,6 @@
 		<ProjectReference Include="..\RoyalCode.Aggregates\RoyalCode.Aggregates.csproj" />
 		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Events\RoyalCode.Persistence.EntityFramework.Events.csproj" />
 		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Repositories\RoyalCode.Persistence.EntityFramework.Repositories.csproj" />
-		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Searches\RoyalCode.Searches.Persistence.EntityFramework.csproj" />
 		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.UnitOfWork\RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj" />
 		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.WorkContext\RoyalCode.Persistence.EntityFramework.WorkContext.csproj" />
 		<ProjectReference Include="..\RoyalCode.WorkContext.Abstractions\RoyalCode.WorkContext.Abstractions.csproj" />

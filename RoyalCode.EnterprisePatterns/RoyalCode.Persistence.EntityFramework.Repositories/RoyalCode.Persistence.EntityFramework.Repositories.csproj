@@ -16,13 +16,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\RoyalCode.EntityFramework.OperationHint\RoyalCode.EntityFramework.OperationHint.csproj" />
-	  <ProjectReference Include="..\RoyalCode.OperationHint.Abstractions\RoyalCode.OperationHint.Abstractions.csproj" />
 	  <ProjectReference Include="..\RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
+		<PackageReference Include="RoyalCode.OperationHint.EntityFramework" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

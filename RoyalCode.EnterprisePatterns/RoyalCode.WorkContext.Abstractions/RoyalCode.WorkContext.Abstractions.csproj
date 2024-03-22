@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Project="..\libs.targets" />
-	
+
 	<PropertyGroup>
 		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
 		<Version>$(PersistVer)$(PersistPreview)</Version>
@@ -18,9 +18,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\RoyalCode.OperationHint.Abstractions\RoyalCode.OperationHint.Abstractions.csproj" />
+		<PackageReference Include="RoyalCode.OperationHint.Abstractions" Version="1.0.0" />
+		<PackageReference Include="RoyalCode.Searches.Abstractions" Version="1.0.0-preview-4.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj" />
-		<ProjectReference Include="..\RoyalCode.Searches.Abstractions\RoyalCode.Searches.Abstractions.csproj" />
 		<ProjectReference Include="..\RoyalCode.UnitOfWork.Abstractions\RoyalCode.UnitOfWork.Abstractions.csproj" />
 	</ItemGroup>
 
