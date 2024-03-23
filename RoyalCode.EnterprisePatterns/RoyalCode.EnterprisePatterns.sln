@@ -34,13 +34,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Persistence.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.WorkContext.Abstractions", "RoyalCode.WorkContext.Abstractions\RoyalCode.WorkContext.Abstractions.csproj", "{D067CEAD-BE9E-4121-9288-A876A0EAE098}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Persistence.EntityFramework.Events", "RoyalCode.Persistence.EntityFramework.Events\RoyalCode.Persistence.EntityFramework.Events.csproj", "{28045EAE-D89A-43D5-957E-EAD89D506926}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Events.EntityFramework", "RoyalCode.Events.EntityFramework\RoyalCode.Events.EntityFramework.csproj", "{28045EAE-D89A-43D5-957E-EAD89D506926}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Persistence.EntityFramework.UnitOfWork", "RoyalCode.Persistence.EntityFramework.UnitOfWork\RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj", "{61A13F69-7346-4115-B517-976BADE0B926}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.UnitOfWork.EntityFramework", "RoyalCode.UnitOfWork.EntityFramework\RoyalCode.UnitOfWork.EntityFramework.csproj", "{61A13F69-7346-4115-B517-976BADE0B926}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Persistence.EntityFramework.Repositories", "RoyalCode.Persistence.EntityFramework.Repositories\RoyalCode.Persistence.EntityFramework.Repositories.csproj", "{9B833B9C-92BB-43AB-A068-5C1317F08F82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Repositories.EntityFramework", "RoyalCode.Repositories.EntityFramework\RoyalCode.Repositories.EntityFramework.csproj", "{9B833B9C-92BB-43AB-A068-5C1317F08F82}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Persistence.EntityFramework.WorkContext", "RoyalCode.Persistence.EntityFramework.WorkContext\RoyalCode.Persistence.EntityFramework.WorkContext.csproj", "{95E28BC1-E43B-4BB0-8136-B27119509A24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.WorkContext.EntityFramework", "RoyalCode.WorkContext.EntityFramework\RoyalCode.WorkContext.EntityFramework.csproj", "{95E28BC1-E43B-4BB0-8136-B27119509A24}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.EntityFramework.StagedSaveChanges", "RoyalCode.EntityFramework.StagedSaveChanges\RoyalCode.EntityFramework.StagedSaveChanges.csproj", "{A851D07A-3480-4505-AEB4-83A5B61092E4}"
 EndProject

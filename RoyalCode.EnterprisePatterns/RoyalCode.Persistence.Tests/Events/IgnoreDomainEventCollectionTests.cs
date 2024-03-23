@@ -23,6 +23,7 @@ public class IgnoreDomainEventCollectionTests
         var services = new ServiceCollection();
         services.AddSingleton(eventDispatcher);
         services.AddUnitOfWork<IgnoreDomainEventCollectionDbContext>()
+            .AddDomainEventHandler()
             .ConfigureDbContextPool(builder =>
             {
                 builder.UseInMemoryDatabase(nameof(MustSaveEntityButNotSaveDomainEvents));

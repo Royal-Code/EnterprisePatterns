@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\asp.targets" />
+
+	<PropertyGroup>
+		<Version>$(PersistVer)$(PersistPreview)</Version>
+		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
+		<FileVersion>$(PersistVer)</FileVersion>
+		<Description>
+			Persistence components implementation with EntityFrameworkCore,
+			including the handling of unit of works, repositories and searches.
+			The Work Context is an pattern that include the Unit Of Work functionality
+			and add access to others patterns like Repository, Search, Event, Message Bus, etc.
+		</Description>
+		<PackageTags>
+			RoyalCode Enterprise-Patterns UoW Unit-Of-Work WorkContext Work-Context
+		</PackageTags>
+		<RootNamespace>RoyalCode.Persistence.EntityFramework.WorkContext</RootNamespace>
+	</PropertyGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\RoyalCode.Repositories.EntityFramework\RoyalCode.Repositories.EntityFramework.csproj" />
+	  <ProjectReference Include="..\RoyalCode.UnitOfWork.EntityFramework\RoyalCode.UnitOfWork.EntityFramework.csproj" />
+	  <ProjectReference Include="..\RoyalCode.WorkContext.Abstractions\RoyalCode.WorkContext.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.Persistence.EntityFramework.UnitOfWork.Interceptors;
+using RoyalCode.UnitOfWork.EntityFramework.Interceptors;
 using RoyalCode.UnitOfWork.Abstractions;
 using Xunit;
 
