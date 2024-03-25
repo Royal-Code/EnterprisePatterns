@@ -45,7 +45,7 @@ public sealed class RepositoriesBuilder<TDbContext> : IRepositoriesBuilder<TDbCo
     }
 
     /// <inheritdoc />
-    public IRepositoriesBuilder<TDbContext> ConfigureOperationHints(Action<IHintHandlerRegistry> configure)
+    public IRepositoriesBuilder<TDbContext> ConfigureOperationHints(Action<IHintHandlerRegistry>? configure)
     {
         if (configure is null)
             throw new ArgumentNullException(nameof(configure));
