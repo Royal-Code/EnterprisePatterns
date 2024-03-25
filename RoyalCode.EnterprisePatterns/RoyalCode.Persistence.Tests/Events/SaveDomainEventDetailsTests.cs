@@ -25,6 +25,7 @@ public class SaveDomainEventDetailsTests
         var services = new ServiceCollection();
         services.AddSingleton(eventDispatcher);
         services.AddUnitOfWork<SaveDomainEventDetailsDbContext>()
+            .AddDomainEventHandler()
             .ConfigureDbContextPool(builder =>
             {
                 builder.UseInMemoryDatabase(nameof(MustSaveDomainEventDetailsOfACreatingEvent));

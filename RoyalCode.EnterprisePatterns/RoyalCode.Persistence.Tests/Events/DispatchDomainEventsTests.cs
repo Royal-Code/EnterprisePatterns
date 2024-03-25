@@ -22,6 +22,7 @@ public class DispatchDomainEventsTests
         var services = new ServiceCollection();
         services.AddSingleton(eventDispatcher);
         services.AddUnitOfWork<DispatchDomainEventsDbContext>()
+            .AddDomainEventHandler()
             .ConfigureDbContextPool(builder =>
             {
                 builder.UseInMemoryDatabase(nameof(MustDispatchDomainEvents));
@@ -71,7 +72,6 @@ public class DispatchDomainEventsDbContext : DbContext
 #pragma warning disable CS8618
     
     public DispatchDomainEventsDbContext(DbContextOptions<DispatchDomainEventsDbContext> options)
-
         : base(options)
     { }
 

@@ -7,11 +7,10 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(DotNetCoreVersion)" />
 
 		<ProjectReference Include="..\RoyalCode.Aggregates\RoyalCode.Aggregates.csproj" />
-		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Events\RoyalCode.Persistence.EntityFramework.Events.csproj" />
-		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Repositories\RoyalCode.Persistence.EntityFramework.Repositories.csproj" />
-		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.Searches\RoyalCode.Searches.Persistence.EntityFramework.csproj" />
-		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.UnitOfWork\RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj" />
-		<ProjectReference Include="..\RoyalCode.Persistence.EntityFramework.WorkContext\RoyalCode.Persistence.EntityFramework.WorkContext.csproj" />
+		<ProjectReference Include="..\RoyalCode.Events.EntityFramework\RoyalCode.Events.EntityFramework.csproj" />
+		<ProjectReference Include="..\RoyalCode.Repositories.EntityFramework\RoyalCode.Repositories.EntityFramework.csproj" />
+		<ProjectReference Include="..\RoyalCode.UnitOfWork.EntityFramework\RoyalCode.UnitOfWork.EntityFramework.csproj" />
+		<ProjectReference Include="..\RoyalCode.WorkContext.EntityFramework\RoyalCode.WorkContext.EntityFramework.csproj" />
 		<ProjectReference Include="..\RoyalCode.WorkContext.Abstractions\RoyalCode.WorkContext.Abstractions.csproj" />
 	</ItemGroup>
 

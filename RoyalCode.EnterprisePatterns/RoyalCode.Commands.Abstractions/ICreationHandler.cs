@@ -28,7 +28,7 @@ public interface ICreationHandler<in TRequest, out TEntity>
 /// <typeparam name="TContext">The type of the context used to store other loaded data to be used in the creation of the entity.</typeparam>
 /// <typeparam name="TRequest">The type of the request that contains the data to create the entity.</typeparam>
 /// <typeparam name="TEntity">The type of the entity to be created.</typeparam>
-public interface ICreationHandler<TContext, TRequest, out TEntity>
+public interface ICreationHandler<TContext, in TRequest, out TEntity>
     where TContext : ICreationContext<TRequest>
 {
     /// <summary>
@@ -59,7 +59,7 @@ public interface ICreationHandler<TContext, TRequest, out TEntity>
 /// <typeparam name="TRequest">The type of the request that contains the data to create the entity.</typeparam>
 /// <typeparam name="TRootEntity">The type of the root entity.</typeparam>
 /// <typeparam name="TEntity">The type of the entity to be created.</typeparam>
-public interface ICreationHandler<TContext, TRequest, TRootEntity, out TEntity>
+public interface ICreationHandler<TContext, in TRequest, in TRootEntity, out TEntity>
     where TContext : ICreationContext<TRequest, TRootEntity>
 {
     /// <summary>

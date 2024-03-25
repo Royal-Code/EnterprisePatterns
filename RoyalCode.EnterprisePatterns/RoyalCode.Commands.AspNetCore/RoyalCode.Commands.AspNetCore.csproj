@@ -22,8 +22,8 @@
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="RoyalCode.OperationResult.ApiResults" Version="2.0.0" />
 		<ProjectReference Include="..\RoyalCode.Commands.Handlers\RoyalCode.Commands.Handlers.csproj" />
-		<ProjectReference Include="..\RoyalCode.OperationResult.ApiResults\RoyalCode.OperationResult.ApiResults.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using RoyalCode.Persistence.EntityFramework.UnitOfWork;
 using System.Data.Common;
+using RoyalCode.UnitOfWork.EntityFramework;
 
 namespace RoyalCode.OperationHint.Tests;
 

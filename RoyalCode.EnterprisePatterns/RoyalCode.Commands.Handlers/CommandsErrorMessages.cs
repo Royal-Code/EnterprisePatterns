@@ -22,7 +22,7 @@ public static class CommandsErrorMessages
     /// <summary>
     /// An internal class to use extension methods for the <see cref="CommandsErrorMessages"/> class.
     /// </summary>
-    public class Lang { internal Lang() { } }
+    public sealed class Lang { internal Lang() { } }
 
     /// <summary>
     /// Create a message for a command not found.

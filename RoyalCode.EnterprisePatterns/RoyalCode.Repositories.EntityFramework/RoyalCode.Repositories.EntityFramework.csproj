@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\asp.targets" />
+
+	<PropertyGroup>
+		<Version>$(PersistVer)$(PersistPreview)</Version>
+		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
+		<FileVersion>$(PersistVer)</FileVersion>
+		<Description>
+			Persistence components implementation with EntityFrameworkCore,
+			including the handling of repositories.
+		</Description>
+		<PackageTags>
+			RoyalCode Enterprise-Patterns Persistence Repository-Pattern Repository
+		</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
+		<PackageReference Include="RoyalCode.OperationHint.EntityFramework" Version="1.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Extesions\" />
+	</ItemGroup>
+
+</Project>

@@ -6,7 +6,7 @@
 /// </para>
 /// </summary>
 /// <typeparam name="TRequest">The type of the request data.</typeparam>
-public interface ICreationContext<TRequest>
+public interface ICreationContext<out TRequest>
 {
     /// <summary>
     /// The request data for create a new entity.
@@ -22,7 +22,7 @@ public interface ICreationContext<TRequest>
 /// </summary>
 /// <typeparam name="TRequest">The type of the request data.</typeparam>
 /// <typeparam name="TRootEntity">The type of the root entity.</typeparam>
-public interface ICreationContext<TRequest, TRootEntity>
+public interface ICreationContext<out TRequest, out TRootEntity>
 {
     /// <summary>
     /// The aggregate root entity.
