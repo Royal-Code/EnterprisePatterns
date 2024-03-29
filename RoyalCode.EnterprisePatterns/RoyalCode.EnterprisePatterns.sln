@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{B6D9A1
 		Directory.Build.props = Directory.Build.props
 		libs.targets = libs.targets
 		tests.targets = tests.targets
+		..\.github\workflows\persistence-nuget.yml = ..\.github\workflows\persistence-nuget.yml
+		..\.github\workflows\domain.yml = ..\.github\workflows\domain.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Entities", "RoyalCode.Entities\RoyalCode.Entities.csproj", "{E6E2DDCC-0629-4BBF-98E8-EECA1CA7A8A1}"

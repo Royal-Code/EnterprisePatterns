@@ -20,33 +20,27 @@ jobs:
         with:
           dotnet-version: '8.0.x'
           include-prerelease: true
-
-      - name: Build and pack Entities
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Entities/RoyalCode.Entities.csproj -c Release
         
       - name: Build and pack Repositories Abstractions
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Repositories.Abstractions/RoyalCode.Repositories.Abstractions.csproj -c Release
 
-      - name: Build and pack OperationHint Abstractions
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.OperationHint.Abstractions/RoyalCode.OperationHint.Abstractions.csproj -c Release
+      - name: Build and pack Repositories EntityFramework
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Repositories.EntityFramework/RoyalCode.Repositories.EntityFramework.csproj -c Release
         
       - name: Build and pack Unit Of Work Abstractions
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.UnitOfWork.Abstractions/RoyalCode.UnitOfWork.Abstractions.csproj -c Release
+
+      - name: Build and pack Unit Of Work EntityFramework
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.UnitOfWork.EntityFramework/RoyalCode.UnitOfWork.EntityFramework.csproj -c Release
       
       - name: Build and pack Work Context Abstractions
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.Abstractions/RoyalCode.WorkContext.Abstractions.csproj -c Release
 
-      - name: Build and pack EF OperationHint
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.EntityFramework.OperationHint/RoyalCode.EntityFramework.OperationHint.csproj -c Release
-
-      - name: Build and pack Persistence EF Repositories
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.Repositories/RoyalCode.Persistence.EntityFramework.Repositories.csproj -c Release
+      - name: Build and pack Work Context EntityFramework
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.EntityFramework/RoyalCode.WorkContext.EntityFramework.csproj -c Release
                 
-      - name: Build and pack Persistence EF Unit Of Work
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.UnitOfWork/RoyalCode.Persistence.EntityFramework.UnitOfWork.csproj -c Release
-        
-      - name: Build and pack Persistence EF Work Context
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Persistence.EntityFramework.WorkContext/RoyalCode.Persistence.EntityFramework.WorkContext.csproj -c Release
+      - name: Build and pack Events EntityFramework
+        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Events.EntityFramework/RoyalCode.Events.EntityFramework.csproj -c Release
         
       - name: Publish
         run: sudo dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
