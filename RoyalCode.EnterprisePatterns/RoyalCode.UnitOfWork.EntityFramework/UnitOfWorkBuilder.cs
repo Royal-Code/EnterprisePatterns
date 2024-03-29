@@ -14,9 +14,6 @@ namespace RoyalCode.UnitOfWork.EntityFramework;
 internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbContext>
     where TDbContext : DbContext
 {
-    private readonly IServiceCollection services;
-    private readonly ServiceLifetime lifetime;
-
     /// <summary>
     /// Creates a new builder.
     /// </summary>
@@ -26,15 +23,15 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
         IServiceCollection services, 
         ServiceLifetime lifetime)
     {
-        this.services = services;
-        this.lifetime = lifetime;
+        Services = services;
+        Lifetime = lifetime;
     }
 
     /// <inheritdoc />
-    public IServiceCollection Services => services;
+    public IServiceCollection Services { get; }
 
     /// <inheritdoc />
-    public ServiceLifetime Lifetime => lifetime;
+    public ServiceLifetime Lifetime { get; }
 
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<DbContextOptionsBuilder> configurer)
@@ -42,7 +39,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
         if (configurer is null)
             throw new ArgumentNullException(nameof(configurer));
 
-        services.AddDbContextPool<TDbContext>(builder =>
+        Services.AddDbContextPool<TDbContext>(builder =>
         {
             builder.UseUnitOfWork();
             configurer(builder);
@@ -56,7 +53,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
         if (configurer is null)
             throw new ArgumentNullException(nameof(configurer));
 
-        services.AddDbContextPool<TDbContext>((sp, builder) =>
+        Services.AddDbContextPool<TDbContext>((sp, builder) =>
         {
             builder.UseUnitOfWork();
             configurer(sp, builder);
@@ -70,11 +67,11 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
         if (configurer is null)
             throw new ArgumentNullException(nameof(configurer));
 
-        services.AddDbContext<TDbContext>(builder =>
+        Services.AddDbContext<TDbContext>(builder =>
         {
             builder.UseUnitOfWork();
             configurer(builder);
-        }, lifetime);
+        }, Lifetime);
         return this;
     }
     
@@ -84,11 +81,11 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
         if (configurer is null)
             throw new ArgumentNullException(nameof(configurer));
 
-        services.AddDbContext<TDbContext>((sp, builder) =>
+        Services.AddDbContext<TDbContext>((sp, builder) =>
         {
             builder.UseUnitOfWork();
             configurer(sp, builder);
-        }, lifetime);
+        }, Lifetime);
         return this;
     }
 
@@ -98,7 +95,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
         if (configureAction is null)
             throw new ArgumentNullException(nameof(configureAction));
 
-        var repositoryConfigurer = new RepositoriesBuilder<TDbContext>(services, lifetime);
+        var repositoryConfigurer = new RepositoriesBuilder<TDbContext>(Services, Lifetime);
         configureAction(repositoryConfigurer);
         return this;
     }
@@ -109,7 +106,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
         if (configureAction is null)
             throw new ArgumentNullException(nameof(configureAction));
 
-        var configurations = new SearchConfigurations<TDbContext>(services);
+        var configurations = new SearchConfigurations<TDbContext>(Services);
         configureAction(configurations);
         return this;
     }
