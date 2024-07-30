@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RoyalCode.Persistence.EntityFramework.Events {
+namespace RoyalCode.Outbox.EntityFramework {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace RoyalCode.Persistence.EntityFramework.Events {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class DomainEventResources {
+    internal class R {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal DomainEventResources() {
+        internal R() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace RoyalCode.Persistence.EntityFramework.Events {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RoyalCode.Persistence.EntityFramework.Events.DomainEventResources", typeof(DomainEventResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RoyalCode.Outbox.EntityFramework.R", typeof(R).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +61,29 @@ namespace RoyalCode.Persistence.EntityFramework.Events {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The service required for domain event handling was not found from DbContext as IServiceProvider..
+        ///   Looks up a localized string similar to The Consumer with the name &apos;{0}&apos; already exists..
         /// </summary>
-        internal static string DomainEventServiceNotFound {
+        internal static string ConsumerAlreadyExists {
             get {
-                return ResourceManager.GetString("DomainEventServiceNotFound", resourceCulture);
+                return ResourceManager.GetString("ConsumerAlreadyExists", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occurred while firing events at same scope, see the inner exception for more details..
+        ///   Looks up a localized string similar to The Consumer for the outbox was not found..
         /// </summary>
-        internal static string FireEventsAtSameScopeException {
+        internal static string ConsumerNotFound {
             get {
-                return ResourceManager.GetString("FireEventsAtSameScopeException", resourceCulture);
+                return ResourceManager.GetString("ConsumerNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to write domain events to Outbox, service &apos;IOutboxService&apos; was not registered with DbContext.
+        /// </summary>
+        internal static string FailedWriteToOutbox {
+            get {
+                return ResourceManager.GetString("FailedWriteToOutbox", resourceCulture);
             }
         }
     }

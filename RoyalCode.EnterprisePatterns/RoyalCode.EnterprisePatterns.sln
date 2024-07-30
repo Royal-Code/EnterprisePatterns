@@ -64,6 +64,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitOfWork", "UnitOfWork", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{DE4106C5-D631-4B42-AB27-0103F5705693}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Outbox.Abstractions", "RoyalCode.Outbox.Abstractions\RoyalCode.Outbox.Abstractions.csproj", "{2F54D5A0-CEFD-4EFA-A1D1-D5705BF1A243}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Outbox.EntityFramework", "RoyalCode.Outbox.EntityFramework\RoyalCode.Outbox.EntityFramework.csproj", "{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,6 +146,14 @@ Global
 		{0960732A-D8DD-4C00-BFDB-23DF767028A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0960732A-D8DD-4C00-BFDB-23DF767028A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0960732A-D8DD-4C00-BFDB-23DF767028A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F54D5A0-CEFD-4EFA-A1D1-D5705BF1A243}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F54D5A0-CEFD-4EFA-A1D1-D5705BF1A243}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F54D5A0-CEFD-4EFA-A1D1-D5705BF1A243}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F54D5A0-CEFD-4EFA-A1D1-D5705BF1A243}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

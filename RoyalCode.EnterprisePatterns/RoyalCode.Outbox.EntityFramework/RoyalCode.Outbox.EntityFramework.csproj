@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\base.targets" />
+
+	<PropertyGroup>
+		<TargetFrameworks>$(MsgTargets)</TargetFrameworks>
+		<Version>$(MsgVer)$(MsgVerPreview)</Version>
+		<AssemblyVersion>$(MsgVer)</AssemblyVersion>
+		<FileVersion>$(MsgVer)</FileVersion>
+		<Description>
+			Components for the Outbox Pattern implemented with EntityFrameworkCore.
+		</Description>
+		<PackageTags>RoyalCode Enterprise-Patterns Outbox Outbox-Pattern</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\RoyalCode.DomainEvents\RoyalCode.DomainEvents.csproj" />
+		<ProjectReference Include="..\RoyalCode.Outbox.Abstractions\RoyalCode.Outbox.Abstractions.csproj" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="R.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>R.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="R.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>R.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+</Project>

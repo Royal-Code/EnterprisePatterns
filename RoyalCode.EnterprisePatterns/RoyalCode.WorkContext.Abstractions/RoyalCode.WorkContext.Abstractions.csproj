@@ -3,6 +3,7 @@
 	<Import Project="..\libs.targets" />
 
 	<PropertyGroup>
+		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
 		<Version>$(PersistVer)$(PersistPreview)</Version>
 		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
 		<FileVersion>$(PersistVer)</FileVersion>

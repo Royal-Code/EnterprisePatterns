@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\base.targets" />
+
+	<PropertyGroup>
+		<TargetFrameworks>$(MsgTargets)</TargetFrameworks>
+		<Version>$(MsgVer)$(MsgVerPreview)</Version>
+		<AssemblyVersion>$(MsgVer)</AssemblyVersion>
+		<FileVersion>$(MsgVer)</FileVersion>
+		<Description>
+			Abstract components for the Outbox Pattern.
+		</Description>
+		<PackageTags>RoyalCode Enterprise-Patterns Outbox Outbox-Pattern</PackageTags>
+	</PropertyGroup>
+
+	<!--<ItemGroup>
+		<PackageReference Include="RoyalCode.SmartProblems" Version="1.0.0-preview-1.0" />
+	</ItemGroup>-->
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\SmartProblems\src\RoyalCode.SmartProblems\RoyalCode.SmartProblems.csproj" />
+	  <ProjectReference Include="..\..\..\SmartValidations\RoyalCode.SmartValidations\RoyalCode.SmartValidations.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(DotNetCoreVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="$(DotNetCoreVersion)" />
+	</ItemGroup>
+
+</Project>

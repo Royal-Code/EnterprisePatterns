@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<LibTargets>netstandard2.1;net6;net7;net8</LibTargets>
 		<AspTargets>net6;net7;net8</AspTargets>
+		<MsgTargets>net7;net8</MsgTargets>
 	</PropertyGroup>
 	<PropertyGroup>
 		
@@ -13,6 +14,9 @@
 		
 		<CommandVer>0.1.0</CommandVer>
 		<CommandPreview>-preview-1</CommandPreview>
+
+		<MsgVer>1.0.0</MsgVer>
+		<MsgVerPreview>-preview-0.1</MsgVerPreview>
 	</PropertyGroup>
 	<PropertyGroup>
 		<DotNetCoreVersion Condition="'$(TargetFramework)' == 'net6'">6.0.0</DotNetCoreVersion>

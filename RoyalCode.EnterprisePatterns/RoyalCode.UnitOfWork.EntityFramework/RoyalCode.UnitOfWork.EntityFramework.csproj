@@ -3,6 +3,7 @@
 	<Import Project="..\asp.targets" />
 	
 	<PropertyGroup>
+		<TargetFrameworks>$(AspTargets)</TargetFrameworks>
 		<Version>$(PersistVer)$(PersistPreview)</Version>
 		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
 		<FileVersion>$(PersistVer)</FileVersion>
