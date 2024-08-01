@@ -1,4 +1,6 @@
 ﻿
+using System.Runtime.CompilerServices;
+
 namespace RoyalCode.DomainEvents;
 
 /// <summary>
@@ -18,6 +20,7 @@ namespace RoyalCode.DomainEvents;
 ///     These entities, which are roots of aggregates, shall implement IHasEvents.
 /// </para>
 /// </remarks>
+[CollectionBuilder(typeof(DomainEventCollection), nameof(DomainEventCollection.Create))]
 public interface IDomainEventCollection : ICollection<IDomainEvent>
 {
     /// <summary>

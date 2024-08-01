@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.UnitOfWork.EntityFramework;
-using RoyalCode.Persistence.EntityFramework.WorkContext;
+using RoyalCode.WorkContext.EntityFramework;
 using RoyalCode.Repositories.Abstractions;
 using RoyalCode.Searches.Abstractions;
 using RoyalCode.UnitOfWork.Abstractions;

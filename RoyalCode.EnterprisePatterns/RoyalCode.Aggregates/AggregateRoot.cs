@@ -27,7 +27,7 @@ public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateRoot<TId>
     /// <param name="evt">The domain event to be added to the domain event collection.</param>
     protected void AddEvent(IDomainEvent evt)
     {
-        DomainEvents ??= new DomainEventCollection();
+        DomainEvents ??= [];
         DomainEvents.Add(evt);
     }
 }

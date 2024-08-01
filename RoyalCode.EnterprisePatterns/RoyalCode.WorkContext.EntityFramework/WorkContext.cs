@@ -7,7 +7,7 @@ using RoyalCode.Repositories.Abstractions;
 using RoyalCode.Searches.Abstractions;
 using RoyalCode.WorkContext.Abstractions;
 
-namespace RoyalCode.Persistence.EntityFramework.WorkContext;
+namespace RoyalCode.WorkContext.EntityFramework;
 
 /// <summary>
 ///     Default implementation of <see cref="IWorkContext"/> using Entity Framework and a <see cref="IServiceProvider"/>

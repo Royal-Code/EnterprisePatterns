@@ -16,7 +16,6 @@
 		<PackageTags>
 			RoyalCode Enterprise-Patterns UoW Unit-Of-Work WorkContext Work-Context
 		</PackageTags>
-		<RootNamespace>RoyalCode.Persistence.EntityFramework.WorkContext</RootNamespace>
 	</PropertyGroup>
 	
 	<ItemGroup>

@@ -4,7 +4,7 @@ using RoyalCode.Outbox.Abstractions.Contracts.Handlers;
 using RoyalCode.Outbox.Abstractions.Models;
 using RoyalCode.SmartProblems;
 
-namespace RoyalCode.Outbox.EntityFramework.Contracts.Handlers;
+namespace RoyalCode.Outbox.EntityFramework.Services.Handlers;
 
 /// <inheritdoc />
 /// <typeparam name="TDbContext">The <see cref="DbContext"/> type.</typeparam>

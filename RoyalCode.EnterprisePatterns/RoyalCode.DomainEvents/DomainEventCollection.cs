@@ -1,5 +1,5 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace RoyalCode.DomainEvents;
 
@@ -8,10 +8,33 @@ namespace RoyalCode.DomainEvents;
 ///     Default implementation of the <see cref="IDomainEventCollection"/>.
 /// </para>
 /// </summary>
+[CollectionBuilder(typeof(DomainEventCollection), nameof(Create))]
 public class DomainEventCollection : IDomainEventCollection
 {
+    /// <summary>
+    /// Builder for <see cref="DomainEventCollection"/>
+    /// </summary>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public static DomainEventCollection Create(ReadOnlySpan<IDomainEvent> values) => new(values);
+
     private List<IDomainEvent>? innerList;
     private List<Action<IDomainEvent>>? observers;
+
+    /// <summary>
+    /// Creates a new domain events collection.
+    /// </summary>
+    public DomainEventCollection() { }
+
+    /// <summary>
+    /// Create a new domain events collection.
+    /// </summary>
+    /// <param name="values">The new values.</param>
+    public DomainEventCollection(ReadOnlySpan<IDomainEvent> values)
+    {
+        if (!values.IsEmpty)
+            innerList = [.. values];
+    }
 
     /// <summary>
     /// <para>
@@ -80,5 +103,5 @@ public class DomainEventCollection : IDomainEventCollection
     /// Fires the event to all observers.
     /// </summary>
     /// <param name="evt">The event.</param>
-    protected virtual void Fire(IDomainEvent evt) =>observers?.ForEach(a => a(evt));
+    protected virtual void Fire(IDomainEvent evt) => observers?.ForEach(a => a(evt));
 }

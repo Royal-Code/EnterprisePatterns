@@ -9,9 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{B6D9A1
 	ProjectSection(SolutionItems) = preProject
 		base.targets = base.targets
 		Directory.Build.props = Directory.Build.props
-		tests.targets = tests.targets
-		..\.github\workflows\persistence-nuget.yml = ..\.github\workflows\persistence-nuget.yml
 		..\.github\workflows\domain-nuget.yml = ..\.github\workflows\domain-nuget.yml
+		..\.github\workflows\persistence-nuget.yml = ..\.github\workflows\persistence-nuget.yml
+		tests.targets = tests.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Entities", "RoyalCode.Entities\RoyalCode.Entities.csproj", "{E6E2DDCC-0629-4BBF-98E8-EECA1CA7A8A1}"
@@ -62,11 +62,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitOfWork", "UnitOfWork", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{DE4106C5-D631-4B42-AB27-0103F5705693}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Outbox.Abstractions", "RoyalCode.Outbox.Abstractions\RoyalCode.Outbox.Abstractions.csproj", "{2F54D5A0-CEFD-4EFA-A1D1-D5705BF1A243}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Outbox.Abstractions", "RoyalCode.Outbox.Abstractions\RoyalCode.Outbox.Abstractions.csproj", "{2F54D5A0-CEFD-4EFA-A1D1-D5705BF1A243}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Outbox.EntityFramework", "RoyalCode.Outbox.EntityFramework\RoyalCode.Outbox.EntityFramework.csproj", "{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Outbox.EntityFramework", "RoyalCode.Outbox.EntityFramework\RoyalCode.Outbox.EntityFramework.csproj", "{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messaging", "Messaging", "{80CCF203-3C6E-4B07-B011-04F7800EA52E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Outbox.EntityFramework.Postgres", "RoyalCode.Outbox.EntityFramework.Postgres\RoyalCode.Outbox.EntityFramework.Postgres.csproj", "{FEE7CE5D-75F5-4D6A-A08A-738E7AC3166D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Outbox.Api", "RoyalCode.Outbox.Api\RoyalCode.Outbox.Api.csproj", "{977DE121-A610-49DF-8638-7DECF1B2C4C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -154,11 +158,20 @@ Global
 		{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEE7CE5D-75F5-4D6A-A08A-738E7AC3166D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEE7CE5D-75F5-4D6A-A08A-738E7AC3166D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEE7CE5D-75F5-4D6A-A08A-738E7AC3166D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEE7CE5D-75F5-4D6A-A08A-738E7AC3166D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{977DE121-A610-49DF-8638-7DECF1B2C4C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{977DE121-A610-49DF-8638-7DECF1B2C4C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{977DE121-A610-49DF-8638-7DECF1B2C4C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{977DE121-A610-49DF-8638-7DECF1B2C4C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{32ED862A-FFC6-40A7-8BBA-0807AC5B7BE5} = {DD6336C0-C66B-44CD-9BEA-D9ED66EEC7BF}
 		{E6E2DDCC-0629-4BBF-98E8-EECA1CA7A8A1} = {3EED25DE-FBB1-4451-8F44-D072B43A2D66}
 		{9D8033FC-7CB8-40E0-97B2-81A710F920D1} = {3EED25DE-FBB1-4451-8F44-D072B43A2D66}
 		{9354412F-7A51-471A-A52E-86D766DE5ACA} = {3EED25DE-FBB1-4451-8F44-D072B43A2D66}
@@ -181,10 +194,11 @@ Global
 		{0960732A-D8DD-4C00-BFDB-23DF767028A9} = {D91CABB8-AE3F-4FE8-B8E3-DEDBD6C2EDB6}
 		{DD6336C0-C66B-44CD-9BEA-D9ED66EEC7BF} = {4847AB47-2B45-4A3A-BF3B-7F010F21ED86}
 		{DE4106C5-D631-4B42-AB27-0103F5705693} = {4847AB47-2B45-4A3A-BF3B-7F010F21ED86}
-		{32ED862A-FFC6-40A7-8BBA-0807AC5B7BE5} = {DD6336C0-C66B-44CD-9BEA-D9ED66EEC7BF}
-		{80CCF203-3C6E-4B07-B011-04F7800EA52E} = {4847AB47-2B45-4A3A-BF3B-7F010F21ED86}
 		{2F54D5A0-CEFD-4EFA-A1D1-D5705BF1A243} = {80CCF203-3C6E-4B07-B011-04F7800EA52E}
 		{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD} = {80CCF203-3C6E-4B07-B011-04F7800EA52E}
+		{80CCF203-3C6E-4B07-B011-04F7800EA52E} = {4847AB47-2B45-4A3A-BF3B-7F010F21ED86}
+		{FEE7CE5D-75F5-4D6A-A08A-738E7AC3166D} = {80CCF203-3C6E-4B07-B011-04F7800EA52E}
+		{977DE121-A610-49DF-8638-7DECF1B2C4C9} = {80CCF203-3C6E-4B07-B011-04F7800EA52E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FAC6C2E-62DE-4665-BB16-4E7D445FAB26}

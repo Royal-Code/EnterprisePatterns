@@ -57,7 +57,7 @@ public sealed class OutboxTracker : IDisposable
     {
         if (e.Entry.Entity is IHasEvents hasEvents)
         {
-            hasEvents.DomainEvents ??= new DomainEventCollection();
+            hasEvents.DomainEvents ??= [];
             var domainEventAdded = DomainEventAdded;
             hasEvents.DomainEvents.Observe(domainEventAdded);
             disposing += () => hasEvents.DomainEvents.RemoveObserver(domainEventAdded);
