@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\libs.targets" />
+	<Import Project="..\base.targets" />
 	
 	<PropertyGroup>
 		<TargetFrameworks>$(LibTargets)</TargetFrameworks>

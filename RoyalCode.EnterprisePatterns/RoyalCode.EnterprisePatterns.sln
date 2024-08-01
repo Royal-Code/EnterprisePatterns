@@ -7,13 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Repositories.Abst
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{B6D9A130-5359-4A71-A97B-703364D34B97}"
 	ProjectSection(SolutionItems) = preProject
-		asp.targets = asp.targets
 		base.targets = base.targets
 		Directory.Build.props = Directory.Build.props
-		libs.targets = libs.targets
 		tests.targets = tests.targets
 		..\.github\workflows\persistence-nuget.yml = ..\.github\workflows\persistence-nuget.yml
-		..\.github\workflows\domain.yml = ..\.github\workflows\domain.yml
+		..\.github\workflows\domain-nuget.yml = ..\.github\workflows\domain-nuget.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Entities", "RoyalCode.Entities\RoyalCode.Entities.csproj", "{E6E2DDCC-0629-4BBF-98E8-EECA1CA7A8A1}"
@@ -67,6 +65,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Outbox.Abstractions", "RoyalCode.Outbox.Abstractions\RoyalCode.Outbox.Abstractions.csproj", "{2F54D5A0-CEFD-4EFA-A1D1-D5705BF1A243}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Outbox.EntityFramework", "RoyalCode.Outbox.EntityFramework\RoyalCode.Outbox.EntityFramework.csproj", "{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messaging", "Messaging", "{80CCF203-3C6E-4B07-B011-04F7800EA52E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -182,6 +182,9 @@ Global
 		{DD6336C0-C66B-44CD-9BEA-D9ED66EEC7BF} = {4847AB47-2B45-4A3A-BF3B-7F010F21ED86}
 		{DE4106C5-D631-4B42-AB27-0103F5705693} = {4847AB47-2B45-4A3A-BF3B-7F010F21ED86}
 		{32ED862A-FFC6-40A7-8BBA-0807AC5B7BE5} = {DD6336C0-C66B-44CD-9BEA-D9ED66EEC7BF}
+		{80CCF203-3C6E-4B07-B011-04F7800EA52E} = {4847AB47-2B45-4A3A-BF3B-7F010F21ED86}
+		{2F54D5A0-CEFD-4EFA-A1D1-D5705BF1A243} = {80CCF203-3C6E-4B07-B011-04F7800EA52E}
+		{78FA65F2-D9B1-46A7-AFDB-11B67DE9C4CD} = {80CCF203-3C6E-4B07-B011-04F7800EA52E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FAC6C2E-62DE-4665-BB16-4E7D445FAB26}
