@@ -33,4 +33,12 @@ public interface IDomainEventCollection : ICollection<IDomainEvent>
     /// </summary>
     /// <param name="observerAction">The observer action.</param>
     void Observe(Action<IDomainEvent> observerAction);
+    
+    /// <summary>
+    /// <para>
+    ///     Removes an observer from the event collection.
+    /// </para>
+    /// </summary>
+    /// <param name="observerAction">The observer action.</param>
+    void RemoveObserver(Action<IDomainEvent> observerAction);
 }

@@ -22,7 +22,7 @@ public abstract class DomainEventBase : IDomainEvent
     /// <summary>
     /// <para>
     ///     Creates a new instance of the event determining the Id and when it occurred.
-    ///     Normally used for deserialisation.
+    ///     Normally used for deserialization.
     /// </para>
     /// </summary>
     /// <param name="id">The event ID.</param>

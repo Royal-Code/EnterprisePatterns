@@ -1,4 +1,5 @@
-﻿using RoyalCode.DomainEvents;
+﻿using System.Diagnostics.CodeAnalysis;
+using RoyalCode.DomainEvents;
 
 // ReSharper disable CheckNamespace
 
@@ -34,7 +35,7 @@ public static class HasEventsExtensions
 
     /// <summary>
     /// <para>
-    ///     Try get the first evento for a given type.
+    ///     Try to get the first event for a given type.
     /// </para>
     /// </summary>
     /// <typeparam name="TEvent">The event type.</typeparam>
@@ -42,10 +43,10 @@ public static class HasEventsExtensions
     /// <param name="event">The event instance, if exists.</param>
     /// <returns>
     /// <para>
-    ///     True if find some event for the given type, otherwise false.
+    ///     True when find some event for the given type, otherwise false.
     /// </para>
     /// </returns>
-    public static bool TryGetEvent<TEvent>(this IHasEvents hasEvents, out TEvent? @event)
+    public static bool TryGetEvent<TEvent>(this IHasEvents hasEvents, [NotNullWhen(true)] out TEvent? @event)
         where TEvent : class, IDomainEvent
     {
         if (hasEvents is null)
@@ -78,7 +79,7 @@ public static class HasEventsExtensions
 
     /// <summary>
     /// <para>
-    ///     try get all events for a given type.
+    ///     try to get all events for a given type.
     /// </para>
     /// </summary>
     /// <typeparam name="TEvent">The event type.</typeparam>

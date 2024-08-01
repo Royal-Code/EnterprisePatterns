@@ -9,9 +9,10 @@ namespace RoyalCode.Outbox.EntityFramework.Services;
 /// <summary>
 /// A service that monitors domain events and writes them as messages to the Outbox using EntityFrameworkCore.
 /// </summary>
-public sealed class OutboxTracker
+public sealed class OutboxTracker : IDisposable
 {
     private readonly Func<IOutboxService> getOutboxService;
+    private Action disposing;
     private List<IDomainEvent>? domainEvents;
 
     /// <summary>
@@ -21,7 +22,7 @@ public sealed class OutboxTracker
     /// <returns>A new instance of <see cref="OutboxTracker"/>.</returns>
     public static OutboxTracker Initialize(DbContext dbContext)
     {
-        return InitializeCore(dbContext, dbContext.GetService<IOutboxService>);
+        return new(dbContext, dbContext.GetService<IOutboxService>);
     }
 
     /// <summary>
@@ -32,22 +33,24 @@ public sealed class OutboxTracker
     /// <returns>A new instance of <see cref="OutboxTracker"/>.</returns>
     public static OutboxTracker Initialize(DbContext dbContext, IOutboxService outboxService)
     {
-        return InitializeCore(dbContext, () => outboxService);
+        return new(dbContext, () => outboxService);
     }
 
-    private static OutboxTracker InitializeCore(DbContext dbContext, Func<IOutboxService> getOutboxService)
-    {
-        var outboxTracker = new OutboxTracker(getOutboxService);
-
-        dbContext.ChangeTracker.Tracking += outboxTracker.TrackDomainEvents;
-        dbContext.SavingChanges += outboxTracker.WriteEventsToOutbox;
-
-        return outboxTracker;
-    }
-
-    private OutboxTracker(Func<IOutboxService> getOutboxService)
+    private OutboxTracker(DbContext dbContext, Func<IOutboxService> getOutboxService)
     {
         this.getOutboxService = getOutboxService;
+        
+        EventHandler<EntityTrackingEventArgs> trackDomainEvents = TrackDomainEvents;
+        EventHandler<SavingChangesEventArgs> writeEventsToOutbox = WriteEventsToOutbox;
+        
+        dbContext.ChangeTracker.Tracking += trackDomainEvents;
+        dbContext.SavingChanges += writeEventsToOutbox;
+        
+        disposing = () =>
+        {
+            dbContext.ChangeTracker.Tracking -= trackDomainEvents;
+            dbContext.SavingChanges -= writeEventsToOutbox;
+        };
     }
 
     private void TrackDomainEvents(object? sender, EntityTrackingEventArgs e)
@@ -55,13 +58,15 @@ public sealed class OutboxTracker
         if (e.Entry.Entity is IHasEvents hasEvents)
         {
             hasEvents.DomainEvents ??= new DomainEventCollection();
-            hasEvents.DomainEvents.Observe(DomainEventAdded);
+            var domainEventAdded = DomainEventAdded;
+            hasEvents.DomainEvents.Observe(domainEventAdded);
+            disposing += () => hasEvents.DomainEvents.RemoveObserver(domainEventAdded);
         }
     }
 
     private void DomainEventAdded(IDomainEvent @event)
     {
-        domainEvents ??= new();
+        domainEvents ??= [];
         domainEvents.Add(@event);
     }
 
@@ -76,5 +81,12 @@ public sealed class OutboxTracker
             service.Write(evt);
 
         domainEvents.Clear();
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        disposing();
+        domainEvents?.Clear();
     }
 }

@@ -10,18 +10,18 @@ namespace RoyalCode.DomainEvents;
 /// </summary>
 public class DomainEventCollection : IDomainEventCollection
 {
-    private List<IDomainEvent>? _innerList;
-    private List<Action<IDomainEvent>>? _observers;
+    private List<IDomainEvent>? innerList;
+    private List<Action<IDomainEvent>>? observers;
 
     /// <summary>
     /// <para>
     ///     Internal list that stores the domain events.
     /// </para>
     /// </summary>
-    protected List<IDomainEvent> InnerList => _innerList ??= new List<IDomainEvent>();
+    protected List<IDomainEvent> InnerList => innerList ??= [];
 
     /// <inheritdoc />
-    public int Count => _innerList?.Count ?? 0;
+    public int Count => innerList?.Count ?? 0;
 
     /// <summary>
     /// <para>
@@ -38,10 +38,10 @@ public class DomainEventCollection : IDomainEventCollection
     }
 
     /// <inheritdoc />
-    public void Clear() => _innerList?.Clear();
+    public void Clear() => innerList?.Clear();
 
     /// <inheritdoc />
-    public bool Contains(IDomainEvent item) => _innerList?.Contains(item) ?? false;
+    public bool Contains(IDomainEvent item) => innerList?.Contains(item) ?? false;
 
     /// <inheritdoc />
     public void CopyTo(IDomainEvent[] array, int arrayIndex) => InnerList.CopyTo(array, arrayIndex);
@@ -50,7 +50,7 @@ public class DomainEventCollection : IDomainEventCollection
     public IEnumerator<IDomainEvent> GetEnumerator() => InnerList.GetEnumerator();
 
     /// <inheritdoc />
-    public bool Remove(IDomainEvent item) => _innerList?.Remove(item) ?? false;
+    public bool Remove(IDomainEvent item) => innerList?.Remove(item) ?? false;
 
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -61,11 +61,24 @@ public class DomainEventCollection : IDomainEventCollection
         if (observerAction is null)
             throw new ArgumentNullException(nameof(observerAction));
 
-        _observers ??= new List<Action<IDomainEvent>>();
-        _observers.Add(observerAction);
+        observers ??= [];
+        observers.Add(observerAction);
 
-        _innerList?.ForEach(observerAction);
+        innerList?.ForEach(observerAction);
     }
 
-    private void Fire(IDomainEvent evt) =>_observers?.ForEach(a => a(evt));
+    /// <inheritdoc />
+    public void RemoveObserver(Action<IDomainEvent> observerAction)
+    {
+        if (observerAction is null)
+            throw new ArgumentNullException(nameof(observerAction));
+
+        observers?.Remove(observerAction);
+    }
+
+    /// <summary>
+    /// Fires the event to all observers.
+    /// </summary>
+    /// <param name="evt">The event.</param>
+    protected virtual void Fire(IDomainEvent evt) =>observers?.ForEach(a => a(evt));
 }

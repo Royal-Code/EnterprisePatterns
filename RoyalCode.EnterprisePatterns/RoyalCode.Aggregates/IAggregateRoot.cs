@@ -5,7 +5,7 @@ namespace RoyalCode.Aggregates;
 
 /// <summary>
 /// <para>
-///     A interface for identifying the aggregate root entity.
+///     An interface for identifying the aggregate root entity.
 /// </para>
 /// <para>
 ///     The aggregate root is the principal entity of an aggregate.
@@ -17,7 +17,7 @@ public interface IAggregateRoot : IEntity, IHasEvents { }
 
 /// <summary>
 /// <para>
-///     A interface for identifying the aggregate root entity, and define the ID type.
+///     An interface for identifying the aggregate root entity, and define the ID type.
 /// </para>
 /// <para>
 ///     See also <see cref="IAggregateRoot"/>.
