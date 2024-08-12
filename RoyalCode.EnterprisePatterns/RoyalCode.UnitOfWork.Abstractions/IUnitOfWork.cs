@@ -1,4 +1,3 @@
-
 namespace RoyalCode.UnitOfWork.Abstractions;
 
 /// <summary>

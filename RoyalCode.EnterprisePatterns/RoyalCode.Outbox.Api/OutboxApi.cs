@@ -17,24 +17,34 @@ public static class OutboxApi
     /// <summary>
     /// Adds/Maps the endpoints for reading the Outbox via HTTP.
     /// </summary>
-    /// <param name="group"></param>
-    public static void MapOutbox(this RouteGroupBuilder group)
+    /// <param name="app">Application endpoint router.</param>
+    /// <param name="groupPrefix">Optional, group prefix, default is 'outbox'.</param>
+    public static void MapOutbox(this IEndpointRouteBuilder app, string groupPrefix = "outbox")
     {
-        var outboxGroup = group.MapGroup("outbox")
+        var outboxGroup = app.MapGroup(groupPrefix)
             .WithName("outbox")
             .WithDescription("Outbox API");
 
-        outboxGroup.MapPost("consumer", RegisterConsumerAsync)
+        outboxGroup.MapOutbox();
+    }
+
+    /// <summary>
+    /// Adds/Maps the endpoints for reading the Outbox via HTTP.
+    /// </summary>
+    /// <param name="group">The RouteGroup.</param>
+    public static void MapOutbox(this RouteGroupBuilder group)
+    {
+        group.MapPost("consumer", RegisterConsumerAsync)
             .WithName("register-consumer")
             .WithDescription("Register a new outbox consumer")
             .WithOpenApi();
 
-        outboxGroup.MapGet("consumer/{consumer}/messages", GetConsumerMessagesAsync)
+        group.MapGet("consumer/{consumer}/messages", GetConsumerMessagesAsync)
             .WithName("get-outbox-messages")
             .WithDescription("get the outbox next messages for the consumer")
             .WithOpenApi();
 
-        outboxGroup.MapPost("consumer/{consumer}/commit", CommitConsumedAsync)
+        group.MapPost("consumer/{consumer}/commit", CommitConsumedAsync)
             .WithName("commit-consumed-outbox-messages")
             .WithDescription("Commit the consumed messages")
             .WithOpenApi();

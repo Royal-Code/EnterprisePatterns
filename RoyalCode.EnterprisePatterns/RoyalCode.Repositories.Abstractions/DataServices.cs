@@ -1,5 +1,6 @@
 ﻿
 using RoyalCode.Entities;
+using RoyalCode.SmartValidations.Entities;
 using System.Diagnostics.CodeAnalysis;
 
 namespace RoyalCode.Repositories.Abstractions;
@@ -17,6 +18,7 @@ namespace RoyalCode.Repositories.Abstractions;
 /// </remarks>
 /// <typeparam name="TEntity">The entity type.</typeparam>
 public interface IAdder<in TEntity>
+    where TEntity : class
 {
     /// <summary>
     /// <para>
@@ -32,6 +34,22 @@ public interface IAdder<in TEntity>
     /// </remarks>
     /// <param name="entity">The new entity instance.</param>
     void Add(TEntity entity);
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new entity to the repository to be persisted.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///     When implemented together with the Unit Of Work pattern the entity 
+    ///     will not be persisted directly when calling this method, 
+    ///     it will be stored in memory until the completion of the unit of work.
+    /// </para>
+    /// </remarks>
+    /// <param name="entity">The new entity instance.</param>
+    /// <param name="token">Cancellation token.</param>
+    ValueTask AddAsync(TEntity entity, CancellationToken token = default);
 
     /// <summary>
     /// <para>
@@ -56,6 +74,7 @@ public interface IAdder<in TEntity>
 /// </summary>
 /// <typeparam name="TEntity">The entity type.</typeparam>
 public interface IFinder<TEntity>
+    where TEntity : class
 {
     /// <summary>
     /// <para>
@@ -83,6 +102,21 @@ public interface IFinder<TEntity>
     /// </para>
     /// </returns>
     ValueTask<TEntity?> FindAsync(object id, CancellationToken token = default);
+
+    /// <summary>
+    /// <para>
+    ///     Try to find an existing entity through its unique identity (Id).
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TId">The type o entity id.</typeparam>
+    /// <param name="id">The entity id.</param>
+    /// <param name="token">Cancellation token.</param>
+    /// <returns>
+    /// <para>
+    ///     An entry representing the entity record obtained from the database.
+    /// </para>
+    /// </returns>
+    ValueTask<Entry<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken token = default);
 }
 
 /// <summary>
@@ -99,7 +133,7 @@ public interface IFinder<TEntity>
 /// </remarks>
 /// <typeparam name="TEntity">The entity type.</typeparam>
 public interface IFinderByGuid<TEntity>
-    where TEntity : IHasGuid
+    where TEntity : class, IHasGuid
 {
     /// <summary>
     /// <para>
@@ -145,7 +179,7 @@ public interface IFinderByGuid<TEntity>
 /// <typeparam name="TEntity">The entity type.</typeparam>
 /// <typeparam name="TCode">The code type.</typeparam>
 public interface IFinderByCode<TEntity, in TCode>
-    where TEntity : IHasCode<TCode>
+    where TEntity : class, IHasCode<TCode>
 {
     /// <summary>
     /// <para>
@@ -190,6 +224,7 @@ public interface IFinderByCode<TEntity, in TCode>
 [SuppressMessage("Major Code Smell", "S2326:Unused type parameters should be removed", 
     Justification = "Update an entity, used to identify the entity")]
 public interface IUpdater<TEntity>
+    where TEntity : class
 {
     /// <summary>
     /// <para>
@@ -291,6 +326,37 @@ public interface IUpdater<TEntity>
     /// </para>
     /// </remarks>
     /// <typeparam name="TId">The Id type.</typeparam>
+    /// <typeparam name="TModel">The model with the data.</typeparam>
+    /// <param name="id">The id value.</param>
+    /// <param name="model">The model.</param>
+    /// <param name="token">Cancellation token.</param>
+    /// <returns>
+    /// <para>
+    ///     True if the entity exists and has been updated, false otherwise.
+    /// </para>
+    /// </returns>
+    Task<bool> MergeAsync<TId, TModel>(Id<TEntity, TId> id, TModel model, CancellationToken token = default)
+        where TModel : class;
+
+    /// <summary>
+    /// <para>
+    ///     Operation to merge a data model to an existing entity.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///     The data model should have an id, which will be used to get the entity from the database.
+    /// </para>
+    /// <para>
+    ///     The fields of the data model should be the same as the entity's fields.
+    /// </para>
+    /// <para>
+    ///     When implemented together with the Unit Of Work pattern the entity 
+    ///     will not be persisted directly when calling this method, 
+    ///     it will be stored in memory until the completion of the unit of work.
+    /// </para>
+    /// </remarks>
+    /// <typeparam name="TId">The Id type.</typeparam>
     /// <param name="models">A collection of models.</param>
     /// <param name="token">Token for cancelling tasks.</param>
     /// <returns>For each model, true if the entity exists and has been updated, false otherwise.</returns>
@@ -315,6 +381,7 @@ public interface IUpdater<TEntity>
 /// </remarks>
 /// <typeparam name="TEntity">Tipo da entidade.</typeparam>
 public interface IRemover<TEntity>
+    where TEntity : class
 {
     /// <summary>
     /// <para>

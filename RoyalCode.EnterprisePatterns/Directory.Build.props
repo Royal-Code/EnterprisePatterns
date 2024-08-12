@@ -1,16 +1,16 @@
 <Project>
 	<PropertyGroup>
-		<LibTargets>netstandard2.1;net8</LibTargets>
+		<LibTargets>net8</LibTargets>
 		<AspTargets>net8</AspTargets>
 		<MsgTargets>net8</MsgTargets>
 	</PropertyGroup>
 	<PropertyGroup>
 		
 		<DomainVer>1.0.0</DomainVer>
-		<DomainPreview>-preview-6.0</DomainPreview>
+		<DomainPreview>-preview-7.0</DomainPreview>
 		
 		<PersistVer>1.0.0</PersistVer>
-		<PersistPreview>-preview-6.0</PersistPreview>
+		<PersistPreview>-preview-7.0</PersistPreview>
 		
 		<CommandVer>0.1.0</CommandVer>
 		<CommandPreview>-preview-1</CommandPreview>

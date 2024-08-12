@@ -25,8 +25,4 @@
 		<PackageReference Include="RoyalCode.OperationHint.EntityFramework" Version="1.0.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Extesions\" />
-	</ItemGroup>
-
 </Project>

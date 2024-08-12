@@ -14,7 +14,9 @@ public class UnitOfWorkInitializeInterceptorAggregator : IInterceptorAggregator
     /// <inheritdoc />
     public IInterceptor AggregateInterceptors(IReadOnlyList<IInterceptor> interceptors)
     {
-        return new UnitOfWorkInterceptorAggregatorExecutor(interceptors);
+        return interceptors.Count is 1 
+            ? interceptors[0] 
+            : new UnitOfWorkInterceptorAggregatorExecutor(interceptors);
     }
 
     /// <inheritdoc />

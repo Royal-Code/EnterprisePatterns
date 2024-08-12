@@ -1,4 +1,9 @@
-﻿namespace RoyalCode.WorkContext.Abstractions;
+﻿using RoyalCode.Entities;
+using RoyalCode.Repositories.Abstractions;
+using RoyalCode.SmartValidations.Entities;
+using System.Reflection;
+
+namespace RoyalCode.WorkContext.Abstractions;
 
 /// <summary>
 /// Extensions methods for <see cref="IWorkContext"/>.
@@ -15,6 +20,18 @@ public static class WorkContextExtensions
     public static void Add<TEntity>(this IWorkContext context, TEntity entity)
         where TEntity : class
         => context.Repository<TEntity>().Add(entity);
+
+    /// <summary>
+    /// <para>
+    ///     Adds a new entity to the repository to be persisted.
+    /// </para>
+    /// </summary>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="entity">The new entity instance.</param>
+    /// <param name="token">Cancellation token.</param>
+    public static ValueTask AddAsync<TEntity>(this IWorkContext context, TEntity entity, CancellationToken token = default)
+        where TEntity : class
+        => context.Repository<TEntity>().AddAsync(entity, token);
 
     /// <summary>
     /// <para>
@@ -59,7 +76,116 @@ public static class WorkContextExtensions
     public static ValueTask<TEntity?> FindAsync<TEntity>(this IWorkContext context, object id, CancellationToken token = default)
         where TEntity : class
         => context.Repository<TEntity>().FindAsync(id, token);
-    
+
+    /// <summary>
+    /// <para>
+    ///     Try to find an existing entity through its unique identity (Id).
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TId">The type o entity id.</typeparam>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="id">The entity id.</param>
+    /// <param name="token">Cancellation token.</param>
+    /// <returns>
+    /// <para>
+    ///     An entry representing the entity record obtained from the database.
+    /// </para>
+    /// </returns>
+    public static ValueTask<Entry<TEntity, TId>> FindAsync<TEntity, TId>(this IWorkContext context, Id<TEntity, TId> id, CancellationToken token = default)
+        where TEntity : class
+        => context.Repository<TEntity>().FindAsync(id, token);
+
+    /// <summary>
+    /// <para>
+    ///     Operation to merge a data model to an existing entity.
+    /// </para>
+    /// </summary>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="model">A data model with information to update an existing entity.</param>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TId">The Id type.</typeparam>
+    /// <returns>
+    /// <para>
+    ///     True if the entity exists and has been updated, false otherwise.
+    /// </para>
+    /// </returns>
+    public static bool Merge<TEntity, TId>(this IWorkContext context, IHasId<TId> model)
+        where TEntity : class
+        => context.Repository<TEntity>().Merge(model);
+
+    /// <summary>
+    /// <para>
+    ///     Operation to merge a data model to an existing entity.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TId">The Id type.</typeparam>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="models">A collection of models.</param>
+    /// <returns>For each model, true if the entity exists and has been updated, false otherwise.</returns>
+    public static IEnumerable<bool> MergeRange<TEntity, TId>(this IWorkContext context, IEnumerable<IHasId<TId>> models)
+        where TEntity : class
+        => context.Repository<TEntity>().MergeRange(models);
+
+    /// <summary>
+    /// <para>
+    ///     Operation to merge a data model to an existing entity.
+    /// </para>
+    /// </summary>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="model">A data model with information to update an existing entity.</param>
+    /// <param name="token">Token for cancelling tasks.</param>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TId">The Id type.</typeparam>
+    /// <returns>
+    /// <para>
+    ///     True if the entity exists and has been updated, false otherwise.
+    /// </para>
+    /// </returns>
+    public static Task<bool> MergeAsync<TEntity, TId>(this IWorkContext context, IHasId<TId> model, CancellationToken token = default)
+        where TEntity : class
+        => context.Repository<TEntity>().MergeAsync(model, token);
+
+    /// <summary>
+    /// <para>
+    ///     Operation to merge a data model to an existing entity.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TId">The Id type.</typeparam>
+    /// <typeparam name="TModel">The model with the data.</typeparam>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="id">The id value.</param>
+    /// <param name="model">The model.</param>
+    /// <param name="token">Cancellation token.</param>
+    /// <returns>
+    /// <para>
+    ///     True if the entity exists and has been updated, false otherwise.
+    /// </para>
+    /// </returns>
+    public static Task<bool> MergeAsync<TEntity, TId, TModel>(this IWorkContext context, 
+        Id<TEntity, TId> id, TModel model, CancellationToken token = default)
+        where TEntity : class
+        where TModel : class
+        => context.Repository<TEntity>().MergeAsync(id, model, token);
+
+    /// <summary>
+    /// <para>
+    ///     Operation to merge a data model to an existing entity.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TId">The Id type.</typeparam>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="models">A collection of models.</param>
+    /// <param name="token">Token for cancelling tasks.</param>
+    /// <returns>For each model, true if the entity exists and has been updated, false otherwise.</returns>
+    public static Task<IEnumerable<bool>> MergeRangeAsync<TEntity, TId>(
+        this IWorkContext context, IEnumerable<IHasId<TId>> models, CancellationToken token = default)
+        where TEntity : class
+        => context.Repository<TEntity>().MergeRangeAsync(models, token);
+
     /// <summary>
     /// <para>
     ///     Remove an entity from the database.

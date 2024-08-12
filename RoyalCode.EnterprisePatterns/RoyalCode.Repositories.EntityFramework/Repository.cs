@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using RoyalCode.Entities;
 using RoyalCode.OperationHint.Abstractions;
+using RoyalCode.Repositories.Abstractions;
+using RoyalCode.SmartValidations.Entities;
 using System.Runtime.CompilerServices;
 
 namespace RoyalCode.Repositories.EntityFramework;
@@ -57,30 +59,44 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
         var entity = await db.Set<TEntity>().FindAsync([ id ], token);
 
         if (hintPerformer is not null && entity is not null)
-            hintPerformer.Perform<TEntity, DbContext>(entity, db);
+            await hintPerformer.PerformAsync<TEntity, DbContext>(entity, db);
 
         return entity;
     }
-    
+
+    /// <inheritdoc/>
+    public async ValueTask<Entry<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken token = default)
+    {
+        var entity = await db.Set<TEntity>().FindAsync([id.Value], token);
+
+        if (hintPerformer is not null && entity is not null)
+            await hintPerformer.PerformAsync<TEntity, DbContext>(entity, db);
+
+        return new Entry<TEntity, TId>(entity, id.Value);
+    }
+
     /// <inheritdoc/>
     public void Add(TEntity entity) 
-        => db.Set<TEntity>()
-            .Add(entity ?? throw new ArgumentNullException(nameof(entity)));
+        => db.Set<TEntity>().Add(entity ?? throw new ArgumentNullException(nameof(entity)));
 
     /// <inheritdoc/>
     public void AddRange(IEnumerable<TEntity> entities)
     {
-        if (entities is null)
-            throw new ArgumentNullException(nameof(entities));
-
+        ArgumentNullException.ThrowIfNull(entities);
         db.Set<TEntity>().AddRange(entities);
+    }
+
+    /// <inheritdoc/>
+    public async ValueTask AddAsync(TEntity entity, CancellationToken token = default)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
+        await db.Set<TEntity>().AddAsync(entity, token);
     }
 
     /// <inheritdoc/>
     public bool Merge<TId>(IHasId<TId> model)
     {
-        if (model is null)
-            throw new ArgumentNullException(nameof(model));
+        ArgumentNullException.ThrowIfNull(model);
 
         var entity = Find(model.Id!);
         if (entity is null)
@@ -95,8 +111,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     /// <inheritdoc/>
     public async Task<bool> MergeAsync<TId>(IHasId<TId> model, CancellationToken token = default)
     {
-        if (model is null)
-            throw new ArgumentNullException(nameof(model));
+        ArgumentNullException.ThrowIfNull(model);
 
         var entity = await FindAsync(model.Id!, token);
         if (entity is null)
@@ -104,6 +119,22 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
 
         var entry = db.Entry(entity);
         entry.CurrentValues.SetValues(model);
+
+        return true;
+    }
+
+    /// <inheritdoc/>
+    public async Task<bool> MergeAsync<TId, TModel>(Id<TEntity, TId> id, TModel model, CancellationToken token = default)
+        where TModel : class
+    {
+        ArgumentNullException.ThrowIfNull(model);
+
+        var vEntry = await FindAsync(id, token);
+        if (vEntry.NotFound(out _))
+            return false;
+
+        var dbEntry = db.Entry(vEntry.Entity);
+        dbEntry.CurrentValues.SetValues(model);
 
         return true;
     }

@@ -1,4 +1,4 @@
-using RoyalCode.OperationResults;
+using RoyalCode.SmartProblems;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
@@ -26,20 +26,12 @@ public readonly struct SaveResult
     public static implicit operator SaveResult(Exception ex) => new(ex);
 
     /// <summary>
-    /// Implicit conversion from <see cref="SaveResult"/> to <see cref="OperationResult"/>.
+    /// Implicit conversion from <see cref="SaveResult"/> to <see cref="Result"/>.
     /// </summary>
     /// <param name="result"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator OperationResult(SaveResult result) 
-        => result.TryGetError(out var errors) ? errors : new OperationResult();
-
-    /// <summary>
-    /// Implicit conversion from <see cref="SaveResult"/> to <see cref="OperationResult"/>.
-    /// </summary>
-    /// <param name="result"></param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ValidableResult(SaveResult result)
-        => result.TryGetError(out var errors) ? new ValidableResult(errors) : new ValidableResult();
+    public static implicit operator Result(SaveResult result)
+        => result.HasProblems(out var problems) ? problems : Result.Ok();
 
     /// <summary>
     /// Success constructor
@@ -60,7 +52,7 @@ public readonly struct SaveResult
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public SaveResult(Exception ex)
     {
-        Error = ResultMessage.Error(ex);
+        Problems = Problems.InternalError(ex);
     }
 
     /// <summary>
@@ -71,53 +63,53 @@ public readonly struct SaveResult
     /// <summary>
     /// The error that occurred during the save operation.
     /// </summary>
-    public ResultMessage? Error { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
+    public Problems? Problems { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
 
     /// <summary>
     /// Returns true if the save operation succeeded.
     /// </summary>
-#if NET6_0_OR_GREATER
-    [MemberNotNullWhen(false, nameof(Error))]
-#endif
-    public bool IsSuccess => Error is null;
+    [MemberNotNullWhen(false, nameof(Problems))]
+    public bool IsSuccess => Problems is null;
 
     /// <summary>
     /// Returns true if the save operation failed.
     /// </summary>
-#if NET6_0_OR_GREATER
-    [MemberNotNullWhen(true, nameof(Error))]
-#endif
-    public bool IsFailure => Error is not null;
+    [MemberNotNullWhen(true, nameof(Problems))]
+    public bool IsFailure => Problems is not null;
 
     /// <summary>
-    ///     Try to get the error that occurred during the save operation.
+    ///     Try to get the problems that occurred during the save operation.
     /// </summary>
-    /// <param name="error">
-    ///     The error that occurred during the save operation.
+    /// <param name="problems">
+    ///     The problems occurred during the save operation.
     /// </param>
     /// <returns>
     ///     True if the save operation failed, false otherwise.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryGetError([NotNullWhen(true)] out ResultMessage? error)
+    public bool HasProblems([NotNullWhen(true)] out Problems? problems)
     {
-        error = Error;
+        problems = Problems;
         return IsFailure;
     }
 
     /// <summary>
-    /// Convert the save result to an operation result.
+    /// <para>
+    ///     Check if the save operation is a success and return the problems.
+    /// </para>
+    /// <para>
+    ///     When the save operation is a success, the problems will be null, otherwise the problems will be returned.
+    /// </para>
     /// </summary>
+    /// <param name="problems">The problems.</param>
     /// <returns>
-    ///     An operation result with the error that occurred during the save operation in case of failure,
-    ///     or an empty operation result in case of success.
+    ///     True if the save operation is a success, false otherwise.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public OperationResult Convert()
+    public bool IsSuccessOrGetProblems([NotNullWhen(false)] out Problems? problems)
     {
-          return IsSuccess
-            ? new OperationResult()
-            : Error;
+        problems = Problems;
+        return IsSuccess;
     }
 
     /// <summary>
@@ -130,11 +122,11 @@ public readonly struct SaveResult
     ///     or an operation result with the given value in case of success.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public OperationResult<TValue> Convert<TValue>(TValue value)
+    public Result<TValue> Map<TValue>(TValue value)
     {
         return IsSuccess
             ? value
-            : Error;
+            : Problems;
     }
 
     /// <inheritdoc />
@@ -142,6 +134,29 @@ public readonly struct SaveResult
     {
         return IsSuccess
             ? $"Success: {Changes} changes"
-            : $"Failure: {Error}";
+            : $"Failure: {Problems}";
+    }
+}
+
+/// <summary>
+/// Extension methods for <see cref="SaveResult"/>.
+/// </summary>
+public static class SaveResultExtensions
+{
+    /// <summary>
+    /// Convert the save result to an operation result.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <param name="task">A task to save work unit operations.</param>
+    /// <param name="value">The value used in case of success.</param>
+    /// <returns>
+    ///     An operation result with the error that occurred during the save operation in case of failure,
+    ///     or an operation result with the given value in case of success.
+    /// </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static async Task<Result<TValue>> MapAsync<TValue>(this Task<SaveResult> task, TValue value)
+    {
+        var saveResult = await task;
+        return saveResult.Map(value);
     }
 }
