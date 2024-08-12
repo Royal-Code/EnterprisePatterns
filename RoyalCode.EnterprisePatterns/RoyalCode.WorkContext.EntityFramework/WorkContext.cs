@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.Repositories.EntityFramework;
@@ -24,9 +25,13 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     /// </summary>
     /// <param name="db">The database context.</param>
     /// <param name="serviceProvider">The service provider.</param>
-    public WorkContext(TDbContext db, IServiceProvider serviceProvider) : base(db)
+    public WorkContext(TDbContext db, IServiceProvider? serviceProvider = null) : base(db)
     {
-        this.serviceProvider = serviceProvider;
+        this.serviceProvider = serviceProvider
+            ?? db.GetService<IDbContextOptions>()
+                .Extensions.OfType<CoreOptionsExtension>().FirstOrDefault()
+                ?.ApplicationServiceProvider
+            ?? throw new InvalidOperationException("The service provider was not provided and it was not found in the database context");
     }
 
     /// <inheritdoc />
@@ -41,7 +46,7 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     {
         var search = serviceProvider.GetService<Searches.Persistence.EntityFramework.Internals.IAllEntities<TDbContext, TEntity>>();
         return search is null
-            ? throw new InvalidOperationException($"The search for all the entities of type {typeof(TEntity)} was not configured for the unit of work")
+            ? throw new InvalidOperationException($"The search for all the entities of type {typeof(TEntity)} was not configured for the work context")
             : (IAllEntities<TEntity>)search;
     }
 
@@ -50,7 +55,7 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     {
         var search = serviceProvider.GetService<Searches.Persistence.EntityFramework.Internals.ISearch<TDbContext, TEntity>>();
         return search is null
-            ? throw new InvalidOperationException($"The search for the entity type {typeof(TEntity)} was not configured for the unit of work")
+            ? throw new InvalidOperationException($"The search for the entity type {typeof(TEntity)} was not configured for the work context")
             : (ISearch<TEntity>)search;
     }
 
@@ -59,7 +64,14 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     {
         var repository = serviceProvider.GetService<IRepository<TDbContext, TEntity>>();
         return repository is null
-            ? throw new InvalidOperationException($"The repository for the entity type {typeof(TEntity)} was not configured for the unit of work")
+            ? throw new InvalidOperationException($"The repository for the entity type {typeof(TEntity)} was not configured for the work context")
             : (IRepository<TEntity>)repository;
     }
+
+    /// <inheritdoc />
+    public object GetService(Type serviceType) => serviceProvider.GetService(serviceType)
+        ?? throw new InvalidOperationException($"The service of type {serviceType} was not found in the service provider of the work context");
+    
+    /// <inheritdoc />
+    public TService GetService<TService>() => (TService)GetService(typeof(TService));
 }
