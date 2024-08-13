@@ -36,8 +36,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<DbContextOptionsBuilder> configurer)
     {
-        if (configurer is null)
-            throw new ArgumentNullException(nameof(configurer));
+        ArgumentNullException.ThrowIfNull(configurer);
 
         Services.AddDbContextPool<TDbContext>(builder =>
         {
@@ -50,8 +49,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<IServiceProvider, DbContextOptionsBuilder> configurer)
     {
-        if (configurer is null)
-            throw new ArgumentNullException(nameof(configurer));
+        ArgumentNullException.ThrowIfNull(configurer);
 
         Services.AddDbContextPool<TDbContext>((sp, builder) =>
         {
@@ -64,8 +62,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<DbContextOptionsBuilder> configurer)
     {
-        if (configurer is null)
-            throw new ArgumentNullException(nameof(configurer));
+        ArgumentNullException.ThrowIfNull(configurer);
 
         Services.AddDbContext<TDbContext>(builder =>
         {
@@ -78,8 +75,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<IServiceProvider, DbContextOptionsBuilder> configurer)
     {
-        if (configurer is null)
-            throw new ArgumentNullException(nameof(configurer));
+        ArgumentNullException.ThrowIfNull(configurer);
 
         Services.AddDbContext<TDbContext>((sp, builder) =>
         {
@@ -92,8 +88,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureRepositories(Action<IRepositoriesBuilder<TDbContext>> configureAction)
     {
-        if (configureAction is null)
-            throw new ArgumentNullException(nameof(configureAction));
+        ArgumentNullException.ThrowIfNull(configureAction);
 
         var repositoryConfigurer = new RepositoriesBuilder<TDbContext>(Services, Lifetime);
         configureAction(repositoryConfigurer);
@@ -103,8 +98,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     /// <inheritdoc />
     public IUnitOfWorkBuilder<TDbContext> ConfigureSearches(Action<ISearchConfigurations<TDbContext>> configureAction)
     {
-        if (configureAction is null)
-            throw new ArgumentNullException(nameof(configureAction));
+        ArgumentNullException.ThrowIfNull(configureAction);
 
         var configurations = new SearchConfigurations<TDbContext>(Services);
         configureAction(configurations);

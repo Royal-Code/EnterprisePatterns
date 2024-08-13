@@ -31,12 +31,12 @@ public interface ITransaction
     ///     Commits all changes made to the database in the current transaction.
     /// </para>
     /// </summary>
-    Task CommitAsync();
+    Task CommitAsync(CancellationToken ct);
 
     /// <summary>
     /// <para>
     ///     Discards all changes made to the database in the current transaction.
     /// </para>
     /// </summary>
-    Task RollbackAsync();
+    Task RollbackAsync(CancellationToken ct);
 }

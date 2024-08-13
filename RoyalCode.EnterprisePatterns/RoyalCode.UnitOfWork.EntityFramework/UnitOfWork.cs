@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using RoyalCode.UnitOfWork.Abstractions;
 using RoyalCode.UnitOfWork.EntityFramework.Diagnostics.Internal;
 using RoyalCode.UnitOfWork.EntityFramework.Interceptors;
@@ -18,9 +19,7 @@ namespace RoyalCode.UnitOfWork.EntityFramework;
 public class UnitOfWork<TDbContext> : IUnitOfWork, ITransaction
     where TDbContext : DbContext
 {
-    private readonly TransactionManager transactionManager;
-    private readonly UnitOfWorkItems items;
-    private readonly IUnitOfWorkInterceptor interceptor;
+    private IDbContextTransaction? dbContextTransaction;
 
     /// <summary>
     /// Constructor with the <see cref="DbContext"/> used in the unit of work.
@@ -29,13 +28,6 @@ public class UnitOfWork<TDbContext> : IUnitOfWork, ITransaction
     public UnitOfWork(TDbContext db)
     {
         Db = db ?? throw new ArgumentNullException(nameof(db));
-
-        transactionManager = new TransactionManager(db);
-        items = new UnitOfWorkItems(db, transactionManager);
-
-        interceptor = Interceptors<TDbContext>.GetUnitOfWorkInterceptor(db);
-
-        interceptor.Initializing(items);
     }
 
     /// <summary>
@@ -46,69 +38,55 @@ public class UnitOfWork<TDbContext> : IUnitOfWork, ITransaction
     /// <inheritdoc/>
     public ITransaction BeginTransaction()
     {
-        if (transactionManager.HasApplicationTransactionOpened)
-            return this;
-
-        Db.Database.BeginTransaction();
-        transactionManager.HasApplicationTransactionOpened = true;
-
+        dbContextTransaction ??= Db.Database.BeginTransaction();
         return this;
     }
 
     /// <inheritdoc/>
     public async Task<ITransaction> BeginTransactionAsync(CancellationToken token = default)
     {
-        if (transactionManager.HasApplicationTransactionOpened)
-            return this;
-
-        await Db.Database.BeginTransactionAsync(token);
-        transactionManager.HasApplicationTransactionOpened = true;
-
+        dbContextTransaction ??= await Db.Database.BeginTransactionAsync(token);
         return this;
     }
 
     /// <inheritdoc/>
     public void Commit()
     {
-        if (!transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
+        if (dbContextTransaction is null)
             throw new InvalidOperationException("The transaction is not created");
 
-        Db.Database.CommitTransaction();
-
-        transactionManager.HasApplicationTransactionOpened = false;
+        dbContextTransaction.Commit();
+        dbContextTransaction = null;
     }
 
     /// <inheritdoc/>
     public void Rollback()
     {
-        if (!transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
+        if (dbContextTransaction is null)
             throw new InvalidOperationException("The transaction is not created");
 
-        Db.Database.RollbackTransaction();
-
-        transactionManager.HasApplicationTransactionOpened = false;
+        dbContextTransaction.Rollback();
+        dbContextTransaction = null;
     }
 
     /// <inheritdoc/>
-    public async Task CommitAsync()
+    public async Task CommitAsync(CancellationToken ct)
     {
-        if (!transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
+        if (dbContextTransaction is null)
             throw new InvalidOperationException("The transaction is not created");
 
-        await Db.Database.CommitTransactionAsync();
-
-        transactionManager.HasApplicationTransactionOpened = false;
+        await dbContextTransaction.CommitAsync(ct);
+        dbContextTransaction = null;
     }
 
     /// <inheritdoc/>
-    public async Task RollbackAsync()
+    public async Task RollbackAsync(CancellationToken ct)
     {
-        if (!transactionManager.HasApplicationTransactionOpened || Db.Database.CurrentTransaction is null)
+        if (dbContextTransaction is null)
             throw new InvalidOperationException("The transaction is not created");
 
-        await Db.Database.RollbackTransactionAsync();
-
-        transactionManager.HasApplicationTransactionOpened = false;
+        await dbContextTransaction.RollbackAsync(ct);
+        dbContextTransaction = null;
     }
 
     /// <inheritdoc/>
@@ -116,29 +94,13 @@ public class UnitOfWork<TDbContext> : IUnitOfWork, ITransaction
     {
         try
         {
-            interceptor.Saving(items);
-
             var changes = Db.SaveChanges();
-
-            if (transactionManager.WillSaveChangesInTwoStages)
-            {
-                interceptor.Staged(items);
-
-                changes += Db.SaveChanges();
-                
-                transactionManager.StagesCompleted();
-            }
-
-            interceptor.Saved(items, changes);
-
             var result = new SaveResult(changes);
-
             return result;
         }
         catch (DbUpdateConcurrencyException ex)
         {
             var cex = new ConcurrencyException(ex.Message, ex);
-
             throw cex;
         }
         catch (DbUpdateException ex)
@@ -152,23 +114,8 @@ public class UnitOfWork<TDbContext> : IUnitOfWork, ITransaction
     {
         try
         {
-            await interceptor.SavingAsync(items, token);
-            
             var changes = await Db.SaveChangesAsync(token);
-            
-            if (transactionManager.WillSaveChangesInTwoStages)
-            {
-                await interceptor.StagedAsync(items, token);
-
-                changes += await Db.SaveChangesAsync(token);
-                
-                await transactionManager.StagesCompletedAsync(token);
-            }
-
-            await interceptor.SavedAsync(items, changes, token);
-            
             var result = new SaveResult(changes);
-
             return result;
         }
         catch (DbUpdateConcurrencyException ex)

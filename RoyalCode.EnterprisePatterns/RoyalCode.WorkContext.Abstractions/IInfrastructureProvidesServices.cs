@@ -22,7 +22,7 @@ public interface IInfrastructureProvidesServices
     /// </summary>
     /// <typeparam name="T">The type of service object to get.</typeparam>
     /// <returns>
-    ///     A service object of type <typeparam name="T"></typeparam>.
+    ///     A service object of type <typeparamref name="T"></typeparamref>.
     /// </returns>
     /// <exception cref="InvalidOperationException">
     ///     If the service provider is not provided and it was not found in the database context.
