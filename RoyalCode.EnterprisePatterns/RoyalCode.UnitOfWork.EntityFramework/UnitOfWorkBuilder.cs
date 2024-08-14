@@ -37,12 +37,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<DbContextOptionsBuilder> configurer)
     {
         ArgumentNullException.ThrowIfNull(configurer);
-
-        Services.AddDbContextPool<TDbContext>(builder =>
-        {
-            builder.UseUnitOfWork();
-            configurer(builder);
-        });
+        Services.AddDbContextPool<TDbContext>(configurer);
         return this;
     }
     
@@ -50,12 +45,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<IServiceProvider, DbContextOptionsBuilder> configurer)
     {
         ArgumentNullException.ThrowIfNull(configurer);
-
-        Services.AddDbContextPool<TDbContext>((sp, builder) =>
-        {
-            builder.UseUnitOfWork();
-            configurer(sp, builder);
-        });
+        Services.AddDbContextPool<TDbContext>(configurer);
         return this;
     }
     
@@ -63,12 +53,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<DbContextOptionsBuilder> configurer)
     {
         ArgumentNullException.ThrowIfNull(configurer);
-
-        Services.AddDbContext<TDbContext>(builder =>
-        {
-            builder.UseUnitOfWork();
-            configurer(builder);
-        }, Lifetime);
+        Services.AddDbContext<TDbContext>(configurer, Lifetime);
         return this;
     }
     
@@ -76,12 +61,7 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     public IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<IServiceProvider, DbContextOptionsBuilder> configurer)
     {
         ArgumentNullException.ThrowIfNull(configurer);
-
-        Services.AddDbContext<TDbContext>((sp, builder) =>
-        {
-            builder.UseUnitOfWork();
-            configurer(sp, builder);
-        }, Lifetime);
+        Services.AddDbContext<TDbContext>(configurer, Lifetime);
         return this;
     }
 
@@ -89,7 +69,6 @@ internal sealed class UnitOfWorkBuilder<TDbContext> : IUnitOfWorkBuilder<TDbCont
     public IUnitOfWorkBuilder<TDbContext> ConfigureRepositories(Action<IRepositoriesBuilder<TDbContext>> configureAction)
     {
         ArgumentNullException.ThrowIfNull(configureAction);
-
         var repositoryConfigurer = new RepositoriesBuilder<TDbContext>(Services, Lifetime);
         configureAction(repositoryConfigurer);
         return this;

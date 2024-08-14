@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using RoyalCode.UnitOfWork.Abstractions;
-using RoyalCode.UnitOfWork.EntityFramework.Diagnostics.Internal;
-using RoyalCode.UnitOfWork.EntityFramework.Interceptors;
 
 namespace RoyalCode.UnitOfWork.EntityFramework;
 

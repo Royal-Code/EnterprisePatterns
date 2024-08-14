@@ -32,6 +32,7 @@
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
 	  </Compile>
+	  <Compile Remove="Extensions\UnitOfWorkDbContextOptionsBuilderExtensions.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
