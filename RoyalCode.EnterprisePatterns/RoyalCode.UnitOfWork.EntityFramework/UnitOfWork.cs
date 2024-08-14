@@ -14,7 +14,7 @@ namespace RoyalCode.UnitOfWork.EntityFramework;
 ///     Type of the <see cref="DbContext"/> that contains the mapped entities referring to the work unit context.
 /// </para>
 /// </typeparam>
-public class UnitOfWork<TDbContext> : IUnitOfWork, ITransaction
+public class UnitOfWork<TDbContext> : IUnitOfWork<TDbContext>, ITransaction
     where TDbContext : DbContext
 {
     private IDbContextTransaction? dbContextTransaction;

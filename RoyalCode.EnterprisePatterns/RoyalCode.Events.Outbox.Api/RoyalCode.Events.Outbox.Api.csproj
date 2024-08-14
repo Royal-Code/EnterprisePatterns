@@ -10,7 +10,7 @@
 		<Description>
 			AspNetCore WebApi's for the Outbox Pattern.
 		</Description>
-		<PackageTags>RoyalCode Enterprise-Patterns Outbox Outbox-Pattern</PackageTags>
+		<PackageTags>RoyalCode Enterprise-Patterns Events Outbox Outbox-Pattern</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -26,8 +26,13 @@ public static class PersistenceServiceCollectionExtensions
         where TDbContext : DbContext
     {
         services.TryAdd(ServiceDescriptor.Describe(
-            typeof(IUnitOfWork), 
+            typeof(IUnitOfWork<TDbContext>), 
             typeof(UnitOfWork<>).MakeGenericType(typeof(TDbContext)),
+            lifetime));
+
+        services.TryAdd(ServiceDescriptor.Describe(
+            typeof(IUnitOfWork),
+            sp => sp.GetService<IUnitOfWork<TDbContext>>()!,
             lifetime));
 
         return new UnitOfWorkBuilder<TDbContext>(services, lifetime);

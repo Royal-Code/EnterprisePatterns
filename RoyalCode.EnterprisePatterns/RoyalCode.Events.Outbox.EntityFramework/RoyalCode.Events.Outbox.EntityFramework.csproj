@@ -8,9 +8,9 @@
 		<AssemblyVersion>$(MsgVer)</AssemblyVersion>
 		<FileVersion>$(MsgVer)</FileVersion>
 		<Description>
-			PostgreSQL mappings for components of the Outbox Pattern implemented with EntityFrameworkCore.
+			Components for the Outbox Pattern implemented with EntityFrameworkCore.
 		</Description>
-		<PackageTags>RoyalCode Enterprise-Patterns Outbox Outbox-Pattern</PackageTags>
+		<PackageTags>RoyalCode Enterprise-Patterns Events Outbox Outbox-Pattern</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

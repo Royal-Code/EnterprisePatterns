@@ -15,7 +15,7 @@ namespace RoyalCode.WorkContext.EntityFramework;
 ///     to resolve the repositories and searches.
 /// </summary>
 /// <typeparam name="TDbContext">The type of the database context.</typeparam>
-public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
+public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext<TDbContext>
     where TDbContext : DbContext
 {
     private readonly IServiceProvider serviceProvider;
@@ -51,7 +51,7 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext
     }
 
     /// <inheritdoc />
-    public ISearch<TEntity> CreateSearch<TEntity>() where TEntity : class
+    public ISearch<TEntity> Search<TEntity>() where TEntity : class
     {
         var search = serviceProvider.GetService<Searches.Persistence.EntityFramework.Internals.ISearch<TDbContext, TEntity>>();
         return search is null
