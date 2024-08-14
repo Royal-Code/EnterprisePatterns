@@ -7,7 +7,6 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(DotNetCoreVersion)" />
 
 		<ProjectReference Include="..\RoyalCode.Aggregates\RoyalCode.Aggregates.csproj" />
-		<ProjectReference Include="..\RoyalCode.Events.EntityFramework\RoyalCode.Events.EntityFramework.csproj" />
 		<ProjectReference Include="..\RoyalCode.Repositories.EntityFramework\RoyalCode.Repositories.EntityFramework.csproj" />
 		<ProjectReference Include="..\RoyalCode.UnitOfWork.EntityFramework\RoyalCode.UnitOfWork.EntityFramework.csproj" />
 		<ProjectReference Include="..\RoyalCode.WorkContext.EntityFramework\RoyalCode.WorkContext.EntityFramework.csproj" />

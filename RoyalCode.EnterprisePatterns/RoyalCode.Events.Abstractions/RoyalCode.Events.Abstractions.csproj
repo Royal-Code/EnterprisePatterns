@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\base.targets" />
+
+	<PropertyGroup>
+		<TargetFrameworks>$(MsgTargets)</TargetFrameworks>
+		<Version>$(MsgVer)$(MsgVerPreview)</Version>
+		<AssemblyVersion>$(MsgVer)</AssemblyVersion>
+		<FileVersion>$(MsgVer)</FileVersion>
+		<Description>
+			Abstract components for work with events.
+		</Description>
+		<PackageTags>RoyalCode Enterprise-Patterns Events</PackageTags>
+	</PropertyGroup>
+
+</Project>

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\base.targets" />
+
+	<PropertyGroup>
+		<TargetFrameworks>$(MsgTargets)</TargetFrameworks>
+		<Version>$(MsgVer)$(MsgVerPreview)</Version>
+		<AssemblyVersion>$(MsgVer)</AssemblyVersion>
+		<FileVersion>$(MsgVer)</FileVersion>
+		<Description>
+			Components for the Outbox Pattern implemented with EntityFrameworkCore.
+		</Description>
+		<PackageTags>RoyalCode Enterprise-Patterns Outbox Outbox-Pattern</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(DotNetCoreVersion)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\RoyalCode.Events.Outbox.EntityFramework\RoyalCode.Events.Outbox.EntityFramework.csproj" />
+	</ItemGroup>
+
+</Project>

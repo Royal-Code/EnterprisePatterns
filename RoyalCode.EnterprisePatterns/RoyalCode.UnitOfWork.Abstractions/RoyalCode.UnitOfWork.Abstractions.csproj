@@ -15,7 +15,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="RoyalCode.SmartProblems" Version="1.0.0-preview-1.2" />
+		<PackageReference Include="RoyalCode.SmartProblems" Version="$(ProbVer)" />
 	</ItemGroup>
 
 </Project>

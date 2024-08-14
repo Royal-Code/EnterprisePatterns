@@ -15,7 +15,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\RoyalCode.Entities\RoyalCode.Entities.csproj" />
-		<PackageReference Include="RoyalCode.SmartValidations" Version="1.0.0-preview-0.2" />
+		<PackageReference Include="RoyalCode.SmartValidations" Version="$(ValVer)" />
 	</ItemGroup>
 
 	<ItemGroup>

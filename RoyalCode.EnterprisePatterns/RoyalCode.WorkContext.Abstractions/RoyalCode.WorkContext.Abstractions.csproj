@@ -18,8 +18,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="RoyalCode.OperationHint.Abstractions" Version="1.0.0" />
-		<PackageReference Include="RoyalCode.Searches.Abstractions" Version="1.0.0-preview-5.0" />
+		<PackageReference Include="RoyalCode.OperationHint.Abstractions" Version="$(HintVer)" />
+		<PackageReference Include="RoyalCode.Searches.Abstractions" Version="$(SearchVer)" />
 	</ItemGroup>
 
 	<ItemGroup>
