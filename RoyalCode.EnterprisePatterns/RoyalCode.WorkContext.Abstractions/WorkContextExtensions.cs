@@ -29,7 +29,8 @@ public static class WorkContextExtensions
     /// <param name="context">The work context to get the repository.</param>
     /// <param name="entity">The new entity instance.</param>
     /// <param name="token">Cancellation token.</param>
-    public static ValueTask AddAsync<TEntity>(this IWorkContext context, TEntity entity, CancellationToken token = default)
+    public static ValueTask AddAsync<TEntity>(this IWorkContext context, TEntity entity,
+        CancellationToken token = default)
         where TEntity : class
         => context.Repository<TEntity>().AddAsync(entity, token);
 
@@ -43,7 +44,7 @@ public static class WorkContextExtensions
     public static void AddRange<TEntity>(this IWorkContext context, IEnumerable<TEntity> entities)
         where TEntity : class
         => context.Repository<TEntity>().AddRange(entities);
-    
+
     /// <summary>
     /// <para>
     ///     Finds an existing entity through its unique identity (id).
@@ -73,7 +74,8 @@ public static class WorkContextExtensions
     ///     Existing instance, or null/default if it does not exist.
     /// </para>
     /// </returns>
-    public static ValueTask<TEntity?> FindAsync<TEntity>(this IWorkContext context, object id, CancellationToken token = default)
+    public static ValueTask<TEntity?> FindAsync<TEntity>(this IWorkContext context, object id,
+        CancellationToken token = default)
         where TEntity : class
         => context.Repository<TEntity>().FindAsync(id, token);
 
@@ -92,9 +94,77 @@ public static class WorkContextExtensions
     ///     An entry representing the entity record obtained from the database.
     /// </para>
     /// </returns>
-    public static ValueTask<Entry<TEntity, TId>> FindAsync<TEntity, TId>(this IWorkContext context, Id<TEntity, TId> id, CancellationToken token = default)
+    public static ValueTask<Entry<TEntity, TId>> FindAsync<TEntity, TId>(this IWorkContext context, Id<TEntity, TId> id,
+        CancellationToken token = default)
         where TEntity : class
         => context.Repository<TEntity>().FindAsync(id, token);
+
+    /// <summary>
+    /// <para>
+    ///     Finds an existing entity through its Guid.
+    /// </para>
+    /// </summary>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="guid">The entity Guid.</param>
+    /// <returns>
+    /// <para>
+    ///     Existing instance, or null/default if it does not exist.
+    /// </para>
+    /// </returns>
+    public static TEntity? FindByGuid<TEntity>(this IWorkContext context, Guid guid)
+        where TEntity : class, IHasGuid
+        => context.GetService<IFinderByGuid<TEntity>>().FindByGuid(guid);
+
+    /// <summary>
+    /// <para>
+    ///     Finds an existing entity through its Guid.
+    /// </para>
+    /// </summary>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="guid">The entity Guid.</param>
+    /// <param name="token">Token for cancelling tasks.</param>
+    /// <returns>
+    /// <para>
+    ///     Existing instance, or null/default if it does not exist.
+    /// </para>
+    /// </returns>
+    public static Task<TEntity?> FindByGuidAsync<TEntity>(this IWorkContext context, Guid guid,
+        CancellationToken token = default)
+        where TEntity : class, IHasGuid
+        => context.GetService<IFinderByGuid<TEntity>>().FindByGuidAsync(guid, token);
+
+    /// <summary>
+    /// <para>
+    ///     Finds an existing entity through its Code.
+    /// </para>
+    /// </summary>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="code">The entity code.</param>
+    /// <returns>
+    /// <para>
+    ///     Existing instance, or null/default if it does not exist.
+    /// </para>
+    /// </returns>
+    public static TEntity? FindByCode<TEntity, TCode>(this IWorkContext context, TCode code)
+        where TEntity : class, IHasCode<TCode>
+        => context.GetService<IFinderByCode<TEntity, TCode>>().FindByCode(code);
+
+    /// <summary>
+    /// <para>
+    ///     Finds an existing entity through its Code.
+    /// </para>
+    /// </summary>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="code">The entity code.</param>
+    /// <param name="token">Token for cancelling tasks.</param>
+    /// <returns>
+    /// <para>
+    ///     Existing instance, or null/default if it does not exist.
+    /// </para>
+    /// </returns>
+    public static Task<TEntity?> FindByCodeAsync<TEntity, TCode>(this IWorkContext context, TCode code, CancellationToken token = default)
+        where TEntity : class, IHasCode<TCode>
+        => context.GetService<IFinderByCode<TEntity, TCode>>().FindByCodeAsync(code, token);
 
     /// <summary>
     /// <para>
@@ -143,7 +213,8 @@ public static class WorkContextExtensions
     ///     True if the entity exists and has been updated, false otherwise.
     /// </para>
     /// </returns>
-    public static Task<bool> MergeAsync<TEntity, TId>(this IWorkContext context, IHasId<TId> model, CancellationToken token = default)
+    public static Task<bool> MergeAsync<TEntity, TId>(this IWorkContext context, IHasId<TId> model,
+        CancellationToken token = default)
         where TEntity : class
         => context.Repository<TEntity>().MergeAsync(model, token);
 
@@ -164,7 +235,7 @@ public static class WorkContextExtensions
     ///     True if the entity exists and has been updated, false otherwise.
     /// </para>
     /// </returns>
-    public static Task<bool> MergeAsync<TEntity, TId, TModel>(this IWorkContext context, 
+    public static Task<bool> MergeAsync<TEntity, TId, TModel>(this IWorkContext context,
         Id<TEntity, TId> id, TModel model, CancellationToken token = default)
         where TEntity : class
         where TModel : class
@@ -193,7 +264,7 @@ public static class WorkContextExtensions
     /// </summary>
     /// <param name="context">The work context to get the repository.</param>
     /// <param name="entity">The entity.</param>
-    public static void Remove<TEntity>(this IWorkContext context,TEntity entity)
+    public static void Remove<TEntity>(this IWorkContext context, TEntity entity)
         where TEntity : class
         => context.Repository<TEntity>().Remove(entity);
 
@@ -256,7 +327,8 @@ public static class WorkContextExtensions
     ///     The entity excluded, or null if the entity is not found.
     /// </para>
     /// </returns>
-    public static Task<TEntity?> DeleteAsync<TEntity>(this IWorkContext context, object id, CancellationToken token = default)
+    public static Task<TEntity?> DeleteAsync<TEntity>(this IWorkContext context, object id,
+        CancellationToken token = default)
         where TEntity : class
         => context.Repository<TEntity>().DeleteAsync(id, token);
 

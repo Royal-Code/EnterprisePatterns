@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Repositories.EntityFramework.Configurations;
 using RoyalCode.Searches.Persistence.EntityFramework.Configurations;
+using RoyalCode.UnitOfWork.EntityFramework.Services;
 
 namespace RoyalCode.UnitOfWork.EntityFramework;
 
@@ -38,6 +39,40 @@ public interface IUnitOfWorkBuilder
 public interface IUnitOfWorkBuilder<out TDbContext> : IUnitOfWorkBuilder
     where TDbContext : DbContext
 {
+    /// <summary>
+    /// <para>
+    ///     Configure the <see cref="DbContext"/> for the unit of work.
+    /// </para>
+    /// <para>
+    ///     The configuration is done by the <see cref="IConfigureDbContextService{TDbContext}"/>
+    ///     registered in the services.
+    /// </para>
+    /// <para>
+    ///     When the <see cref="IConfigureDbContextService{TDbContext}"/> is not registered, an
+    ///     <see cref="InvalidOperationException"/> is thrown.
+    /// </para>
+    /// </summary>
+    /// <returns>The same instance.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     The <see cref="IConfigureDbContextService{TDbContext}"/> is not registered.
+    /// </exception>
+    IUnitOfWorkBuilder<TDbContext> ConfigureWithService()
+    {
+        Services.AddDbContext<TDbContext>((sp, builder) =>
+        {
+            var configurator = sp.GetService<IConfigureDbContextService<TDbContext>>();
+
+            if (configurator is null)
+                throw new InvalidOperationException(
+                    "The IConfigureDbContextService is not registered. " +
+                    "When using the ConfigureWithService method, it is necessary to register the " +
+                    "IConfigureDbContextService<TDbContext>.");
+
+            configurator.ConfigureDbContext(builder);
+        }, Lifetime);
+        return this;
+    }
+
     /// <summary>
     /// Configure the <see cref="DbContext"/> for the unit of work as pooled.
     /// </summary>
