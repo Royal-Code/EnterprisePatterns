@@ -5,6 +5,7 @@ using RoyalCode.Events.Outbox.Abstractions.Options;
 using RoyalCode.Events.Outbox.Abstractions.Services.Defaults;
 using RoyalCode.Events.Outbox.Abstractions.Services;
 using RoyalCode.Events.Outbox.EntityFramework.Services.Handlers;
+using RoyalCode.Events.Outbox.EntityFramework.Services;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -24,17 +25,27 @@ public static class OutboxServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        if (services.Any(d => d.ServiceType == typeof(OutboxService)))
-            return services;
+        services.AddOutboxServicesCore();
 
-        services.AddTransient<IMessageDispatcher, MessageDispatcher>();
-        services.AddTransient(typeof(MessageDispatcher<>));
-        services.AddTransient<OutboxService>();
+        services.AddTransient(typeof(EventsUtils<TDbContext>));
 
         services.AddTransient<IRegisterConsumerHandler, RegisterConsumerHandler<TDbContext>>();
         services.AddTransient<IGetMessagesHandler, GetMessagesHandler<TDbContext>>();
         services.AddTransient<ICommitConsumedHandler, CommitConsumedHandler<TDbContext>>();
-        services.AddTransient<ICreateMessageHandler, CreateMessageHandler<TDbContext>>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddOutboxServicesCore(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        if (services.Any(d => d.ServiceType == typeof(OutboxServiceFactory)))
+            return services;
+
+        services.AddTransient<IMessageDispatcher, MessageDispatcher>();
+        services.AddTransient(typeof(MessageDispatcher<>));
+        services.AddTransient<OutboxServiceFactory>();
 
         return services;
     }

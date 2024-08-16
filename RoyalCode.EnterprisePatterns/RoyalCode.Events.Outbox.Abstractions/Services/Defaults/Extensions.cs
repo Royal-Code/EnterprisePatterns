@@ -19,7 +19,7 @@ public static class Extensions
         if (services.Any(d => d.ServiceType == typeof(IOutboxService)))
             return;
 
-        services.AddTransient<IOutboxService, OutboxService>();
+        services.AddTransient<IOutboxService, OutboxServiceBase>();
         services.AddTransient<IMessageDispatcher, MessageDispatcher>();
         services.AddTransient(typeof(MessageDispatcher<>));
     }

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace RoyalCode.Events.Outbox.Abstractions.Options;
 
@@ -26,4 +27,9 @@ public class TypeMetadata
     /// Optional serialisation options.
     /// </summary>
     public JsonSerializerOptions? SerializerOptions { get; set; }
+
+    /// <summary>
+    /// Optional, serialization json type.
+    /// </summary>
+    public JsonTypeInfo? JsonTypeInfo { get; set; }
 }

@@ -22,7 +22,7 @@ public sealed class OutboxTracker : IDisposable
     /// <returns>A new instance of <see cref="OutboxTracker"/>.</returns>
     public static OutboxTracker Initialize(DbContext dbContext)
     {
-        return new(dbContext, dbContext.GetService<IOutboxService>);
+        return new(dbContext, () => dbContext.GetService<OutboxServiceFactory>().CreateOutboxService(dbContext));
     }
 
     /// <summary>

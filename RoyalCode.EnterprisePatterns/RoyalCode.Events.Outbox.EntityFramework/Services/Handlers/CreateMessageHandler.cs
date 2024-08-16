@@ -7,17 +7,15 @@ using RoyalCode.SmartProblems;
 namespace RoyalCode.Events.Outbox.EntityFramework.Services.Handlers;
 
 /// <inheritdoc />
-/// <typeparam name="TDbContext">The <see cref="DbContext"/> type.</typeparam>
-public sealed class CreateMessageHandler<TDbContext> : ICreateMessageHandler
-    where TDbContext : DbContext
+public sealed class CreateMessageHandler : ICreateMessageHandler
 {
-    private readonly TDbContext dbContext;
+    private readonly DbContext dbContext;
 
     /// <summary>
-    /// Cria novo handler com o <see cref="DbContext"/> com a configuração da entidade <see cref="OutboxMessage"/>;
+    /// Create a new handler with the <see cref="DbContext"/> with the configuration of the <see cref="OutboxMessage"/> entity;
     /// </summary>
     /// <param name="dbContext">The <see cref="DbContext"/>.</param>
-    public CreateMessageHandler(TDbContext dbContext)
+    public CreateMessageHandler(DbContext dbContext)
     {
         this.dbContext = dbContext;
     }
