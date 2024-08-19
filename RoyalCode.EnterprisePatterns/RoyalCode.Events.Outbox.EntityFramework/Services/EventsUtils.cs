@@ -38,7 +38,7 @@ public sealed class EventsUtils<TDbContext>
     /// <exception cref="InvalidOperationException">
     ///     If <typeparamref name="TEvent"/> not configured.
     /// </exception>
-    public IEnumerable<TEvent> GetAll<TEvent>()
+    public IList<TEvent> GetAll<TEvent>()
     {
         if (!options.TryGetMetadata<TEvent>(out var metadata))
             throw new MessateTypeNotConfiguredException(typeof(TEvent));
