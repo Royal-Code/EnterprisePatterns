@@ -47,7 +47,7 @@ public class WorkContextBuilderTests
         Assert.NotNull(entityManager);
         Assert.Same(context, entityManager);
 
-        var searchable = sp.GetService<ISearchable>();
+        var searchable = sp.GetService<ISearchManager>();
         Assert.NotNull(searchable);
         Assert.Same(context, searchable);
         
@@ -60,7 +60,7 @@ public class WorkContextBuilderTests
         var search = sp.GetService<ISearch<Person>>();
         Assert.NotNull(search);
 
-        var contextSearch = context!.CreateSearch<Person>();
+        var contextSearch = context!.Search<Person>();
         Assert.NotNull(contextSearch);
 
         var allPersons = sp.GetService<IAllEntities<Person>>();

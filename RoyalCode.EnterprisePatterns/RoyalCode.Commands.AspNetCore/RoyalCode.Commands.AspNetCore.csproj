@@ -23,7 +23,7 @@
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-		<PackageReference Include="RoyalCode.OperationResult.ApiResults" Version="2.0.0" />
+		<PackageReference Include="RoyalCode.SmartProblems.ApiResults" Version="$(ProbVer)" />
 		<ProjectReference Include="..\RoyalCode.Commands.Handlers\RoyalCode.Commands.Handlers.csproj" />
 	</ItemGroup>
 

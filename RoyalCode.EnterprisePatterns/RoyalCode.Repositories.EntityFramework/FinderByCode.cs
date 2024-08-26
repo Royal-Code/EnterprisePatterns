@@ -30,12 +30,12 @@ public class FinderByCode<TDbContext, TEntity, TCode> : IFinderByCode<TEntity, T
     /// <inheritdoc/>
     public TEntity? FindByCode(TCode code)
     {
-        return db.Set<TEntity>().FirstOrDefault(e => e.Code.Equals(code));
+        return db.Set<TEntity>().FirstOrDefault(e => e.Code!.Equals(code));
     }
 
     /// <inheritdoc/>
     public Task<TEntity?> FindByCodeAsync(TCode code, CancellationToken token = default)
     {
-        return db.Set<TEntity>().FirstOrDefaultAsync(e => e.Code.Equals(code), token);
+        return db.Set<TEntity>().FirstOrDefaultAsync(e => e.Code!.Equals(code), token);
     }
 }

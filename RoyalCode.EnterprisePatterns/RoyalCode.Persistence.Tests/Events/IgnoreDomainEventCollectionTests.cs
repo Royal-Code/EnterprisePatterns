@@ -1,123 +1,127 @@
-using System;
-using System.Linq;
-using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.Aggregates;
-using RoyalCode.DomainEvents;
-using RoyalCode.EventDispatcher;
-using RoyalCode.Repositories.Abstractions;
-using RoyalCode.UnitOfWork.Abstractions;
-using Xunit;
-using Moq;
 
-namespace RoyalCode.Persistence.Tests.Events;
+// Obsolete tests...
+// The classes tested here have been discontinued.
 
-public class IgnoreDomainEventCollectionTests
-{
-    [Fact]
-    public void MustSaveEntityButNotSaveDomainEvents()
-    {
-        var eventDispatcher = new Mock<IEventDispatcher>().Object;
-        
-        var services = new ServiceCollection();
-        services.AddSingleton(eventDispatcher);
-        services.AddUnitOfWork<IgnoreDomainEventCollectionDbContext>()
-            .AddDomainEventHandler()
-            .ConfigureDbContextPool(builder =>
-            {
-                builder.UseInMemoryDatabase(nameof(MustSaveEntityButNotSaveDomainEvents));
-                builder.UseDomainEventHandler();
-            })
-            .ConfigureRepositories(c =>
-            {
-                c.Add<IgnoreDomainEventCollectionEntity>();
-            });
+////using System;
+////using System.Linq;
+////using System.Text.Json.Serialization;
+////using Microsoft.EntityFrameworkCore;
+////using Microsoft.Extensions.DependencyInjection;
+////using RoyalCode.Aggregates;
+////using RoyalCode.DomainEvents;
+////using RoyalCode.EventDispatcher;
+////using RoyalCode.Repositories.Abstractions;
+////using RoyalCode.UnitOfWork.Abstractions;
+////using Xunit;
+////using Moq;
 
-        var sp = services.BuildServiceProvider();
+////namespace RoyalCode.Persistence.Tests.Events;
 
-        Guid id;
-        using (var scope = sp.CreateScope())
-        {
-            var repository = scope.ServiceProvider.GetService<IRepository<IgnoreDomainEventCollectionEntity>>()!;
-            var uow = scope.ServiceProvider.GetService<IUnitOfWork>()!;
+////public class IgnoreDomainEventCollectionTests
+////{
+////    [Fact]
+////    public void MustSaveEntityButNotSaveDomainEvents()
+////    {
+////        var eventDispatcher = new Mock<IEventDispatcher>().Object;
 
-            var entity = new IgnoreDomainEventCollectionEntity(nameof(MustSaveEntityButNotSaveDomainEvents));
+////        var services = new ServiceCollection();
+////        services.AddSingleton(eventDispatcher);
+////        services.AddUnitOfWork<IgnoreDomainEventCollectionDbContext>()
+////            .AddDomainEventHandler()
+////            .ConfigureDbContextPool(builder =>
+////            {
+////                builder.UseInMemoryDatabase(nameof(MustSaveEntityButNotSaveDomainEvents));
+////                builder.UseDomainEventHandler();
+////            })
+////            .ConfigureRepositories(c =>
+////            {
+////                c.Add<IgnoreDomainEventCollectionEntity>();
+////            });
 
-            var @event = (IgnoreDomainEventCollectionEntityCreated?) entity.DomainEvents?.FirstOrDefault();
-            Assert.NotNull(@event);
-            Assert.Equal(entity.Id, @event?.EntityId);
+////        var sp = services.BuildServiceProvider();
 
-            id = entity.Id;
-            
-            repository.Add(entity);
-            uow.Save();
-        }
+////        Guid id;
+////        using (var scope = sp.CreateScope())
+////        {
+////            var repository = scope.ServiceProvider.GetService<IRepository<IgnoreDomainEventCollectionEntity>>()!;
+////            var uow = scope.ServiceProvider.GetService<IUnitOfWork>()!;
 
-        using (var scope = sp.CreateScope())
-        {
-            var repository = scope.ServiceProvider.GetService<IRepository<IgnoreDomainEventCollectionEntity>>()!;
-            var entity = repository.Find(id);
-            Assert.NotNull(entity);
+////            var entity = new IgnoreDomainEventCollectionEntity(nameof(MustSaveEntityButNotSaveDomainEvents));
 
-            var evt = entity!.DomainEvents?.FirstOrDefault();
-            Assert.Null(evt);
-        }
-    }
-}
+////            var @event = (IgnoreDomainEventCollectionEntityCreated?) entity.DomainEvents?.FirstOrDefault();
+////            Assert.NotNull(@event);
+////            Assert.Equal(entity.Id, @event?.EntityId);
 
-public class IgnoreDomainEventCollectionDbContext : DbContext
-{
-#pragma warning disable CS8618
+////            id = entity.Id;
 
-    public IgnoreDomainEventCollectionDbContext(DbContextOptions<IgnoreDomainEventCollectionDbContext> options)
+////            repository.Add(entity);
+////            uow.Save();
+////        }
 
-        : base(options)
-    { }
+////        using (var scope = sp.CreateScope())
+////        {
+////            var repository = scope.ServiceProvider.GetService<IRepository<IgnoreDomainEventCollectionEntity>>()!;
+////            var entity = repository.Find(id);
+////            Assert.NotNull(entity);
 
-#pragma warning restore CS8618
+////            var evt = entity!.DomainEvents?.FirstOrDefault();
+////            Assert.Null(evt);
+////        }
+////    }
+////}
 
-    public DbSet<IgnoreDomainEventCollectionEntity> Entity { get; set; }
+////public class IgnoreDomainEventCollectionDbContext : DbContext
+////{
+////#pragma warning disable CS8618
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
+////    public IgnoreDomainEventCollectionDbContext(DbContextOptions<IgnoreDomainEventCollectionDbContext> options)
 
-        modelBuilder.IgnoreDomainEventCollection();
-    }
-}
+////        : base(options)
+////    { }
 
-public class IgnoreDomainEventCollectionEntity : AggregateRoot<Guid>
-{
-    public IgnoreDomainEventCollectionEntity(string description)
-    {
-        Id = Guid.NewGuid();
-        Description = description;
-        AddEvent(new IgnoreDomainEventCollectionEntityCreated(Id));
-    }
+////#pragma warning restore CS8618
 
-#pragma warning disable CS8618
-    
-    protected IgnoreDomainEventCollectionEntity() { }
+////    public DbSet<IgnoreDomainEventCollectionEntity> Entity { get; set; }
 
-#pragma warning restore CS8618 
+////    protected override void OnModelCreating(ModelBuilder modelBuilder)
+////    {
+////        base.OnModelCreating(modelBuilder);
 
-    public string Description { get; }
-}
+////        modelBuilder.IgnoreDomainEventCollection();
+////    }
+////}
 
-public class IgnoreDomainEventCollectionEntityCreated : DomainEventBase
-{
-    public IgnoreDomainEventCollectionEntityCreated(Guid entityId)
-    {
-        EntityId = entityId;
-    }
+////public class IgnoreDomainEventCollectionEntity : AggregateRoot<Guid>
+////{
+////    public IgnoreDomainEventCollectionEntity(string description)
+////    {
+////        Id = Guid.NewGuid();
+////        Description = description;
+////        AddEvent(new IgnoreDomainEventCollectionEntityCreated(Id));
+////    }
 
-    [JsonConstructor]
-    public IgnoreDomainEventCollectionEntityCreated(Guid id, DateTimeOffset occurred, Guid entityId) 
-        : base(id, occurred)
-    {
-        EntityId = entityId;
-    }
+////#pragma warning disable CS8618
 
-    public Guid EntityId { get; }
-}
+////    protected IgnoreDomainEventCollectionEntity() { }
+
+////#pragma warning restore CS8618 
+
+////    public string Description { get; }
+////}
+
+////public class IgnoreDomainEventCollectionEntityCreated : DomainEventBase
+////{
+////    public IgnoreDomainEventCollectionEntityCreated(Guid entityId)
+////    {
+////        EntityId = entityId;
+////    }
+
+////    [JsonConstructor]
+////    public IgnoreDomainEventCollectionEntityCreated(Guid id, DateTimeOffset occurred, Guid entityId) 
+////        : base(id, occurred)
+////    {
+////        EntityId = entityId;
+////    }
+
+////    public Guid EntityId { get; }
+////}

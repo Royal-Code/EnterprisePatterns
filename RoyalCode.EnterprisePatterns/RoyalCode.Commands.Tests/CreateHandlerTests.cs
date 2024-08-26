@@ -2,7 +2,6 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using RoyalCode.Commands.Abstractions;
 using RoyalCode.Commands.Abstractions.Attributes;
 using RoyalCode.Commands.Handlers;
 using RoyalCode.Entities;
@@ -50,7 +49,7 @@ public class CreateHandlerTests
         var dto = new SimpleDto { Name = "Test" };
         var result = await handler.HandleAsync(dto, default);
         scope.Dispose();
-        bool success = result.TryGetValue(out var entity);
+        bool success = result.HasValue(out var entity);
 
         // assert
         Assert.True(success);

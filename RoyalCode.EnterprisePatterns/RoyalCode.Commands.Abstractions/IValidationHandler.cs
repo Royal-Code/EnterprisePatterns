@@ -1,4 +1,4 @@
-﻿using RoyalCode.OperationResults;
+﻿using RoyalCode.SmartProblems;
 using RoyalCode.WorkContext.Abstractions;
 
 namespace RoyalCode.Commands.Abstractions;
@@ -15,5 +15,5 @@ public interface IValidationHandler<in TModel>
     /// <param name="context">The work context.</param>
     /// <param name="model">The command data.</param>
     /// <returns>The result of the validation.</returns>
-    OperationResult Validate(IWorkContext context, TModel model);
+    Result Validate(IWorkContext context, TModel model);
 }

@@ -18,7 +18,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
-		<PackageReference Include="RoyalCode.Searches.Persistence.EntityFramework" Version="$(SearchVer)" />
+		<PackageReference Include="RoyalCode.Searches.EntityFramework" Version="$(SearchVer)" />
 	</ItemGroup>
 
 	<ItemGroup>

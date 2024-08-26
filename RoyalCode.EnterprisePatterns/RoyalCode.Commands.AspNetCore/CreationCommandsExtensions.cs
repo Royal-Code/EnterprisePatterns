@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,8 +18,6 @@ namespace RoyalCode.Commands.AspNetCore;
 public static class CreationApi
 {
     private static readonly Dictionary<CreatePathKey, CreatePathValue> creationPathMap = new();
-
-#if NET7_0_OR_GREATER
 
     /// <summary>
     /// <para>
@@ -120,8 +117,6 @@ public static class CreationApi
 
         return builder.MapPost(pattern, CreationAsync<TRootEntity, TRootId, TEntity, TModel, TContext>);
     }
-
-#endif
 
     /// <summary>
     /// <para>

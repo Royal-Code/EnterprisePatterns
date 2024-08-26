@@ -1,4 +1,4 @@
-﻿using RoyalCode.OperationResults;
+﻿using RoyalCode.SmartProblems;
 using RoyalCode.WorkContext.Abstractions;
 
 namespace RoyalCode.Commands.Abstractions;
@@ -40,7 +40,7 @@ public interface ICreationHandler<TContext, in TRequest, out TEntity>
     /// <param name="request">The request that contains the data to create the entity.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The operation result with the context.</returns>
-    Task<OperationResult<TContext>> CreateContextAsync(IWorkContext context, TRequest request, CancellationToken cancellationToken);
+    Task<Result<TContext>> CreateContextAsync(IWorkContext context, TRequest request, CancellationToken cancellationToken);
 
     /// <summary>
     /// Create a new entity from the context.
@@ -72,7 +72,7 @@ public interface ICreationHandler<TContext, in TRequest, in TRootEntity, out TEn
     /// <param name="rootEntity">The root entity.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The operation result with the context.</returns>
-    Task<OperationResult<TContext>> CreateContextAsync(
+    Task<Result<TContext>> CreateContextAsync(
         IWorkContext context, TRequest request, TRootEntity rootEntity, CancellationToken cancellationToken);
 
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿using RoyalCode.Commands.Abstractions;
 using RoyalCode.Entities;
-using RoyalCode.OperationResults;
+using RoyalCode.SmartProblems;
 using RoyalCode.WorkContext.Abstractions;
 
 namespace RoyalCode.Commands.Handlers;
@@ -45,27 +45,27 @@ public sealed class CreateCommandHandler<TEntity, TModel>
     /// <param name="model">The input model.</param>
     /// <param name="token">The cancellation token.</param>
     /// <returns>The result of the operation with the created entity.</returns>
-    public async Task<OperationResult<TEntity>> HandleAsync(TModel model, CancellationToken token)
+    public async Task<Result<TEntity>> HandleAsync(TModel model, CancellationToken token)
     {
         foreach (var validator in validators)
         {
             var result = validator.Validate(model);
-            if (result.TryGetError(out var error))
-                return error;
+            if (result.HasProblems(out var problems))
+                return problems;
         }
 
         if (creationHandler is IValidationHandler<TModel> validationHandler)
         {
             var result = validationHandler.Validate(context, model);
-            if (result.TryGetError(out var error))
-                return error;
+            if (result.HasProblems(out var problems))
+                return problems;
         }
 
         var entity = creationHandler.Create(model);
         context.Repository<TEntity>().Add(entity);
 
         var saveResult = await context.SaveAsync(token);
-        return saveResult.Convert(entity);
+        return saveResult.Map(entity);
     }
 }
 
@@ -111,38 +111,38 @@ public sealed class CreateCommandHandler<TEntity, TModel, TContext>
     /// <param name="model">The input model.</param>
     /// <param name="token">The cancellation token.</param>
     /// <returns>The result of the operation with the created entity.</returns>
-    public async Task<OperationResult<TEntity>> HandleAsync(TModel model, CancellationToken token)
+    public async Task<Result<TEntity>> HandleAsync(TModel model, CancellationToken token)
     {
         foreach (var validator in validators)
         {
             var result = validator.Validate(model);
-            if (result.TryGetError(out var error))
-                return error;
+            if (result.HasProblems(out var problems))
+                return problems;
         }
 
         if (creationHandler is IValidationHandler<TModel> validationHandler)
         {
             var result = validationHandler.Validate(context, model);
-            if (result.TryGetError(out var error))
-                return error;
+            if (result.HasProblems(out var problems))
+                return problems;
         }
 
-        var creationContextResult = await creationHandler.CreateContextAsync(context, model, token);
-        if (creationContextResult.IsFailureOrGetValue(out var creationContext))
-            return creationContextResult.Convert<TEntity>();
+        return await creationHandler.CreateContextAsync(context, model, token)
+            .MapAsync(async creationContext =>
+            {
+                if (creationContext is IValidableContext validable)
+                {
+                    var result = validable.Validate();
+                    if (result.HasProblems(out var problems))
+                        return problems;
+                }
 
-        if (creationContext is IValidableContext validable)
-        {
-            var result = validable.Validate();
-            if (result.TryGetError(out var error))
-                return error;
-        }
+                var entity = creationHandler.Create(creationContext);
+                context.Repository<TEntity>().Add(entity);
 
-        var entity = creationHandler.Create(creationContext);
-        context.Repository<TEntity>().Add(entity);
-
-        var saveResult = await context.SaveAsync(token);
-        return saveResult.Convert(entity);
+                var saveResult = await context.SaveAsync(token);
+                return saveResult.Map(entity);
+            });
     }
 }
 
@@ -193,41 +193,41 @@ public sealed class CreateCommandHandler<TRootEntity, TRootId, TEntity, TModel, 
     /// <param name="model">The input model.</param>
     /// <param name="token">The cancellation token.</param>
     /// <returns>The result of the operation with the created entity.</returns>
-    public async Task<OperationResult<TEntity>> HandleAsync(TRootId id, TModel model, CancellationToken token)
+    public async Task<Result<TEntity>> HandleAsync(TRootId id, TModel model, CancellationToken token)
     {
         foreach (var validator in validators)
         {
             var result = validator.Validate(model);
-            if (result.TryGetError(out var error))
+            if (result.HasProblems(out var error))
                 return error;
         }
 
         if (creationHandler is IValidationHandler<TModel> validationHandler)
         {
             var result = validationHandler.Validate(context, model);
-            if (result.TryGetError(out var error))
-                return error;
+            if (result.HasProblems(out var problems))
+                return problems;
         }
 
         var rootEntity = await context.Repository<TRootEntity>().FindAsync(id!);
         if (rootEntity is null)
-            return ResultMessage.NotFound(CommandsErrorMessages.CreateNotFoundMessage<TRootEntity>(id), nameof(id));
+            return Problems.NotFound(CommandsErrorMessages.CreateNotFoundMessage<TRootEntity>(id), nameof(id));
 
-        var creationContextResult = await creationHandler.CreateContextAsync(context, model, rootEntity, token);
-        if (creationContextResult.IsFailureOrGetValue(out var creationContext))
-            return creationContextResult.Convert<TEntity>();
+        return await creationHandler.CreateContextAsync(context, model, rootEntity, token)
+            .MapAsync(async creationContext =>
+            {
+                if (creationContext is IValidableContext validable)
+                {
+                    var result = validable.Validate();
+                    if (result.HasProblems(out var problems))
+                        return problems;
+                }
 
-        if (creationContext is IValidableContext validable)
-        {
-            var result = validable.Validate();
-            if (result.TryGetError(out var error))
-                return error;
-        }
+                var entity = creationHandler.Create(creationContext);
+                context.Repository<TEntity>().Add(entity);
 
-        var entity = creationHandler.Create(creationContext);
-        context.Repository<TEntity>().Add(entity);
-
-        var saveResult = await context.SaveAsync(token);
-        return saveResult.Convert(entity);
+                var saveResult = await context.SaveAsync(token);
+                return saveResult.Map(entity);
+            });
     }
 }

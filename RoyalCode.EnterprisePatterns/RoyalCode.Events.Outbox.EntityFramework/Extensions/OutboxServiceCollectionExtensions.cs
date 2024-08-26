@@ -36,6 +36,11 @@ public static class OutboxServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Adds the internal services for Outbox operation.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The same instance of <paramref name="services"/> for chained calls.</returns>
     public static IServiceCollection AddOutboxServicesCore(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);

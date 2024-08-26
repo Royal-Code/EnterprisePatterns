@@ -1,5 +1,4 @@
-﻿
-using RoyalCode.OperationResults;
+﻿using RoyalCode.SmartProblems;
 
 namespace RoyalCode.Commands.Abstractions;
 
@@ -17,5 +16,5 @@ public interface IValidator<in TModel>
     ///     A operation result with the problems messages if the model is invalid,
     ///     or a operation result with success if the model is valid.
     /// </returns>
-    OperationResult Validate(TModel model);
+    Result Validate(TModel model);
 }
