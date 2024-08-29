@@ -39,8 +39,5 @@ jobs:
       - name: Build and pack Work Context EntityFramework
         run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.EntityFramework/RoyalCode.WorkContext.EntityFramework.csproj -c Release
                 
-      - name: Build and pack Events EntityFramework
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Events.EntityFramework/RoyalCode.Events.EntityFramework.csproj -c Release
-        
       - name: Publish
         run: sudo dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
