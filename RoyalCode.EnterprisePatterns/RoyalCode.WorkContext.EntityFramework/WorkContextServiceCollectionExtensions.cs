@@ -11,6 +11,8 @@ using RoyalCode.UnitOfWork.EntityFramework.Internals;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+#pragma warning disable S3267
+
 /// <summary>
 /// Extensions methods for <see cref="IServiceCollection"/>.
 /// </summary>
@@ -64,6 +66,40 @@ public static class WorkContextServiceCollectionExtensions
     }
 
     /// <summary>
+    /// Adds a work context related to a <see cref="DbContext"/> and register all implemented interfaces
+    /// of the <typeparamref name="TDbWorkContext"/> that is assignable to <see cref="IUnitOfWork"/>.
+    /// </summary>
+    /// <typeparam name="TDbWorkContext">The type of the work context.</typeparam>
+    /// <typeparam name="TDbContext">The type of the DbContext used in the work context.</typeparam>
+    /// <param name="services">The service collection.</param>
+    /// <param name="lifetime">The services lifetime, by default is scoped.</param>
+    /// <returns>
+    ///     A unit of work builder to configure the <see cref="DbContext"/> and services like repositories and searches.
+    /// </returns>
+    public static IUnitOfWorkBuilder<TDbContext> AddWorkContext<TDbWorkContext, TDbContext>(
+        this IServiceCollection services,
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
+        where TDbWorkContext : class, IWorkContext<TDbContext>
+        where TDbContext : DbContext
+    {
+        services.Add(ServiceDescriptor.Describe(
+            typeof(TDbWorkContext),
+            typeof(TDbWorkContext),
+            lifetime));
+        
+        foreach(var implements in typeof(TDbWorkContext).GetInterfaces())
+        {
+            if (typeof(IUnitOfWork).IsAssignableFrom(implements))
+                services.Add(ServiceDescriptor.Describe(
+                    implements,
+                    sp => sp.GetService<TDbWorkContext>()!,
+                    lifetime));
+        }
+
+        return new UnitOfWorkBuilder<TDbContext>(services, lifetime);
+    }
+
+    /// <summary>
     /// Adds a work context related to a <see cref="DbContext"/>.
     /// </summary>
     /// <typeparam name="TWorkContext">Specific <see cref="IWorkContext"/> interface.</typeparam>
@@ -88,32 +124,32 @@ public static class WorkContextServiceCollectionExtensions
 
         services.Add(ServiceDescriptor.Describe(
             typeof(IWorkContext<TDbContext>),
-            sp => sp.GetService<TDbWorkContext>()!,
+            sp => sp.GetService<TWorkContext>()!,
             lifetime));
 
         services.Add(ServiceDescriptor.Describe(
             typeof(IWorkContext),
-            sp => sp.GetService<TDbWorkContext>()!,
+            sp => sp.GetService<TWorkContext>()!,
             lifetime));
 
         services.Add(ServiceDescriptor.Describe(
             typeof(IEntityManager),
-            sp => sp.GetService<TDbWorkContext>()!,
+            sp => sp.GetService<TWorkContext>()!,
             lifetime));
 
         services.Add(ServiceDescriptor.Describe(
             typeof(ISearchManager),
-            sp => sp.GetService<TDbWorkContext>()!,
+            sp => sp.GetService<TWorkContext>()!,
             lifetime));
 
         services.TryAdd(ServiceDescriptor.Describe(
             typeof(IUnitOfWork<TDbContext>),
-            sp => sp.GetService<TDbWorkContext>()!,
+            sp => sp.GetService<TWorkContext>()!,
             lifetime));
 
         services.TryAdd(ServiceDescriptor.Describe(
             typeof(IUnitOfWork),
-            sp => sp.GetService<TDbWorkContext>()!,
+            sp => sp.GetService<TWorkContext>()!,
             lifetime));
 
         return new UnitOfWorkBuilder<TDbContext>(services, lifetime);
