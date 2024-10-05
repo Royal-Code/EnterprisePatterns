@@ -93,8 +93,7 @@ public class DomainEventCollection : IDomainEventCollection
     /// <inheritdoc />
     public void RemoveObserver(Action<IDomainEvent> observerAction)
     {
-        if (observerAction is null)
-            throw new ArgumentNullException(nameof(observerAction));
+        ArgumentNullException.ThrowIfNull(observerAction);
 
         observers?.Remove(observerAction);
     }
