@@ -2,8 +2,8 @@
 
 echo Current folder: %cd%
 
-git status --porcelain > nul
-if errorlevel 1 (
+for /f "delims=" %%i in ('git status --porcelain') do set status=%%i
+if not defined status (
   echo There are no changes to the repository.
   pause
   exit /b 0
