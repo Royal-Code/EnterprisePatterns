@@ -5,7 +5,7 @@ using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.Repositories.EntityFramework;
 using RoyalCode.UnitOfWork.EntityFramework;
 using RoyalCode.Repositories.Abstractions;
-using RoyalCode.Searches.Abstractions;
+using RoyalCode.SmartSearch.Abstractions;
 using RoyalCode.WorkContext.Abstractions;
 
 namespace RoyalCode.WorkContext.EntityFramework;
@@ -44,7 +44,7 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext<TDbC
     /// <inheritdoc />
     public IAllEntities<TEntity> All<TEntity>() where TEntity : class
     {
-        var search = serviceProvider.GetService<Searches.EntityFramework.Internals.IAllEntities<TDbContext, TEntity>>();
+        var search = serviceProvider.GetService<SmartSearch.EntityFramework.Internals.IAllEntities<TDbContext, TEntity>>();
         return search is null
             ? throw new InvalidOperationException($"The search for all the entities of type {typeof(TEntity)} was not configured for the work context")
             : (IAllEntities<TEntity>)search;
@@ -53,7 +53,7 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext<TDbC
     /// <inheritdoc />
     public ISearch<TEntity> Search<TEntity>() where TEntity : class
     {
-        var search = serviceProvider.GetService<Searches.EntityFramework.Internals.ISearch<TDbContext, TEntity>>();
+        var search = serviceProvider.GetService<SmartSearch.EntityFramework.Internals.ISearch<TDbContext, TEntity>>();
         return search is null
             ? throw new InvalidOperationException($"The search for the entity type {typeof(TEntity)} was not configured for the work context")
             : (ISearch<TEntity>)search;

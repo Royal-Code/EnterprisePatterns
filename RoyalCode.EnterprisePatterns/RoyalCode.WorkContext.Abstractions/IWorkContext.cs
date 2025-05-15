@@ -1,6 +1,6 @@
 ﻿using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.Repositories.Abstractions;
-using RoyalCode.Searches.Abstractions;
+using RoyalCode.SmartSearch.Abstractions;
 using RoyalCode.UnitOfWork.Abstractions;
 
 namespace RoyalCode.WorkContext.Abstractions;

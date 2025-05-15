@@ -1,6 +1,6 @@
 ﻿using RoyalCode.Entities;
 using RoyalCode.Repositories.Abstractions;
-using RoyalCode.SmartValidations.Entities;
+using RoyalCode.SmartProblems.Entities;
 using System.Reflection;
 
 namespace RoyalCode.WorkContext.Abstractions;
@@ -94,7 +94,7 @@ public static class WorkContextExtensions
     ///     An entry representing the entity record obtained from the database.
     /// </para>
     /// </returns>
-    public static ValueTask<Entry<TEntity, TId>> FindAsync<TEntity, TId>(this IWorkContext context, Id<TEntity, TId> id,
+    public static ValueTask<FindResult<TEntity, TId>> FindAsync<TEntity, TId>(this IWorkContext context, Id<TEntity, TId> id,
         CancellationToken token = default)
         where TEntity : class
         => context.Repository<TEntity>().FindAsync(id, token);

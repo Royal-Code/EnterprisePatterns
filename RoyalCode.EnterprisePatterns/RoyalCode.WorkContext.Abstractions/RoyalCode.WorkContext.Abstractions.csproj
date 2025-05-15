@@ -19,7 +19,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="RoyalCode.OperationHint.Abstractions" Version="$(HintVer)" />
-		<PackageReference Include="RoyalCode.Searches.Abstractions" Version="$(SearchVer)" />
+		<PackageReference Include="RoyalCode.SmartSearch.Abstractions" Version="$(SearchVer)" />
 	</ItemGroup>
 
 	<ItemGroup>

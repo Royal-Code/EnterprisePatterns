@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RoyalCode.Entities;
 using RoyalCode.OperationHint.Abstractions;
-using RoyalCode.Repositories.Abstractions;
-using RoyalCode.SmartValidations.Entities;
+using RoyalCode.SmartProblems.Entities;
 using System.Runtime.CompilerServices;
 
 namespace RoyalCode.Repositories.EntityFramework;
@@ -65,14 +64,14 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     }
 
     /// <inheritdoc/>
-    public async ValueTask<Entry<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken token = default)
+    public async ValueTask<FindResult<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken token = default)
     {
         var entity = await db.Set<TEntity>().FindAsync([id.Value], token);
 
         if (hintPerformer is not null && entity is not null)
             await hintPerformer.PerformAsync<TEntity, DbContext>(entity, db);
 
-        return new Entry<TEntity, TId>(entity, id.Value);
+        return new FindResult<TEntity, TId>(entity, id.Value);
     }
 
     /// <inheritdoc/>

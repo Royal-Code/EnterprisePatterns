@@ -1,6 +1,6 @@
 ﻿
 using RoyalCode.Entities;
-using RoyalCode.SmartValidations.Entities;
+using RoyalCode.SmartProblems.Entities;
 using System.Diagnostics.CodeAnalysis;
 
 namespace RoyalCode.Repositories.Abstractions;
@@ -116,7 +116,7 @@ public interface IFinder<TEntity>
     ///     An entry representing the entity record obtained from the database.
     /// </para>
     /// </returns>
-    ValueTask<Entry<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken token = default);
+    ValueTask<FindResult<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken token = default);
 }
 
 /// <summary>

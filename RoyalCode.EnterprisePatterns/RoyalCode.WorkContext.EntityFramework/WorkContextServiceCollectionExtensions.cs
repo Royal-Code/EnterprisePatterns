@@ -3,7 +3,7 @@ using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.UnitOfWork.EntityFramework;
 using RoyalCode.WorkContext.EntityFramework;
 using RoyalCode.Repositories.Abstractions;
-using RoyalCode.Searches.Abstractions;
+using RoyalCode.SmartSearch.Abstractions;
 using RoyalCode.UnitOfWork.Abstractions;
 using RoyalCode.WorkContext.Abstractions;
 using Microsoft.Extensions.DependencyInjection.Extensions;

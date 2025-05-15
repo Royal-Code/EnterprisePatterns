@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.OperationHint.Abstractions;
-using RoyalCode.Searches.Abstractions;
+using RoyalCode.SmartSearch.Abstractions;
 
 namespace RoyalCode.OperationHint.Tests.Searches;
 

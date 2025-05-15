@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// <summary>
 /// Extensions methods for <see cref="IServiceCollection"/>.
 /// </summary>
-public static class PersistenceServiceCollectionExtensions
+public static class UnitOfWorkServiceCollectionExtensions
 {
     /// <summary>
     /// Adds a unit of work related to a <see cref="DbContext"/>.

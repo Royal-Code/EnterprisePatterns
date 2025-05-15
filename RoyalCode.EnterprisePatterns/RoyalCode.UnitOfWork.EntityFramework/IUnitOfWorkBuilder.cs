@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Repositories.EntityFramework.Configurations;
-using RoyalCode.Searches.EntityFramework.Configurations;
+using RoyalCode.SmartSearch.EntityFramework.Configurations;
 using RoyalCode.UnitOfWork.EntityFramework.Services;
 
 namespace RoyalCode.UnitOfWork.EntityFramework;
