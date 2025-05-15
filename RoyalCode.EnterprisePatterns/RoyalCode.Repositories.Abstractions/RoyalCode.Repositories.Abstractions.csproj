@@ -4,9 +4,9 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
-		<Version>$(DomainVer)$(DomainPreview)</Version>
-		<AssemblyVersion>$(DomainVer)</AssemblyVersion>
-		<FileVersion>$(DomainVer)</FileVersion>
+		<Version>$(PersistVer)$(PersistPreview)</Version>
+		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
+		<FileVersion>$(PersistVer)</FileVersion>
 		<Description>
 			Abstract components for the Repository Pattern.
 		</Description>
