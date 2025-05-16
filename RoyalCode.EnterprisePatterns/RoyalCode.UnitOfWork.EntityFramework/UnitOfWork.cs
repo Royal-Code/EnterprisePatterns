@@ -34,6 +34,17 @@ public class UnitOfWork<TDbContext> : IUnitOfWork<TDbContext>, ITransaction
     public TDbContext Db { get; }
 
     /// <inheritdoc/>
+    public ITransaction? GetCurrentTransaction()
+    {
+        dbContextTransaction ??= Db.Database.CurrentTransaction;
+
+        if (dbContextTransaction is null)
+            return null;
+
+        return this;
+    }
+
+    /// <inheritdoc/>
     public ITransaction BeginTransaction()
     {
         dbContextTransaction ??= Db.Database.BeginTransaction();

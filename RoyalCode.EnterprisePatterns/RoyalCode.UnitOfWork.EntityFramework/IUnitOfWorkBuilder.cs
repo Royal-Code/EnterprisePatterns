@@ -102,9 +102,8 @@ public interface IUnitOfWorkBuilder<out TDbContext> : IUnitOfWorkBuilder
     /// </summary>
     /// <param name="configurer">Action to configure.</param>
     /// <returns>The same instance.</returns>
-    IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<DbContextOptionsBuilder> configurer)
+    IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<DbContextOptionsBuilder>? configurer = null)
     {
-        ArgumentNullException.ThrowIfNull(configurer);
         Services.AddDbContext<TDbContext>(configurer, Lifetime);
         return this;
     }

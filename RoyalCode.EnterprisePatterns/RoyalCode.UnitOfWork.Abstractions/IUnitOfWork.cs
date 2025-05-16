@@ -50,6 +50,14 @@ public interface IUnitOfWork
 
     /// <summary>
     /// <para>
+    ///     Gets the current transaction if one is in progress.
+    /// </para>
+    /// </summary>
+    /// <returns>An object representing the current transaction, or null if no transaction is in progress.</returns>
+    ITransaction? GetCurrentTransaction();
+
+    /// <summary>
+    /// <para>
     ///     Starts a transaction and returns a component to handle it.
     /// </para>
     /// </summary>
