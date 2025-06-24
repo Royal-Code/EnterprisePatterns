@@ -23,7 +23,7 @@
 	</PropertyGroup>
 	<PropertyGroup>
 		<ValVer>1.0.0-preview-1.0</ValVer>
-		<ProbVer>1.0.0-preview-3.0</ProbVer>
+		<ProbVer>1.0.0-preview-3.5</ProbVer>
 		<HintVer>1.0.0</HintVer>
 		<SearchVer>0.7.0</SearchVer>
 	</PropertyGroup>
