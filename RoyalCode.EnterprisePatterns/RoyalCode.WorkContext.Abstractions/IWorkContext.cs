@@ -2,7 +2,7 @@
 using RoyalCode.Repositories.Abstractions;
 using RoyalCode.SmartSearch;
 using RoyalCode.UnitOfWork.Abstractions;
-using RoyalCode.WorkContext.Abstractions.Quering;
+using RoyalCode.WorkContext.Abstractions.Querying;
 
 namespace RoyalCode.WorkContext.Abstractions;
 

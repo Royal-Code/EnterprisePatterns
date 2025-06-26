@@ -9,6 +9,8 @@ using RoyalCode.UnitOfWork.EntityFramework;
 using RoyalCode.UnitOfWork.EntityFramework.Internals;
 using RoyalCode.WorkContext.Abstractions;
 using RoyalCode.WorkContext.EntityFramework;
+using RoyalCode.WorkContext.EntityFramework.Querying.Configurations;
+using RoyalCode.WorkContext.EntityFramework.Querying.Configurations.Internals;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -178,6 +180,24 @@ public static class WorkContextServiceCollectionExtensions
             configure(registry);
         }
         
+        return builder;
+    }
+
+    /// <summary>
+    /// Configures query-related services for the specified unit of work builder.
+    /// </summary>
+    /// <typeparam name="TDbContext">The type of the database context used by the unit of work.</typeparam>
+    /// <param name="builder">The unit of work builder to configure.</param>
+    /// <param name="configureAction">An action that applies query configurations using the provided <see cref="IQueryConfigurer{TDbContext}"/>.</param>
+    /// <returns>The same <see cref="IUnitOfWorkBuilder{TDbContext}"/> instance, allowing for method chaining.</returns>
+    public static IUnitOfWorkBuilder<TDbContext> ConfigureQueries<TDbContext>(
+        this IUnitOfWorkBuilder<TDbContext> builder,
+        Action<IQueryConfigurer<TDbContext>> configureAction)
+         where TDbContext : DbContext
+    {
+        ArgumentNullException.ThrowIfNull(configureAction);
+        var configurations = new QueryConfigurer<TDbContext>(builder.Services);
+        configureAction(configurations);
         return builder;
     }
 }
