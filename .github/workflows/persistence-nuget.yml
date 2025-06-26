@@ -22,22 +22,22 @@ jobs:
           include-prerelease: true
         
       - name: Build and pack Repositories Abstractions
-        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Repositories.Abstractions/RoyalCode.Repositories.Abstractions.csproj -c Release -o ./publish/RoyalCode.Repositories.Abstractions
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Repositories.Abstractions/RoyalCode.Repositories.Abstractions.csproj -c Release
 
       - name: Build and pack Repositories EntityFramework
-        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Repositories.EntityFramework/RoyalCode.Repositories.EntityFramework.csproj -c Release -o ./publish/RoyalCode.Repositories.EntityFramework
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Repositories.EntityFramework/RoyalCode.Repositories.EntityFramework.csproj -c Release
         
       - name: Build and pack Unit Of Work Abstractions
-        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.UnitOfWork.Abstractions/RoyalCode.UnitOfWork.Abstractions.csproj -c Release -o ./publish/RoyalCode.UnitOfWork.Abstractions
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.UnitOfWork.Abstractions/RoyalCode.UnitOfWork.Abstractions.csproj -c Release
 
       - name: Build and pack Unit Of Work EntityFramework
-        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.UnitOfWork.EntityFramework/RoyalCode.UnitOfWork.EntityFramework.csproj -c Release -o ./publish/RoyalCode.UnitOfWork.EntityFramework
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.UnitOfWork.EntityFramework/RoyalCode.UnitOfWork.EntityFramework.csproj -c Release
       
       - name: Build and pack Work Context Abstractions
-        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.Abstractions/RoyalCode.WorkContext.Abstractions.csproj -c Release -o ./publish/RoyalCode.WorkContext.Abstractions
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.Abstractions/RoyalCode.WorkContext.Abstractions.csproj -c Release
 
       - name: Build and pack Work Context EntityFramework
-        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.EntityFramework/RoyalCode.WorkContext.EntityFramework.csproj -c Release -o ./publish/RoyalCode.WorkContext.EntityFramework
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.EntityFramework/RoyalCode.WorkContext.EntityFramework.csproj -c Release
                 
       - name: Publish
         run: dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

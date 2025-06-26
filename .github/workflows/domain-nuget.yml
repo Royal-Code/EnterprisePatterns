@@ -22,13 +22,13 @@ jobs:
           include-prerelease: true
 
       - name: Build and pack Entities
-        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Entities/RoyalCode.Entities.csproj -c Release -o ./publish/RoyalCode.Entities
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Entities/RoyalCode.Entities.csproj -c Release
         
       - name: Build and pack Domain Events
-        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.DomainEvents/RoyalCode.DomainEvents.csproj -c Release -o ./publish/RoyalCode.DomainEvents
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.DomainEvents/RoyalCode.DomainEvents.csproj -c Release
 
       - name: Build and pack Aggregates
-        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Aggregates/RoyalCode.Aggregates.csproj -c Release -o ./publish/RoyalCode.Aggregates
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Aggregates/RoyalCode.Aggregates.csproj -c Release
         
       - name: Publish
         run: dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
