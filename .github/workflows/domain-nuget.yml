@@ -13,22 +13,22 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
           include-prerelease: true
 
       - name: Build and pack Entities
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Entities/RoyalCode.Entities.csproj -c Release
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Entities/RoyalCode.Entities.csproj -c Release -o ./publish/RoyalCode.Entities
         
       - name: Build and pack Domain Events
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.DomainEvents/RoyalCode.DomainEvents.csproj -c Release
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.DomainEvents/RoyalCode.DomainEvents.csproj -c Release -o ./publish/RoyalCode.DomainEvents
 
       - name: Build and pack Aggregates
-        run: sudo dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Aggregates/RoyalCode.Aggregates.csproj -c Release
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.Aggregates/RoyalCode.Aggregates.csproj -c Release -o ./publish/RoyalCode.Aggregates
         
       - name: Publish
-        run: sudo dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

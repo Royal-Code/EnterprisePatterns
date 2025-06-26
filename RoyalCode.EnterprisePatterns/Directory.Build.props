@@ -7,7 +7,7 @@
 	<PropertyGroup>
 		
 		<DomainVer>1.0.0</DomainVer>
-		<DomainPreview>-preview-7.0</DomainPreview>
+		<DomainPreview>-preview-8.0</DomainPreview>
 		
 		<PersistVer>1.0.0</PersistVer>
 		<PersistPreview>-preview-8.5</PersistPreview>
