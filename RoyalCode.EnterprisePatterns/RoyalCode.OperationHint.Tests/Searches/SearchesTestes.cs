@@ -1,8 +1,6 @@
-﻿
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.OperationHint.Abstractions;
-using RoyalCode.SmartSearch.Abstractions;
+using RoyalCode.WorkContext.Abstractions;
 
 namespace RoyalCode.OperationHint.Tests.Searches;
 
@@ -32,12 +30,12 @@ public class SearchesTestes
         // Act
         using var scope = provider.CreateScope();
 
-        var container = scope.ServiceProvider.GetRequiredService<IHintsContainer>();
-        container.AddHint(TestHints.TestSingleRelation);
+        var context = scope.ServiceProvider.GetRequiredService<IWorkContext>();
+        context.AddHint(TestHints.TestSingleRelation);
 
-        var search = scope.ServiceProvider.GetRequiredService<IAllEntities<ComplexEntity>>();
-        search.FilterBy(new ComplexFilter());
-        var list = search.Collect();
+        var criteria = context.Criteria<ComplexEntity>();
+        criteria.FilterBy(new ComplexFilter());
+        var list = criteria.Collect();
 
         // Assert
         list.Should().NotBeEmpty();
@@ -56,12 +54,12 @@ public class SearchesTestes
         // Act
         using var scope = provider.CreateScope();
 
-        var container = scope.ServiceProvider.GetRequiredService<IHintsContainer>();
-        container.AddHint(TestHints.TestMultipleRelation);
+        var context = scope.ServiceProvider.GetRequiredService<IWorkContext>();
+        context.AddHint(TestHints.TestMultipleRelation);
 
-        var search = scope.ServiceProvider.GetRequiredService<IAllEntities<ComplexEntity>>();
-        search.FilterBy(new ComplexFilter());
-        var list = search.Collect();
+        var criteria = context.Criteria<ComplexEntity>();
+        criteria.FilterBy(new ComplexFilter());
+        var list = criteria.Collect();
 
         // Assert
         list.Should().NotBeEmpty();
@@ -80,12 +78,12 @@ public class SearchesTestes
         // Act
         using var scope = provider.CreateScope();
 
-        var container = scope.ServiceProvider.GetRequiredService<IHintsContainer>();
-        container.AddHint(TestHints.TestAllRelations);
+        var context = scope.ServiceProvider.GetRequiredService<IWorkContext>();
+        context.AddHint(TestHints.TestAllRelations);
 
-        var search = scope.ServiceProvider.GetRequiredService<IAllEntities<ComplexEntity>>();
-        search.FilterBy(new ComplexFilter());
-        var list = search.Collect();
+        var criteria = context.Criteria<ComplexEntity>();
+        criteria.FilterBy(new ComplexFilter());
+        var list = criteria.Collect();
 
         // Assert
         list.Should().NotBeEmpty();
@@ -104,13 +102,13 @@ public class SearchesTestes
         // Act
         using var scope = provider.CreateScope();
 
-        var container = scope.ServiceProvider.GetRequiredService<IHintsContainer>();
-        container.AddHint(TestHints.TestSingleRelation);
-        container.AddHint(TestHints.TestMultipleRelation);
+        var context = scope.ServiceProvider.GetRequiredService<IWorkContext>();
+        context.AddHint(TestHints.TestSingleRelation);
+        context.AddHint(TestHints.TestMultipleRelation);
 
-        var search = scope.ServiceProvider.GetRequiredService<IAllEntities<ComplexEntity>>();
-        search.FilterBy(new ComplexFilter());
-        var list = search.Collect();
+        var criteria = context.Criteria<ComplexEntity>();
+        criteria.FilterBy(new ComplexFilter());
+        var list = criteria.Collect();
 
         // Assert
         list.Should().NotBeEmpty();
@@ -129,14 +127,14 @@ public class SearchesTestes
         // Act
         using var scope = provider.CreateScope();
 
-        var container = scope.ServiceProvider.GetRequiredService<IHintsContainer>();
-        container.AddHint(TestHints.TestSingleRelation);
-        container.AddHint(TestHints.TestMultipleRelation);
-        container.AddHint(TestHints.TestAllRelations);
+        var context = scope.ServiceProvider.GetRequiredService<IWorkContext>();
+        context.AddHint(TestHints.TestSingleRelation);
+        context.AddHint(TestHints.TestMultipleRelation);
+        context.AddHint(TestHints.TestAllRelations);
 
-        var search = scope.ServiceProvider.GetRequiredService<IAllEntities<ComplexEntity>>();
-        search.FilterBy(new ComplexFilter());
-        var list = search.Collect();
+        var criteria = context.Criteria<ComplexEntity>();
+        criteria.FilterBy(new ComplexFilter());
+        var list = criteria.Collect();
 
         // Assert
         list.Should().NotBeEmpty();

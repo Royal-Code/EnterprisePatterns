@@ -5,8 +5,13 @@ using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.Repositories.EntityFramework;
 using RoyalCode.UnitOfWork.EntityFramework;
 using RoyalCode.Repositories.Abstractions;
-using RoyalCode.SmartSearch.Abstractions;
 using RoyalCode.WorkContext.Abstractions;
+using RoyalCode.SmartSearch;
+using RoyalCode.SmartSearch.Linq.Services;
+using RoyalCode.SmartSearch.Linq.Sortings;
+using RoyalCode.SmartSearch.Defaults;
+using RoyalCode.WorkContext.Abstractions.Quering;
+using RoyalCode.WorkContext.EntityFramework.Internal;
 
 namespace RoyalCode.WorkContext.EntityFramework;
 
@@ -42,30 +47,28 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext<TDbC
     }
 
     /// <inheritdoc />
-    public IAllEntities<TEntity> All<TEntity>() where TEntity : class
+    public ICriteria<TEntity> Criteria<TEntity>() where TEntity : class
     {
-        var search = serviceProvider.GetService<SmartSearch.EntityFramework.Internals.IAllEntities<TDbContext, TEntity>>();
-        return search is null
-            ? throw new InvalidOperationException($"The search for all the entities of type {typeof(TEntity)} was not configured for the work context")
-            : (IAllEntities<TEntity>)search;
-    }
+        var specifierFactory = serviceProvider.GetService<ISpecifierFactory>() 
+            ?? throw new InvalidOperationException($"The specifier factory was not configured for the work context");
 
-    /// <inheritdoc />
-    public ISearch<TEntity> Search<TEntity>() where TEntity : class
-    {
-        var search = serviceProvider.GetService<SmartSearch.EntityFramework.Internals.ISearch<TDbContext, TEntity>>();
-        return search is null
-            ? throw new InvalidOperationException($"The search for the entity type {typeof(TEntity)} was not configured for the work context")
-            : (ISearch<TEntity>)search;
+        var orderByProvider = serviceProvider.GetService<IOrderByProvider>() 
+            ?? throw new InvalidOperationException($"The order by provider was not configured for the work context");
+        
+        var selectorFactory = serviceProvider.GetService<ISelectorFactory>()
+            ?? throw new InvalidOperationException($"The selector factory was not configured for the work context");
+
+        var hintPerformer = serviceProvider.GetService<IHintPerformer>();
+
+        return new Criteria<TEntity>(
+            new WorkContextCriteriaPerformer<TEntity>(Db, hintPerformer, specifierFactory, orderByProvider, selectorFactory));
     }
 
     /// <inheritdoc />
     public IRepository<TEntity> Repository<TEntity>() where TEntity : class
     {
-        var repository = serviceProvider.GetService<IRepository<TDbContext, TEntity>>();
-        return repository is null
-            ? throw new InvalidOperationException($"The repository for the entity type {typeof(TEntity)} was not configured for the work context")
-            : (IRepository<TEntity>)repository;
+        var hintPerformer = serviceProvider.GetService<IHintPerformer>();
+        return new Repository<TDbContext, TEntity>(Db, hintPerformer);
     }
 
     /// <inheritdoc />
@@ -74,4 +77,28 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext<TDbC
     
     /// <inheritdoc />
     public TService GetService<TService>() => (TService)GetService(typeof(TService));
+
+    /// <inheritdoc />
+    public Task<IEnumerable<TEntity>> QueryAsync<TEntity>(IQueryRequest<TEntity> request, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public Task<IEnumerable<TModel>> QueryAsync<TEntity, TModel>(IQueryRequest<TEntity, TModel> request, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public IAsyncEnumerable<TEntity> QueryAsync<TEntity>(IAsyncQueryRequest<TEntity> request, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public IAsyncEnumerable<TModel> QueryAsync<TEntity, TModel>(IAsyncQueryRequest<TEntity, TModel> request, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
 }

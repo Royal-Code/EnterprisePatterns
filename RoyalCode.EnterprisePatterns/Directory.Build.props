@@ -1,8 +1,8 @@
 <Project>
 	<PropertyGroup>
-		<LibTargets>net8</LibTargets>
-		<AspTargets>net8</AspTargets>
-		<MsgTargets>net8</MsgTargets>
+		<LibTargets>net8;net9</LibTargets>
+		<AspTargets>net8;net9</AspTargets>
+		<MsgTargets>net8;net9</MsgTargets>
 	</PropertyGroup>
 	<PropertyGroup>
 		
@@ -10,7 +10,7 @@
 		<DomainPreview>-preview-7.0</DomainPreview>
 		
 		<PersistVer>1.0.0</PersistVer>
-		<PersistPreview>-preview-8.2</PersistPreview>
+		<PersistPreview>-preview-8.5</PersistPreview>
 		
 		<CommandVer>0.1.0</CommandVer>
 		<CommandPreview>-preview-1</CommandPreview>
@@ -20,11 +20,12 @@
 	</PropertyGroup>
 	<PropertyGroup>
 		<DotNetCoreVersion Condition="'$(TargetFramework)' == 'net8'">8.0.2</DotNetCoreVersion>
+		<DotNetCoreVersion Condition="'$(TargetFramework)' == 'net9'">9.0.5</DotNetCoreVersion>
 	</PropertyGroup>
 	<PropertyGroup>
 		<ValVer>1.0.0-preview-1.0</ValVer>
 		<ProbVer>1.0.0-preview-3.5</ProbVer>
 		<HintVer>1.0.0</HintVer>
-		<SearchVer>0.7.0</SearchVer>
+		<SearchVer>0.8.0-preview-2</SearchVer>
 	</PropertyGroup>
 </Project>

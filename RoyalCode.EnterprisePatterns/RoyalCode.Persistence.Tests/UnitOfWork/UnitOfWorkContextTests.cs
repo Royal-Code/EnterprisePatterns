@@ -32,8 +32,8 @@ public class UnitOfWorkContextTests
 
 public class InitializerInterceptorFromDIDbContext : DbContext
 {
-    public InitializerInterceptorFromDIDbContext(DbContextOptions<InitializerInterceptorFromDIDbContext> options) : base(options) { }
-
+    public InitializerInterceptorFromDIDbContext(DbContextOptions<InitializerInterceptorFromDIDbContext> options)
+        : base(options) { }
 }
 
 public interface IInitializerInterceptorFromDIService { }

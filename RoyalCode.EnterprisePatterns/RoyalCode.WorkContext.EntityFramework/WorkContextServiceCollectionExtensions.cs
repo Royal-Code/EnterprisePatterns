@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RoyalCode.OperationHint.Abstractions;
-using RoyalCode.UnitOfWork.EntityFramework;
-using RoyalCode.WorkContext.EntityFramework;
-using RoyalCode.Repositories.Abstractions;
-using RoyalCode.SmartSearch.Abstractions;
-using RoyalCode.UnitOfWork.Abstractions;
-using RoyalCode.WorkContext.Abstractions;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using RoyalCode.OperationHint.Abstractions;
+using RoyalCode.Repositories.Abstractions;
+using RoyalCode.SmartSearch;
+using RoyalCode.SmartSearch.Linq;
+using RoyalCode.UnitOfWork.Abstractions;
+using RoyalCode.UnitOfWork.EntityFramework;
 using RoyalCode.UnitOfWork.EntityFramework.Internals;
+using RoyalCode.WorkContext.Abstractions;
+using RoyalCode.WorkContext.EntityFramework;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -32,6 +33,8 @@ public static class WorkContextServiceCollectionExtensions
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TDbContext : DbContext
     {
+        services.AddSmartSearchLinq();
+
         services.Add(ServiceDescriptor.Describe(
             typeof(IWorkContext<TDbContext>),
             typeof(WorkContext<TDbContext>),

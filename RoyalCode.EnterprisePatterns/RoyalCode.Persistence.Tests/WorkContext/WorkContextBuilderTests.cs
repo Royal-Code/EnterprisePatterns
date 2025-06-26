@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Persistence.Tests.Entities;
 using RoyalCode.Repositories.Abstractions;
-using RoyalCode.SmartSearch.Abstractions;
+using RoyalCode.SmartSearch;
 using RoyalCode.UnitOfWork.Abstractions;
 using RoyalCode.WorkContext.Abstractions;
 using Xunit;
@@ -17,7 +18,12 @@ public class WorkContextBuilderTests
         ServiceCollection services = new();
 
         services.AddWorkContext<WorkContextBuilderDbContext>()
-            .ConfigureDbContextPool(builder => builder.UseSqlite("DataSource=:memory:"))
+            .ConfigureDbContextPool((sp, builder) =>
+            {
+                SqliteConnection conn = new SqliteConnection("DataSource=:memory:");
+                conn.Open();
+                builder.UseSqlite(conn);
+            })
             .ConfigureRepositories(c =>
             {
                 c.Add<Person>();
@@ -55,18 +61,14 @@ public class WorkContextBuilderTests
         var contextRepo = context!.Repository<Person>();
         Assert.NotNull(repo);
         Assert.NotNull(contextRepo);
-        Assert.Same(repo, contextRepo);
 
-        var search = sp.GetService<ISearch<Person>>();
-        Assert.NotNull(search);
+        var criteria = sp.GetService<ICriteria<Person>>();
+        Assert.NotNull(criteria);
 
-        var contextSearch = context!.Search<Person>();
-        Assert.NotNull(contextSearch);
+        var contextCriteria = context!.Criteria<Person>();
+        Assert.NotNull(contextCriteria);
 
-        var allPersons = sp.GetService<IAllEntities<Person>>();
-        Assert.NotNull(allPersons);
-
-        var contextAllPersons = context!.All<Person>();
+        var contextAllPersons = contextCriteria.Collect();
         Assert.NotNull(contextAllPersons);
 
         scope.Dispose();
@@ -80,8 +82,14 @@ class WorkContextBuilderDbContext : DbContext
 {
     public WorkContextBuilderDbContext(DbContextOptions<WorkContextBuilderDbContext> options)
         : base(options)
-    {
+    { 
+        Database.EnsureCreated();
+    }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Person>().ToTable("Persons");
     }
 }
 

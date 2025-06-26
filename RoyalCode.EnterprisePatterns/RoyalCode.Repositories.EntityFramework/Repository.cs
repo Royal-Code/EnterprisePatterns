@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RoyalCode.Entities;
 using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.SmartProblems.Entities;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace RoyalCode.Repositories.EntityFramework;
@@ -50,12 +51,12 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     }
 
     /// <inheritdoc/>
-    public async ValueTask<TEntity?> FindAsync(object id, CancellationToken token = default)
+    public async ValueTask<TEntity?> FindAsync(object id, CancellationToken ct = default)
     {
         if (id is null)
             return null;
 
-        var entity = await db.Set<TEntity>().FindAsync([ id ], token);
+        var entity = await db.Set<TEntity>().FindAsync([ id ], ct);
 
         if (hintPerformer is not null && entity is not null)
             await hintPerformer.PerformAsync<TEntity, DbContext>(entity, db);
@@ -64,14 +65,39 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     }
 
     /// <inheritdoc/>
-    public async ValueTask<FindResult<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken token = default)
+    public async Task<FindResult<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken ct = default)
     {
-        var entity = await db.Set<TEntity>().FindAsync([id.Value], token);
+        var result = await db.Set<TEntity>().TryFindAsync(id, ct);
 
-        if (hintPerformer is not null && entity is not null)
-            await hintPerformer.PerformAsync<TEntity, DbContext>(entity, db);
+        if (hintPerformer is not null && result.Entity is not null)
+            await hintPerformer.PerformAsync<TEntity, DbContext>(result.Entity, db);
 
-        return new FindResult<TEntity, TId>(entity, id.Value);
+        return result;
+    }
+
+    /// <inheritdoc/>
+    public async Task<FindResult<TEntity>> FindAsync(Expression<Func<TEntity, bool>> filter, CancellationToken ct = default)
+    {
+        var result = await db.Set<TEntity>().TryFindByAsync(filter, ct);
+
+        if (hintPerformer is not null && result.Entity is not null)
+            await hintPerformer.PerformAsync<TEntity, DbContext>(result.Entity, db);
+
+        return result;
+    }
+
+    /// <inheritdoc/>
+    public async Task<FindResult<TEntity>> FindAsync<TValue>(
+        Expression<Func<TEntity, TValue>> propertySelector,
+        TValue filterValue,
+        CancellationToken ct = default)
+    {
+        var result = await db.Set<TEntity>().TryFindByAsync(propertySelector, filterValue, ct);
+
+        if (hintPerformer is not null && result.Entity is not null)
+            await hintPerformer.PerformAsync<TEntity, DbContext>(result.Entity, db);
+
+        return result;
     }
 
     /// <inheritdoc/>
@@ -86,10 +112,20 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     }
 
     /// <inheritdoc/>
-    public async ValueTask AddAsync(TEntity entity, CancellationToken token = default)
+    public async ValueTask AddAsync(TEntity entity, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(entity);
-        await db.Set<TEntity>().AddAsync(entity, token);
+        await db.Set<TEntity>().AddAsync(entity, ct);
+    }
+
+    /// <inheritdoc/>
+    public async Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(entities);
+        foreach (var entity in entities)
+        {
+            await db.Set<TEntity>().AddAsync(entity, ct);
+        }
     }
 
     /// <inheritdoc/>
@@ -108,11 +144,11 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     }
 
     /// <inheritdoc/>
-    public async Task<bool> MergeAsync<TId>(IHasId<TId> model, CancellationToken token = default)
+    public async Task<bool> MergeAsync<TId>(IHasId<TId> model, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        var entity = await FindAsync(model.Id!, token);
+        var entity = await FindAsync(model.Id!, ct);
         if (entity is null)
             return false;
 
@@ -123,12 +159,12 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     }
 
     /// <inheritdoc/>
-    public async Task<bool> MergeAsync<TId, TModel>(Id<TEntity, TId> id, TModel model, CancellationToken token = default)
+    public async Task<bool> MergeAsync<TId, TModel>(Id<TEntity, TId> id, TModel model, CancellationToken ct = default)
         where TModel : class
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        var vEntry = await FindAsync(id, token);
+        var vEntry = await FindAsync(id, ct);
         if (vEntry.NotFound(out _))
             return false;
 
@@ -157,14 +193,25 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     }
 
     /// <inheritdoc/>
-    public async Task<TEntity?> DeleteAsync(object id, CancellationToken token = default)
+    public async Task<TEntity?> DeleteAsync(object id, CancellationToken ct = default)
     {
-        var entity = await FindAsync(id, token);
+        var entity = await FindAsync(id, ct);
 
         if (entity != null)
             db.Entry(entity).State = EntityState.Deleted;
 
         return entity;
+    }
+
+    /// <inheritdoc/>
+    public async Task<FindResult<TEntity, TId>> DeleteAsync<TId>(Id<TEntity, TId> id, CancellationToken ct = default)
+    {
+        var result = await db.Set<TEntity>().TryFindAsync(id, ct);
+
+        if (result.Entity is not null)
+            db.Entry(result.Entity).State = EntityState.Deleted;
+
+        return result;
     }
 
     /// <summary>

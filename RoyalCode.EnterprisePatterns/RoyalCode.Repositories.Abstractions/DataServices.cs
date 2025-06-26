@@ -2,6 +2,8 @@
 using RoyalCode.Entities;
 using RoyalCode.SmartProblems.Entities;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
+using System.Security.Cryptography;
 
 namespace RoyalCode.Repositories.Abstractions;
 
@@ -48,8 +50,8 @@ public interface IAdder<in TEntity>
     /// </para>
     /// </remarks>
     /// <param name="entity">The new entity instance.</param>
-    /// <param name="token">Cancellation token.</param>
-    ValueTask AddAsync(TEntity entity, CancellationToken token = default);
+    /// <param name="ct">Cancellation token.</param>
+    ValueTask AddAsync(TEntity entity, CancellationToken ct = default);
 
     /// <summary>
     /// <para>
@@ -65,6 +67,22 @@ public interface IAdder<in TEntity>
     /// </remarks>
     /// <param name="entities">A collection of new entities.</param>
     void AddRange(IEnumerable<TEntity> entities);
+
+    /// <summary>
+    /// <para>
+    ///     Adds a collection of new entities to the repository to be persisted.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///     When implemented together with the Unit Of Work pattern the entity 
+    ///     will not be persisted directly when calling this method, 
+    ///     it will be stored in memory until the completion of the unit of work.
+    /// </para>
+    /// </remarks>
+    /// <param name="entities">A collection of new entities.</param>
+    /// <param name="ct">Cancellation token.</param>
+    Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken ct = default);
 }
 
 /// <summary>
@@ -95,13 +113,13 @@ public interface IFinder<TEntity>
     /// </para>
     /// </summary>
     /// <param name="id">The entity identity.</param>
-    /// <param name="token">Token for cancelling tasks.</param>
+    /// <param name="ct">Token for canceling tasks.</param>
     /// <returns>
     /// <para>
     ///     Existing instance, or null/default if it does not exist.
     /// </para>
     /// </returns>
-    ValueTask<TEntity?> FindAsync(object id, CancellationToken token = default);
+    ValueTask<TEntity?> FindAsync(object id, CancellationToken ct = default);
 
     /// <summary>
     /// <para>
@@ -110,13 +128,46 @@ public interface IFinder<TEntity>
     /// </summary>
     /// <typeparam name="TId">The type o entity id.</typeparam>
     /// <param name="id">The entity id.</param>
-    /// <param name="token">Cancellation token.</param>
+    /// <param name="ct">Cancellation token.</param>
     /// <returns>
     /// <para>
     ///     An entry representing the entity record obtained from the database.
     /// </para>
     /// </returns>
-    ValueTask<FindResult<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken token = default);
+    Task<FindResult<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken ct = default);
+
+    /// <summary>
+    /// <para>
+    ///     Try to find an existing entity through a filter expression.
+    /// </para>
+    /// </summary>
+    /// <param name="filter">The filter expression to apply.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>
+    /// <para>
+    ///     A result representing the entity record obtained from the database.
+    /// </para>
+    /// </returns>
+    Task<FindResult<TEntity>> FindAsync(Expression<Func<TEntity, bool>> filter, CancellationToken ct = default);
+
+    /// <summary>
+    /// <para>
+    ///     Tries to find an existing entity through a property selector and a filter value.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TValue">The type of the property value.</typeparam>
+    /// <param name="propertySelector">The property selector expression.</param>
+    /// <param name="filterValue">The value to filter by.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>
+    /// <para>
+    ///     A result representing the entity record obtained from the database.
+    /// </para>
+    /// </returns>
+    Task<FindResult<TEntity>> FindAsync<TValue>(
+        Expression<Func<TEntity, TValue>> propertySelector,
+        TValue filterValue, 
+        CancellationToken ct = default);
 }
 
 /// <summary>
@@ -154,7 +205,7 @@ public interface IFinderByGuid<TEntity>
     /// </para>
     /// </summary>
     /// <param name="guid">The entity Guid.</param>
-    /// <param name="token">Token for cancelling tasks.</param>
+    /// <param name="token">Token for canceling tasks.</param>
     /// <returns>
     /// <para>
     ///     Existing instance, or null/default if it does not exist.
@@ -200,7 +251,7 @@ public interface IFinderByCode<TEntity, in TCode>
     /// </para>
     /// </summary>
     /// <param name="code">The entity code.</param>
-    /// <param name="token">Token for cancelling tasks.</param>
+    /// <param name="token">Token for canceling tasks.</param>
     /// <returns>
     /// <para>
     ///     Existing instance, or null/default if it does not exist.
@@ -298,14 +349,14 @@ public interface IUpdater<TEntity>
     /// </para>
     /// </remarks>
     /// <param name="model">A data model with information to update an existing entity.</param>
-    /// <param name="token">Token for cancelling tasks.</param>
+    /// <param name="ct">Token for canceling tasks.</param>
     /// <typeparam name="TId">The Id type.</typeparam>
     /// <returns>
     /// <para>
     ///     True if the entity exists and has been updated, false otherwise.
     /// </para>
     /// </returns>
-    Task<bool> MergeAsync<TId>(IHasId<TId> model, CancellationToken token = default);
+    Task<bool> MergeAsync<TId>(IHasId<TId> model, CancellationToken ct = default);
 
     /// <summary>
     /// <para>
@@ -329,13 +380,13 @@ public interface IUpdater<TEntity>
     /// <typeparam name="TModel">The model with the data.</typeparam>
     /// <param name="id">The id value.</param>
     /// <param name="model">The model.</param>
-    /// <param name="token">Cancellation token.</param>
+    /// <param name="ct">Cancellation token.</param>
     /// <returns>
     /// <para>
     ///     True if the entity exists and has been updated, false otherwise.
     /// </para>
     /// </returns>
-    Task<bool> MergeAsync<TId, TModel>(Id<TEntity, TId> id, TModel model, CancellationToken token = default)
+    Task<bool> MergeAsync<TId, TModel>(Id<TEntity, TId> id, TModel model, CancellationToken ct = default)
         where TModel : class;
 
     /// <summary>
@@ -358,13 +409,13 @@ public interface IUpdater<TEntity>
     /// </remarks>
     /// <typeparam name="TId">The Id type.</typeparam>
     /// <param name="models">A collection of models.</param>
-    /// <param name="token">Token for cancelling tasks.</param>
+    /// <param name="ct">Token for canceling tasks.</param>
     /// <returns>For each model, true if the entity exists and has been updated, false otherwise.</returns>
     async Task<IEnumerable<bool>> MergeRangeAsync<TId>(
         IEnumerable<IHasId<TId>> models,
-        CancellationToken token = default)
+        CancellationToken ct = default)
     {
-        return await Task.WhenAll(models.Select(model => MergeAsync(model, token)));
+        return await Task.WhenAll(models.Select(model => MergeAsync(model, ct)));
     }
 }
 
@@ -422,8 +473,7 @@ public interface IRemover<TEntity>
     /// </exception>
     void RemoveRange(IEnumerable<TEntity> entities)
     {
-        if (entities == null)
-            throw new ArgumentNullException(nameof(entities));
+        ArgumentNullException.ThrowIfNull(entities);
 
         foreach (var entity in entities)
             Remove(entity);
@@ -485,13 +535,35 @@ public interface IRemover<TEntity>
     /// </para>
     /// </remarks>
     /// <param name="id">The entity Id.</param>
-    /// <param name="token">Token for cancelling tasks.</param>
+    /// <param name="ct">Token for canceling tasks.</param>
     /// <returns>
     /// <para>
     ///     The entity excluded, or null if the entity is not found.
     /// </para>
     /// </returns>
-    Task<TEntity?> DeleteAsync(object id, CancellationToken token = default);
+    Task<TEntity?> DeleteAsync(object id, CancellationToken ct = default);
+
+    /// <summary>
+    /// <para>
+    ///     Delete the entity by their Id.
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///     When implemented together with the Unit Of Work pattern the entity 
+    ///     will not be persisted directly when calling this method, 
+    ///     it will be stored in memory until the completion of the unit of work.
+    /// </para>
+    /// </remarks>
+    /// <typeparam name="TId">The Id type.</typeparam>
+    /// <param name="id">The entity Id.</param>
+    /// <param name="ct">Token for canceling tasks.</param>
+    /// <returns>
+    /// <para>
+    ///     A find result representing the excluded entity from the database.
+    /// </para>    
+    /// </returns>
+    Task<FindResult<TEntity, TId>> DeleteAsync<TId>(Id<TEntity, TId> id, CancellationToken ct = default);
 
     /// <summary>
     /// <para>
@@ -499,14 +571,34 @@ public interface IRemover<TEntity>
     /// </para>
     /// </summary>
     /// <param name="ids">The entities Ids.</param>
-    /// <param name="token">Token for cancelling tasks.</param>
+    /// <param name="ct">Token for canceling tasks.</param>
     /// <returns>
     /// <para>
     ///     The entities excluded, or null if the entity is not found.
     /// </para>
     /// </returns>
-    async Task<IEnumerable<TEntity?>> DeleteRangeAsync(IEnumerable<object> ids, CancellationToken token = default)
+    async Task<IEnumerable<TEntity?>> DeleteRangeAsync(IEnumerable<object> ids, CancellationToken ct = default)
     {
-        return await Task.WhenAll(ids.Select(id => DeleteAsync(id, token)));
+        return await Task.WhenAll(ids.Select(id => DeleteAsync(id, ct)));
+    }
+
+    /// <summary>
+    /// <para>
+    ///     Delete a range of entities by their Ids.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TId">The Id type.</typeparam>
+    /// <param name="ids">The entities Ids.</param>
+    /// <param name="ct">Token for canceling tasks.</param>
+    /// <returns>
+    /// <para>
+    ///     A collection of find results representing the excluded entities from the database.
+    /// </para>
+    /// </returns>
+    async Task<IEnumerable<FindResult<TEntity, TId>>> DeleteRangeAsync<TId>(
+        IEnumerable<Id<TEntity, TId>> ids, 
+        CancellationToken ct = default)
+    {
+        return await Task.WhenAll(ids.Select(id => DeleteAsync(id, ct)));
     }
 }

@@ -46,8 +46,12 @@ class UnitOfWorkBuilderDbContext : DbContext
 {
     public UnitOfWorkBuilderDbContext(DbContextOptions<UnitOfWorkBuilderDbContext> options)
         : base(options)
+    { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Person>().ToTable("Persons");
     }
 }
 
