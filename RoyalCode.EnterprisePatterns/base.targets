@@ -7,7 +7,7 @@
 		<DocumentationFile Condition="'$(Configuration)' == 'Release'">bin/Release/$(TargetFramework)/$(AssemblyName).xml</DocumentationFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>Royal Code</Authors>
-		<Copyright>Royal Code Copyright ©  2025</Copyright>
+		<Copyright>Royal Code Copyright ©  $([System.DateTime]::UtcNow.ToString("yyyy"))</Copyright>
 		<RepositoryUrl>https://github.com/Royal-Code/EnterpisePatterns</RepositoryUrl>
 		<RepositoryType>Git</RepositoryType>
 		<Configurations>Debug;Release</Configurations>

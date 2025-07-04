@@ -4,8 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Persistence.Tests.Entities;
 using RoyalCode.WorkContext.Abstractions;
 using RoyalCode.WorkContext.Abstractions.Querying;
-using RoyalCode.WorkContext.EntityFramework.Querying;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace RoyalCode.Persistence.Tests.WorkContext;

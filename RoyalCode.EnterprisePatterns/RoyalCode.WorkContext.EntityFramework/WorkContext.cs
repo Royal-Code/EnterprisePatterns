@@ -24,19 +24,27 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext<TDbC
     where TDbContext : DbContext
 {
     private readonly IServiceProvider serviceProvider;
+    private readonly IHintPerformer? hintPerformer;
 
     /// <summary>
     /// Creates a new instance of <see cref="WorkContext{TDbContext}"/>.
     /// </summary>
     /// <param name="db">The database context.</param>
     /// <param name="serviceProvider">The service provider.</param>
-    public WorkContext(TDbContext db, IServiceProvider? serviceProvider = null) : base(db)
+    /// <param name="hintPerformer">The hint performer, optional.</param>
+    public WorkContext(
+        TDbContext db, 
+        IServiceProvider? serviceProvider = null,
+        IHintPerformer? hintPerformer = null)
+        : base(db)
     {
         this.serviceProvider = serviceProvider
             ?? db.GetService<IDbContextOptions>()
                 .Extensions.OfType<CoreOptionsExtension>().FirstOrDefault()
                 ?.ApplicationServiceProvider
             ?? throw new InvalidOperationException("The service provider was not provided and it was not found in the database context");
+
+        this.hintPerformer = hintPerformer;
     }
 
     /// <inheritdoc />
@@ -58,8 +66,6 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext<TDbC
         var selectorFactory = serviceProvider.GetService<ISelectorFactory>()
             ?? throw new InvalidOperationException($"The selector factory was not configured for the work context");
 
-        var hintPerformer = serviceProvider.GetService<IHintPerformer>();
-
         return new Criteria<TEntity>(
             new WorkContextCriteriaPerformer<TEntity>(Db, hintPerformer, specifierFactory, orderByProvider, selectorFactory));
     }
@@ -67,7 +73,6 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext<TDbC
     /// <inheritdoc />
     public IRepository<TEntity> Repository<TEntity>() where TEntity : class
     {
-        var hintPerformer = serviceProvider.GetService<IHintPerformer>();
         return new Repository<TDbContext, TEntity>(Db, hintPerformer);
     }
 

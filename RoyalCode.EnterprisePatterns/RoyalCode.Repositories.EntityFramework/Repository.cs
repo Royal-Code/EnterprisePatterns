@@ -19,6 +19,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     where TDbContext: DbContext
 {
     private readonly TDbContext db;
+    private readonly DbSet<TEntity> set;
     private readonly IHintPerformer? hintPerformer;
 
     /// <summary>
@@ -36,13 +37,14 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     public Repository(TDbContext dbContext, IHintPerformer? hintPerformer = null)
     {
         db = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        set = db.Set<TEntity>();
         this.hintPerformer = hintPerformer;
     }
 
     /// <inheritdoc/>
     public TEntity? Find(object id)
     {
-        var entity = db.Set<TEntity>().Find(id);
+        var entity = set.Find(id);
 
         if (hintPerformer is not null && entity is not null)
             hintPerformer.Perform<TEntity, DbContext>(entity, db);
@@ -56,7 +58,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
         if (id is null)
             return null;
 
-        var entity = await db.Set<TEntity>().FindAsync([ id ], ct);
+        var entity = await set.FindAsync([ id ], ct);
 
         if (hintPerformer is not null && entity is not null)
             await hintPerformer.PerformAsync<TEntity, DbContext>(entity, db);
@@ -67,7 +69,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     /// <inheritdoc/>
     public async Task<FindResult<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken ct = default)
     {
-        var result = await db.Set<TEntity>().TryFindAsync(id, ct);
+        var result = await set.TryFindAsync(id, ct);
 
         if (hintPerformer is not null && result.Entity is not null)
             await hintPerformer.PerformAsync<TEntity, DbContext>(result.Entity, db);
@@ -78,7 +80,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     /// <inheritdoc/>
     public async Task<FindResult<TEntity>> FindAsync(Expression<Func<TEntity, bool>> filter, CancellationToken ct = default)
     {
-        var result = await db.Set<TEntity>().TryFindByAsync(filter, ct);
+        var result = await set.TryFindByAsync(filter, ct);
 
         if (hintPerformer is not null && result.Entity is not null)
             await hintPerformer.PerformAsync<TEntity, DbContext>(result.Entity, db);
@@ -92,7 +94,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
         TValue filterValue,
         CancellationToken ct = default)
     {
-        var result = await db.Set<TEntity>().TryFindByAsync(propertySelector, filterValue, ct);
+        var result = await set.TryFindByAsync(propertySelector, filterValue, ct);
 
         if (hintPerformer is not null && result.Entity is not null)
             await hintPerformer.PerformAsync<TEntity, DbContext>(result.Entity, db);
@@ -102,20 +104,20 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
 
     /// <inheritdoc/>
     public void Add(TEntity entity) 
-        => db.Set<TEntity>().Add(entity ?? throw new ArgumentNullException(nameof(entity)));
+        => set.Add(entity ?? throw new ArgumentNullException(nameof(entity)));
 
     /// <inheritdoc/>
     public void AddRange(IEnumerable<TEntity> entities)
     {
         ArgumentNullException.ThrowIfNull(entities);
-        db.Set<TEntity>().AddRange(entities);
+        set.AddRange(entities);
     }
 
     /// <inheritdoc/>
     public async ValueTask AddAsync(TEntity entity, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(entity);
-        await db.Set<TEntity>().AddAsync(entity, ct);
+        await set.AddAsync(entity, ct);
     }
 
     /// <inheritdoc/>
@@ -124,7 +126,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
         ArgumentNullException.ThrowIfNull(entities);
         foreach (var entity in entities)
         {
-            await db.Set<TEntity>().AddAsync(entity, ct);
+            await set.AddAsync(entity, ct);
         }
     }
 
@@ -206,7 +208,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     /// <inheritdoc/>
     public async Task<FindResult<TEntity, TId>> DeleteAsync<TId>(Id<TEntity, TId> id, CancellationToken ct = default)
     {
-        var result = await db.Set<TEntity>().TryFindAsync(id, ct);
+        var result = await set.TryFindAsync(id, ct);
 
         if (result.Entity is not null)
             db.Entry(result.Entity).State = EntityState.Deleted;
@@ -221,7 +223,7 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected IQueryable<TEntity> GetQueryable()
     {
-        IQueryable<TEntity> query = db.Set<TEntity>();
+        IQueryable<TEntity> query = set;
 
         if (hintPerformer is not null)
             query = hintPerformer.Perform(query);
