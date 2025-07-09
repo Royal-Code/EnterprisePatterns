@@ -43,6 +43,16 @@ public interface IQueryConfigurer<TDbContext> : IQueryConfigurer, IQueryHandlerC
     }
 
     /// <summary>
+    /// Registers a query handler for the specified type.
+    /// </summary>
+    /// <typeparam name="THandler">The type of the query handler to register.</typeparam>
+    /// <param name="lifetime">
+    ///     The service lifetime for the handler. Default is <see cref="ServiceLifetime.Transient"/>.
+    /// </param>
+    /// <returns>The current <see cref="IQueryConfigurer{TDbContext}"/> instance.</returns>
+    IQueryConfigurer<TDbContext> AddHandler<THandler>(ServiceLifetime lifetime = ServiceLifetime.Transient);
+
+    /// <summary>
     /// Configures query handler registrations using the specified configuration type.
     /// </summary>
     /// <typeparam name="TConfigurations">The type implementing <see cref="IQueryHandlerConfigurations"/>.</typeparam>

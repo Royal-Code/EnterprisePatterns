@@ -2,6 +2,7 @@
 using RoyalCode.Repositories.Abstractions;
 using RoyalCode.SmartSearch;
 using RoyalCode.UnitOfWork.Abstractions;
+using RoyalCode.WorkContext.Abstractions.Commands;
 using RoyalCode.WorkContext.Abstractions.Querying;
 
 namespace RoyalCode.WorkContext.Abstractions;
@@ -26,5 +27,13 @@ namespace RoyalCode.WorkContext.Abstractions;
 ///     and the services that are provided is part of the persistence unit.
 /// </para>
 /// </summary>
-public interface IWorkContext : IUnitOfWork, IEntityManager, ISearchManager, IQueryDispatcher, IHintsContainer, IInfrastructureProvidesServices { }
+public interface IWorkContext : 
+    IUnitOfWork, 
+    IEntityManager, 
+    ISearchManager, 
+    IQueryDispatcher, 
+    ICommandDispatcher, 
+    IHintsContainer, 
+    IInfrastructureProvidesServices
+{ }
 

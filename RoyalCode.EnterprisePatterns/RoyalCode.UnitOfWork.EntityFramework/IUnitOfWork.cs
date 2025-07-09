@@ -11,4 +11,9 @@ namespace RoyalCode.UnitOfWork.EntityFramework;
 /// <typeparam name="TDbContext">The DbContext type.</typeparam>
 public interface IUnitOfWork<TDbContext> : IUnitOfWork
     where TDbContext: DbContext
-{ }
+{
+    /// <summary>
+    /// Gets the database context associated with the current operation.
+    /// </summary>
+    TDbContext Db { get; }
+}

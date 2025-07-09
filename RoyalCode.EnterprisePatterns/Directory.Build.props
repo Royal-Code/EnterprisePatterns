@@ -10,7 +10,7 @@
 		<DomainPreview>-preview-8.0</DomainPreview>
 		
 		<PersistVer>1.0.0</PersistVer>
-		<PersistPreview>-preview-8.5</PersistPreview>
+		<PersistPreview>-preview-8.8</PersistPreview>
 		
 		<CommandVer>0.1.0</CommandVer>
 		<CommandPreview>-preview-1</CommandPreview>
@@ -21,6 +21,7 @@
 	<PropertyGroup>
 		<DotNetCoreVersion Condition="'$(TargetFramework)' == 'net8'">8.0.2</DotNetCoreVersion>
 		<DotNetCoreVersion Condition="'$(TargetFramework)' == 'net9'">9.0.5</DotNetCoreVersion>
+		<PgVer>9.0.4</PgVer>
 	</PropertyGroup>
 	<PropertyGroup>
 		<ValVer>1.0.0-preview-1.0</ValVer>

@@ -51,6 +51,45 @@ internal sealed class QueryConfigurer<TDbContext> : IQueryConfigurer<TDbContext>
         return this;
     }
 
+    public IQueryConfigurer<TDbContext> AddHandler<THandler>(ServiceLifetime lifetime = ServiceLifetime.Transient)
+    {
+        ArgumentNullException.ThrowIfNull(Services);
+
+        var type = typeof(THandler);
+        var wasRegistered = false;
+
+        // if is a concrete class
+        if (type.IsClass && !type.IsAbstract)
+        {
+            // check interfaces
+            foreach (var iface in type.GetInterfaces())
+            {
+                // check if implements:
+                // - IQueryHandler<TDbContext, TRequest, TEntity>
+                // - IQueryHandler<TDbContext, TRequest, TEntity, TModel>
+                // - IAsyncQueryHandler<TDbContext, TRequest, TEntity>
+                // - IAsyncQueryHandler<TDbContext, TRequest, TEntity, TModel>
+                if (iface.IsGenericType &&
+                    (iface.GetGenericTypeDefinition() == typeof(IQueryHandler<,,>) ||
+                        iface.GetGenericTypeDefinition() == typeof(IQueryHandler<,,,>) ||
+                        iface.GetGenericTypeDefinition() == typeof(IAsyncQueryHandler<,,>) ||
+                        iface.GetGenericTypeDefinition() == typeof(IAsyncQueryHandler<,,,>)))
+                {
+                    // register the type
+                    Services.Add(new ServiceDescriptor(iface, type, lifetime));
+                    wasRegistered = true;
+                }
+            }
+        }
+
+        if (!wasRegistered)
+        {
+            throw new InvalidOperationException($"The type {type.FullName} does not implement any query handler interface.");
+        }
+
+        return this;
+    }
+
     public IQueryConfigurer<TDbContext> Handle<TRequest, TEntity>(
         Func<TRequest, TDbContext, CancellationToken, Task<IEnumerable<TEntity>>> handler)
         where TRequest : IQueryRequest<TEntity>

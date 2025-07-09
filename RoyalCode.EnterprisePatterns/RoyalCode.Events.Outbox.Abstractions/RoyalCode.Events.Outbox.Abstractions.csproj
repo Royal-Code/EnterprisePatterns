@@ -18,8 +18,8 @@
 		<PackageReference Include="Microsoft.Extensions.Options" Version="$(DotNetCoreVersion)" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8'">
-	  <PackageReference Include="RoyalCode.SmartValidations" Version="$(ValVer)" />
+	<ItemGroup>
+		<PackageReference Include="RoyalCode.SmartValidations" Version="$(ValVer)" />
 	</ItemGroup>
 
 </Project>

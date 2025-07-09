@@ -12,6 +12,8 @@ using RoyalCode.SmartSearch.Linq.Sortings;
 using RoyalCode.SmartSearch.Defaults;
 using RoyalCode.WorkContext.Abstractions.Querying;
 using RoyalCode.WorkContext.EntityFramework.Internal;
+using RoyalCode.SmartProblems;
+using RoyalCode.WorkContext.Abstractions.Commands;
 
 namespace RoyalCode.WorkContext.EntityFramework;
 
@@ -111,5 +113,15 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext<TDbC
         return QueryRequestHandler<TDbContext>.QueryAsync(request, Db, serviceProvider, ct);
     }
 
+    /// <inheritdoc />
+    public Task<Result> SendAsync(ICommandRequest request, CancellationToken ct = default)
+    {
+        return CommandRequestHandler.ExecuteAsync(request, this, serviceProvider, ct);
+    }
 
+    /// <inheritdoc />
+    public Task<Result<TResponse>> SendAsync<TResponse>(ICommandRequest<TResponse> request, CancellationToken ct = default)
+    {
+        return CommandRequestHandler.ExecuteAsync(request, this, serviceProvider, ct);
+    }
 }

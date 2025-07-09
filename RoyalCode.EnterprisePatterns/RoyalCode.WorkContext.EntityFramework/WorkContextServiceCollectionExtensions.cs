@@ -8,7 +8,10 @@ using RoyalCode.UnitOfWork.Abstractions;
 using RoyalCode.UnitOfWork.EntityFramework;
 using RoyalCode.UnitOfWork.EntityFramework.Internals;
 using RoyalCode.WorkContext.Abstractions;
+using RoyalCode.WorkContext.Abstractions.Querying;
 using RoyalCode.WorkContext.EntityFramework;
+using RoyalCode.WorkContext.EntityFramework.Commands.Configurations;
+using RoyalCode.WorkContext.EntityFramework.Commands.Configurations.Internals;
 using RoyalCode.WorkContext.EntityFramework.Querying.Configurations;
 using RoyalCode.WorkContext.EntityFramework.Querying.Configurations.Internals;
 
@@ -54,6 +57,11 @@ public static class WorkContextServiceCollectionExtensions
 
         services.Add(ServiceDescriptor.Describe(
             typeof(ISearchManager),
+            sp => sp.GetService<IWorkContext<TDbContext>>()!,
+            lifetime));
+
+        services.Add(ServiceDescriptor.Describe(
+            typeof(IQueryDispatcher),
             sp => sp.GetService<IWorkContext<TDbContext>>()!,
             lifetime));
 
@@ -147,6 +155,11 @@ public static class WorkContextServiceCollectionExtensions
             sp => sp.GetService<TWorkContext>()!,
             lifetime));
 
+        services.Add(ServiceDescriptor.Describe(
+            typeof(IQueryDispatcher),
+            sp => sp.GetService<TWorkContext>()!,
+            lifetime));
+
         services.TryAdd(ServiceDescriptor.Describe(
             typeof(IUnitOfWork<TDbContext>),
             sp => sp.GetService<TWorkContext>()!,
@@ -200,4 +213,23 @@ public static class WorkContextServiceCollectionExtensions
         configureAction(configurations);
         return builder;
     }
+
+    /// <summary>
+    /// Configures command-related services for the specified unit of work builder.
+    /// </summary>
+    /// <typeparam name="TDbContext">The type of the database context used by the unit of work.</typeparam>
+    /// <param name="builder">The unit of work builder to configure.</param>
+    /// <param name="configureAction">An action that applies command configurations using the provided <see cref="ICommandsConfigurer"/>.</param>
+    /// <returns>The same <see cref="IUnitOfWorkBuilder{TDbContext}"/> instance, allowing for method chaining.</returns>
+    public static IUnitOfWorkBuilder<TDbContext> ConfigureCommands<TDbContext>(
+        this IUnitOfWorkBuilder<TDbContext> builder,
+        Action<ICommandsConfigurer> configureAction)
+        where TDbContext : DbContext
+    {
+        ArgumentNullException.ThrowIfNull(configureAction);
+        var configurations = new CommandsConfigurer<TDbContext>(builder.Services);
+        configureAction(configurations);
+        return builder;
+    }
+
 }
