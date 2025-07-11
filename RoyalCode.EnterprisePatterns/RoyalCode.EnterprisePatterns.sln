@@ -72,6 +72,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Events.Outbox.Ent
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Events.Outbox.EntityFramework.Postgres", "RoyalCode.Events.Outbox.EntityFramework.Postgres\RoyalCode.Events.Outbox.EntityFramework.Postgres.csproj", "{BDAFD007-FEB0-44B8-8A44-5C6F6E540B45}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.WorkContext.AspNetCore", "RoyalCode.WorkContext.AspNetCore\RoyalCode.WorkContext.AspNetCore.csproj", "{E7AD2D84-8249-47DC-A400-93572C952755}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -166,6 +168,10 @@ Global
 		{BDAFD007-FEB0-44B8-8A44-5C6F6E540B45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDAFD007-FEB0-44B8-8A44-5C6F6E540B45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDAFD007-FEB0-44B8-8A44-5C6F6E540B45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7AD2D84-8249-47DC-A400-93572C952755}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7AD2D84-8249-47DC-A400-93572C952755}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7AD2D84-8249-47DC-A400-93572C952755}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7AD2D84-8249-47DC-A400-93572C952755}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -199,6 +205,7 @@ Global
 		{31027174-F707-49FB-A051-3FBB3C6FFA35} = {80CCF203-3C6E-4B07-B011-04F7800EA52E}
 		{79F643A3-9BFA-4200-A9FB-83A713A6C3D2} = {80CCF203-3C6E-4B07-B011-04F7800EA52E}
 		{BDAFD007-FEB0-44B8-8A44-5C6F6E540B45} = {80CCF203-3C6E-4B07-B011-04F7800EA52E}
+		{E7AD2D84-8249-47DC-A400-93572C952755} = {DD6336C0-C66B-44CD-9BEA-D9ED66EEC7BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FAC6C2E-62DE-4665-BB16-4E7D445FAB26}
