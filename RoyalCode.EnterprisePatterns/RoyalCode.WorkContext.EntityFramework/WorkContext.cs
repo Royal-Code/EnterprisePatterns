@@ -116,12 +116,12 @@ public class WorkContext<TDbContext> : UnitOfWork<TDbContext>, IWorkContext<TDbC
     /// <inheritdoc />
     public Task<Result> SendAsync(ICommandRequest request, CancellationToken ct = default)
     {
-        return CommandRequestHandler.ExecuteAsync(request, this, serviceProvider, ct);
+        return CommandRequestHandler<TDbContext>.ExecuteAsync(request, this, serviceProvider, ct);
     }
 
     /// <inheritdoc />
     public Task<Result<TResponse>> SendAsync<TResponse>(ICommandRequest<TResponse> request, CancellationToken ct = default)
     {
-        return CommandRequestHandler.ExecuteAsync(request, this, serviceProvider, ct);
+        return CommandRequestHandler<TDbContext>.ExecuteAsync(request, this, serviceProvider, ct);
     }
 }

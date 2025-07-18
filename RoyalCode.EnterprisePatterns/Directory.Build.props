@@ -24,9 +24,9 @@
 		<PgVer>9.0.4</PgVer>
 	</PropertyGroup>
 	<PropertyGroup>
-		<ValVer>1.0.0-preview-1.0</ValVer>
-		<ProbVer>1.0.0-preview-4.0</ProbVer>
+		<ValVer>1.0.0-preview-2.0</ValVer>
+		<ProbVer>1.0.0-preview-4.3</ProbVer>
 		<HintVer>1.0.0</HintVer>
-		<SearchVer>0.8.0-preview-2</SearchVer>
+		<SearchVer>0.8.0-preview-3</SearchVer>
 	</PropertyGroup>
 </Project>

@@ -2,16 +2,18 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.Repositories.Abstractions;
+using RoyalCode.Repositories.EntityFramework;
 using RoyalCode.SmartSearch;
+using RoyalCode.SmartSearch.EntityFramework.Services;
 using RoyalCode.SmartSearch.Linq;
 using RoyalCode.UnitOfWork.Abstractions;
 using RoyalCode.UnitOfWork.EntityFramework;
-using RoyalCode.UnitOfWork.EntityFramework.Internals;
 using RoyalCode.WorkContext.Abstractions;
-using RoyalCode.WorkContext.Abstractions.Querying;
+using RoyalCode.WorkContext.Abstractions.Commands;
 using RoyalCode.WorkContext.EntityFramework;
 using RoyalCode.WorkContext.EntityFramework.Commands.Configurations;
 using RoyalCode.WorkContext.EntityFramework.Commands.Configurations.Internals;
+using RoyalCode.WorkContext.EntityFramework.Internal;
 using RoyalCode.WorkContext.EntityFramework.Querying.Configurations;
 using RoyalCode.WorkContext.EntityFramework.Querying.Configurations.Internals;
 
@@ -38,44 +40,7 @@ public static class WorkContextServiceCollectionExtensions
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TDbContext : DbContext
     {
-        services.AddSmartSearchLinq();
-
-        services.Add(ServiceDescriptor.Describe(
-            typeof(IWorkContext<TDbContext>),
-            typeof(WorkContext<TDbContext>),
-            lifetime));
-
-        services.Add(ServiceDescriptor.Describe(
-            typeof(IWorkContext),
-            sp => sp.GetService<IWorkContext<TDbContext>>()!,
-            lifetime));
-
-        services.Add(ServiceDescriptor.Describe(
-            typeof(IEntityManager),
-            sp => sp.GetService<IWorkContext<TDbContext>>()!,
-            lifetime));
-
-        services.Add(ServiceDescriptor.Describe(
-            typeof(ISearchManager),
-            sp => sp.GetService<IWorkContext<TDbContext>>()!,
-            lifetime));
-
-        services.Add(ServiceDescriptor.Describe(
-            typeof(IQueryDispatcher),
-            sp => sp.GetService<IWorkContext<TDbContext>>()!,
-            lifetime));
-
-        services.TryAdd(ServiceDescriptor.Describe(
-            typeof(IUnitOfWork<TDbContext>),
-            sp => sp.GetService<IWorkContext<TDbContext>>()!,
-            lifetime));
-
-        services.TryAdd(ServiceDescriptor.Describe(
-            typeof(IUnitOfWork),
-            sp => sp.GetService<IWorkContext<TDbContext>>()!,
-            lifetime));
-
-        return new UnitOfWorkBuilder<TDbContext>(services, lifetime);
+        return services.AddWorkContextInternal<IWorkContext, WorkContext<TDbContext>, TDbContext>(lifetime);
     }
 
     /// <summary>
@@ -95,21 +60,7 @@ public static class WorkContextServiceCollectionExtensions
         where TDbWorkContext : class, IWorkContext<TDbContext>
         where TDbContext : DbContext
     {
-        services.Add(ServiceDescriptor.Describe(
-            typeof(TDbWorkContext),
-            typeof(TDbWorkContext),
-            lifetime));
-        
-        foreach(var implements in typeof(TDbWorkContext).GetInterfaces())
-        {
-            if (typeof(IUnitOfWork).IsAssignableFrom(implements))
-                services.Add(ServiceDescriptor.Describe(
-                    implements,
-                    sp => sp.GetService<TDbWorkContext>()!,
-                    lifetime));
-        }
-
-        return new UnitOfWorkBuilder<TDbContext>(services, lifetime);
+        return services.AddWorkContextInternal<IWorkContext, TDbWorkContext, TDbContext>(lifetime);
     }
 
     /// <summary>
@@ -130,47 +81,62 @@ public static class WorkContextServiceCollectionExtensions
         where TDbWorkContext : class, IWorkContext<TDbContext>
         where TDbContext : DbContext
     {
+        return services.AddWorkContextInternal<TWorkContext, TDbWorkContext, TDbContext>(lifetime);
+    }
+
+    private static IUnitOfWorkBuilder<TDbContext> AddWorkContextInternal<TWorkContext, TDbWorkContext, TDbContext>(
+        this IServiceCollection services,
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
+        where TWorkContext : IWorkContext
+        where TDbWorkContext : class, IWorkContext<TDbContext>
+        where TDbContext : DbContext
+    {
+        services.AddSmartSearchLinq();
+
         services.Add(ServiceDescriptor.Describe(
-            typeof(TWorkContext),
+            typeof(TDbWorkContext),
             typeof(TDbWorkContext),
             lifetime));
 
         services.Add(ServiceDescriptor.Describe(
             typeof(IWorkContext<TDbContext>),
-            sp => sp.GetService<TWorkContext>()!,
+            sp => sp.GetService<TDbWorkContext>()!,
             lifetime));
 
-        services.Add(ServiceDescriptor.Describe(
+        services.TryAdd(ServiceDescriptor.Describe(
             typeof(IWorkContext),
-            sp => sp.GetService<TWorkContext>()!,
+            sp => sp.GetService<TDbWorkContext>()!,
             lifetime));
 
+        if (typeof(TWorkContext) != typeof(IWorkContext))
+        {
+            services.Add(ServiceDescriptor.Describe(
+                typeof(TWorkContext),
+                sp => sp.GetService<TDbWorkContext>()!,
+                lifetime));
+        }
+
         services.Add(ServiceDescriptor.Describe(
+            typeof(IEntityManager<TDbContext>),
+            sp => sp.GetService<TDbWorkContext>()!,
+            lifetime));
+
+        services.TryAdd(ServiceDescriptor.Describe(
             typeof(IEntityManager),
-            sp => sp.GetService<TWorkContext>()!,
+            sp => sp.GetService<TDbWorkContext>()!,
             lifetime));
 
         services.Add(ServiceDescriptor.Describe(
+            typeof(ISearchManager<TDbContext>),
+            sp => sp.GetService<TDbWorkContext>()!,
+            lifetime));
+
+        services.TryAdd(ServiceDescriptor.Describe(
             typeof(ISearchManager),
-            sp => sp.GetService<TWorkContext>()!,
+            sp => sp.GetService<TDbWorkContext>()!,
             lifetime));
 
-        services.Add(ServiceDescriptor.Describe(
-            typeof(IQueryDispatcher),
-            sp => sp.GetService<TWorkContext>()!,
-            lifetime));
-
-        services.TryAdd(ServiceDescriptor.Describe(
-            typeof(IUnitOfWork<TDbContext>),
-            sp => sp.GetService<TWorkContext>()!,
-            lifetime));
-
-        services.TryAdd(ServiceDescriptor.Describe(
-            typeof(IUnitOfWork),
-            sp => sp.GetService<TWorkContext>()!,
-            lifetime));
-
-        return new UnitOfWorkBuilder<TDbContext>(services, lifetime);
+        return services.AddUnitOfWork<TDbWorkContext, TDbContext>(lifetime);
     }
 
     /// <summary>
@@ -232,4 +198,34 @@ public static class WorkContextServiceCollectionExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Adds <see cref="ICommandDispatcher"/> as a service.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IUnitOfWorkBuilder<TDbContext> AddCommandDispatcher<TDbContext>(this IUnitOfWorkBuilder<TDbContext> builder)
+        where TDbContext : DbContext
+    {
+        builder.Services.TryAdd(ServiceDescriptor.Describe(
+            typeof(ICommandDispatcher),
+            typeof(CommandDispatcher),
+            ServiceLifetime.Transient));
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds <see cref="ICommandDispatcher"/> as a service.
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddCommandDispatcher(this IServiceCollection services)
+    {
+        services.TryAdd(ServiceDescriptor.Describe(
+            typeof(ICommandDispatcher), 
+            typeof(CommandDispatcher),
+            ServiceLifetime.Transient));
+
+        return services;
+    }
 }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RoyalCode.Repositories.EntityFramework;
+using RoyalCode.SmartSearch.EntityFramework.Services;
 using RoyalCode.UnitOfWork.EntityFramework;
 using RoyalCode.WorkContext.Abstractions;
 
@@ -10,6 +12,10 @@ namespace RoyalCode.WorkContext.EntityFramework;
 /// A <see cref='IWorkContext'/> that is implemented with <see cref='DbContext'/> of type <typeparamref name='TDbContext'/>.
 /// </summary>
 /// <typeparam name="TDbContext"></typeparam>
-public interface IWorkContext<TDbContext> : IWorkContext, IUnitOfWork<TDbContext>
-    where TDbContext: DbContext
+public interface IWorkContext<TDbContext> : 
+    IWorkContext, 
+    IUnitOfWork<TDbContext>, 
+    IEntityManager<TDbContext>,
+    ISearchManager<TDbContext>
+    where TDbContext : DbContext
 { }
