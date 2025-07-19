@@ -1,0 +1,7 @@
+<Project>
+	<PropertyGroup>
+		<AspNetVer>9.0.0</AspNetVer>
+		<WorkContextVer>1.0.0-preview-8.9</WorkContextVer>
+		<SqliteVer>9.0.7</SqliteVer>
+	</PropertyGroup>
+</Project>
