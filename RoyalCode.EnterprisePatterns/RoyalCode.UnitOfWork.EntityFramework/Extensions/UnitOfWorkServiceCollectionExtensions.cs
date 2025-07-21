@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RoyalCode.UnitOfWork.EntityFramework;
-using RoyalCode.UnitOfWork.Abstractions;
-using RoyalCode.UnitOfWork.EntityFramework.Internals;
+using RoyalCode.UnitOfWork;
+using RoyalCode.UnitOfWork.EntityFramework.Configurations;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

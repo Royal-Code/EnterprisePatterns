@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Persistence.Tests.Entities;
-using RoyalCode.WorkContext.Abstractions;
-using RoyalCode.WorkContext.Abstractions.Commands;
+using RoyalCode.WorkContext;
 using RoyalCode.SmartProblems;
 using Xunit;
-using RoyalCode.UnitOfWork.Abstractions;
+using RoyalCode.UnitOfWork;
+using RoyalCode.WorkContext.Commands;
 
 namespace RoyalCode.Persistence.Tests.WorkContext;
 

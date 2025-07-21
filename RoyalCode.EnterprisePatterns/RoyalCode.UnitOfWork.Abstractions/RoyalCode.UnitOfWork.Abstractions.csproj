@@ -12,10 +12,17 @@
 			This pattern is designed to work together with the Repository Pattern.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns UoW Unit-Of-Work Unit-Of-Work-Pattern</PackageTags>
+		<RootNamespace>RoyalCode.UnitOfWork</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="RoyalCode.SmartProblems" Version="$(ProbVer)" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(DotNetCoreVersion)" />
+		<PackageReference Include="RoyalCode.SmartSearch.Linq" Version="$(SearchVer)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>

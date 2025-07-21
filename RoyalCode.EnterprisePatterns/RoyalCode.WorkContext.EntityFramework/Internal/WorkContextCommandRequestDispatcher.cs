@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.SmartProblems;
-using RoyalCode.WorkContext.Abstractions;
-using RoyalCode.WorkContext.Abstractions.Commands;
+using RoyalCode.WorkContext.Commands;
 
 namespace RoyalCode.WorkContext.EntityFramework.Internal;
 

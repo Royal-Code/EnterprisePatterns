@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RoyalCode.SmartProblems;
-using RoyalCode.WorkContext.Abstractions.Commands;
+using RoyalCode.WorkContext.Commands;
 using System.Collections.Concurrent;
 
 namespace RoyalCode.WorkContext.EntityFramework.Internal;

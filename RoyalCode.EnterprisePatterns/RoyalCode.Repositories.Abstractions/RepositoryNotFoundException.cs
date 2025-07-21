@@ -1,6 +1,4 @@
-﻿#pragma warning disable S3925 // "ISerializable" should be implemented correctly
-
-namespace RoyalCode.Repositories.Abstractions;
+﻿namespace RoyalCode.Repositories;
 
 /// <summary>
 /// <para>

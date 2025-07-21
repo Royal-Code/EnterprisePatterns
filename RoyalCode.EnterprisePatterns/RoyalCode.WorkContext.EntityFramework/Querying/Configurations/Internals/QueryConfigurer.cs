@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.WorkContext.Abstractions.Querying;
+using RoyalCode.WorkContext.Querying;
 using System.Reflection;
 
 namespace RoyalCode.WorkContext.EntityFramework.Querying.Configurations.Internals;
@@ -86,6 +86,27 @@ internal sealed class QueryConfigurer<TDbContext> : IQueryConfigurer<TDbContext>
         {
             throw new InvalidOperationException($"The type {type.FullName} does not implement any query handler interface.");
         }
+
+        return this;
+    }
+
+    public IQueryConfigurer<TDbContext> Configure<TConfigurations>()
+        where TConfigurations : class, IQueryHandlerConfigurations, new()
+    {
+        var configurations = new TConfigurations();
+        var configurator = new QueryHandlerConfigurer<TDbContext>(Services);
+
+        configurations.Configure(configurator);
+
+        return this;
+    }
+
+    public IQueryConfigurer<TDbContext> Configure(IQueryHandlerConfigurations configurations)
+    {
+        ArgumentNullException.ThrowIfNull(configurations);
+
+        var configurator = new QueryHandlerConfigurer<TDbContext>(Services);
+        configurations.Configure(configurator);
 
         return this;
     }

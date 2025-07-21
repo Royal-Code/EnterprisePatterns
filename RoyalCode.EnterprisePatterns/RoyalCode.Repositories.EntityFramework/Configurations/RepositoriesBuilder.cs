@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Entities;
 using RoyalCode.OperationHint.Abstractions;
-using RoyalCode.Repositories.Abstractions;
+using RoyalCode.Repositories.Configurations;
 
 namespace RoyalCode.Repositories.EntityFramework.Configurations;
 
@@ -31,7 +31,7 @@ public sealed class RepositoriesBuilder<TDbContext> : IRepositoriesBuilder<TDbCo
     }
 
     /// <inheritdoc />
-    public IRepositoriesBuilder<TDbContext> Add<TEntity>() where TEntity : class
+    public IRepositoriesBuilder Add<TEntity>() where TEntity : class
     {
         // register the repository
         var repoType = typeof(IRepository<>).MakeGenericType(typeof(TEntity));
@@ -66,7 +66,7 @@ public sealed class RepositoriesBuilder<TDbContext> : IRepositoriesBuilder<TDbCo
     }
 
     /// <inheritdoc />
-    public IRepositoriesBuilder<TDbContext> ConfigureOperationHints(Action<IHintHandlerRegistry>? configure)
+    public IRepositoriesBuilder ConfigureOperationHints(Action<IHintHandlerRegistry>? configure)
     {
         if (configure is null)
             throw new ArgumentNullException(nameof(configure));

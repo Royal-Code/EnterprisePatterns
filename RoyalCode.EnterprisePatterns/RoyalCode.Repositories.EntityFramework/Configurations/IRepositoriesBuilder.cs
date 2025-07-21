@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RoyalCode.OperationHint.Abstractions;
+using RoyalCode.Repositories.Configurations;
 
 namespace RoyalCode.Repositories.EntityFramework.Configurations;
 
@@ -7,21 +7,6 @@ namespace RoyalCode.Repositories.EntityFramework.Configurations;
 ///    Configure repositories for the unit of work.
 /// </summary>
 /// <typeparam name="TDbContext">The type of the database context.</typeparam>
-public interface IRepositoriesBuilder<out TDbContext>
+public interface IRepositoriesBuilder<out TDbContext> : IRepositoriesBuilder
     where TDbContext : DbContext
-{
-    /// <summary>
-    /// Add a repository for an entity as a service, related to <see cref="DbContext"/> used by the unit of work.
-    /// </summary>
-    /// <typeparam name="TEntity">The entity type.</typeparam>
-    /// <returns>The same instance.</returns>
-    IRepositoriesBuilder<TDbContext> Add<TEntity>()
-        where TEntity : class;
-
-    /// <summary>
-    /// Allows the configuration of hints for repository operations.
-    /// </summary>
-    /// <param name="configure">The configuration action.</param>
-    /// <returns>The same instance.</returns>
-    IRepositoriesBuilder<TDbContext> ConfigureOperationHints(Action<IHintHandlerRegistry> configure);
-}
+{ }

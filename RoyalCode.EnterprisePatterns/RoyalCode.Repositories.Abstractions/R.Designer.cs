@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RoyalCode.Repositories.Abstractions {
+namespace RoyalCode.Repositories {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace RoyalCode.Repositories.Abstractions {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RoyalCode.Repositories.Abstractions.R", typeof(R).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RoyalCode.Repositories.R", typeof(R).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -2,7 +2,7 @@ using RoyalCode.SmartProblems;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace RoyalCode.UnitOfWork.Abstractions;
+namespace RoyalCode.UnitOfWork;
 
 /// <summary>
 /// <para>

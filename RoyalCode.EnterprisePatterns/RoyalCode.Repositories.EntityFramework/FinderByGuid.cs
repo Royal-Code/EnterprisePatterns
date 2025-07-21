@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RoyalCode.Entities;
-using RoyalCode.Repositories.Abstractions;
 
 namespace RoyalCode.Repositories.EntityFramework;
 

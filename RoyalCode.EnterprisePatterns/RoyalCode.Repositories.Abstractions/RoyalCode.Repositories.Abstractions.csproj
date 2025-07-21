@@ -11,10 +11,12 @@
 			Abstract components for the Repository Pattern.
 		</Description>
 		<PackageTags>RoyalCode Enterprise-Patterns Repository-Pattern Repository</PackageTags>
+		<RootNamespace>RoyalCode.Repositories</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\RoyalCode.Entities\RoyalCode.Entities.csproj" />
+		<PackageReference Include="RoyalCode.OperationHint.Abstractions" Version="$(HintVer)" />
 		<PackageReference Include="RoyalCode.SmartValidations" Version="$(ValVer)" />
 	</ItemGroup>
 

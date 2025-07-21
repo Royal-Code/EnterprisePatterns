@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RoyalCode.UnitOfWork.Abstractions;
 
 namespace RoyalCode.UnitOfWork.EntityFramework;
 

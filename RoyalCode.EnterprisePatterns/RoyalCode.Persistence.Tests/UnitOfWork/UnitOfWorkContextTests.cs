@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.UnitOfWork.Abstractions;
+using RoyalCode.UnitOfWork;
 using Xunit;
 
 namespace RoyalCode.Persistence.Tests.UnitOfWork;

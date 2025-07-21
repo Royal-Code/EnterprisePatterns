@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RoyalCode.WorkContext.Querying;
 
-namespace RoyalCode.WorkContext.Abstractions.Querying;
+namespace RoyalCode.WorkContext.EntityFramework.Querying;
 
 /// <summary>
 /// Handles asynchronous query requests for entities of type <typeparamref name="TEntity"/> 

@@ -1,4 +1,4 @@
-﻿namespace RoyalCode.WorkContext.Abstractions.Commands;
+﻿namespace RoyalCode.WorkContext.Commands;
 
 /// <summary>
 /// Represents a request to execute a command by some command handler.

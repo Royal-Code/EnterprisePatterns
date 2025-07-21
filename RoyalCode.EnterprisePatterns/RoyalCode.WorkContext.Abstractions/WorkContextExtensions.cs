@@ -1,9 +1,9 @@
 ﻿using RoyalCode.Entities;
-using RoyalCode.Repositories.Abstractions;
+using RoyalCode.Repositories;
 using RoyalCode.SmartProblems.Entities;
 using System.Linq.Expressions;
 
-namespace RoyalCode.WorkContext.Abstractions;
+namespace RoyalCode.WorkContext;
 
 /// <summary>
 /// Extensions methods for <see cref="IWorkContext"/>.

@@ -1,6 +1,6 @@
 ﻿using RoyalCode.SmartProblems;
 
-namespace RoyalCode.WorkContext.Abstractions.Commands;
+namespace RoyalCode.WorkContext.Commands;
 
 /// <summary>
 /// Defines a contract for dispatching command requests.

@@ -2,7 +2,6 @@
 using RoyalCode.Repositories.EntityFramework;
 using RoyalCode.SmartSearch.EntityFramework.Services;
 using RoyalCode.UnitOfWork.EntityFramework;
-using RoyalCode.WorkContext.Abstractions;
 
 namespace RoyalCode.WorkContext.EntityFramework;
 

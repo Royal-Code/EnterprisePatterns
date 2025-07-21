@@ -3,7 +3,7 @@
 	<Import Project="..\base.targets" />
 
 	<PropertyGroup>
-		<TargetFrameworks>$(AspTargets)</TargetFrameworks>
+		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
 		<Version>$(PersistVer)$(PersistPreview)</Version>
 		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
 		<FileVersion>$(PersistVer)</FileVersion>

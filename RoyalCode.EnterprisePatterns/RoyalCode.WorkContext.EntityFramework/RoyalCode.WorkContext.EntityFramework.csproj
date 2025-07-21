@@ -3,7 +3,7 @@
 	<Import Project="..\base.targets" />
 
 	<PropertyGroup>
-		<TargetFrameworks>$(AspTargets)</TargetFrameworks>
+		<TargetFrameworks>$(LibTargets)</TargetFrameworks>
 		<Version>$(PersistVer)$(PersistPreview)</Version>
 		<AssemblyVersion>$(PersistVer)</AssemblyVersion>
 		<FileVersion>$(PersistVer)</FileVersion>
@@ -19,9 +19,14 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-	  <ProjectReference Include="..\RoyalCode.Repositories.EntityFramework\RoyalCode.Repositories.EntityFramework.csproj" />
 	  <ProjectReference Include="..\RoyalCode.UnitOfWork.EntityFramework\RoyalCode.UnitOfWork.EntityFramework.csproj" />
 	  <ProjectReference Include="..\RoyalCode.WorkContext.Abstractions\RoyalCode.WorkContext.Abstractions.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<PackageReference Include="RoyalCode.SmartProblems" Version="$(ProbVer)" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(DotNetCoreVersion)" />
+		<PackageReference Include="RoyalCode.SmartSearch.Linq" Version="$(SearchVer)" />
+	</ItemGroup>
+	
 </Project>

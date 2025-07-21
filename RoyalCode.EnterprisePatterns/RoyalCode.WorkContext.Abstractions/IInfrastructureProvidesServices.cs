@@ -1,4 +1,4 @@
-﻿namespace RoyalCode.WorkContext.Abstractions;
+﻿namespace RoyalCode.WorkContext;
 
 /// <summary>
 /// Used for components that work with service providers in their infrastructure and can share the services they provide.

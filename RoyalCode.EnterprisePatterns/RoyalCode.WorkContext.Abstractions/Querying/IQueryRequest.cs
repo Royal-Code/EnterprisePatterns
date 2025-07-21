@@ -1,4 +1,4 @@
-﻿namespace RoyalCode.WorkContext.Abstractions.Querying;
+﻿namespace RoyalCode.WorkContext.Querying;
 
 #pragma warning disable S2326 // TEntity and TModel should be used to specify a type
 

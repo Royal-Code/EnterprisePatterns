@@ -4,16 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.OperationHint.Abstractions;
 using RoyalCode.Repositories.EntityFramework;
 using RoyalCode.UnitOfWork.EntityFramework;
-using RoyalCode.Repositories.Abstractions;
-using RoyalCode.WorkContext.Abstractions;
 using RoyalCode.SmartSearch;
 using RoyalCode.SmartSearch.Linq.Services;
 using RoyalCode.SmartSearch.Linq.Sortings;
 using RoyalCode.SmartSearch.Defaults;
-using RoyalCode.WorkContext.Abstractions.Querying;
 using RoyalCode.WorkContext.EntityFramework.Internal;
 using RoyalCode.SmartProblems;
-using RoyalCode.WorkContext.Abstractions.Commands;
+using RoyalCode.Repositories;
+using RoyalCode.WorkContext.Commands;
+using RoyalCode.WorkContext.Querying;
 
 namespace RoyalCode.WorkContext.EntityFramework;
 

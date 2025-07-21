@@ -1,11 +1,11 @@
 ﻿using RoyalCode.OperationHint.Abstractions;
-using RoyalCode.Repositories.Abstractions;
+using RoyalCode.Repositories;
 using RoyalCode.SmartSearch;
-using RoyalCode.UnitOfWork.Abstractions;
-using RoyalCode.WorkContext.Abstractions.Commands;
-using RoyalCode.WorkContext.Abstractions.Querying;
+using RoyalCode.UnitOfWork;
+using RoyalCode.WorkContext.Commands;
+using RoyalCode.WorkContext.Querying;
 
-namespace RoyalCode.WorkContext.Abstractions;
+namespace RoyalCode.WorkContext;
 
 /// <summary>
 /// <para>

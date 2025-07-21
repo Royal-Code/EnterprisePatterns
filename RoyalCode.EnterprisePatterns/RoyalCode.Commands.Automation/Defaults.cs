@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Extensions.AsyncExpressionsBuilders;
-using RoyalCode.Repositories.Abstractions;
+using RoyalCode.Repositories;
 using RoyalCode.SmartProblems;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;

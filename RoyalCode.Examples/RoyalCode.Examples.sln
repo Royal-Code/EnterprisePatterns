@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Examples.Blogs", "RoyalCode.Examples.Blogs\RoyalCode.Examples.Blogs.csproj", "{268F91F7-9AB4-4FE1-9025-D9E60B042AFB}"
 EndProject
@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{8EC462
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Examples.Api", "RoyalCode.Examples.Api\RoyalCode.Examples.Api.csproj", "{C7567601-EC7A-475C-BD34-93F5ADA29766}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,10 @@ Global
 		{268F91F7-9AB4-4FE1-9025-D9E60B042AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{268F91F7-9AB4-4FE1-9025-D9E60B042AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{268F91F7-9AB4-4FE1-9025-D9E60B042AFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7567601-EC7A-475C-BD34-93F5ADA29766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7567601-EC7A-475C-BD34-93F5ADA29766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7567601-EC7A-475C-BD34-93F5ADA29766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7567601-EC7A-475C-BD34-93F5ADA29766}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

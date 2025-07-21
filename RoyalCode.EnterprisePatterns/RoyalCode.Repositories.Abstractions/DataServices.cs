@@ -1,11 +1,9 @@
-﻿
-using RoyalCode.Entities;
+﻿using RoyalCode.Entities;
 using RoyalCode.SmartProblems.Entities;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
-using System.Security.Cryptography;
 
-namespace RoyalCode.Repositories.Abstractions;
+namespace RoyalCode.Repositories;
 
 /// <summary>
 /// <para>

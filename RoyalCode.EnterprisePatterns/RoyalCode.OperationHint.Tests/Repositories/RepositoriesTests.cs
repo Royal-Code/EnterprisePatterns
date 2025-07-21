@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.OperationHint.Abstractions;
-using RoyalCode.Repositories.Abstractions;
+using RoyalCode.Repositories;
 
 namespace RoyalCode.OperationHint.Tests.Repositories;
 

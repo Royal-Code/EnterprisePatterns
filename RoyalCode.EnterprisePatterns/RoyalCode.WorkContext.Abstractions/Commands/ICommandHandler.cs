@@ -1,6 +1,6 @@
 ﻿using RoyalCode.SmartProblems;
 
-namespace RoyalCode.WorkContext.Abstractions.Commands;
+namespace RoyalCode.WorkContext.Commands;
 
 /// <summary>
 /// Handles a command request using a <see cref="IWorkContext"/>

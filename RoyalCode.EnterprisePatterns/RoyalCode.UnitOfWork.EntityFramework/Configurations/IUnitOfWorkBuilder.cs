@@ -1,31 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.Repositories.EntityFramework.Configurations;
-using RoyalCode.SmartSearch.EntityFramework.Configurations;
+using RoyalCode.UnitOfWork.Configurations;
 using RoyalCode.UnitOfWork.EntityFramework.Services;
 
-namespace RoyalCode.UnitOfWork.EntityFramework;
-
-/// <summary>
-/// <para>
-///     Interface to configure one unit of work with the DbContext.
-/// </para>
-/// <para>
-///     It is designed to work with dependency injection.
-/// </para>
-/// </summary>
-public interface IUnitOfWorkBuilder
-{
-    /// <summary>
-    /// The service collection.
-    /// </summary>
-    IServiceCollection Services { get; }
-
-    /// <summary>
-    /// The <see cref="ServiceLifetime"/> used for register the services and the <see cref="DbContext"/>.
-    /// </summary>
-    ServiceLifetime Lifetime { get; }
-}
+namespace RoyalCode.UnitOfWork.EntityFramework.Configurations;
 
 /// <summary>
 /// <para>
@@ -36,8 +14,24 @@ public interface IUnitOfWorkBuilder
 /// </para>
 /// </summary>
 /// <typeparam name="TDbContext">The type of DbContext for the unit of work.</typeparam>
-public interface IUnitOfWorkBuilder<out TDbContext> : IUnitOfWorkBuilder
+public interface IUnitOfWorkBuilder<out TDbContext> 
+    : IUnitOfWorkBuilder<TDbContext, IUnitOfWorkBuilder<TDbContext>>
     where TDbContext : DbContext
+{ }
+
+/// <summary>
+/// <para>
+///     Interface to configure one unit of work with the DbContext.
+/// </para>
+/// <para>
+///     It is designed to work with dependency injection.
+/// </para>
+/// </summary>
+/// <typeparam name="TDbContext">The type of DbContext for the unit of work.</typeparam>
+/// <typeparam name="TBuilder"> The type of the builder for the unit of work.</typeparam>
+public interface IUnitOfWorkBuilder<out TDbContext, out TBuilder> : IUnitOfWorkBuilderBase<TBuilder>
+    where TDbContext : DbContext
+    where TBuilder : IUnitOfWorkBuilder<TDbContext, TBuilder>
 {
     /// <summary>
     /// <para>
@@ -56,7 +50,7 @@ public interface IUnitOfWorkBuilder<out TDbContext> : IUnitOfWorkBuilder
     /// <exception cref="InvalidOperationException">
     ///     The <see cref="IConfigureDbContextService{TDbContext}"/> is not registered.
     /// </exception>
-    IUnitOfWorkBuilder<TDbContext> ConfigureWithService()
+    public TBuilder ConfigureWithService()
     {
         Services.AddDbContext<TDbContext>((sp, builder) =>
         {
@@ -70,7 +64,7 @@ public interface IUnitOfWorkBuilder<out TDbContext> : IUnitOfWorkBuilder
 
             configurator.ConfigureDbContext(builder);
         }, Lifetime);
-        return this;
+        return (TBuilder)this;
     }
 
     /// <summary>
@@ -78,11 +72,11 @@ public interface IUnitOfWorkBuilder<out TDbContext> : IUnitOfWorkBuilder
     /// </summary>
     /// <param name="configurer">Action to configure.</param>
     /// <returns>The same instance.</returns>
-    IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<DbContextOptionsBuilder> configurer)
+    public TBuilder ConfigureDbContextPool(Action<DbContextOptionsBuilder> configurer)
     {
         ArgumentNullException.ThrowIfNull(configurer);
         Services.AddDbContextPool<TDbContext>(configurer);
-        return this;
+        return (TBuilder)this;
     }
 
     /// <summary>
@@ -90,11 +84,11 @@ public interface IUnitOfWorkBuilder<out TDbContext> : IUnitOfWorkBuilder
     /// </summary>
     /// <param name="configurer">Action to configure.</param>
     /// <returns>The same instance.</returns>
-    IUnitOfWorkBuilder<TDbContext> ConfigureDbContextPool(Action<IServiceProvider, DbContextOptionsBuilder> configurer)
+    public TBuilder ConfigureDbContextPool(Action<IServiceProvider, DbContextOptionsBuilder> configurer)
     {
         ArgumentNullException.ThrowIfNull(configurer);
         Services.AddDbContextPool<TDbContext>(configurer);
-        return this;
+        return (TBuilder)this;
     }
 
     /// <summary>
@@ -102,10 +96,10 @@ public interface IUnitOfWorkBuilder<out TDbContext> : IUnitOfWorkBuilder
     /// </summary>
     /// <param name="configurer">Action to configure.</param>
     /// <returns>The same instance.</returns>
-    IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<DbContextOptionsBuilder>? configurer = null)
+    public TBuilder ConfigureDbContext(Action<DbContextOptionsBuilder>? configurer = null)
     {
         Services.AddDbContext<TDbContext>(configurer, Lifetime);
-        return this;
+        return (TBuilder)this;
     }
 
     /// <summary>
@@ -113,36 +107,10 @@ public interface IUnitOfWorkBuilder<out TDbContext> : IUnitOfWorkBuilder
     /// </summary>
     /// <param name="configurer">Action to configure.</param>
     /// <returns>The same instance.</returns>
-    IUnitOfWorkBuilder<TDbContext> ConfigureDbContext(Action<IServiceProvider, DbContextOptionsBuilder> configurer)
+    public TBuilder ConfigureDbContext(Action<IServiceProvider, DbContextOptionsBuilder> configurer)
     {
         ArgumentNullException.ThrowIfNull(configurer);
         Services.AddDbContext<TDbContext>(configurer, Lifetime);
-        return this;
-    }
-
-    /// <summary>
-    /// Configure the repositories for the unit of work.
-    /// </summary>
-    /// <param name="configureAction">Action to configure.</param>
-    /// <returns>The same instance.</returns>
-    IUnitOfWorkBuilder<TDbContext> ConfigureRepositories(Action<IRepositoriesBuilder<TDbContext>> configureAction)
-    {
-        ArgumentNullException.ThrowIfNull(configureAction);
-        var repositoryConfigurer = new RepositoriesBuilder<TDbContext>(Services, Lifetime);
-        configureAction(repositoryConfigurer);
-        return this;
-    }
-
-    /// <summary>
-    /// Configure the searches for the unit of work.
-    /// </summary>
-    /// <param name="configureAction">Action to configure.</param>
-    /// <returns>The same instance.</returns>
-    IUnitOfWorkBuilder<TDbContext> ConfigureSearches(Action<ISearchConfigurations<TDbContext>> configureAction)
-    {
-        ArgumentNullException.ThrowIfNull(configureAction);
-        var configurations = new SearchConfigurations<TDbContext>(Services);
-        configureAction(configurations);
-        return this;
+        return (TBuilder)this;
     }
 }

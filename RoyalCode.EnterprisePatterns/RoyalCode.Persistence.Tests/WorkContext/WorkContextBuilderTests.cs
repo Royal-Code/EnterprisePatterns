@@ -2,10 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Persistence.Tests.Entities;
-using RoyalCode.Repositories.Abstractions;
+using RoyalCode.Repositories;
 using RoyalCode.SmartSearch;
-using RoyalCode.UnitOfWork.Abstractions;
-using RoyalCode.WorkContext.Abstractions;
+using RoyalCode.UnitOfWork;
+using RoyalCode.WorkContext;
 using Xunit;
 
 namespace RoyalCode.Persistence.Tests.WorkContext;

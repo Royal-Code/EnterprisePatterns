@@ -1,5 +1,4 @@
-﻿
-namespace RoyalCode.Repositories.Abstractions;
+﻿namespace RoyalCode.Repositories;
 
 /// <summary>
 /// <para>

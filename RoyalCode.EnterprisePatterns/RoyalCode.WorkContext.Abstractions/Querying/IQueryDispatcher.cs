@@ -1,4 +1,4 @@
-﻿namespace RoyalCode.WorkContext.Abstractions.Querying;
+﻿namespace RoyalCode.WorkContext.Querying;
 
 /// <summary>
 /// Represents a dispatcher for query requests.

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.WorkContext.Abstractions.Querying;
+using RoyalCode.WorkContext.Querying;
 using RoyalCode.WorkContext.EntityFramework.Querying;
 using System.Collections.Concurrent;
 

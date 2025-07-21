@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RoyalCode.WorkContext.Abstractions.Querying;
+using RoyalCode.WorkContext.Querying;
 
 namespace RoyalCode.WorkContext.EntityFramework.Querying;
 

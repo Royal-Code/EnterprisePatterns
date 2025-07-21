@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.WorkContext.Abstractions.Querying;
+using RoyalCode.WorkContext.Querying;
 
 namespace RoyalCode.WorkContext.EntityFramework.Querying.Configurations.Internals;
 

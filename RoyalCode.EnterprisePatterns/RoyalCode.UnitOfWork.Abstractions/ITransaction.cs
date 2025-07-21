@@ -1,4 +1,4 @@
-namespace RoyalCode.UnitOfWork.Abstractions;
+namespace RoyalCode.UnitOfWork;
 
 /// <summary>
 /// <para>

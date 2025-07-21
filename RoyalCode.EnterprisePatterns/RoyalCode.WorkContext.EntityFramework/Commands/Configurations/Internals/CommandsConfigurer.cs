@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.WorkContext.Abstractions.Commands;
+using RoyalCode.WorkContext.Commands;
 using RoyalCode.WorkContext.EntityFramework.Internal;
 using System.Reflection;
 

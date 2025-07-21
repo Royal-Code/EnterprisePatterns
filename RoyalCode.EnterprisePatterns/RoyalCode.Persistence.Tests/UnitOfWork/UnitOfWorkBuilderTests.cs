@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Persistence.Tests.Entities;
-using RoyalCode.Repositories.Abstractions;
-using RoyalCode.UnitOfWork.Abstractions;
+using RoyalCode.Repositories;
+using RoyalCode.UnitOfWork;
 using Xunit;
 
 namespace RoyalCode.Persistence.Tests.UnitOfWork;

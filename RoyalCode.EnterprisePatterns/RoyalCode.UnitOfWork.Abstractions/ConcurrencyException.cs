@@ -1,4 +1,4 @@
-namespace RoyalCode.UnitOfWork.Abstractions;
+namespace RoyalCode.UnitOfWork;
 
 /// <summary>
 /// Exception for when a database concurrency failure occurs.

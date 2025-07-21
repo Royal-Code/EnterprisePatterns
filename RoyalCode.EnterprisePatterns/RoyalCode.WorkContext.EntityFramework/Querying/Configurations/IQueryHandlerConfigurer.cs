@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RoyalCode.WorkContext.Abstractions.Querying;
+using RoyalCode.WorkContext.Querying;
 
 namespace RoyalCode.WorkContext.EntityFramework.Querying.Configurations;
 
@@ -16,7 +16,7 @@ public interface IQueryHandlerConfigurer<TDbContext> : IQueryHandlerConfigurer<T
 /// </summary>
 /// <typeparam name="TDbContext">The type of the <see cref="DbContext"/>.</typeparam>
 /// <typeparam name="TConfigure">The type of the configurer.</typeparam>
-public interface IQueryHandlerConfigurer<TDbContext, TConfigure>
+public interface IQueryHandlerConfigurer<out TDbContext, TConfigure>
     where TDbContext : DbContext
     where TConfigure : IQueryHandlerConfigurer<TDbContext, TConfigure>
 {
