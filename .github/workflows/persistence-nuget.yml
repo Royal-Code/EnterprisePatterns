@@ -38,6 +38,15 @@ jobs:
 
       - name: Build and pack Work Context EntityFramework
         run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.EntityFramework/RoyalCode.WorkContext.EntityFramework.csproj -c Release
-                
+
+      - name: Build and pack Work Context PostgreSql
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.PostgreSql/RoyalCode.WorkContext.PostgreSql.csproj -c Release
+
+      - name: Build and pack Work Context Sqlite
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.Sqlite/RoyalCode.WorkContext.Sqlite.csproj -c Release
+
+      - name: Build and pack Work Context SqlServer
+        run: dotnet build ./RoyalCode.EnterprisePatterns/RoyalCode.WorkContext.SqlServer/RoyalCode.WorkContext.SqlServer.csproj -c Release
+
       - name: Publish
         run: dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

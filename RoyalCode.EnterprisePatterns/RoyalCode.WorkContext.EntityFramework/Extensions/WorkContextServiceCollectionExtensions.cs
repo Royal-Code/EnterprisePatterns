@@ -6,6 +6,7 @@ using RoyalCode.SmartSearch;
 using RoyalCode.SmartSearch.EntityFramework.Services;
 using RoyalCode.SmartSearch.Linq;
 using RoyalCode.UnitOfWork;
+using RoyalCode.UnitOfWork.EntityFramework;
 using RoyalCode.WorkContext;
 using RoyalCode.WorkContext.Commands;
 using RoyalCode.WorkContext.EntityFramework;
@@ -30,7 +31,7 @@ public static class WorkContextServiceCollectionExtensions
     /// <returns>
     ///     A unit of work builder to configure the <see cref="DbContext"/> and services like repositories and searches.
     /// </returns>
-    public static IWorkContextBuilder<DbContext> AddWorkContext(
+    public static IWorkContextBuilder<DefaultDbContext> AddWorkContextDefault(
         this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {

@@ -5,7 +5,7 @@ namespace RoyalCode.UnitOfWork.EntityFramework;
 /// <summary>
 /// Represents the default Entity Framework <see cref="DbContext"/> used for database operations.
 /// </summary>
-internal sealed class DefaultDbContext : DbContext
+public sealed class DefaultDbContext : DbContext
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultDbContext"/> class with the specified options.

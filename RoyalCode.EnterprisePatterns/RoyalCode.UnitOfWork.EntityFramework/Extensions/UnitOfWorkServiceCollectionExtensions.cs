@@ -18,7 +18,7 @@ public static class UnitOfWorkServiceCollectionExtensions
     /// <param name="services">The service collection.</param>
     /// <param name="lifetime">The services lifetime, by default is scoped.</param>
     /// <returns>A unit of work builder to configure the <see cref="DbContext"/> and services like repositories and searches.</returns>
-    public static IUnitOfWorkBuilder<DbContext> AddUnitOfWork(this IServiceCollection services,
+    public static IUnitOfWorkBuilder<DefaultDbContext> AddUnitOfWorkDefault(this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
         return services.AddUnitOfWork<DefaultDbContext>(lifetime)
