@@ -1,4 +1,5 @@
 using RoyalCode.SmartProblems;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
@@ -53,6 +54,7 @@ public readonly struct SaveResult
     public SaveResult(Exception ex)
     {
         Problems = Problems.InternalError(ex);
+        Exception = ex;
     }
 
     /// <summary>
@@ -64,6 +66,11 @@ public readonly struct SaveResult
     /// The error that occurred during the save operation.
     /// </summary>
     public Problems? Problems { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
+
+    /// <summary>
+    /// The exception that occurred during the save operation, if any.
+    /// </summary>
+    public Exception? Exception { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
 
     /// <summary>
     /// Returns true if the save operation succeeded.
@@ -110,6 +117,23 @@ public readonly struct SaveResult
     {
         problems = Problems;
         return IsSuccess;
+    }
+
+    /// <summary>
+    /// Validates the result and throws an exception if it's a failure.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when the save operation failed, either due to an exception or problems.
+    /// </exception>
+    [StackTraceHidden]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void EnsureSuccess()
+    {
+        if (Exception is not null)
+            throw new InvalidOperationException($"Save operation failed with exception: {Exception.Message}", Exception);
+        
+        if (IsFailure)
+            throw Problems.ToException("Save operation failed with problem(s):\n - {0}", "\n - ");
     }
 
     /// <summary>
