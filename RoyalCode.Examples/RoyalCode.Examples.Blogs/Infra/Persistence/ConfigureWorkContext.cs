@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RoyalCode.Examples.Blogs.Core.Blogs;
 using RoyalCode.Examples.Blogs.Core.Support;
 using RoyalCode.WorkContext.EntityFramework.Configurations;
@@ -7,19 +8,35 @@ namespace RoyalCode.Examples.Blogs.Infra.Persistence;
 
 public static class ConfigureWorkContext
 {
-
     public static IWorkContextBuilder<TDbContext> ConfigureBlogs<TDbContext>(this IWorkContextBuilder<TDbContext> builder)
         where TDbContext : DbContext
     {
-        builder.ConfigureRepositories(b =>
-        {
-            b.Add<Blog>()
-                .Add<Post>()
-                .Add<Core.Blogs.Thread>()
-                .Add<Comment>()
-                .Add<Author>();
-        });
+        builder
+            .ConfigureModel(b =>
+            {
+                b.ApplyConfigurationsFromAssembly(typeof(ConfigureWorkContext).Assembly);
+            })
+            .ConfigureRepositories(b =>
+            {
+                b.Add<Blog>()
+                    .Add<Post>()
+                    .Add<Core.Blogs.Thread>()
+                    .Add<Comment>()
+                    .Add<Author>();
+            });
         
         return builder;
+    }
+}
+
+public class BlogMapping : IEntityTypeConfiguration<Blog>
+{
+    public void Configure(EntityTypeBuilder<Blog> builder)
+    {
+        builder
+            .HasMany(b => b.Posts)
+            .WithOne(p => p.Blog)
+            .HasForeignKey("BlogId")
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

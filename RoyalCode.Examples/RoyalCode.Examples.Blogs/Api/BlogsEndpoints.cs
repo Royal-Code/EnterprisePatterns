@@ -9,5 +9,6 @@ public static partial class BlogsEndpoints
     public static void MapBlob(this IEndpointRouteBuilder app)
     {
         app.MapHelloGroup();
+        app.MapAuthorsGroup();
     }
 }

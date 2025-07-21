@@ -1,7 +1,7 @@
 using RoyalCode.Examples.Api.EF;
 using RoyalCode.Examples.Blogs.Api;
 using RoyalCode.Examples.Blogs.Infra.Persistence;
-using RoyalCode.WorkContext;
+using RoyalCode.SmartCommands.WorkContext.Extensions;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +10,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddBlobs();
 
 builder.Services.AddWorkContext<AppDbContext>()
-    .ConfigureWithService()
-    .ConfigureBlogs();
+    .ConfigureDbContextWithService()
+    .ConfigureBlogs()
+    .AddUnitOfWorkAdapter();
 
 var app = builder.Build();
 
