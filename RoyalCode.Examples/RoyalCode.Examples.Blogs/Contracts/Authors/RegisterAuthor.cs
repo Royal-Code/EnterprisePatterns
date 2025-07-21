@@ -2,7 +2,7 @@
 using RoyalCode.SmartCommands;
 using RoyalCode.SmartProblems;
 using RoyalCode.SmartValidations;
-using RoyalCode.WorkContext.Abstractions;
+using RoyalCode.WorkContext;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 

@@ -1,10 +1,17 @@
+using RoyalCode.Examples.Api.EF;
 using RoyalCode.Examples.Blogs.Api;
+using RoyalCode.Examples.Blogs.Infra.Persistence;
+using RoyalCode.WorkContext;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddBlobs();
+
+builder.Services.AddWorkContext<AppDbContext>()
+    .ConfigureWithService()
+    .ConfigureBlogs();
 
 var app = builder.Build();
 

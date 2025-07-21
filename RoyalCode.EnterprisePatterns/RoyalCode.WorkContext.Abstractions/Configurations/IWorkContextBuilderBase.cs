@@ -17,6 +17,6 @@ namespace RoyalCode.WorkContext.Configurations;
 /// <typeparam name="TBuilder">
 ///     The type of the builder implementing this interface, enabling fluent configuration.
 /// </typeparam>
-public interface IWorkContextBuilderBase<TBuilder> : IUnitOfWorkBuilderBase<TBuilder>
+public interface IWorkContextBuilderBase<out TBuilder> : IUnitOfWorkBuilderBase<TBuilder>
     where TBuilder : IWorkContextBuilderBase<TBuilder>
 { }

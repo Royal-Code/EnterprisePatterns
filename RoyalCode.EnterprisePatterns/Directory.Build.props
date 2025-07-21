@@ -6,16 +6,16 @@
 	</PropertyGroup>
 	<PropertyGroup>
 		
-		<DomainVer>1.0.0</DomainVer>
-		<DomainPreview>-preview-8.0</DomainPreview>
+		<DomainVer>0.8.0</DomainVer>
+		<DomainPreview></DomainPreview>
 		
-		<PersistVer>1.0.0</PersistVer>
-		<PersistPreview>-preview-9.0</PersistPreview>
+		<PersistVer>0.8.0</PersistVer>
+		<PersistPreview></PersistPreview>
 		
 		<CommandVer>0.1.0</CommandVer>
 		<CommandPreview>-preview-1</CommandPreview>
 
-		<MsgVer>1.0.0</MsgVer>
+		<MsgVer>0.1.0</MsgVer>
 		<MsgVerPreview>-preview-0.1</MsgVerPreview>
 	</PropertyGroup>
 	<PropertyGroup>

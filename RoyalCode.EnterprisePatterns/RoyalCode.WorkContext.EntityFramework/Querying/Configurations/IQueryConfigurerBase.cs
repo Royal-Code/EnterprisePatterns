@@ -8,7 +8,7 @@ namespace RoyalCode.WorkContext.EntityFramework.Querying.Configurations;
 /// Provides access to the service collection for query configuration.
 /// </summary>
 /// <typeparam name="TConfigurer">The type of the configurer.</typeparam>
-public interface IQueryConfigurerBase<TConfigurer>
+public interface IQueryConfigurerBase<out TConfigurer>
     where TConfigurer : IQueryConfigurerBase<TConfigurer>
 {
     /// <summary>
@@ -66,7 +66,7 @@ public interface IQueryConfigurerBase<TConfigurer>
 /// </summary>
 /// <typeparam name="TDbContext">The type of the <see cref="DbContext"/>.</typeparam>
 /// <typeparam name="TConfigurer">The type of the configurer.</typeparam>
-public interface IQueryConfigurer<out TDbContext, TConfigurer> : IQueryConfigurerBase<TConfigurer>, IQueryHandlerConfigurer<TDbContext, TConfigurer>
+public interface IQueryConfigurer<out TDbContext, out TConfigurer> : IQueryConfigurerBase<TConfigurer>, IQueryHandlerConfigurer<TDbContext, TConfigurer>
     where TDbContext : DbContext
     where TConfigurer : IQueryConfigurer<TDbContext, TConfigurer>
 { }
@@ -75,6 +75,6 @@ public interface IQueryConfigurer<out TDbContext, TConfigurer> : IQueryConfigure
 /// Provides methods to configure query handlers for a specific <see cref="DbContext"/>.
 /// </summary>
 /// <typeparam name="TDbContext">The type of the <see cref="DbContext"/>.</typeparam>
-public interface IQueryConfigurer<TDbContext> : IQueryConfigurer<TDbContext, IQueryConfigurer<TDbContext>>
+public interface IQueryConfigurer<out TDbContext> : IQueryConfigurer<TDbContext, IQueryConfigurer<TDbContext>>
     where TDbContext : DbContext
 { }

@@ -22,6 +22,23 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class WorkContextServiceCollectionExtensions
 {
     /// <summary>
+    /// Adds a work context related to a default <see cref="DbContext"/>,
+    /// and configure the <see cref="DbContext"/> with services.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="lifetime">The services lifetime, by default is scoped.</param>
+    /// <returns>
+    ///     A unit of work builder to configure the <see cref="DbContext"/> and services like repositories and searches.
+    /// </returns>
+    public static IWorkContextBuilder<DbContext> AddWorkContext(
+        this IServiceCollection services,
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
+    {
+        return services.AddWorkContextInternal<IWorkContext, WorkContext<DefaultDbContext>, DefaultDbContext>(lifetime)
+            .ConfigureDbContextWithService();
+    }
+
+    /// <summary>
     /// Adds a work context related to a <see cref="DbContext"/>.
     /// </summary>
     /// <typeparam name="TDbContext">The type of the DbContext used in the work context.</typeparam>
@@ -79,7 +96,7 @@ public static class WorkContextServiceCollectionExtensions
         return services.AddWorkContextInternal<TWorkContext, TDbWorkContext, TDbContext>(lifetime);
     }
 
-    private static WorkContextBuilder<TDbContext> AddWorkContextInternal<TWorkContext, TDbWorkContext, TDbContext>(
+    private static IWorkContextBuilder<TDbContext> AddWorkContextInternal<TWorkContext, TDbWorkContext, TDbContext>(
         this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TWorkContext : IWorkContext

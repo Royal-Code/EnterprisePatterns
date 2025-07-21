@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RoyalCode.UnitOfWork.EntityFramework;
@@ -12,6 +11,20 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public static class UnitOfWorkServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds a unit of work related to a default <see cref="DbContext"/>,
+    /// and configure the <see cref="DbContext"/> with services.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="lifetime">The services lifetime, by default is scoped.</param>
+    /// <returns>A unit of work builder to configure the <see cref="DbContext"/> and services like repositories and searches.</returns>
+    public static IUnitOfWorkBuilder<DbContext> AddUnitOfWork(this IServiceCollection services,
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
+    {
+        return services.AddUnitOfWork<DefaultDbContext>(lifetime)
+            .ConfigureDbContextWithService();
+    }
+
     /// <summary>
     /// Adds a unit of work related to a <see cref="DbContext"/>.
     /// </summary>

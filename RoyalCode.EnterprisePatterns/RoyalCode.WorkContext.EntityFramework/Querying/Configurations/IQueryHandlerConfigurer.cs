@@ -7,7 +7,7 @@ namespace RoyalCode.WorkContext.EntityFramework.Querying.Configurations;
 /// Configures query handlers for a specific <see cref="DbContext"/>.
 /// </summary>
 /// <typeparam name="TDbContext">The type of the <see cref="DbContext"/>.</typeparam>
-public interface IQueryHandlerConfigurer<TDbContext> : IQueryHandlerConfigurer<TDbContext, IQueryHandlerConfigurer<TDbContext>>
+public interface IQueryHandlerConfigurer<out TDbContext> : IQueryHandlerConfigurer<TDbContext, IQueryHandlerConfigurer<TDbContext>>
     where TDbContext : DbContext
 { }
 
@@ -16,7 +16,7 @@ public interface IQueryHandlerConfigurer<TDbContext> : IQueryHandlerConfigurer<T
 /// </summary>
 /// <typeparam name="TDbContext">The type of the <see cref="DbContext"/>.</typeparam>
 /// <typeparam name="TConfigure">The type of the configurer.</typeparam>
-public interface IQueryHandlerConfigurer<out TDbContext, TConfigure>
+public interface IQueryHandlerConfigurer<out TDbContext, out TConfigure>
     where TDbContext : DbContext
     where TConfigure : IQueryHandlerConfigurer<TDbContext, TConfigure>
 {

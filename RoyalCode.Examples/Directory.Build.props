@@ -1,7 +1,10 @@
 <Project>
 	<PropertyGroup>
 		<AspNetVer>9.0.0</AspNetVer>
-		<WorkContextVer>1.0.0-preview-8.9</WorkContextVer>
+		<WorkContextVer>1.0.0-preview-9.0</WorkContextVer>
+		<ProblemsVer>1.0.0-preview-4.3</ProblemsVer>
+		<GenVer>0.0.1</GenVer>
 		<SqliteVer>9.0.7</SqliteVer>
+		<ScalarVer>2.6.3</ScalarVer>
 	</PropertyGroup>
 </Project>
