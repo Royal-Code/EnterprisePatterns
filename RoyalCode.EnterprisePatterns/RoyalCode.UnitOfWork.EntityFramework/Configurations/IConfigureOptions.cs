@@ -10,8 +10,8 @@ public interface IConfigureOptions<TDbContext>
     where TDbContext : DbContext
 {
     /// <summary>
-    /// Configure as opções do <see cref="DbContext"/> através do <see cref="DbContextOptionsBuilder"/>.
+    /// Configures the options for the <see cref="DbContext"/> using the provided <see cref="DbContextOptionsBuilder"/>.
     /// </summary>
-    /// <param name="optionsBuilder">O <see cref="DbContextOptionsBuilder"/> a ser configurado.</param>
+    /// <param name="optionsBuilder">The <see cref="DbContextOptionsBuilder"/> to configure.</param>
     void Configure(DbContextOptionsBuilder optionsBuilder);
 }

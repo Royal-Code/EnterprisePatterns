@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddBlobs();
 
-builder.Services.AddWorkContext<AppDbContext>()
+builder.Services.AddSqliteInMemoryWorkContextDefault()
     .ConfigureDbContextWithService()
     .ConfigureBlogs()
     .AddUnitOfWorkAdapter();

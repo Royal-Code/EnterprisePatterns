@@ -9,8 +9,8 @@ public interface IConfigureModel<TDbContext>
     where TDbContext : DbContext
 {
     /// <summary>
-    /// Configura o <see cref="ModelBuilder"/> de um <see cref="DbContext"/>.
+    /// Configures the <see cref="ModelBuilder"/> for the specified <see cref="DbContext"/>.
     /// </summary>
-    /// <param name="modelBuilder"></param>
+    /// <param name="modelBuilder">The <see cref="ModelBuilder"/> to configure.</param>
     public void Configure(ModelBuilder modelBuilder);
 }

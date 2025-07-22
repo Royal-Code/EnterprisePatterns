@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(AspNetVer)" />
     <PackageReference Include="Scalar.AspNetCore" Version="$(ScalarVer)" />
+	  <PackageReference Include="RoyalCode.WorkContext.Sqlite" Version="$(WorkContextVer)" />
   </ItemGroup>
 
   <ItemGroup>

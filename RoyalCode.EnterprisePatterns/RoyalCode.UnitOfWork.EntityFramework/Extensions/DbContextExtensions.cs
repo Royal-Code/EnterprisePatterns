@@ -1,25 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.UnitOfWork.EntityFramework.Configurations;
 
 namespace Microsoft.EntityFrameworkCore;
 
 /// <summary>
-/// Métodos de extensão para <see cref="DbContext"/>.
+/// Extension methods for <see cref="DbContext"/>.
 /// </summary>
 public static class DbContextExtensions
 {
     /// <summary>
-    /// Configura um <see cref="ModelBuilder"/> usando serviços de <see cref="IConfigureModel{TDbContext}"/>
-    /// obtidos do <see cref="DbContext"/>.
+    /// Configures a <see cref="ModelBuilder"/> using <see cref="IConfigureModel{TDbContext}"/> services
+    /// obtained from the <see cref="DbContext"/>.
     /// </summary>
-    /// <typeparam name="TDbContext">O tipo do DbContext.</typeparam>
-    /// <param name="context">O DbContext.</param>
-    /// <param name="modelBuilder">O ModelBuilder do DbContext.</param>
+    /// <typeparam name="TDbContext">The type of DbContext.</typeparam>
+    /// <param name="context">The DbContext.</param>
+    /// <param name="modelBuilder">The ModelBuilder of the DbContext.</param>
     public static void ConfigureModelWithServices<TDbContext>(
         this TDbContext context, ModelBuilder modelBuilder)
         where TDbContext : DbContext
     {
-        var configurations = context.GetService<IEnumerable<IConfigureModel<TDbContext>>>();
+        var configurations = context.GetApplicationService<IEnumerable<IConfigureModel<TDbContext>>>();
         if (configurations is null)
             return;
 
@@ -28,21 +29,45 @@ public static class DbContextExtensions
     }
 
     /// <summary>
-    /// Configura um <see cref="ModelConfigurationBuilder"/> usando serviços 
-    /// de <see cref="IConfigureConventions{TDbContext}"/> obtidos do <see cref="DbContext"/>.
+    /// Configures a <see cref="ModelConfigurationBuilder"/> using 
+    /// <see cref="IConfigureConventions{TDbContext}"/> services obtained from the <see cref="DbContext"/>.
     /// </summary>
-    /// <typeparam name="TDbContext">O tipo do DbContext.</typeparam>
-    /// <param name="context">O DbContext.</param>
-    /// <param name="configurationBuilder">As configurações do DbContext.</param>
+    /// <typeparam name="TDbContext">The type of DbContext.</typeparam>
+    /// <param name="context">The DbContext.</param>
+    /// <param name="configurationBuilder">The configuration builder of the DbContext.</param>
     public static void ConfigureConventionsWithServices<TDbContext>(
         this TDbContext context, ModelConfigurationBuilder configurationBuilder)
         where TDbContext : DbContext
     {
-        var configurations = context.GetService<IEnumerable<IConfigureConventions<TDbContext>>>();
+        var configurations = context.GetApplicationService<IEnumerable<IConfigureConventions<TDbContext>>>();
         if (configurations is null)
             return;
 
         foreach (var configuration in configurations)
             configuration.Configure(configurationBuilder);
+    }
+
+    /// <summary>
+    /// Gets a service registered in the application's service provider associated with the <see cref="DbContext"/>.
+    /// </summary>
+    /// <typeparam name="TService">The type of service to obtain.</typeparam>
+    /// <param name="accessor">Access to the service provider of the DbContext.</param>
+    /// <returns>The requested service instance.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     If there is no service of type <typeparamref name="TService"/> registered
+    ///     in the application's service provider associated with the <see cref="DbContext"/>,
+    ///     or when the application's service provider is not configured for the <see cref="DbContext"/>.
+    /// </exception>
+    public static TService GetApplicationService<TService>(this IInfrastructure<IServiceProvider> accessor)
+        where TService : class
+    {
+        var sp = accessor.Instance;
+
+        return (sp.GetService<IDbContextOptions>()
+                ?.Extensions.OfType<CoreOptionsExtension>().FirstOrDefault()
+                ?.ApplicationServiceProvider
+                ?.GetRequiredService<TService>()) 
+                ?? throw new InvalidOperationException(
+                    $"No service of type '{typeof(TService).FullName}' is registered in the DbContext.");
     }
 }

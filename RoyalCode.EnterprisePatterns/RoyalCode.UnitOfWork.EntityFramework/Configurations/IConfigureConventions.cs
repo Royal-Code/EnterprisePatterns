@@ -10,8 +10,9 @@ public interface IConfigureConventions<TDbContext>
     where TDbContext : DbContext
 {
     /// <summary>
-    /// Configure as convensões do <see cref="DbContext"/> através do <see cref="ModelConfigurationBuilder"/>.
+    /// Configures conventions for the specified <see cref="ModelConfigurationBuilder"/> 
+    /// using the provided <typeparamref name="TDbContext"/>.
     /// </summary>
-    /// <param name="builder">O <see cref="ModelConfigurationBuilder"/> a ser configurado.</param>
+    /// <param name="builder">The builder used to configure conventions for the <typeparamref name="TDbContext"/>.</param>
     void Configure(ModelConfigurationBuilder builder);
 }

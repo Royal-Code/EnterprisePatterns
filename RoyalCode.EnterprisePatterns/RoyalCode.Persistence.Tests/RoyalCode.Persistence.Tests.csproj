@@ -11,6 +11,9 @@
 		<ProjectReference Include="..\RoyalCode.UnitOfWork.EntityFramework\RoyalCode.UnitOfWork.EntityFramework.csproj" />
 		<ProjectReference Include="..\RoyalCode.WorkContext.EntityFramework\RoyalCode.WorkContext.EntityFramework.csproj" />
 		<ProjectReference Include="..\RoyalCode.WorkContext.Abstractions\RoyalCode.WorkContext.Abstractions.csproj" />
+		<ProjectReference Include="..\RoyalCode.WorkContext.PostgreSql\RoyalCode.WorkContext.PostgreSql.csproj" />
+		<ProjectReference Include="..\RoyalCode.WorkContext.Sqlite\RoyalCode.WorkContext.Sqlite.csproj" />
+		<ProjectReference Include="..\RoyalCode.WorkContext.SqlServer\RoyalCode.WorkContext.SqlServer.csproj" />
 	</ItemGroup>
 
 </Project>

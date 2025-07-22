@@ -38,5 +38,64 @@ public class BlogMapping : IEntityTypeConfiguration<Blog>
             .WithOne(p => p.Blog)
             .HasForeignKey("BlogId")
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder
+            .HasOne(b => b.Owner)
+            .WithMany()
+            .HasForeignKey("OwnerId");
+
+        builder
+            .HasMany(b => b.Authors)
+            .WithMany();
+    }
+}
+
+public class PostMapping : IEntityTypeConfiguration<Post>
+{
+    public void Configure(EntityTypeBuilder<Post> builder)
+    {
+        builder
+            .HasMany(p => p.Threads)
+            .WithOne()
+            .HasForeignKey("PostId")
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder
+            .HasOne(p => p.Author)
+            .WithMany()
+            .HasForeignKey("AuthorId");
+
+    }
+}
+
+public class ThreadMapping : IEntityTypeConfiguration<Core.Blogs.Thread>
+{
+    public void Configure(EntityTypeBuilder<Core.Blogs.Thread> builder)
+    {
+        builder
+            .HasMany(t => t.Comments)
+            .WithOne()
+            .HasForeignKey("ThreadId")
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+}
+
+public class CommentMapping : IEntityTypeConfiguration<Comment>
+{
+    public void Configure(EntityTypeBuilder<Comment> builder)
+    {
+        builder
+            .HasOne(c => c.Author)
+            .WithMany()
+            .HasForeignKey("AuthorId")
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+}
+
+public class AuthorMapping : IEntityTypeConfiguration<Author>
+{
+    public void Configure(EntityTypeBuilder<Author> builder)
+    {
+        
     }
 }

@@ -7,7 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(SqliteVer)" />
 		<PackageReference Include="RoyalCode.SmartCommands.Generators" Version="$(GenVer)" />
 		<PackageReference Include="RoyalCode.SmartCommands.WorkContext" Version="$(GenVer)" />
 		<PackageReference Include="RoyalCode.SmartProblems.ApiResults" Version="$(ProblemsVer)" />
