@@ -23,6 +23,10 @@ public static class ConfigureWorkContext
                     .Add<Core.Blogs.Thread>()
                     .Add<Comment>()
                     .Add<Author>();
+            })
+            .ConfigureSearches(b =>
+            {
+                b.Add<Author>();
             });
         
         return builder;
