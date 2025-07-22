@@ -10,7 +10,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddBlobs();
 
 builder.Services.AddSqliteInMemoryWorkContextDefault()
-    .ConfigureDbContextWithService()
+    .EnsureDatabaseCreated()
     .ConfigureBlogs()
     .AddUnitOfWorkAdapter();
 

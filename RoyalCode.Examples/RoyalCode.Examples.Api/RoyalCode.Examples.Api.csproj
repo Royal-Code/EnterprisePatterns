@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(AspNetVer)" />
-    <PackageReference Include="Scalar.AspNetCore" Version="$(ScalarVer)" />
-	  <PackageReference Include="RoyalCode.WorkContext.Sqlite" Version="$(WorkContextVer)" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(AspNetVer)" />
+		<PackageReference Include="Scalar.AspNetCore" Version="$(ScalarVer)" />
+		<PackageReference Include="RoyalCode.WorkContext.Sqlite" Version="$(WorkContextVer)" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\RoyalCode.Examples.Blogs\RoyalCode.Examples.Blogs.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\RoyalCode.Examples.Blogs\RoyalCode.Examples.Blogs.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace RoyalCode.Examples.Blogs.Contracts.Authors;
 
 [MapGroup("authors")]
-[MapPost("", "register-author")]
+[MapPost("", "register-author"), MapCreatedRoute("{v.Id}")]
 [Description("Registers a new author in the system.")]
 [MapIdResultValue]
 public partial class RegisterAuthor : IValidable
