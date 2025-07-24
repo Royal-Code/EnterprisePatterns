@@ -24,6 +24,7 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
 		<PackageReference Include="RoyalCode.OperationHint.EntityFramework" Version="$(HintVer)" />
 		<PackageReference Include="RoyalCode.SmartProblems.EntityFramework" Version="$(ProbVer)" />
+		<PackageReference Include="RoyalCode.SmartSearch.Linq" Version="$(SearchVer)" />
 	</ItemGroup>
 
 </Project>

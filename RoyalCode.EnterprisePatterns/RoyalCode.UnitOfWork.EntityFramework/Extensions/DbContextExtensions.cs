@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.UnitOfWork.EntityFramework.Configurations;
+﻿using RoyalCode.UnitOfWork.EntityFramework.Configurations;
 
 namespace Microsoft.EntityFrameworkCore;
 
@@ -45,29 +43,5 @@ public static class DbContextExtensions
 
         foreach (var configuration in configurations)
             configuration.Configure(configurationBuilder);
-    }
-
-    /// <summary>
-    /// Gets a service registered in the application's service provider associated with the <see cref="DbContext"/>.
-    /// </summary>
-    /// <typeparam name="TService">The type of service to obtain.</typeparam>
-    /// <param name="accessor">Access to the service provider of the DbContext.</param>
-    /// <returns>The requested service instance.</returns>
-    /// <exception cref="InvalidOperationException">
-    ///     If there is no service of type <typeparamref name="TService"/> registered
-    ///     in the application's service provider associated with the <see cref="DbContext"/>,
-    ///     or when the application's service provider is not configured for the <see cref="DbContext"/>.
-    /// </exception>
-    public static TService GetApplicationService<TService>(this IInfrastructure<IServiceProvider> accessor)
-        where TService : class
-    {
-        var sp = accessor.Instance;
-
-        return (sp.GetService<IDbContextOptions>()
-                ?.Extensions.OfType<CoreOptionsExtension>().FirstOrDefault()
-                ?.ApplicationServiceProvider
-                ?.GetRequiredService<TService>()) 
-                ?? throw new InvalidOperationException(
-                    $"No service of type '{typeof(TService).FullName}' is registered in the DbContext.");
     }
 }

@@ -12,13 +12,16 @@ public static partial class BlogsEndpoints
 {
     public static void MapBlob(this IEndpointRouteBuilder app)
     {
-        app.MapHelloGroup();
+        app.MapHelloGroup().WithTags("Hello");
 
-        var authors = app.MapAuthorsGroup();
+        var authors = app.MapAuthorGroup().WithTags("Author").WithExceptionFilter();
 
         authors.MapSearch<Author, AuthorDetails, AuthorFilter>("")
+            .WithSummary("Search Authors")
             .WithDescription("Searches for authors based on the provided filter criteria.")
-            .WithName("SearchAuthors")
+            .WithName("author-search")
             .WithOpenApi();
+
+        
     }
 }

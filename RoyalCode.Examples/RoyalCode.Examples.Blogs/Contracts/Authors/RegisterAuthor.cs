@@ -8,10 +8,10 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace RoyalCode.Examples.Blogs.Contracts.Authors;
 
-[MapGroup("authors")]
-[MapPost("", "register-author"), MapCreatedRoute("{v.Id}")]
+[MapGroup("author")]
+[MapPost("", "author-register"), MapCreatedRoute("{0}", "Id"), MapIdResultValue]
+[DisplayName("Register Author")]
 [Description("Registers a new author in the system.")]
-[MapIdResultValue]
 public partial class RegisterAuthor : IValidable
 {
     /// <summary>
