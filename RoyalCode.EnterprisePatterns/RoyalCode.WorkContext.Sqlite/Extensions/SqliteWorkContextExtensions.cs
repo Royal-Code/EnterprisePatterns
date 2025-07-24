@@ -152,6 +152,7 @@ public static class SqliteWorkContextExtensions
                 using var scope = sp.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<TDbContext>();
                 context.Database.EnsureCreated();
+                return Task.CompletedTask;
             });
 
         return builder;
@@ -210,7 +211,7 @@ public static class SqliteWorkContextExtensions
 /// <typeparam name="TDb">The type of the DbContext.</typeparam>
 /// <param name="connection">The SQLite connection to configure.</param>
 /// <param name="sp">The IServiceProvider to use for service resolution.</param>
-public delegate void ConfigureInMemorySqliteConnection<TDb>(SqliteConnection connection, IServiceProvider sp)
+public delegate Task ConfigureInMemorySqliteConnection<TDb>(SqliteConnection connection, IServiceProvider sp)
     where TDb : DbContext;
 
 internal sealed class InternalInMemorySqliteConfigureConnection<TDb>
@@ -218,7 +219,7 @@ internal sealed class InternalInMemorySqliteConfigureConnection<TDb>
 {
     public static InternalInMemorySqliteConfigureConnection<TDb> GetFromServices(IServiceCollection services)
     {
-        var descriptor = services.FirstOrDefault(d => d.ImplementationType == typeof(InternalInMemorySqliteConfigureConnection<TDb>));
+        var descriptor = services.FirstOrDefault(d => d.ServiceType == typeof(InternalInMemorySqliteConfigureConnection<TDb>));
         if (descriptor is null || descriptor.ImplementationInstance is not InternalInMemorySqliteConfigureConnection<TDb> options)
         {
             options = new InternalInMemorySqliteConfigureConnection<TDb>();
@@ -234,7 +235,7 @@ internal sealed class InternalInMemorySqliteConfigureConnection<TDb>
         if (configure is null)
             return;
 
-        configure(connection, sp);
+        configure(connection, sp).GetAwaiter().GetResult();
     }
 
     public void Configure(ConfigureInMemorySqliteConnection<TDb> configure)

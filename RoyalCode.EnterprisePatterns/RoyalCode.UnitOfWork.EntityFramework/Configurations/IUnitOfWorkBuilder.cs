@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using RoyalCode.UnitOfWork.Configurations;
+using System.Reflection;
 
 namespace RoyalCode.UnitOfWork.EntityFramework.Configurations;
 
@@ -206,6 +208,100 @@ public interface IUnitOfWorkBuilder<out TDbContext, out TBuilder> : IUnitOfWorkB
         var service = new InternalConfigureConventions<TDbContext>(configure);
         Services.AddSingleton<IConfigureConventions<TDbContext>>(service);
         return (TBuilder)this;
+    }
+
+    /// <summary>
+    /// Adds an action to configure the <see cref="ModelConfigurationBuilder"/> 
+    /// to turns on the creation of lazy loading proxies.
+    /// </summary>
+    /// <returns>The same instance.</returns>
+    public TBuilder UseLazyLoadingProxies()
+    {
+        return ConfigureOptions(static ob => ob.UseLazyLoadingProxies());
+    }
+
+    /// <summary>
+    /// Adds an action to configure the <see cref="DbContextOptionsBuilder"/> to use a logger factory
+    /// and when <paramref name="isDevelopment"/> is true, enables sensitive data logging and detailed errors.
+    /// </summary>
+    /// <param name="isDevelopment">Determines whether to enable sensitive data logging and detailed errors.</param>
+    /// <returns>The same instance.</returns>
+    public TBuilder UseLoggerFactoryAndEnableSensitiveDataLogging(bool isDevelopment = false)
+    {
+        return ConfigureOptions((sp, ob) =>
+        {
+            if (isDevelopment)
+            {
+                ob.EnableSensitiveDataLogging();
+                ob.EnableDetailedErrors();
+            }
+            ob.UseLoggerFactory(sp.GetRequiredService<ILoggerFactory>());
+        });
+    }
+
+    /// <summary>
+    /// Adds an action to configure the <see cref="ModelBuilder"/> and applies all entity configurations
+    /// from the specified assembly.
+    /// Additionally, if <paramref name="addRepositories"/> is true, it will also add repositories
+    /// for the configured entities.
+    /// </summary>
+    /// <param name="assembly">The assembly from which to get the entity configurations.</param>
+    /// <param name="addRepositories">Determines whether to add repositories for the configured entities.</param>
+    /// <returns>The same instance.</returns>
+    public TBuilder ConfigureMappingsFromAssembly(Assembly assembly, bool addRepositories)
+    {
+        return ConfigureModel(modelBuilder =>
+        {
+            if (addRepositories)
+                modelBuilder.ApplyConfigurationsFromAssembly(
+                    assembly,
+                    type => AddRepositories(type));
+            else
+                modelBuilder.ApplyConfigurationsFromAssembly(assembly);
+        });
+    }
+
+    /// <summary>
+    /// Adds an action to configure the <see cref="ModelBuilder"/> and applies all entity configurations
+    /// from the assembly containing the specified type.
+    /// Additionally, if <paramref name="addRepositories"/> is true, it will also add repositories
+    /// for the configured entities.
+    /// </summary>
+    /// <typeparam name="TTypeFromAssembly">Type from which to get the assembly.</typeparam>
+    /// <param name="addRepositories">Determines whether to add repositories for the configured entities.</param>
+    /// <returns>The same instance.</returns>
+    public TBuilder ConfigureMappingsFromAssembly<TTypeFromAssembly>(bool addRepositories)
+        where TTypeFromAssembly : class
+    {
+        return ConfigureMappingsFromAssembly(typeof(TTypeFromAssembly).Assembly, addRepositories);
+    }
+
+    private bool AddRepositories(Type type)
+    {
+        // checks if it is an entity configuration and gets the type of the configured entity
+        Type? entityType = null;
+        foreach (var @interface in type.GetInterfaces())
+        {
+            if (!@interface.IsGenericType)
+            {
+                continue;
+            }
+
+            if (@interface.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>))
+            {
+                entityType = @interface.GetGenericArguments()[0];
+            }
+        }
+
+        // if it is not an entity configuration, ignore
+        if (entityType is null)
+            return false;
+
+        // adds the repository for the configured entity
+        ConfigureRepositories(r => r.Add(entityType));
+
+        // finally returns true to indicate that the configuration has been added
+        return true;
     }
 }
 
