@@ -11,7 +11,7 @@ builder.Services.AddBlobs();
 builder.Services.AddSqliteInMemoryWorkContextDefault()
     .EnsureDatabaseCreated()
     .ConfigureBlogs()
-    .AddUnitOfWorkAdapter();
+    .AddUnitOfWorkAccessor();
 
 var app = builder.Build();
 
