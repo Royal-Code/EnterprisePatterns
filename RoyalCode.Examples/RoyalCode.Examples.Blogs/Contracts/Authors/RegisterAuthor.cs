@@ -3,15 +3,14 @@ using RoyalCode.SmartCommands;
 using RoyalCode.SmartProblems;
 using RoyalCode.SmartValidations;
 using RoyalCode.WorkContext;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace RoyalCode.Examples.Blogs.Contracts.Authors;
 
 [MapGroup("author")]
 [MapPost("", "author-register"), MapCreatedRoute("{0}", "Id"), MapIdResultValue]
-[DisplayName("Register Author")]
-[Description("Registers a new author in the system.")]
+[WithSummary("Register Author")]
+[WithDescription("Registers a new author in the system.")]
 public partial class RegisterAuthor : IValidable
 {
     /// <summary>

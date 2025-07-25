@@ -1,8 +1,15 @@
-﻿namespace RoyalCode.Examples.Blogs.Contracts.Authors;
+﻿using RoyalCode.Examples.Blogs.Core.Support;
+using RoyalCode.SmartCommands;
+
+namespace RoyalCode.Examples.Blogs.Contracts.Authors;
 
 /// <summary>
 /// A class representing the details of an author.
 /// </summary>
+[MapGroup("author")]
+[MapFind("{id}", "find-author-by-id"), EntityReference<Author, Guid>]
+[WithSummary("Author Details")]
+[WithDescription("Represents the details of an author, including their unique identifier, name, email, and creation date.")]
 public class AuthorDetails
 {
     /// <summary>
