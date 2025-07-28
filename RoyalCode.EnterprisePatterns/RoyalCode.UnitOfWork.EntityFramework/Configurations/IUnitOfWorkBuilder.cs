@@ -250,14 +250,11 @@ public interface IUnitOfWorkBuilder<out TDbContext, out TBuilder> : IUnitOfWorkB
     /// <returns>The same instance.</returns>
     public TBuilder ConfigureMappingsFromAssembly(Assembly assembly, bool addRepositories)
     {
+        if (addRepositories)
+            AddRepositories(assembly);
         return ConfigureModel(modelBuilder =>
         {
-            if (addRepositories)
-                modelBuilder.ApplyConfigurationsFromAssembly(
-                    assembly,
-                    type => AddRepositories(type));
-            else
-                modelBuilder.ApplyConfigurationsFromAssembly(assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(assembly);
         });
     }
 
@@ -276,32 +273,36 @@ public interface IUnitOfWorkBuilder<out TDbContext, out TBuilder> : IUnitOfWorkB
         return ConfigureMappingsFromAssembly(typeof(TTypeFromAssembly).Assembly, addRepositories);
     }
 
-    private bool AddRepositories(Type type)
+    /// <summary>
+    /// <para>
+    ///     Adds repositories for all entity types found in the specified assembly.
+    /// </para>
+    /// <para>
+    ///     Will scan the assembly for types that implement <see cref="IEntityTypeConfiguration{TEntity}"/>,
+    ///     so the entity type will be the generic type argument of the interface.
+    /// </para>
+    /// <para>
+    ///     For each entity type found, it will be added a repository related to the unit of work.
+    /// </para>
+    /// </summary>
+    /// <param name="assembly"></param>
+    /// <returns></returns>
+    public TBuilder AddRepositories(Assembly assembly)
     {
-        // checks if it is an entity configuration and gets the type of the configured entity
-        Type? entityType = null;
-        foreach (var @interface in type.GetInterfaces())
-        {
-            if (!@interface.IsGenericType)
-            {
-                continue;
-            }
+        // gets all entities types from the assembly getting the configurations (IEntityTypeConfiguration<>)
+        var entityTypes = assembly.GetTypes()
+            .Where(type => type.IsClass && !type.IsAbstract)
+            .SelectMany(type => type.GetInterfaces())
+            .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>))
+            .Select(i => i.GetGenericArguments()[0]);
 
-            if (@interface.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>))
-            {
-                entityType = @interface.GetGenericArguments()[0];
-            }
+        // adds repositories for each entity type
+        foreach (var type in entityTypes)
+        {
+            ConfigureRepositories(r => r.Add(type));
         }
 
-        // if it is not an entity configuration, ignore
-        if (entityType is null)
-            return false;
-
-        // adds the repository for the configured entity
-        ConfigureRepositories(r => r.Add(entityType));
-
-        // finally returns true to indicate that the configuration has been added
-        return true;
+        return (TBuilder)this;
     }
 }
 

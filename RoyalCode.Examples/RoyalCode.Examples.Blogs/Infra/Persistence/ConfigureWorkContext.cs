@@ -22,7 +22,8 @@ public static class ConfigureWorkContext
                     .Add<Post>()
                     .Add<Core.Blogs.Thread>()
                     .Add<Comment>()
-                    .Add<Author>();
+                    .Add<Author>()
+                    .Add<EmailVerification>();
             })
             .ConfigureSearches(b =>
             {
@@ -101,5 +102,17 @@ public class AuthorMapping : IEntityTypeConfiguration<Author>
     public void Configure(EntityTypeBuilder<Author> builder)
     {
         
+    }
+}
+
+public class EmailVerificationMapping : IEntityTypeConfiguration<EmailVerification>
+{
+    public void Configure(EntityTypeBuilder<EmailVerification> builder)
+    {
+        builder
+            .HasOne(ev => ev.Author)
+            .WithMany(a => a.EmailVerifications)
+            .HasForeignKey("AuthorId")
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -10,6 +10,7 @@ public class Author : Entity<Guid>
         Name = name;
         Email = email;
         CreatedAt = DateTime.UtcNow;
+        EmailVerifications = [new EmailVerification(this)];
     }
 
 #nullable disable
@@ -28,6 +29,8 @@ public class Author : Entity<Guid>
     public DateTime CreatedAt { get; set; }
 
     public DateTime? LastModifiedDate { get; set; }
+
+    public ICollection<EmailVerification> EmailVerifications { get; set; }
 
     public void ConfirmAuthor() 
     {
