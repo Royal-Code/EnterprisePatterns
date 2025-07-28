@@ -12,19 +12,7 @@ public static class ConfigureWorkContext
         where TDbContext : DbContext
     {
         builder
-            .ConfigureModel(b =>
-            {
-                b.ApplyConfigurationsFromAssembly(typeof(ConfigureWorkContext).Assembly);
-            })
-            .ConfigureRepositories(b =>
-            {
-                b.Add<Blog>()
-                    .Add<Post>()
-                    .Add<Core.Blogs.Thread>()
-                    .Add<Comment>()
-                    .Add<Author>()
-                    .Add<EmailVerification>();
-            })
+            .ConfigureMappingsFromAssembly(typeof(ConfigureWorkContext).Assembly, addRepositories: true)
             .ConfigureSearches(b =>
             {
                 b.Add<Author>();
