@@ -4,7 +4,8 @@
 		<WorkContextVer>0.8.5</WorkContextVer>
 		<SearchVer>0.8.2</SearchVer>
 		<ProblemsVer>1.0.0-preview-4.4</ProblemsVer>
-		<GenVer>0.0.6</GenVer>
+		<CmdGenVer>0.0.7</CmdGenVer>
+		<SelGenVer>0.1.0</SelGenVer>
 		<SqliteVer>9.0.7</SqliteVer>
 		<ScalarVer>2.6.3</ScalarVer>
 	</PropertyGroup>

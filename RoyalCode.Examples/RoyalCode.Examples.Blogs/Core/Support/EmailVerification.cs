@@ -6,7 +6,6 @@ namespace RoyalCode.Examples.Blogs.Core.Support;
 
 public class EmailVerification : Entity<Guid>
 {
-
     public EmailVerification(Author author)
     {
         Id = Guid.CreateVersion7();
