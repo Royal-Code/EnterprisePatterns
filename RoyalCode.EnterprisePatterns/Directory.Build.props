@@ -1,8 +1,8 @@
 <Project>
 	<PropertyGroup>
-		<LibTargets>net8.0;net9.0</LibTargets>
-		<AspTargets>net8.0;net9.0</AspTargets>
-		<MsgTargets>net8.0;net9.0</MsgTargets>
+		<LibTargets>net8.0;net9.0;net10.0</LibTargets>
+		<AspTargets>net8.0;net9.0;net10.0</AspTargets>
+		<MsgTargets>net8.0;net9.0;net10.0</MsgTargets>
 	</PropertyGroup>
 	<PropertyGroup>
 		
@@ -18,15 +18,25 @@
 		<MsgVer>0.1.0</MsgVer>
 		<MsgVerPreview>-preview-0.1</MsgVerPreview>
 	</PropertyGroup>
-	<PropertyGroup>
-		<DotNetCoreVersion Condition="'$(TargetFramework)' == 'net8.0'">8.0.0</DotNetCoreVersion>
-		<DotNetCoreVersion Condition="'$(TargetFramework)' == 'net9.0'">9.0.0</DotNetCoreVersion>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<AspVer>8.0.23</AspVer>
+		<ExtVer>8.0.2</ExtVer>
+		<PgVer>8.0.10</PgVer>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<AspVer>9.0.0</AspVer>
+		<ExtVer>9.0.0</ExtVer>
 		<PgVer>9.0.0</PgVer>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<AspVer>10.0.0</AspVer>
+		<ExtVer>10.0.0</ExtVer>
+		<PgVer>10.0.0</PgVer>
+	</PropertyGroup>
 	<PropertyGroup>
-		<ValVer>1.0.0-preview-2.0</ValVer>
-		<ProbVer>1.0.0-preview-4.4</ProbVer>
+		<ValVer>1.0.0-preview-4.0</ValVer>
+		<ProbVer>1.0.0-preview-6.0</ProbVer>
 		<HintVer>1.0.0</HintVer>
-		<SearchVer>0.8.2</SearchVer>
+		<SearchVer>0.9.0</SearchVer>
 	</PropertyGroup>
 </Project>

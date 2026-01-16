@@ -37,17 +37,30 @@ public static class OutboxApi
         group.MapPost("consumer", RegisterConsumerAsync)
             .WithName("register-consumer")
             .WithDescription("Register a new outbox consumer")
+#if NET10_0_OR_GREATER
+            ;
+        #else
             .WithOpenApi();
+#endif
 
         group.MapGet("consumer/{consumer}/messages", GetConsumerMessagesAsync)
             .WithName("get-outbox-messages")
             .WithDescription("get the outbox next messages for the consumer")
+#if NET10_0_OR_GREATER
+            ;
+#else
             .WithOpenApi();
+#endif
 
         group.MapPost("consumer/{consumer}/commit", CommitConsumedAsync)
             .WithName("commit-consumed-outbox-messages")
             .WithDescription("Commit the consumed messages")
+#if NET10_0_OR_GREATER
+            ;
+#else
             .WithOpenApi();
+#endif
+
     }
 
     private static async Task<OkMatch> CommitConsumedAsync(
