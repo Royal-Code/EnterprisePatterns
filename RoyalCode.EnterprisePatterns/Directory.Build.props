@@ -6,10 +6,10 @@
 	</PropertyGroup>
 	<PropertyGroup>
 		
-		<DomainVer>0.8.0</DomainVer>
+		<DomainVer>0.8.1</DomainVer>
 		<DomainPreview></DomainPreview>
 		
-		<PersistVer>0.8.5</PersistVer>
+		<PersistVer>0.8.6</PersistVer>
 		<PersistPreview></PersistPreview>
 		
 		<CommandVer>0.1.0</CommandVer>
