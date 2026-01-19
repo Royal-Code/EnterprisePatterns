@@ -61,6 +61,22 @@ public static class WorkContextBuilderExtensions
     }
 
     /// <summary>
+    /// Configures the work context builder to register query handlers from the specified assembly.
+    /// </summary>
+    /// <typeparam name="TDbContext">
+    ///     The type of the database context used by the work context builder. Must inherit from <see cref="DbContext"/>.
+    /// </typeparam>
+    /// <param name="builder">The work context builder to configure with query handlers.</param>
+    /// <param name="assembly">The assembly from which query handler types will be discovered and registered.</param>
+    /// <returns>The configured work context builder instance, enabling further configuration or building of the work context.</returns>
+    public static IWorkContextBuilder<TDbContext> ConfigureQueries<TDbContext>(
+        this IWorkContextBuilder<TDbContext> builder, Assembly assembly)
+        where TDbContext : DbContext
+    {
+        return builder.ConfigureQueries(c => c.AddHandlersFromAssembly(assembly));
+    }
+
+    /// <summary>
     /// Configures search criteria for all entity types in the specified assembly that implement the <see cref="IEntity"/> interface.
     /// </summary>
     /// <typeparam name="TDbContext">The type of the Entity Framework database context.</typeparam>
