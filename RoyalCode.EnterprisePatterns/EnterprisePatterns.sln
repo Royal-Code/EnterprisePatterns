@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11104.47 d18.0
+VisualStudioVersion = 18.0.11104.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.Repositories.Abstractions", "RoyalCode.Repositories.Abstractions\RoyalCode.Repositories.Abstractions.csproj", "{32ED862A-FFC6-40A7-8BBA-0807AC5B7BE5}"
 EndProject
@@ -85,6 +85,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EntityFramework", "EntityFramework", "{DF5DDC2D-A42A-402C-8633-06D9BA0C416B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosting", "Hosting", "{D579FD6B-0FFC-4735-A27D-C6E0594FE305}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{36D7493B-A101-41D3-9779-9FE82422D617}"
+	ProjectSection(SolutionItems) = preProject
+		.docs\domain.md = .docs\domain.md
+		.docs\instructions-for-copilot.md = .docs\instructions-for-copilot.md
+		.docs\workcontext.md = .docs\workcontext.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -236,6 +243,7 @@ Global
 		{9E60E90A-95C1-4B4A-B7CD-ADDC0EBB53CF} = {DD6336C0-C66B-44CD-9BEA-D9ED66EEC7BF}
 		{DF5DDC2D-A42A-402C-8633-06D9BA0C416B} = {DD6336C0-C66B-44CD-9BEA-D9ED66EEC7BF}
 		{D579FD6B-0FFC-4735-A27D-C6E0594FE305} = {DD6336C0-C66B-44CD-9BEA-D9ED66EEC7BF}
+		{36D7493B-A101-41D3-9779-9FE82422D617} = {B6D9A130-5359-4A71-A97B-703364D34B97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FAC6C2E-62DE-4665-BB16-4E7D445FAB26}
