@@ -2,16 +2,15 @@
 using RoyalCode.SmartCommands;
 using RoyalCode.SmartProblems;
 using RoyalCode.SmartValidations;
-using RoyalCode.WorkContext.Abstractions;
-using System.ComponentModel;
+using RoyalCode.WorkContext;
 using System.Diagnostics.CodeAnalysis;
 
 namespace RoyalCode.Examples.Blogs.Contracts.Authors;
 
-[MapGroup("authors")]
-[MapPost("", "register-author")]
-[Description("Registers a new author in the system.")]
-[MapIdResultValue]
+[MapGroup("author")]
+[MapPost("", "author-register"), MapCreatedRoute("{0}", "Id"), MapIdResultValue]
+[WithSummary("Register Author")]
+[WithDescription("Registers a new author in the system.")]
 public partial class RegisterAuthor : IValidable
 {
     /// <summary>

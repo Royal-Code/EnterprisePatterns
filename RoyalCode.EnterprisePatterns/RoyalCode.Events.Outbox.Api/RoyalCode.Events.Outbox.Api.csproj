@@ -16,7 +16,7 @@
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<PackageReference Include="RoyalCode.SmartProblems.ApiResults" Version="$(ProbVer)" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(DotNetCoreVersion)" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(AspVer)" />
 	</ItemGroup>
 
 	<ItemGroup>

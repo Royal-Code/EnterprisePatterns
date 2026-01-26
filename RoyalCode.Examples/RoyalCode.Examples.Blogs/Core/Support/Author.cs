@@ -9,7 +9,8 @@ public class Author : Entity<Guid>
         Id = Guid.CreateVersion7();
         Name = name;
         Email = email;
-        CreatedDate = DateTime.UtcNow;
+        CreatedAt = DateTime.UtcNow;
+        EmailVerifications = [new EmailVerification(this)];
     }
 
 #nullable disable
@@ -25,9 +26,11 @@ public class Author : Entity<Guid>
 
     public bool IsConfirmed { get; set; } = false;
 
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public DateTime? LastModifiedDate { get; set; }
+
+    public ICollection<EmailVerification> EmailVerifications { get; set; }
 
     public void ConfirmAuthor() 
     {

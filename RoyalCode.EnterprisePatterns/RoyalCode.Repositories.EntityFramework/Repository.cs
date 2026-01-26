@@ -78,6 +78,13 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     }
 
     /// <inheritdoc/>
+    public Task<FindResult<TDto, TId>> FindAsync<TDto, TId>(Id<TEntity, TId> id, CancellationToken ct = default)
+        where TDto : class
+    {
+        return db.TryFindAsync<TEntity, TDto, TId>(id, ct);
+    }
+
+    /// <inheritdoc/>
     public async Task<FindResult<TEntity>> FindAsync(Expression<Func<TEntity, bool>> filter, CancellationToken ct = default)
     {
         var result = await set.TryFindByAsync(filter, ct);

@@ -16,7 +16,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\RoyalCode.DomainEvents\RoyalCode.DomainEvents.csproj" />
 		<ProjectReference Include="..\RoyalCode.Events.Outbox.Abstractions\RoyalCode.Events.Outbox.Abstractions.csproj" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(DotNetCoreVersion)" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(AspVer)" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -129,10 +129,27 @@ public interface IFinder<TEntity>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>
     /// <para>
-    ///     An entry representing the entity record obtained from the database.
+    ///     A result representing the entity record obtained from the database.
     /// </para>
     /// </returns>
     Task<FindResult<TEntity, TId>> FindAsync<TId>(Id<TEntity, TId> id, CancellationToken ct = default);
+
+    /// <summary>
+    /// <para>
+    ///     Try to find an existing entity through its unique identity (Id) and select a DTO type to represent the entity.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TDto">Data transfer object type selected to represent the entity.</typeparam>
+    /// <typeparam name="TId">The type o entity id.</typeparam>
+    /// <param name="id">The entity id.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>
+    /// <para>
+    ///     A result representing the DTO selected from the entity obtained from the database.
+    /// </para>
+    /// </returns>
+    Task<FindResult<TDto, TId>> FindAsync<TDto, TId>(Id<TEntity, TId> id, CancellationToken ct = default)
+        where TDto : class;
 
     /// <summary>
     /// <para>

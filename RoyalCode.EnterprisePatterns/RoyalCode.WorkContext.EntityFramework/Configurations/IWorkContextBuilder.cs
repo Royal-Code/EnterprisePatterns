@@ -15,7 +15,7 @@ namespace RoyalCode.WorkContext.EntityFramework.Configurations;
 ///     The type of the database context that the work context will be associated with. Must derive from 
 ///     <see cref="DbContext"/>.
 /// </typeparam>
-public interface IWorkContextBuilder<TDbContext> : IWorkContextBuilder<TDbContext, IWorkContextBuilder<TDbContext>>
+public interface IWorkContextBuilder<out TDbContext> : IWorkContextBuilder<TDbContext, IWorkContextBuilder<TDbContext>>
     where TDbContext : DbContext
 { }
 
@@ -34,7 +34,7 @@ public interface IWorkContextBuilder<TDbContext> : IWorkContextBuilder<TDbContex
 /// <typeparam name="TBuilder">
 ///     The type of the builder implementing this interface, allowing for fluent method chaining.
 /// </typeparam>
-public interface IWorkContextBuilder<TDbContext, TBuilder> : IWorkContextBuilderBase<TBuilder>, IUnitOfWorkBuilder<TDbContext, TBuilder>
+public interface IWorkContextBuilder<out TDbContext, out TBuilder> : IWorkContextBuilderBase<TBuilder>, IUnitOfWorkBuilder<TDbContext, TBuilder>
     where TDbContext : DbContext
     where TBuilder : IWorkContextBuilder<TDbContext, TBuilder>
 {

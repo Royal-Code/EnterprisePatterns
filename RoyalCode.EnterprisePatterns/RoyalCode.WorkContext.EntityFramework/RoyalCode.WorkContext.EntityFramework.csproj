@@ -25,7 +25,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="RoyalCode.SmartProblems" Version="$(ProbVer)" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(DotNetCoreVersion)" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtVer)" />
 		<PackageReference Include="RoyalCode.SmartSearch.Linq" Version="$(SearchVer)" />
 	</ItemGroup>
 	

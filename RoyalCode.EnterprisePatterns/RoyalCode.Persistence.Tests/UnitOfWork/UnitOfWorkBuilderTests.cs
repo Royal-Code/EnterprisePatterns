@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.Persistence.Tests.Entities;
 using RoyalCode.Repositories;
 using RoyalCode.UnitOfWork;
+using RoyalCode.UnitOfWork.EntityFramework;
 using Xunit;
 
 namespace RoyalCode.Persistence.Tests.UnitOfWork;
@@ -36,6 +37,36 @@ public class UnitOfWorkBuilderTests
         var repo = sp.GetService<IRepository<Person>>();
         Assert.NotNull(repo);
         
+        scope.Dispose();
+    }
+
+    [Fact]
+    public void ConfigureUnitOfWorkFromAssembly()
+    {
+        ServiceCollection services = new();
+
+        services.AddUnitOfWorkDefault()
+            .ConfigureOptions(builder => builder.UseSqlite("DataSource=:memory:"))
+            .ConfigureMappingsFromAssembly(typeof(UnitOfWorkBuilderTests).Assembly, true);
+
+        var root = services.BuildServiceProvider();
+        var scope = root.CreateScope();
+        var sp = scope.ServiceProvider;
+
+        var db = sp.GetService<DefaultDbContext>();
+        Assert.NotNull(db);
+
+        db!.Database.EnsureCreated();
+
+        var uow = sp.GetService<IUnitOfWork>();
+        Assert.NotNull(uow);
+
+        var repo = sp.GetService<IRepository<Person>>();
+        Assert.NotNull(repo);
+
+        var set = db.Set<Person>();
+        Assert.NotNull(set);
+
         scope.Dispose();
     }
 }

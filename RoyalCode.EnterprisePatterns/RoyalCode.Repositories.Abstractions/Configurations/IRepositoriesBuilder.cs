@@ -16,6 +16,13 @@ public interface IRepositoriesBuilder
         where TEntity : class;
 
     /// <summary>
+    /// Add a repository for an entity type as a service, related to builder used by the unit of work.
+    /// </summary>
+    /// <param name="entityType">The entity type.</param>
+    /// <returns>The same instance.</returns>
+    IRepositoriesBuilder Add(Type entityType);
+
+    /// <summary>
     /// Allows the configuration of hints for repository operations.
     /// </summary>
     /// <param name="configure">The configuration action.</param>

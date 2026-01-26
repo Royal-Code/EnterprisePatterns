@@ -7,12 +7,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(SqliteVer)" />
-		<PackageReference Include="RoyalCode.SmartCommands.Generators" Version="0.0.1" />
-		<PackageReference Include="RoyalCode.SmartCommands.WorkContext" Version="0.0.1" />
-		<PackageReference Include="RoyalCode.SmartProblems.ApiResults" Version="1.0.0-preview-4.3" />
+		<PackageReference Include="RoyalCode.SmartCommands.Generators" Version="$(CmdGenVer)" PrivateAssets="all" />
+		<PackageReference Include="RoyalCode.SmartCommands.WorkContext" Version="$(CmdGenVer)" />
+		<PackageReference Include="RoyalCode.SmartProblems.ApiResults" Version="$(ProblemsVer)" />
+		<PackageReference Include="RoyalCode.SmartSearch.AspNetCore" Version="$(SearchVer)" />
+		<PackageReference Include="RoyalCode.SmartSelector" Version="$(SelGenVer)" />
+		<PackageReference Include="RoyalCode.SmartSelector.Generators" Version="$(SelGenVer)" PrivateAssets="all" />
 		<PackageReference Include="RoyalCode.WorkContext.EntityFramework" Version="$(WorkContextVer)" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(AspNetVer)" />
 	</ItemGroup>
 
 	<ItemGroup>

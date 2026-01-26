@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using RoyalCode.WorkContext.Abstractions;
+using RoyalCode.WorkContext;
 
 namespace RoyalCode.OperationHint.Tests.Searches;
 

@@ -31,12 +31,15 @@ public sealed class RepositoriesBuilder<TDbContext> : IRepositoriesBuilder<TDbCo
     }
 
     /// <inheritdoc />
-    public IRepositoriesBuilder Add<TEntity>() where TEntity : class
+    public IRepositoriesBuilder Add<TEntity>() where TEntity : class => Add(typeof(TEntity));
+
+    /// <inheritdoc />
+    public IRepositoriesBuilder Add(Type entityType)
     {
         // register the repository
-        var repoType = typeof(IRepository<>).MakeGenericType(typeof(TEntity));
-        var dbRepoType = typeof(IRepository<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
-        var repoImplType = typeof(InternalRepository<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
+        var repoType = typeof(IRepository<>).MakeGenericType(entityType);
+        var dbRepoType = typeof(IRepository<,>).MakeGenericType(typeof(TDbContext), entityType);
+        var repoImplType = typeof(InternalRepository<,>).MakeGenericType(typeof(TDbContext), entityType);
 
         services.Add(ServiceDescriptor.Describe(dbRepoType, repoImplType, lifetime));
         services.Add(ServiceDescriptor.Describe(repoType, sp => sp.GetService(dbRepoType)!, lifetime));
@@ -45,23 +48,23 @@ public sealed class RepositoriesBuilder<TDbContext> : IRepositoriesBuilder<TDbCo
             services.Add(ServiceDescriptor.Describe(dataService, sp => sp.GetService(dbRepoType)!, lifetime));
 
         // if the entity implements IHasGuid interface, register the FinderByGuid
-        if (typeof(IHasGuid).IsAssignableFrom(typeof(TEntity)))
+        if (typeof(IHasGuid).IsAssignableFrom(entityType))
         {
-            var finderType = typeof(IFinderByGuid<>).MakeGenericType(typeof(TEntity));
-            var finderImplType = typeof(FinderByGuid<,>).MakeGenericType(typeof(TDbContext), typeof(TEntity));
+            var finderType = typeof(IFinderByGuid<>).MakeGenericType(entityType);
+            var finderImplType = typeof(FinderByGuid<,>).MakeGenericType(typeof(TDbContext), entityType);
 
             services.Add(ServiceDescriptor.Describe(finderType, finderImplType, lifetime));
         }
-        
+
         // if the entity implements IHasCode interface, register the FinderByCode
-        if (IsGenericAssinableFrom(typeof(IFinderByCode<,>), typeof(TEntity), out var finderByCodeType))
+        if (IsGenericAssinableFrom(typeof(IFinderByCode<,>), entityType, out var finderByCodeType))
         {
             var finderImplType = typeof(FinderByCode<,,>)
-                .MakeGenericType(typeof(TDbContext), typeof(TEntity), finderByCodeType.GetGenericArguments()[1]);
+                .MakeGenericType(typeof(TDbContext), entityType, finderByCodeType.GetGenericArguments()[1]);
 
             services.Add(ServiceDescriptor.Describe(finderByCodeType, finderImplType, lifetime));
         }
-        
+
         return this;
     }
 

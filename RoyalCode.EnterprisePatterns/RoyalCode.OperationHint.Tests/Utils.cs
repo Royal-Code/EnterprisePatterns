@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using RoyalCode.WorkContext.EntityFramework.Configurations;
 using System.Data.Common;
 
 namespace RoyalCode.OperationHint.Tests;
@@ -10,7 +11,7 @@ internal static class Utils
 {
     public static TServices AddWorkContext<TServices>(
         TServices services,
-        Action<IUnitOfWorkBuilder<LocalDbContext>>? configureBuilder = null)
+        Action<IWorkContextBuilder<LocalDbContext>>? configureBuilder = null)
         where TServices : IServiceCollection
     {
         DbConnection conn = new SqliteConnection("Data Source=:memory:");
@@ -31,7 +32,7 @@ internal static class Utils
 
     public static TServices AddWorkContextWithIncludes<TServices>(
         TServices services,
-        Action<IUnitOfWorkBuilder<LocalDbContext>>? configureBuilder = null)
+        Action<IWorkContextBuilder<LocalDbContext>>? configureBuilder = null)
         where TServices : IServiceCollection
     {
         AddWorkContext(services, builder =>
