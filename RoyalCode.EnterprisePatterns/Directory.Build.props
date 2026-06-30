@@ -9,7 +9,7 @@
 		<DomainVer>0.8.2</DomainVer>
 		<DomainPreview></DomainPreview>
 		
-		<PersistVer>0.8.10</PersistVer>
+		<PersistVer>0.8.11</PersistVer>
 		<PersistPreview></PersistPreview>
 		
 		<CommandVer>0.1.0</CommandVer>
@@ -24,8 +24,8 @@
 		<PgVer>8.0.10</PgVer>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
-		<AspVer>9.0.0</AspVer>
-		<ExtVer>9.0.0</ExtVer>
+		<AspVer>9.0.5</AspVer>
+		<ExtVer>9.0.5</ExtVer>
 		<PgVer>9.0.0</PgVer>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
@@ -37,6 +37,6 @@
 		<ValVer>1.0.0-preview-4.0</ValVer>
 		<ProbVer>1.0.0-preview-6.0</ProbVer>
 		<HintVer>1.0.0</HintVer>
-		<SearchVer>0.10.1</SearchVer>
+		<SearchVer>0.10.3</SearchVer>
 	</PropertyGroup>
 </Project>
