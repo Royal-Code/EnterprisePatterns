@@ -16,7 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(AspVer)" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(EFVer)" />
 	</ItemGroup>
 	
 </Project>

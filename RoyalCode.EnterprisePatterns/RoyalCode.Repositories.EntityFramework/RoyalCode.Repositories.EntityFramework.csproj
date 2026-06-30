@@ -21,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(AspVer)" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(EFVer)" />
 		<PackageReference Include="RoyalCode.OperationHint.EntityFramework" Version="$(HintVer)" />
 		<PackageReference Include="RoyalCode.SmartProblems.EntityFramework" Version="$(ProbVer)" />
 		<PackageReference Include="RoyalCode.SmartSearch.Linq" Version="$(SearchVer)" />
