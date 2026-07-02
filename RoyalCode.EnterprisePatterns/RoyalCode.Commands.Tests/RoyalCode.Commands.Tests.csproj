@@ -3,8 +3,8 @@
 	<Import Project="..\tests.targets" />
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(AspVer)" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(AspVer)" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EFVer)" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(EFVer)" />
 		
 		<ProjectReference Include="..\RoyalCode.Commands.Abstractions\RoyalCode.Commands.Abstractions.csproj" />
 		
