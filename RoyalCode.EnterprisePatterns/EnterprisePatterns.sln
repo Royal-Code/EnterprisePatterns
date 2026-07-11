@@ -89,7 +89,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{36D7493B-A101-41D3-9779-9FE82422D617}"
 	ProjectSection(SolutionItems) = preProject
 		.docs\domain.md = .docs\domain.md
-		.docs\instructions-for-copilot.md = .docs\instructions-for-copilot.md
 		.docs\problems.md = .docs\problems.md
 		.docs\search.md = .docs\search.md
 		.docs\selector.md = .docs\selector.md
