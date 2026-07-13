@@ -26,8 +26,4 @@
 	  <PackageReference Include="RoyalCode.Extensions.AsyncExpressionsBuilders" Version="0.3.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\RoyalCode.Commands.AspNetCore\RoyalCode.Commands.AspNetCore.csproj" />
-	</ItemGroup>
-
 </Project>
