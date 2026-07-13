@@ -21,8 +21,4 @@
 		<PackageTags>RoyalCode Enterprise-Patterns CQRS Command-Pattern</PackageTags>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\RoyalCode.Commands.Abstractions\RoyalCode.Commands.Abstractions.csproj" />
-	</ItemGroup>
-
 </Project>
