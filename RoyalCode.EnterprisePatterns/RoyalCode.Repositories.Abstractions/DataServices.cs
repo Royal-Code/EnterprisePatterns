@@ -181,8 +181,63 @@ public interface IFinder<TEntity>
     /// </returns>
     Task<FindResult<TEntity>> FindAsync<TValue>(
         Expression<Func<TEntity, TValue>> propertySelector,
-        TValue filterValue, 
+        TValue filterValue,
         CancellationToken ct = default);
+
+    /// <summary>
+    /// <para>
+    ///     Tries to find an existing entity through a filter expression, selecting a DTO type
+    ///     to represent the entity. The projection must be executed by the provider, without
+    ///     materializing or tracking the entity.
+    /// </para>
+    /// <para>
+    ///     When the entity is not found, the <paramref name="criteria"/> are used to generate a rich
+    ///     not-found problem naming the entity (see
+    ///     <see cref="FindResult{TEntity}.ProjectedFrom{TSource}(TEntity, IReadOnlyList{FindCriterion})"/>),
+    ///     without analyzing the filter expression at runtime.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TDto">Data transfer object type selected to represent the entity.</typeparam>
+    /// <param name="filter">The filter expression to apply.</param>
+    /// <param name="criteria">The criteria used by the filter, in declaration order, for the not-found problem.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>
+    /// <para>
+    ///     A result representing the DTO selected from the entity obtained from the database.
+    /// </para>
+    /// </returns>
+    Task<FindResult<TDto>> FindAsync<TDto>(
+        Expression<Func<TEntity, bool>> filter,
+        IReadOnlyList<FindCriterion> criteria,
+        CancellationToken ct = default)
+        where TDto : class;
+
+    /// <summary>
+    /// <para>
+    ///     Tries to find an existing entity through a filter expression, selecting a DTO type
+    ///     to represent the entity, generating the not-found problem by best-effort analysis
+    ///     of the filter expression (see <see cref="FindCriteriaExtractor"/>).
+    /// </para>
+    /// <para>
+    ///     Prefer the overload with explicit criteria when the caller already knows the
+    ///     properties and values used by the filter.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TDto">Data transfer object type selected to represent the entity.</typeparam>
+    /// <param name="filter">The filter expression to apply.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>
+    /// <para>
+    ///     A result representing the DTO selected from the entity obtained from the database.
+    /// </para>
+    /// </returns>
+    Task<FindResult<TDto>> FindAsync<TDto>(
+        Expression<Func<TEntity, bool>> filter,
+        CancellationToken ct = default)
+        where TDto : class
+    {
+        return FindAsync<TDto>(filter, FindCriteriaExtractor.Extract(filter), ct);
+    }
 }
 
 /// <summary>

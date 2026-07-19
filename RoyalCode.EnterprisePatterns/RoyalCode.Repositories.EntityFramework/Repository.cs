@@ -110,6 +110,37 @@ public class Repository<TDbContext, TEntity> : IRepository<TDbContext, TEntity>
     }
 
     /// <inheritdoc/>
+    public async Task<FindResult<TDto>> FindAsync<TDto>(
+        Expression<Func<TEntity, bool>> filter,
+        IReadOnlyList<FindCriterion> criteria,
+        CancellationToken ct = default)
+        where TDto : class
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        ArgumentNullException.ThrowIfNull(criteria);
+
+        var dto = await SelectDto<TEntity, TDto>.SelectWhere(db, filter).FirstOrDefaultAsync(ct);
+
+        return FindResult<TDto>.ProjectedFrom<TEntity>(dto, criteria);
+    }
+
+    /// <inheritdoc/>
+    public async Task<FindResult<TDto>> FindAsync<TDto>(
+        Expression<Func<TEntity, bool>> filter,
+        CancellationToken ct = default)
+        where TDto : class
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+
+        var dto = await SelectDto<TEntity, TDto>.SelectWhere(db, filter).FirstOrDefaultAsync(ct);
+
+        // the expression is only analyzed when the entity was not found, like TryFindByAsync.
+        return dto is not null
+            ? new FindResult<TDto>(dto)
+            : FindResult<TDto>.ProjectedFrom<TEntity>(null, FindCriteriaExtractor.Extract(filter));
+    }
+
+    /// <inheritdoc/>
     public void Add(TEntity entity) 
         => set.Add(entity ?? throw new ArgumentNullException(nameof(entity)));
 

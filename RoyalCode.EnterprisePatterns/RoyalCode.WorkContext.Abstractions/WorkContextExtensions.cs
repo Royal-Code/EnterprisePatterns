@@ -165,6 +165,58 @@ public static class WorkContextExtensions
 
     /// <summary>
     /// <para>
+    ///     Tries to find an existing entity through a filter expression, selecting a DTO type
+    ///     to represent the entity. The projection is executed by the provider, and the
+    ///     <paramref name="criteria"/> generate the rich not-found problem naming the entity.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TDto">Data transfer object type selected to represent the entity.</typeparam>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="filter">The filter expression to apply.</param>
+    /// <param name="criteria">The criteria used by the filter, in declaration order, for the not-found problem.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>
+    /// <para>
+    ///     A result representing the DTO selected from the entity obtained from the database.
+    /// </para>
+    /// </returns>
+    public static Task<FindResult<TDto>> FindAsync<TEntity, TDto>(
+        this IWorkContext context,
+        Expression<Func<TEntity, bool>> filter,
+        IReadOnlyList<FindCriterion> criteria,
+        CancellationToken ct = default)
+        where TEntity : class
+        where TDto : class
+        => context.Repository<TEntity>().FindAsync<TDto>(filter, criteria, ct);
+
+    /// <summary>
+    /// <para>
+    ///     Tries to find an existing entity through a filter expression, selecting a DTO type
+    ///     to represent the entity, generating the not-found problem by best-effort analysis
+    ///     of the filter expression.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TDto">Data transfer object type selected to represent the entity.</typeparam>
+    /// <param name="context">The work context to get the repository.</param>
+    /// <param name="filter">The filter expression to apply.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>
+    /// <para>
+    ///     A result representing the DTO selected from the entity obtained from the database.
+    /// </para>
+    /// </returns>
+    public static Task<FindResult<TDto>> FindAsync<TEntity, TDto>(
+        this IWorkContext context,
+        Expression<Func<TEntity, bool>> filter,
+        CancellationToken ct = default)
+        where TEntity : class
+        where TDto : class
+        => context.Repository<TEntity>().FindAsync<TDto>(filter, ct);
+
+    /// <summary>
+    /// <para>
     ///     Finds an existing entity through its Guid.
     /// </para>
     /// </summary>

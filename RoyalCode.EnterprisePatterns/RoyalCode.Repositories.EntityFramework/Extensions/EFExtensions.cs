@@ -73,7 +73,8 @@ public static class EFExtensions
 
         var dto = await SelectDtoById<TEntity, TDto>.FindByIdAndSelectDto(db, id.Value!).FirstOrDefaultAsync(token);
 
-        return new FindResult<TDto, TId>(dto, id.Value);
+        // the not-found problem names the searched entity, not the DTO type.
+        return FindResult<TDto, TId>.ProjectedFrom<TEntity>(dto, id.Value);
     }
 
     /// <summary>
