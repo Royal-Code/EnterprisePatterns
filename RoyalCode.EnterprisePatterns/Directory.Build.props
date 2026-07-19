@@ -9,7 +9,7 @@
 		<DomainVer>0.8.2</DomainVer>
 		<DomainPreview></DomainPreview>
 		
-		<PersistVer>0.10.0</PersistVer>
+		<PersistVer>0.10.1</PersistVer>
 		<PersistPreview></PersistPreview>
 		
 		<CommandVer>0.1.0</CommandVer>
@@ -40,9 +40,9 @@
 		<SqlVer>10.0.0</SqlVer>
 	</PropertyGroup>
 	<PropertyGroup>
-		<ValVer>1.0.0-preview-7.0</ValVer>
+		<ValVer>1.0.0-preview-8.0</ValVer>
 		<ProbVer>1.0.0-preview-8.0</ProbVer>
 		<HintVer>1.0.0</HintVer>
-		<SearchVer>0.11.0</SearchVer>
+		<SearchVer>0.11.1</SearchVer>
 	</PropertyGroup>
 </Project>
