@@ -51,7 +51,7 @@ public static class SelectDto<TEntity, TDto>
     /// <returns>An IQueryable of the DTO, translated and executed by the provider.</returns>
     public static IQueryable<TDto> Select(DbContext db, IQueryable<TEntity> query)
     {
-        return query.Select(GetSelector(db));
+        return query.AsNoTracking().Select(GetSelector(db));
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public static class SelectDto<TEntity, TDto>
     /// <returns>An IQueryable of the DTO, translated and executed by the provider.</returns>
     public static IQueryable<TDto> SelectWhere(DbContext db, Expression<Func<TEntity, bool>> filter)
     {
-        return db.Set<TEntity>().Where(filter).Select(GetSelector(db));
+        return db.Set<TEntity>().AsNoTracking().Where(filter).Select(GetSelector(db));
     }
 
     private static Expression<Func<TEntity, TDto>> CreateSelector(DbContext db)
