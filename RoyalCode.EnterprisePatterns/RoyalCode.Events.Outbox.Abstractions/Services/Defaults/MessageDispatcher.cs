@@ -24,7 +24,7 @@ public sealed class MessageDispatcher : IMessageDispatcher
     }
 
     /// <inheritdoc />
-    public Task DispatchAsync(object message, CancellationToken ct)
+    public async Task DispatchAsync(object message, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(message);
 
@@ -32,7 +32,7 @@ public sealed class MessageDispatcher : IMessageDispatcher
 
         using var scope = serviceProvider.CreateScope();
         var dispatcher = (IMessageDispatcher)scope.ServiceProvider.GetRequiredService(dispatcherType);
-        return dispatcher.DispatchAsync(message, ct);
+        await dispatcher.DispatchAsync(message, ct);
     }
 }
 

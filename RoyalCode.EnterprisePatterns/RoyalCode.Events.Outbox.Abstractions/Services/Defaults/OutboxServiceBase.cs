@@ -44,7 +44,7 @@ public abstract class OutboxServiceBase : IOutboxService
             throw new MessateTypeNotConfiguredException(messageType);
 
         var json = metadata.JsonTypeInfo is not null
-            ? JsonSerializer.Serialize(metadata, metadata.JsonTypeInfo)
+            ? JsonSerializer.Serialize(message, metadata.JsonTypeInfo)
             : JsonSerializer.Serialize(message, metadata.SerializerOptions ?? options.SerializerOptions);
 
         var request = new CreateMessage()
